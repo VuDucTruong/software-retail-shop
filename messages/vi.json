@@ -30,8 +30,10 @@
     "Password": "Mật khẩu",
     "forgot_password": "Quên mật khẩu?",
     "login_with": "Hoặc đăng nhập bằng",
-    "email_hint": "Nhập email của bạn",
-    "password_hint": "Nhập mật khẩu của bạn",
+    "invalid_email": "Địa chỉ email không hợp lệ",
+    "invalid_password_length": "Mật khẩu phải có ít nhất 8 ký tự",
+    "email_hint": "Nhập địa chỉ email",
+    "password_hint": "Nhập mật khẩu",
     "email_helper": "Email phải là một địa chỉ email hợp lệ",
     "password_helper": "Mật khẩu phải có ít nhất 8 ký tự",
     "Name": "Họ và tên",
@@ -101,5 +103,8 @@
     "add_to_cart": "Thêm vào giỏ hàng",
     "popular_tags": "Từ khóa phổ biến",
     "best_selling_products": "Sản phẩm bán chạy nhất",
-    "suitable_prices": "Mức giá hợp lý"
+    "suitable_prices": "Mức giá hợp lý",
+    "username_hint": "Nhập tên của bạn",
+    "invalid_username": "Tên phải có ít nhất 3 ký tự",
+    "password_not_match": "Mật khẩu không khớp"
 }

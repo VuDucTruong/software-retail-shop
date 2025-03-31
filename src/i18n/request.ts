@@ -10,6 +10,8 @@ export default getRequestConfig(async ({requestLocale}) => {
     locale = routing.defaultLocale;
   }
 
+  locale = routing.defaultLocale; // Tam thoi nhu vay
+
   return {
     locale,
     messages: (

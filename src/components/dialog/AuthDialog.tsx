@@ -3,40 +3,60 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
 import { FaUserAlt } from "react-icons/fa";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 import { userProfileOptions } from "@/config/constants";
 import Link from "next/link";
-
+import Image from "next/image";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import LoginTab from "./LoginTab";
+import RegisterTab from "./RegisterTab";
+var isLoggedIn = false; // Replace with actual authentication logic
 export function AuthDialog() {
   const t = useTranslations();
-  var isLoggedIn = false; // Replace with actual authentication logic
-  
+
   if (isLoggedIn) {
-    <DropdownMenu>
+    return (
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center h-fit text-sm rounded-r-none font-medium border-r-2 ">
-            {"User name"} <ChevronDown className="size-6 ml-1" />
+          <Button variant="ghost" size={"lg"} className="flex items-center p-2">
+            <div className="relative size-10">
+              <Image
+                alt="Avatar"
+                src={"https://randomuser.me/api/portraits/men/1.jpg"}
+                fill
+                className="object-cover rounded-full"
+              />
+            </div>
+            Username
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {userProfileOptions.map((opt) => (
-            <DropdownMenuItem key={opt.title}>
-              <Link href={opt.href}>{opt.title}</Link>
+            <DropdownMenuItem
+              key={opt.title}
+              className="group hover:font-medium"
+            >
+              <opt.icon className="group-hover:text-primary" />{" "}
+              <Link className="group-hover:text-primary" href={opt.href}>
+                {t(opt.title)}
+              </Link>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+    );
   }
-
 
   return (
     <Dialog>
@@ -46,7 +66,24 @@ export function AuthDialog() {
           {t("Account")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+
+      <DialogContent >
+        <DialogHeader className="hidden">
+          <DialogTitle></DialogTitle>
+        </DialogHeader>
+
+        <Tabs defaultValue="login">
+          <TabsList className="[&>*]:text-xl w-100">
+            <TabsTrigger value="login">{t("Login")}</TabsTrigger>
+            <TabsTrigger value="register">{t("Register")}</TabsTrigger>
+          </TabsList>
+          <TabsContent value="login">
+            <LoginTab isReset={false} />
+          </TabsContent>
+          <TabsContent className="max-h-1/2" value="register">
+            <RegisterTab isReset={false} />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

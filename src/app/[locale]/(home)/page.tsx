@@ -4,7 +4,7 @@ import BrandCarousel from "@/components/home/BrandCarousel";
 import CategoryCard from "@/components/home/CategoryCard";
 import { HomeCarousel } from "@/components/home/HomeCarousel";
 import HomeProductSection from "@/components/home/HomeProductSection";
-import TopItemsList from "@/components/home/PopularTagCard";
+import TopItemsList from "@/components/home/TopItemsList";
 import { useTranslations } from "next-intl";
 
 import React from "react";
