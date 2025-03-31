@@ -98,6 +98,8 @@
     "Content": "Nội dung",
     "my_favorites_description": "Hiển thị tất cả sản phẩm bạn đã đánh dấu là yêu thích",
     "empty_wishlist": "Danh sách yêu thích của bạn đang trống !",
-    "add_to_cart": "Thêm vào giỏ hàng"
-    
+    "add_to_cart": "Thêm vào giỏ hàng",
+    "popular_tags": "Từ khóa phổ biến",
+    "best_selling_products": "Sản phẩm bán chạy nhất",
+    "suitable_prices": "Mức giá hợp lý"
 }

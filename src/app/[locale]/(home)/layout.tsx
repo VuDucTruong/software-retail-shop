@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Roboto } from "next/font/google";
-import "@/app/globals.css";
+import "@/styles/globals.css";
 import HomeHeader from "@/components/home/HomeHeader";
 import HomeFooter from "@/components/home/HomeFooter";
 import { NextIntlClientProvider } from "next-intl";

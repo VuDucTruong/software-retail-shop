@@ -98,5 +98,9 @@
     "Content": "Content",
     "my_favorites_description": "Display all products you have marked as favorites",
     "empty_wishlist": "Your wishlist is empty !",
-    "add_to_cart": "Add to cart"
+    "add_to_cart": "Add to cart",
+    "popular_tags": "Popular tags",
+    "best_selling_products": "Best selling products",
+    "suitable_prices": "Suitable prices"
+
 }
