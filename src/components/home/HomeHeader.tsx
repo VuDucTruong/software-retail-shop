@@ -22,10 +22,11 @@ import Logo from "../Logo";
 import SearchBar from "./SearchBar";
 import CartButton from "./CartButton";
 import { Separator } from "@/components/ui/separator";
+import { usePathname, useRouter } from "next/navigation";
+
 
 export default function HomeHeader() {
   const t = useTranslations();
-  const translatedLanguages = languages.map((value, _) => t(value));
 
   const productLinks = [
     { name: "popular_products", icon: FaFireAlt, href: "/" },
@@ -38,6 +39,14 @@ export default function HomeHeader() {
     { name: "contact_us", href: "/" },
     { name: "FAQS", href: "/faq" },
   ];
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const switchLanguage = (locale: string) => {
+    const newPath = `/${locale}${pathname.substring(3)}`; // Change locale in the URL
+    router.replace(newPath);
+  };
 
   return (
     <header>
@@ -57,8 +66,11 @@ export default function HomeHeader() {
           
           <div className="flex flex-row">
             <CommonSelect
-              data={translatedLanguages}
-              defaultValue={translatedLanguages[0]}
+              data={languages}
+              defaultValue={languages[0]}
+              onChange={(value => {
+                switchLanguage(value);
+              })}
             />
             <div className="py-1">
               <Separator orientation="vertical" />

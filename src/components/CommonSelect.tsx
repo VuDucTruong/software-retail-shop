@@ -9,24 +9,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useTranslations } from "next-intl";
 
 type CommonSelectProps = {
     data: string[];
     defaultValue: string;
+    onChange?: (value: string) => void;
 }
 
-export function CommonSelect({ data, defaultValue }: CommonSelectProps) {
+export function CommonSelect({ data, defaultValue,onChange }: CommonSelectProps) {
+
+  const t = useTranslations();
+
   return (
-    <Select defaultValue={defaultValue}>
+    <Select defaultValue={defaultValue} onValueChange={onChange}>
       <SelectTrigger className="w-fit border-none shadow-none focus-visible:ring-0">
         <SelectValue placeholder={defaultValue}/>
       </SelectTrigger>
       <SelectContent >
         <SelectGroup>
           {
-            data.map((value, index) => (
-              <SelectItem key={index} value={value}>
-                {value}
+            data.map((item, index) => (
+              <SelectItem key={index} value={item}>
+                {t(item)}	
               </SelectItem>
             ))
           }

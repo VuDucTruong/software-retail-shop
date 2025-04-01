@@ -1,9 +1,10 @@
+
 import { FaComment, FaHeart, FaShareAlt, FaUserAlt } from "react-icons/fa";
 import { IoCart } from "react-icons/io5";
 import { MdPayment, MdSecurity } from "react-icons/md";
 
 
-export const languages = ['Vietnamese', 'English']
+export const languages = ['en', 'vi']
 export const currencies = ["VND", "Token"]
 export const shopName = "Phoenix Shop"
 export const supportPhone = "+84 386 986 165"
