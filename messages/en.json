@@ -104,6 +104,20 @@
   "Available": "Available",
   "in_stock": "In stock",
   "out_of_stock": "Out of stock",
+  "total_product_value": "Total product value",
+  "total_amount_payable": "Total amount payable",
+  "purchase_mobile_banking": "Purchase via Mobile Banking",
+  "return_to_cart": "Return to cart",
+  "payment_vnpay": "Payment via VNPAY-QR",
+  "transaction_fee": "Transaction fee",
+  "total_amount": "Total amount",
+  "Step": "Step",
+  "VNPAY": {
+    "instruction_title": "Follow these steps to complete the payment",
+    "instruction_1": "Open your bank's Mobile Banking app (See the list of supported banks)",
+    "instruction_2": "Select \"Payment\" and scan the QR code in this guide",
+    "instruction_3": "Complete the payment process as instructed and wait a moment for Divine Shop to process your order"
+  },
   "Input": {
     "email_placeholder": "Enter your email",
     "password_placeholder": "Enter your password",

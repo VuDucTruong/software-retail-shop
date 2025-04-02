@@ -8,19 +8,9 @@ import DiscountItem from "../DiscountItem";
 import { BsBox2 } from "react-icons/bs";
 import { useFormatter, useTranslations } from "next-intl";
 import { calcDiscountPercentage, convertPriceToVND } from "@/lib/currency_helper";
+import { CartItemProps } from "@/types/cart_item";
 
-type CartItemProps = {
-    id: number;
-    title: string;
-    tags: string[];
-    quantity: React.RefObject<number>;
-    price: number;
-    image: string;
-    isAvailable: boolean;
-    originalPrice: number;
-    status: string;
-    onDelete: (id: number) => void;
-}
+
 
 
 
