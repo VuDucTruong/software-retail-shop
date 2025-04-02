@@ -78,6 +78,7 @@
   "order_id": "Order ID",
   "Time": "Time",
   "Product": "Product",
+  "product": "product(s)",
   "Quantity": "Quantity",
   "Total": "Total",
   "Status": "Status",
@@ -98,7 +99,11 @@
   "popular_tags": "Popular tags",
   "best_selling_products": "Best selling products",
   "suitable_prices": "Suitable prices",
-
+  "VND": "VND",
+  "Token": "Token",
+  "Available": "Available",
+  "in_stock": "In stock",
+  "out_of_stock": "Out of stock",
   "Input": {
     "email_placeholder": "Enter your email",
     "password_placeholder": "Enter your password",
@@ -122,6 +127,6 @@
     
     "error_pass_wrong": "Password is incorrect",
     "error_email_wrong": "Email is incorrect"
-   
+
   }
 }

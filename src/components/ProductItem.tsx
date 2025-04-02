@@ -4,6 +4,10 @@ import { useFormatter } from "next-intl";
 import { Card, CardContent, CardTitle } from "./ui/card";
 import DiscountItem from "./DiscountItem";
 import { cn } from "@/lib/utils";
+import {
+  calcDiscountPercentage,
+  convertPriceToVND,
+} from "@/lib/currency_helper";
 
 type ProductItemProps = {
   title: string;
@@ -14,22 +18,21 @@ type ProductItemProps = {
 
 export default function ProductItem(props: ProductItemProps) {
   const format = useFormatter();
-  const convertedPrice = format.number(props.price, {
-    style: "currency",
-    currency: "VND",
-  });
+  const convertedPrice = convertPriceToVND(props.price, format);
 
-  const convertedOriginalPrice = format.number(props.originalPrice, {
-    style: "currency",
-    currency: "VND",
-  });
+  const convertedOriginalPrice = convertPriceToVND(props.originalPrice, format);
 
-  const discountPercentage = Math.round(
-    (props.price * 100) / props.originalPrice
+  const discountPercentage = calcDiscountPercentage(
+    props.price,
+    props.originalPrice
   );
-
   return (
-    <Card className={cn("p-0 gap-2 bg-transparent hover:opacity-80 cursor-pointer", props.className)}>
+    <Card
+      className={cn(
+        "p-0 gap-2 bg-transparent hover:opacity-80 cursor-pointer",
+        props.className
+      )}
+    >
       <CardTitle>
         <figure className="relative h-[136px]">
           <Image
@@ -41,7 +44,7 @@ export default function ProductItem(props: ProductItemProps) {
         </figure>
       </CardTitle>
       <CardContent className="px-2 pb-2">
-        <div >{props.title}</div>
+        <div>{props.title}</div>
         <div className="text-lg font-semibold">{convertedPrice}</div>
         <div className="flex gap-4 items-center">
           <div className="line-through text-gray-400">
