@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import LoginTab from "./LoginTab";
 import RegisterTab from "./RegisterTab";
-var isLoggedIn = false; // Replace with actual authentication logic
+var isLoggedIn = true; // Replace with actual authentication logic
 export function AuthDialog() {
   const t = useTranslations();
 
@@ -29,7 +29,7 @@ export function AuthDialog() {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size={"lg"} className="flex items-center p-2">
+          <Button variant="ghost" size={"lg"} className="flex items-center p-2 h-full">
             <div className="relative size-10">
               <Image
                 alt="Avatar"
@@ -41,7 +41,7 @@ export function AuthDialog() {
             Username
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent align="end" alignOffset={-5}>
           {userProfileOptions.map((opt) => (
             <DropdownMenuItem
               key={opt.title}

@@ -112,6 +112,7 @@
   "transaction_fee": "Transaction fee",
   "total_amount": "Total amount",
   "Step": "Step",
+  "edit_personal_info": "Edit personal information",
   "VNPAY": {
     "instruction_title": "Follow these steps to complete the payment",
     "instruction_1": "Open your bank's Mobile Banking app (See the list of supported banks)",
