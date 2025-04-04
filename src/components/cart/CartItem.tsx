@@ -9,6 +9,7 @@ import { BsBox2 } from "react-icons/bs";
 import { useFormatter, useTranslations } from "next-intl";
 import { calcDiscountPercentage, convertPriceToVND } from "@/lib/currency_helper";
 import { CartItemProps } from "@/types/cart_item";
+import CommonPriceItem from "../CommonPriceItem";
 
 
 
@@ -16,13 +17,11 @@ import { CartItemProps } from "@/types/cart_item";
 
 export default function CartItem(data: CartItemProps) {
   const { id,title, tags, quantity, price, image, isAvailable, originalPrice, status, onDelete } = data;
-  const format = useFormatter();
-  const discountPercentage = calcDiscountPercentage(price, originalPrice);
     const t = useTranslations();
   return (
     <Card className="p-0">
       <CardContent className="flex gap-4 p-4">
-        <div className="relative w-[270px] aspect-video">
+        <div className="relative w-[270px] aspect-[2/1]">
           <Image
             alt="product"
             src={image}
@@ -37,15 +36,7 @@ export default function CartItem(data: CartItemProps) {
               <div className="text-muted-foreground">{tags.join(', ')}</div>
             </div>
             <QuantityCounter quantity={quantity} />
-            <div className="flex flex-col items-end">
-              <h4>{convertPriceToVND(price,format)}</h4>
-              <div className="flex gap-2 items-center">
-                <DiscountItem discountPercentage={discountPercentage} />
-                <div className="font-medium text-muted-foreground line-through">
-                  {convertPriceToVND(originalPrice,format)}
-                </div>
-              </div>
-            </div>
+            <CommonPriceItem price={price} originalPrice={originalPrice} />
           </div>
           <div className="flex justify-between border-t border-border pt-2 mt-2">
             <div className="flex items-center gap-2">

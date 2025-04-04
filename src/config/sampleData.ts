@@ -1,3 +1,4 @@
+import { CustomerOrderItem } from "@/types/customer_order_item";
 import { v4 as uuidv4 } from "uuid";
 
 
@@ -74,5 +75,41 @@ export const sampleCategoryList = [
     id: uuidv4(),
     name: "Sức khỏe",
     imageUrl: "https://example.com/image3.jpg",
+  },
+]
+
+export const sampleOrderItems:CustomerOrderItem[] = [
+  {
+    time: new Date().toLocaleDateString(),
+    order_id: uuidv4(),
+    product: "Gói gia hạn Zoom Pro",
+    quantity: 1,
+    total: 299000,
+    status: "ORDER_STATUS.COMPLETED",
+    
+  },
+  {
+    time: new Date().toLocaleDateString(),
+    order_id: uuidv4(),
+    product: "Gói gia hạn Zoom Pro 2",
+    quantity: 1,
+    total: 299000,
+    status: "ORDER_STATUS.PENDING",
+  },
+  {
+    time: new Date().toLocaleDateString(),
+    order_id: uuidv4(),
+    product: "Gói gia hạn Zoom Pro 2",
+    quantity: 1,
+    total: 299000,
+    status: "ORDER_STATUS.PROCESSING",
+  },
+  {
+    time: new Date().toLocaleDateString(),
+    order_id: uuidv4(),
+    product: "Gói gia hạn Zoom Pro 2",
+    quantity: 1,
+    total: 299000,
+    status: "ORDER_STATUS.REFUNDED",
   },
 ]

@@ -10,42 +10,35 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
-import { CommonCombobox } from "./CommonCombobox";
 import { useTranslations } from "next-intl";
 import { Input } from "../ui/input";
 import { IoFilter } from "react-icons/io5";
-import { LuListRestart } from "react-icons/lu";
 
 const FormSchema = z.object({
-  category: z.string().optional(),
-  tag: z.string().optional(),
+  description: z.string().optional(),
   minPrice: z.string().optional(),
   maxPrice: z.string().optional(),
-  sort: z.string().optional(),
+  fromDate: z.string().optional(),
+  toDate: z.string().optional(),
 });
 
-export function FilterForm() {
+export function TransactionsFilterForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-        category: "",
-        tag: "",
+        description: "",
         minPrice: "0",
         maxPrice: "",
-        sort: "",
+        fromDate: undefined,
+        toDate: undefined,
         },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(JSON.stringify(data, null, 2));
   }
-  const onClearFilter = () => {
-    form.reset();
-  };
 
-  const tempData = ["item1", "item2", "item3", "item4"];
   const t = useTranslations();
 
   return (
@@ -55,37 +48,20 @@ export function FilterForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           className=" flex flex-row items-end justify-between"
         >
-          {/* Category */}
+            {/* Order id */}
           <FormField
             control={form.control}
-            name="category"
+            name="description"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>{t("Category")}</FormLabel>
-                <CommonCombobox
-                  data={tempData}
-                  field={field}
-                  form={form}
-                  name="category"
-                  title={t("Category")}
-                />
-              </FormItem>
-            )}
-          />
-          {/* Tags */}
-          <FormField
-            control={form.control}
-            name="tag"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>{t("Tag")}</FormLabel>
-                <CommonCombobox
-                  data={tempData}
-                  field={field}
-                  form={form}
-                  name="tag"
-                  title={t("Tag")}
-                />
+                <FormLabel>{t("Description")}</FormLabel>
+                <FormControl>
+                  <Input
+                    className="bg-background"
+                    type="text"
+                    {...field}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
@@ -126,33 +102,48 @@ export function FilterForm() {
               </FormItem>
             )}
           />
-          {/* Sort */}
-          <FormField
+       
+       {/* From Date */}
+       <FormField
             control={form.control}
-            name="sort"
+            name="fromDate"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>{t("Sort")}</FormLabel>
-                <CommonCombobox
-                  data={tempData}
-                  field={field}
-                  form={form}
-                  name="sort"
-                  title={t("Sort")}
-                />
+                <FormLabel>{t("from_date")}</FormLabel>
+                <FormControl>
+                  <Input
+                    className="bg-background"
+                    type="date"
+                    {...field}
+                  />
+                </FormControl>
               </FormItem>
             )}
           />
 
+          {/* To Date */}
+          <FormField
+            control={form.control}
+            name="toDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>{t("to_date")}</FormLabel>
+                <FormControl>
+                  <Input
+                    className="bg-background"
+                    type="date"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
           <Button type="submit">
             <IoFilter />
             {t("Filter")}
           </Button>
         </form>
       </Form>
-      <Button variant={"destructive"} onClick={onClearFilter} className="w-fit">
-        <LuListRestart /> {t("reset_filter")}
-      </Button>
     </div>
   );
 }

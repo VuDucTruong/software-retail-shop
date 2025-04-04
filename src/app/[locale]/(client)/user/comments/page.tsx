@@ -1,31 +1,38 @@
+"use client";
 
-// import { useTranslations } from "next-intl";
-// import React from "react";
-// import { IoFilter } from "react-icons/io5";
+import { CommentsFilterForm } from "@/components/comments/CommentsFilterForm";
+import SimpleTable from "@/components/SimpleTable";
+import { TransactionsFilterForm } from "@/components/transactions/TransactionsFilterForm";
 
-// export default function CommentsPage() {
-//   const t = useTranslations();
-//   const headers = [ t('Time'), t('Content')];
-//   return (
-//     <div className="flex flex-col gap-4">
-//       <h4>{t("my_comments")}</h4>
-//       <p>{t("my_comments_description")}</p>
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { sampleOrderItems } from "@/config/sampleData";
+import { useTranslations } from "next-intl";
+import React from "react";
 
-//       <div className="divider"></div>
+export default function CommentsPage() {
+  const t = useTranslations();
 
-//       <div className="grid gap-4 grid-cols-3">
-//         <CommonTextInput title={t("Content")} placeholder={t("Content")}  helper={null} />
-//         <CommonTextInput title={t("from_date")} placeholder={t("from_date")}  helper={null} type="date" />
-//         <CommonTextInput title={t("to_date")} placeholder={t("to_date")} helper={null} type="date" />
-//       </div>
+  const cols = [
+    { header: t("Time"), accessorKey: "time" },
+    { header: t("Description"), accessorKey: "description" },
+  ];
 
-//       <button className="btn btn-primary w-fit">
-//           <IoFilter />
-//           {t("Filter")}
-//         </button>
+  return (
+    <Card>
+      <CardHeader>
+        <h3>{t("my_comments")}</h3>
+        <p className="font-normal italic text-muted-foreground">
+          {t("my_comments_description")}
+        </p>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-4">
+          <div className="divider"></div>
+          <CommentsFilterForm />
 
-
-//       <CommonTable header={headers} onClick={()=>{}} />
-//     </div>
-//   );
-// }
+          <SimpleTable columns={cols} data={sampleOrderItems} />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

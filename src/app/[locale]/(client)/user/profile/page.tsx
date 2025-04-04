@@ -1,7 +1,7 @@
 'use client';
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
@@ -51,9 +51,9 @@ export default function ProfilePage() {
 
   return (
     <Card>
-      <CardTitle>
+      <CardHeader>
         <h3>{t("user_profile")}</h3>
-      </CardTitle>
+      </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {/* Genenral information */}
         <div className="grid grid-cols-3 gap-3">

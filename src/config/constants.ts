@@ -39,11 +39,6 @@ export const userOptions = [
       title: "my_favorites",
       href: "/user/wishlist",
     },
-    {
-      icon: FaShareAlt,
-      title: "introduce_friends",
-      href: "/user/affiliate",
-    },
   ];
 
 
