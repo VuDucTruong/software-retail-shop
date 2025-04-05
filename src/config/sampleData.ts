@@ -1,3 +1,4 @@
+import { CommentItemProps } from "@/types/comment_item";
 import { CustomerOrderItem } from "@/types/customer_order_item";
 import { v4 as uuidv4 } from "uuid";
 
@@ -39,7 +40,7 @@ Nâng cấp chính chủ Zoom Pro thời hạn 28 ngày
 Gia hạn trực tiếp trên tài khoản của bạn, đảm bảo tính bảo mật và quyền sử dụng chính chủ với thời hạn sử dụng 28 ngày.
 `
 
-export const sampleComments = [
+export const sampleComments:CommentItemProps[] = [
   {
     id: uuidv4(),
     avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
