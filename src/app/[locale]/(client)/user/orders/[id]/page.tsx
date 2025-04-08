@@ -15,7 +15,7 @@ import { useTranslations } from "next-intl";
 import OrderDetailItem from "@/components/orders/OrderDetaiItem";
 import { useParams } from "next/navigation";
 import { FaCartPlus } from "react-icons/fa";
-import SimpleTable from "@/components/SimpleTable";
+import SimpleTable from "@/components/CommonDataTable";
 
 export default function OrderDetailPage() {
   const params = useParams();

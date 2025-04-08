@@ -1,25 +1,37 @@
 'use client';
 
-import { OrdersFilterForm } from "@/components/orders/OrdersFilterForm";
-import OrderTable from "@/components/orders/OrderTable";
-import SimpleTable from "@/components/SimpleTable";
+import { CommmonDataTable } from "@/components/CommonDataTable";
+
+
 import { TransactionsFilterForm } from "@/components/transactions/TransactionsFilterForm";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { sampleOrderItems } from "@/config/sampleData";
-import { CustomerOrderItem } from "@/types/customer_order_item";
+import { convertPriceToVND } from "@/lib/currency_helper";
+import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { IoFilter } from "react-icons/io5";
+import { z } from "zod";
 
 export default function TransactionsPage() {
   const t = useTranslations();
 
-  const cols = [
+  const scheme = z.object({
+    time: z.string(),
+    description: z.string(),
+    amount: z.number().transform((val)=> convertPriceToVND(val)),
+  });
+
+  const cols:ColumnDef<z.infer<typeof scheme>>[] = [
     { header: t("Time"), accessorKey: "time" },
     { header: t('Description'), accessorKey: "description" },
     { header: t('Amount'), accessorKey: "amount" },
   ]
+
+  const sampleData = Array.from({ length: 20 }, (_, i) => ({
+    time: new Date().toLocaleDateString(),
+    description: `Gói gia hạn Zoom Pro ${i + 1}`,
+    amount: Math.floor(Math.random() * 100000),
+  }));
 
 
   return (
@@ -33,7 +45,7 @@ export default function TransactionsPage() {
           <div className="divider"></div>
           <TransactionsFilterForm />
 
-          <SimpleTable columns={cols} data={sampleOrderItems} />
+          <CommmonDataTable columns={cols} data={scheme.array().parse(sampleData)} />
         </div>
       </CardContent>
     </Card>

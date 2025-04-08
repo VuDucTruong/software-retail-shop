@@ -1,31 +1,51 @@
 "use client";
 
+import { CommmonDataTable } from "@/components/CommonDataTable";
 import { OrdersFilterForm } from "@/components/orders/OrdersFilterForm";
-import OrderTable from "@/components/orders/OrderTable";
+import { StatusBadge } from "@/components/StatusBadge";
+import { Button } from "@/components/ui/button";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { sampleOrderItems } from "@/config/sampleData";
-import { CustomerOrderItem } from "@/types/customer_order_item";
+import { convertPriceToVND } from "@/lib/currency_helper";
+import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import React from "react";
-import { IoFilter } from "react-icons/io5";
+import { z } from "zod";
 
 export default function OrderPage() {
   const t = useTranslations();
 
-  const cols = [
-    { header: t("Time"), accessorKey: "time" as keyof CustomerOrderItem },
+  const scheme = z.object({
+    time: z.string(),
+    order_id: z.string(),
+    product: z.string(),
+    quantity: z.number(),
+    total: z.number().transform((val) => convertPriceToVND(val)),
+    status: z.string(),
+
+  });
+
+  const cols: ColumnDef<z.infer<typeof scheme>>[] = [
+    { header: t("Time"), accessorKey: "time"},
     {
       header: t("order_id"),
-      accessorKey: "order_id" as keyof CustomerOrderItem,
+      accessorKey: "order_id",
     },
-    { header: t("Product"), accessorKey: "product" as keyof CustomerOrderItem },
+    { header: t("Product"), accessorKey: "product"},
     {
       header: t("Quantity"),
-      accessorKey: "quantity" as keyof CustomerOrderItem,
+      accessorKey: "quantity",
+      cell: ({row}) => <div className="text-center">{row.original.quantity}</div>
     },
-    { header: t("Total"), accessorKey: "total" as keyof CustomerOrderItem },
-    { header: t("Status"), accessorKey: "status" as keyof CustomerOrderItem },
+    { header: t("Total"), accessorKey: "total" },
+    { header: t("Status"), accessorKey: "status",cell: (cell) => {
+      const status = cell.getValue();
+      return (
+        <StatusBadge status="pending" />
+      );
+    },}
   ];
 
   return (
@@ -41,7 +61,16 @@ export default function OrderPage() {
           <div className="divider"></div>
           <OrdersFilterForm />
 
-          <OrderTable columns={cols} data={sampleOrderItems} />
+          <CommmonDataTable
+            columns={cols}
+            data={scheme.array().parse(sampleOrderItems)}
+            hasActions
+            renderActions={(row) => (
+              <Link href="orders/[id]" as={`orders/${row.order_id}`}>
+                <Button variant={"link"}>{t("Detail")}</Button>
+              </Link>
+            )}
+          />
         </div>
       </CardContent>
     </Card>

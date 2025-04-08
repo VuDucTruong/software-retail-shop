@@ -1,21 +1,27 @@
 "use client";
 
 import { CommentsFilterForm } from "@/components/comments/CommentsFilterForm";
-import SimpleTable from "@/components/SimpleTable";
-import { TransactionsFilterForm } from "@/components/transactions/TransactionsFilterForm";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CommmonDataTable } from "@/components/CommonDataTable";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { sampleOrderItems } from "@/config/sampleData";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { z } from "zod";
 
 export default function CommentsPage() {
   const t = useTranslations();
 
+
+  
   const cols = [
     { header: t("Time"), accessorKey: "time" },
     { header: t("Description"), accessorKey: "description" },
   ];
+
+  const sampleData = Array.from({ length: 20 }, (_, i) => ({
+    time: new Date().toLocaleDateString(),
+    description: `Gói gia hạn Zoom Pro ${i + 1}`,
+  }));
 
   return (
     <Card>
@@ -30,7 +36,7 @@ export default function CommentsPage() {
           <div className="divider"></div>
           <CommentsFilterForm />
 
-          <SimpleTable columns={cols} data={sampleOrderItems} />
+          <CommmonDataTable columns={cols} data={sampleData} />
         </div>
       </CardContent>
     </Card>

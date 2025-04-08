@@ -180,12 +180,10 @@
 
   },
   "ORDER_STATUS": {
-    "PENDING": "Pending",
-    "PROCESSING": "Processing",
-    "COMPLETED": "Completed",
-    "CANCELED": "Canceled",
-    "REFUNDED": "Refunded",
-    "FAILED": "Failed"
+    "Pending": "Pending",
+    "Processing": "Processing",
+    "Completed": "Completed",
+    "Canceled": "Canceled"
   },
   "TOAST": {
     "wishlist_item_deleted": "Product removed from wishlist",
@@ -193,5 +191,9 @@
     "cart_item_added": "Product added to cart",
     "cart_item_deleted": "Product removed from cart"
   },
-  "Dashboard": "Dashboard"
+  "Dashboard": "Dashboard",
+  "no_results": "No results found",
+  "rows_per_page": "Rows per page",
+  "Page": "Page",
+  "Edit": "Edit"
 }

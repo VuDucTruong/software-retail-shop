@@ -79,7 +79,7 @@ export const sampleCategoryList = [
   },
 ]
 
-export const sampleOrderItems:CustomerOrderItem[] = [
+export const sampleOrderItems = [
   {
     time: new Date().toLocaleDateString(),
     order_id: uuidv4(),
