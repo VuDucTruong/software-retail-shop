@@ -192,5 +192,6 @@
     "wishlist_item_added": "Product added to wishlist",
     "cart_item_added": "Product added to cart",
     "cart_item_deleted": "Product removed from cart"
-  }
+  },
+  "Dashboard": "Dashboard"
 }

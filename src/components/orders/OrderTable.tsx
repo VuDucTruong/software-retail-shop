@@ -52,7 +52,7 @@ export default function OrderTable({ data, columns,hasAction=true }: OrderTableP
       <TableBody >
         {data.length > 0 ? (
           data.map((row, rowIndex) => (
-            <TableRow className="border border-red-500" key={rowIndex}>
+            <TableRow key={rowIndex}>
               {columns.map((col) => {
                 if (col.accessorKey === "status") {
                   return (
