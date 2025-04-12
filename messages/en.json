@@ -195,5 +195,22 @@
   "no_results": "No results found",
   "rows_per_page": "Rows per page",
   "Page": "Page",
-  "Edit": "Edit"
+  "Edit": "Edit",
+  "total_revenue": "Total revenue",
+  "total_orders": "Total orders",
+  "total_customers": "Total customers",
+  "total_sold_products": "Total sold products",
+  "lastest_orders": "Latest orders",
+  "last_x_days": "Last {x} days",
+  "last_x_months": "Last {x} months",
+  "total_for_last_x_months": "Total for last {x} months",
+  "customer_activity": "Customer activity",
+  "trending_up_by_x_this_month": "Trending up by {x}% this month",
+  "trending_down_by_x_this_month": "Trending down by {x}% this month",
+  "total_new_customers": "Total new customers",
+  "average_order_value": "Average order value",
+  "add_product": "Add product",
+  "product_management": "Product management",
+  "welcome_to_admin": "Welcome to the admin panel"
+  
 }

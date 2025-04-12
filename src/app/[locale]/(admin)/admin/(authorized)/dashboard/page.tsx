@@ -3,32 +3,21 @@
 import CardSection from "@/components/dashboard/CardSection";
 import { InteractiveLineChart } from "@/components/dashboard/InteractiveLineChart";
 
-import React, { use } from "react";
-import rawData from "@/config/data.json";
+import React from "react";
+import rawData from "@/data/orders.json";
 import { CommmonDataTable } from "@/components/CommonDataTable";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import {
-  Delete,
-  DeleteIcon,
-  Edit,
-  MoreVerticalIcon,
-  RemoveFormatting,
-  Trash2,
-} from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import TableCellViewer from "@/components/dashboard/TableCellViewer";
 import { StatusBadge } from "@/components/StatusBadge";
 import { z } from "zod";
 import { convertPriceToVND } from "@/lib/currency_helper";
 import { useTranslations } from "next-intl";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
+
+
+
+
 export default function Page() {
   const t = useTranslations();
   const scheme = z.object({
@@ -44,7 +33,7 @@ export default function Page() {
       accessorKey: "id",
       header: "Order ID",
       cell: ({ row }) => {
-        return <TableCellViewer item={row.original} />;
+        return <Link className="hover:underline font-medium" href={`orders/${row.original.id}`}>{row.original.id}</Link>;
       },
       enableHiding: false,
     },
@@ -81,31 +70,15 @@ export default function Page() {
       <CardSection />
       <InteractiveLineChart />
       <Card>
+        <CardHeader>
+          <CardTitle>
+            <h3>{t('lastest_orders')}</h3>
+          </CardTitle>
+        </CardHeader>
         <CardContent>
           <CommmonDataTable
             columns={cols}
-            canSelect
             data={scheme.array().parse(rawData)}
-            hasActions
-            renderActions={(_) => (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex size-8" size="icon">
-                    <MoreVerticalIcon />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                  <DropdownMenuItem>
-                    <Edit /> {t("Edit")}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <Trash2 /> {t("Delete")}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
           />
         </CardContent>
       </Card>

@@ -41,6 +41,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { sortOptions } from "@/config/constants";
 
 interface DataTableProps<TData, TValue> {
+
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   hasActions?: boolean;
@@ -169,7 +170,7 @@ export function CommmonDataTable<TData, TValue>({
           </DropdownMenu>
           
         </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border px-2">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

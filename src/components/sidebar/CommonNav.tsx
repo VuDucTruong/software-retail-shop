@@ -14,7 +14,6 @@ import { AdminMenuItem } from "@/types/admin_menu";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-
 export default function NavCommon({ data }: { data: AdminMenuItem }) {
   const t = useTranslations();
   const pathName = usePathname();
@@ -23,29 +22,44 @@ export default function NavCommon({ data }: { data: AdminMenuItem }) {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{t(data.title)}</SidebarGroupLabel>
+      <SidebarGroupLabel>{t(data.title) + " Section"}</SidebarGroupLabel>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           {data.items && data.items.length > 0 ? (
             <>
               {data.items?.map((item) => (
-                <SidebarMenuItem key={item.title} className={`${currentPath === item.url ? "bg-primary text-white" : ""}`}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.url} >
-                    {item.icon && <item.icon />}
-                    <span>{item.title}</span>
+                <SidebarMenuItem
+                  key={item.title}
+                  
+                >
+                  <SidebarMenuButton asChild tooltip={item.title} className={`${
+                    currentPath === item.url
+                      ? "bg-primary hover:bg-primary/40 text-white"
+                      : ""
+                  }`}>
+                    <Link href={item.url}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </>
           ) : (
-            <SidebarMenuItem  key={data.title} >
-              <SidebarMenuButton asChild tooltip={data.title} className={`${currentPath === data.url ? "bg-primary text-white" : ""}`}>
-              <Link href={data.url} >
-                    {data.icon && <data.icon />}
-                    <span>{data.title}</span>
-                    </Link>
+            <SidebarMenuItem key={data.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={data.title}
+                className={`${
+                  currentPath === data.url
+                    ? "bg-primary rounded-lg text-white  "
+                    : ""
+                }`}
+              >
+                <Link href={data.url}>
+                  {data.icon && <data.icon />}
+                  <span>{data.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           )}

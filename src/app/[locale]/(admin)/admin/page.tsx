@@ -1,5 +1,8 @@
 import { redirect } from 'next/navigation'
-
+const isAuthorized = true; // TODO: check if user is authorized
 export default function AdminPage() {
-  redirect('admin/dashboard')
+  if (isAuthorized) {
+    redirect('admin/dashboard')
+  }
+  redirect('admin/login')
 }

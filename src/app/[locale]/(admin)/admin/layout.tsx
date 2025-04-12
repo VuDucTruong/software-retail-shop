@@ -6,10 +6,6 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "sonner";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import AppSideBar from "@/components/sidebar/AppSideBar";
-import AdminBreadcrumb from "@/components/sidebar/AdminBreadcrumb";
-
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -36,19 +32,11 @@ export default async function LocaleLayout({
   // Providing all messages to the client
   // side is the easiest way to get started
   const messages = await getMessages();
-
   return (
     <html lang={locale}>
       <body className={`${roboto.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <SidebarProvider>
-            <AppSideBar />
-            <main className="flex-1 px-6 py-2">
-              <AdminBreadcrumb />
-              {children}
-            </main>
-          </SidebarProvider>
-
+          {children}
           <Toaster richColors />
         </NextIntlClientProvider>
       </body>

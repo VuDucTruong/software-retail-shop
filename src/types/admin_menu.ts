@@ -17,4 +17,7 @@ export type AdminMenu = {
     userSettings: AdminUserSettings;
     navDashboard: AdminMenuItem;
     navProduct: AdminMenuItem;
+    navCustomer: AdminMenuItem;
+    navStaff: AdminMenuItem;
+    navAdmin: AdminMenuItem;
   };

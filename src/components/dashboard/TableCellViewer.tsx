@@ -1,20 +1,20 @@
 
-import { OrderTableItem } from "@/types/order";
+
 import { Button } from "../ui/button";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { z } from "zod";
 
-export default function TableCellViewer({ item }: { item:OrderTableItem }) {
+
+export default function TableCellViewer() {
     return (
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="link" className="w-fit px-0 text-left text-inherit">
-            {item.id}
+            
           </Button>
         </SheetTrigger>
         <SheetContent side="right" className="flex flex-col">
           <SheetHeader className="gap-1">
-            <SheetTitle>{item.id}</SheetTitle>
+            <SheetTitle></SheetTitle>
             <SheetDescription>
               Showing total visitors for the last 6 months
             </SheetDescription>

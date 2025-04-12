@@ -1,14 +1,13 @@
-import { FaComment, FaHeart, FaShareAlt, FaUserAlt } from "react-icons/fa";
+import { FaBlog, FaComment, FaHeart, FaMoneyCheck, FaQuestion, FaShareAlt, FaUserAlt } from "react-icons/fa";
 import { IoCart } from "react-icons/io5";
 import { MdPayment, MdSecurity } from "react-icons/md";
 import { MdOutlineCategory } from "react-icons/md";
 import { AiOutlineProduct } from "react-icons/ai";
 import { SiBrandfolder } from "react-icons/si";
-import { FiShoppingBag } from "react-icons/fi";
-import { FaRegUser } from "react-icons/fa";
-import { AiOutlineTransaction } from "react-icons/ai";
 import { IoHomeOutline } from "react-icons/io5";
-import { AdminMenu, AdminMenuItem } from "@/types/admin_menu";
+import { AdminMenu } from "@/types/admin_menu";
+import { BiSolidDiscount } from "react-icons/bi";
+import { LuShoppingBag } from "react-icons/lu";
 
 export const languages = ["en", "vi"];
 export const currencies = ["VND", "Token"];
@@ -105,6 +104,66 @@ export const adminMenu: AdminMenu = {
         icon: SiBrandfolder,
         items: [],
       },
+      {
+        title: "Coupons",
+        url: "coupons",
+        icon: BiSolidDiscount,
+        items: [],
+      },
     ],
   },
+  navCustomer: {
+    title: "Customers",
+    url: "Customers",
+    items: [
+      {
+        title: "Orders",
+        url: "orders",
+        icon: LuShoppingBag,
+        items: [],
+      },
+      {
+        title: "Transactions",
+        url: "transactions",
+        icon: FaMoneyCheck,
+        items: [],
+      },
+      {
+        title: "Comments",
+        url: "comments",
+        icon: FaComment,
+        items: [],
+      },
+    ]
+  },
+  navStaff: {
+    title: "Staff",
+    url: "staff",
+    items: [
+      {
+        title: "Blogs",
+        url: "blogs",
+        icon: FaBlog,
+        items: [],
+      },
+      {
+        title: "FAQs",
+        url: "faqs",
+        icon: FaQuestion,
+        items: [],
+      },
+    ],
+  },
+  navAdmin: {
+    title: "Admin",
+    url: "admin",
+    items: [
+      {
+        title: "Staffs",
+        url: "staffs",
+        icon: MdSecurity,
+        items: [],
+      },
+    ],
+  }
 };

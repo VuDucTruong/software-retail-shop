@@ -51,6 +51,9 @@ export default function AppSidebar({
       <SidebarContent>
       <CommonNav data={adminMenu.navDashboard} />
       <CommonNav data={adminMenu.navProduct} />
+      <CommonNav data={adminMenu.navCustomer} />
+      <CommonNav data={adminMenu.navStaff} />
+      <CommonNav data={adminMenu.navAdmin} />
 
       </SidebarContent>
 
