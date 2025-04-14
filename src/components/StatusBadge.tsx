@@ -1,9 +1,9 @@
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { Clock, Loader2, CheckCircle2, XCircle } from "lucide-react"
+import { Clock, Loader2, CheckCircle2, XCircle, PackageCheck, PackageX } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-type Status = "pending" | "processing" | "completed" | "canceled"
+type Status = "pending" | "processing" | "completed" | "canceled" | "in_stock" | "out_stock"	
 
 interface StatusBadgeProps {
   status: Status
@@ -32,6 +32,16 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
     canceled: {
       icon: <XCircle className="h-3 w-3 mr-1" />,
       label: "ORDER_STATUS.Canceled",
+      styles: "bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-900 dark:text-red-100",
+    },
+    in_stock: {
+      icon: <PackageCheck className="h-3 w-3 mr-1" />,
+      label: "in_stock",
+      styles:  "bg-green-100 text-green-800 hover:bg-green-100/80 dark:bg-green-900 dark:text-green-100",
+    },
+    out_stock: {
+      icon: <PackageX className="h-3 w-3 mr-1" />,
+      label: "out_of_stock",
       styles: "bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-900 dark:text-red-100",
     },
   }

@@ -11,13 +11,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useTranslations } from "next-intl";
+import { Button } from "./ui/button";
 
 type CommonConfirmDialogProps = {
     triggerName: string;
     title: string;
     description: string;
-    onConfirm: () => void; 
-    onCancel: () => void;
+    onConfirm?: () => void; 
+    onCancel?: () => void;
 }
 
 export default function CommonConfirmDialog(props: CommonConfirmDialogProps) {
@@ -25,16 +26,21 @@ export default function CommonConfirmDialog(props: CommonConfirmDialogProps) {
   const t = useTranslations();
 
     const handleConfirm = () => {
-        onConfirm();
+        onConfirm?.();
     };
 
     const handleCancel = () => {
-        onCancel();
+
+        onCancel?.();
     };
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger>{triggerName}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" className="w-full font-normal flex justify-start px-2">
+          {triggerName}
+        </Button>
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

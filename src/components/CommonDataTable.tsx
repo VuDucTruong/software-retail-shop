@@ -176,7 +176,7 @@ export function CommmonDataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-center">
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -194,13 +194,13 @@ export function CommmonDataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => {
-                    canSelect && row.toggleSelected()   
-                  }}
+                  // onClick={() => {
+                  //   canSelect && row.toggleSelected()   
+                  // }}
                   className={canSelect ? "relative z-0 data-[state=selected]:bg-primary data-[state=selected]:text-white hover:bg-muted" : ""}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="text-center">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

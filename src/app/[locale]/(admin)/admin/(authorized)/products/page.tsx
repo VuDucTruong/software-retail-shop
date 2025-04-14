@@ -1,65 +1,141 @@
 "use client";
 
+import CommonConfirmDialog from "@/components/CommonConfirmDialog";
 import { CommmonDataTable } from "@/components/CommonDataTable";
-import TableCellViewer from "@/components/dashboard/TableCellViewer";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { convertPriceToVND } from "@/lib/currency_helper";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useRouter } from "@/i18n/navigation";
+import { Product } from "@/types/api/product";
 import { ColumnDef } from "@tanstack/react-table";
+import { MoreVerticalIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { CgAdd } from "react-icons/cg";
-import { z } from "zod";
+import { toast } from "sonner";
 
 export default function ProductManagementPage() {
   const t = useTranslations();
-  const scheme = z.object({
-    id: z.string(),
-    purchaser: z.string(),
-    status: z.string(),
-    total: z.number().transform((val) => convertPriceToVND(val)),
-    recipent: z.string(),
-    createdAt: z.string(),
-  });
-  const cols: ColumnDef<z.infer<typeof scheme>>[] = [
+  const router = useRouter();
+  const cols: ColumnDef<Product>[] = [
     {
       accessorKey: "id",
-      header: "Order ID",
+      header: "ID",
       cell: ({ row }) => {
-        return <TableCellViewer />;
+        return row.id;
       },
       enableHiding: false,
     },
     {
-      accessorKey: "purchaser",
-      header: "Purchaser",
-      cell: ({ row }) => <div className="w-32">{row.original.purchaser}</div>,
+      accessorKey: "image",
+      header: t("Image"),
+      cell: ({ row }) => {
+        return <div className="flex items-center justify-center">
+          <div className="relative size-20 ">
+          <Image alt={row.original.id.toString()} src={row.original.imageUrl} fill className="rounded-md object-cover" />
+        </div>
+        </div>;
+      },
+      enableHiding: false,
     },
     {
-      accessorKey: "recipent",
-      header: "Recipent",
-      cell: ({ row }) => <div>{row.original.recipent}</div>,
+      accessorKey: "name",
+      header: t("Name"),
+      cell: ({ row }) => {
+        return row.original.name;
+      },
     },
-
+    {
+      accessorKey: "model",
+      header: t("product_code"),
+      cell: ({ row }) => {
+        return row.original.model;
+      },
+    },
+    {
+      accessorKey: "tags",
+      header: t("Tags"),
+      cell: ({ row }) => {
+        return row.original.tags.join(", ");
+      },
+    },
+    {
+      accessorKey: "price",
+      header: t("Price"),
+      cell: ({ row }) => {
+        return row.original.price;
+      },
+    },
+    {
+      accessorKey: "original_price",
+      header: t("original_price"),
+      cell: ({ row }) => {
+        return row.original.originalPrice;
+      },
+    },
+    {
+      accessorKey: "stock",
+      header: t("Stock"),
+      cell: ({ row }) => {
+        return row.original.stock;
+      },
+    },
     {
       accessorKey: "status",
-      header: "Status",
-      cell: ({ row }) => <StatusBadge status="canceled" />,
-    },
-    {
-      accessorKey: "total",
-      header: () => <div>Target</div>,
-      cell: ({ row }) => <div>{row.original.total}</div>,
-    },
-    {
-      accessorKey: "createdAt",
-      header: () => <div>Create At</div>,
-      cell: ({ row }) => <div>{row.original.createdAt}</div>,
+      header: t("Status"),
+      cell: ({ row }) => {
+        return (
+          <StatusBadge
+            status={row.original.stock > 0 ? "in_stock" : "out_stock"}
+          />
+        );
+      },
     },
   ];
+
+  const sampleData: Product[] = Array.from({ length: 10 }, (_, index) => ({
+    id: index,
+    slug: "product-" + index,
+    name: "Product " + index,
+    imageUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+    price: 100,
+    originalPrice: 120,
+    model: "Model 1",
+    categories: [],
+    variants: {
+      title: "Variants",
+      list: [
+        { id: 1, text: "Variant 1", slug: "variant-1", isAvailable: true },
+        { id: 2, text: "Variant 2", slug: "variant-2", isAvailable: false },
+      ],
+    },
+    tags: ["tag1", "tag2"],
+    note: "This is a note.",
+    description: {
+      title: "Description",
+      content: "This is a description.",
+    },
+    stock: index % 2 === 0 ? 10 : 0,
+  }));
+
+  const handleDelete = (id: number) => {
+    toast.success(t("delete_product_x_success", { x:id }));
+    
+  };
+
+  const handleViewDetails = (id: number) => {
+    router.push(`products/${id}`);
+  };
 
   return (
     <Card>
@@ -68,15 +144,47 @@ export default function ProductManagementPage() {
           <h3>{t("product_management")}</h3>
           <div className="flex items-center gap-2">
             <Link href={"products/create"}>
-            <Button variant="outline" className="bg-primary text-white">
-              <CgAdd /> {t("add_product")}
-            </Button></Link>
+              <Button variant="outline" className="bg-primary text-white">
+                <CgAdd /> {t("create_product")}
+              </Button>
+            </Link>
             <ProductFilterSheet />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <CommmonDataTable columns={cols} data={[]} canSelect hasActions />
+        <CommmonDataTable
+          columns={cols}
+          data={sampleData}
+         
+          hasActions
+          renderActions={(row) => {
+            return (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex size-8" size="icon">
+                    <MoreVerticalIcon />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-32">
+                  <DropdownMenuItem onClick={()=>handleViewDetails(row.id)}>{t("Detail")}</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                      <CommonConfirmDialog
+                        onConfirm={() => {
+                          handleDelete(row.id);
+                        }}
+                        triggerName={t("Delete")}
+                        title={t("delete_product_#x", { x: row.id })}
+                        description={t("delete_product_warning")}
+                      />
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            );
+          }}
+        />
       </CardContent>
     </Card>
   );
