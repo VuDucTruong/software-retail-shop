@@ -121,10 +121,12 @@ export default function ProductManagementPage() {
     },
     tags: ["tag1", "tag2"],
     note: "This is a note.",
-    description: {
-      title: "Description",
-      content: "This is a description.",
-    },
+    description: [
+      {
+        title: "Description",
+        content: "This is a description.",
+      }
+    ],
     stock: index % 2 === 0 ? 10 : 0,
   }));
 
@@ -141,7 +143,7 @@ export default function ProductManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h3>{t("product_management")}</h3>
+          <h2>{t("product_management")}</h2>
           <div className="flex items-center gap-2">
             <Link href={"products/create"}>
               <Button variant="outline" className="bg-primary text-white">

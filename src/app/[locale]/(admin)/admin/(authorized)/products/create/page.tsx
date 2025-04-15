@@ -1,25 +1,22 @@
 "use client";
 
-import { useForm, useFieldArray, Controller } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Trash2, Plus } from "lucide-react";
-import { MDXEditor } from "@mdxeditor/editor";
-import { useRef } from "react";
-import { TagsInput } from "@/components/product/TagInput";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ProductCreate } from "@/types/api/product";
-import { Form } from "@/components/ui/form";
+import CommonInputOutline from "@/components/CommonInputOutline";
 import { MdxEditorInput } from "@/components/MDEditor";
-import { Command, CommandGroup, CommandItem } from "@/components/ui/command";
-import { Badge } from "@/components/ui/badge";
-import ComboBoxMultiArray from "@/components/MyCombobox";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import CategoryMultiSelect from "@/components/product/CategoryMultiSelect";
+import DescriptionFieddArray from "@/components/product/DescriptionFieldArray";
+import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
-import DescriptionFieddArray from "@/components/DescriptionFieldArray";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { ProductCreate } from "@/types/api/product";
+import { useTranslations } from "next-intl";
+import { useRef } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 
 export default function CreateProductPage() {
+  const t = useTranslations();
   const methods = useForm<ProductCreate>({
     defaultValues: {
       description: [],
@@ -31,7 +28,7 @@ export default function CreateProductPage() {
   });
 
   const { control, register, handleSubmit, setValue } = methods;
-  const { fields, append, remove } = useFieldArray({
+  const descriptionFieldArray = useFieldArray({
     control,
     name: "description",
   });
@@ -41,9 +38,9 @@ export default function CreateProductPage() {
   const fileRef = useRef<HTMLInputElement>(null);
   const onSubmit = (data: ProductCreate) => {
     setValue("note", noteRef.current || "");
-
+    setValue("image", fileRef.current?.files?.[0] || null);
     // For description fields, set the content from the refs
-    fields.forEach((field, index) => {
+    descriptionFieldArray.fields.forEach((field, index) => {
       if (descriptionRefs.current[index] !== undefined) {
         setValue(
           `description.${index}.content`,
@@ -51,17 +48,17 @@ export default function CreateProductPage() {
         );
       }
     });
-
+    
     const finalData = methods.getValues();
     console.log("🔥 Form Data:", finalData);
   };
-  const OPTIONS = ["React", "Vue", "Svelte", "Angular"];
+  
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>Create Product</h2>
+          <h2>{t('create_product')}</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -71,46 +68,46 @@ export default function CreateProductPage() {
             className="space-y-6 grid grid-cols-3 gap-6"
           >
             {/* Image Upload */}
-            <CreateProductInputSection
-              title="Hình ảnh sản phẩm"
+            <CommonInputOutline
+              title={t('product_image')}
               className="grid col-span-3"
             >
               <EditAvatarSection
                 ref={fileRef}
-                name="Image"
-                avatarHint="nothing..."
+                name={t('upload_image')}
+                avatarHint={t('image_hint')}
               />
-            </CreateProductInputSection>
+            </CommonInputOutline>
 
             {/* Text Inputs */}
-            <CreateProductInputSection title="Thông tin sản phẩm">
-              <Input placeholder="Tên sản phẩm" {...register("name")} />
-            </CreateProductInputSection>
-            <CreateProductInputSection title="Thông tin sản phẩm">
-              <Input placeholder="Slug URL" {...register("slug")} />
-            </CreateProductInputSection>
-            <CreateProductInputSection title="Thông tin sản phẩm">
-              <Input placeholder="Model sản phẩm" {...register("model")} />
-            </CreateProductInputSection>
+            <CommonInputOutline title={t('product_name')}>
+              <Input placeholder={t('product_name')} {...register("name")} />
+            </CommonInputOutline>
+            <CommonInputOutline title="Slug">
+              <Input placeholder="Slug" {...register("slug")} />
+            </CommonInputOutline>
+            <CommonInputOutline title={t('product_code')}>
+              <Input placeholder={t('product_code')} {...register("model")} />
+            </CommonInputOutline>
 
-            <CreateProductInputSection title="Thông tin sản phẩm">
+            <CommonInputOutline title={t('original_price')}>
               <Input
                 type="number"
-                placeholder="Giá gốc"
+                placeholder={t('original_price')}
                 {...register("originalPrice")}
               />
-            </CreateProductInputSection>
-            <CreateProductInputSection title="Thông tin sản phẩm">
+            </CommonInputOutline>
+            <CommonInputOutline title={t('Price')}>
               <Input
                 type="number"
-                placeholder="Giá bán"
+                placeholder={t('Price')}
                 {...register("price")}
               />
-            </CreateProductInputSection>
+            </CommonInputOutline>
 
             {/* Note Editor */}
-            <CreateProductInputSection
-              title="Ghi chú sản phẩm"
+            <CommonInputOutline
+              title={t('Note')}
               className="col-span-3"
             >
               <MdxEditorInput
@@ -119,26 +116,27 @@ export default function CreateProductPage() {
                   noteRef.current = md;
                 }}
               />
-            </CreateProductInputSection>
+            </CommonInputOutline>
 
             {/* Tags Multi-select */}
 
-            <CreateProductInputSection title="Tags">
+            <CommonInputOutline title={t("Tags")}>
               <TagsInput />
-            </CreateProductInputSection>
+            </CommonInputOutline>
 
             {/* Categories Multi-select */}
-            <CreateProductInputSection title="Categories">
-            <ComboBoxMultiArray />
-            </CreateProductInputSection>
-            
-            
+            <CommonInputOutline title={t('Categories')}>
+              <CategoryMultiSelect />
+            </CommonInputOutline>
+             
             {/* Description FieldArray */}
-            <CreateProductInputSection title="Mô tả sản phẩm" className="col-span-3">
+            <CommonInputOutline title={t('product_description')} className="col-span-3">
               <DescriptionFieddArray
+                ref={descriptionRefs}
+                fieldArray={descriptionFieldArray}
               />
-            </CreateProductInputSection>
-            <Button type="submit">Lưu sản phẩm</Button>
+            </CommonInputOutline>
+            <Button className="col-start-3 bg-green-500 hover:bg-green-400" type="submit">{t('create_product')}</Button>
           </form>
         </Form>
       </CardContent>
@@ -146,19 +144,4 @@ export default function CreateProductPage() {
   );
 }
 
-function CreateProductInputSection({
-  title,
-  children,
-  className,
-}: {
-  title: string;
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className={`flex flex-col gap-2 ${className} border-l-2 border-primary pl-4`}>
-      <div className="font-semibold text-lg">{title}</div>
-      {children}
-    </div>
-  );
-}
+

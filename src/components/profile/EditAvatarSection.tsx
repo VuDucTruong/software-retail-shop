@@ -8,10 +8,11 @@ type EditAvatarProps = {
     ref: React.RefObject<HTMLInputElement | null>;
     name: string;
     avatarHint: string; // Hint for the avatar
+    defaultAvatar?: string; // Optional default avatar URL
   };
 
 
-export default function EditAvatarSection({ ref, name,avatarHint }: EditAvatarProps) {
+export default function EditAvatarSection({ ref, name,avatarHint,defaultAvatar="/empty_img.png" }: EditAvatarProps) {
 
     const [avatar, setAvatar] = React.useState<string | null>(null); // State to hold the avatar URL
 
@@ -31,12 +32,12 @@ export default function EditAvatarSection({ ref, name,avatarHint }: EditAvatarPr
   return (
     <div className="flex flex-row gap-4 items-center">
           {/* Just avatar display */}
-            <div className="relative ring-primary ring-offset-base-100 size-40 rounded-full ring ring-offset-2">
+            <div className="relative ring-border ring-offset-base-100 size-40 rounded-lg ring ring-offset-2">
               <Image
                 alt="Avatar"
                 fill
-                className="object-cover  rounded-full"
-                src={avatar || "https://randomuser.me/api/portraits/men/1.jpg"} // Use the avatar URL or a default image
+                className="object-cover rounded-lg"
+                src={avatar || defaultAvatar} // Use the avatar URL or a default image
               />
             </div>
           {/* Change avatar button */}
