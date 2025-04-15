@@ -7,28 +7,36 @@ import { Trash2, Plus } from "lucide-react";
 import { ProductCreate, ProductUpdate } from "@/types/api/product";
 import { useTranslations } from "next-intl";
 import RichTextEditor from "../rich_text/RichTextEditor";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 
 type DescriptionFieldArrayProps<T> = {
   ref: React.RefObject<Record<number, string>>;
-  fieldArray: UseFieldArrayReturn<any, any, any>; 
+  fieldArray: UseFieldArrayReturn<any, any, any>;
 };
 
-export default function DescriptionFieddArray<T extends { title: string; content: string }>({ ref,fieldArray }: DescriptionFieldArrayProps<T>) {
+export default function DescriptionFieddArray<
+  T extends { title: string; content: string }
+>({ ref, fieldArray }: DescriptionFieldArrayProps<T>) {
   const { append, remove, fields } = fieldArray;
-  const { register } = useFormContext<ProductCreate | ProductUpdate>(
-  );
-  const t= useTranslations();
+  const { control } = useFormContext<ProductCreate | ProductUpdate>();
+  const t = useTranslations();
 
   return (
     <div className="space-y-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => append({ title: "", content: "" })}
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          {t('new_description_field')}
-        </Button>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => append({ title: "", content: "" })}
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        {t("new_description_field")}
+      </Button>
 
       {fields.map((field, index) => (
         <div
@@ -36,7 +44,7 @@ export default function DescriptionFieddArray<T extends { title: string; content
           className="border p-4 rounded-xl shadow-sm space-y-2"
         >
           <div className="flex justify-between items-center">
-            <label className="font-medium">{t('Title')}</label>
+            <label className="font-medium">{t("Title")}</label>
             <Button
               type="button"
               size="icon"
@@ -48,18 +56,37 @@ export default function DescriptionFieddArray<T extends { title: string; content
             </Button>
           </div>
 
-          <Input
-            {...register(`description.${index}.title` as const)}
-            
+          <FormField
+            control={control}
+            name={`description.${index}.title`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter title" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
-          <label className="font-medium mt-2 block">{t('Content')}</label>
-
-          <RichTextEditor
-            content={field.content}
-            onChange={(content) => {
-              ref.current[index] = content;
-            }}
+          <FormField
+            control={control}
+            name={`description.${index}.content`}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Content</FormLabel>
+                <FormControl>
+                  <RichTextEditor
+                    content={field.value}
+                    onChange={(content) => {
+                      field.onChange(content);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
         </div>
       ))}

@@ -56,8 +56,8 @@ export const ProductCreateScheme = applyProductValidation(ProductBaseScheme.omit
     imageUrl: true,
     categories: true,
   }).extend({
-    image: z.instanceof(File).nullable(),
-    categories: z.array(z.number()),
+    image: z.instanceof(File , { message: "Image is required" }).nullable(),
+    categories: z.array(z.number()).nonempty("At least one category is required"),
   }));
 
 export const ProductUpdateScheme = applyProductValidation(ProductBaseScheme.omit({
@@ -65,7 +65,7 @@ export const ProductUpdateScheme = applyProductValidation(ProductBaseScheme.omit
     categories: true,
   }).extend({
     image: z.instanceof(File).nullable(),
-    categories: z.array(z.number()),
+    categories: z.array(z.number()).nonempty("At least one category is required"),
   }));
 
 export const convertProductToProductUpdate = (

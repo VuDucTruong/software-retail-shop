@@ -16,6 +16,8 @@ import "./rich_text.css"
 
 
 
+
+
 interface RichTextEditorProps {
   content: string;
   onChange: (content: string) => void;
@@ -24,8 +26,7 @@ export default function RichTextEditor({
   content,
   onChange,
 }: RichTextEditorProps) {
-
-  const ref = React.useRef<HTMLDivElement>(null);
+  
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -64,16 +65,21 @@ export default function RichTextEditor({
         class: "min-h-[156px] border rounded-md bg-slate-50 py-2 px-3",
       },
     },
-    onUpdate: ({ editor }) => {
-      // console.log(editor.getHTML());
-      onChange(editor.getHTML());
+    onBlur: ({ editor }) => {
+      if(editor.isEmpty) {{
+        onChange("");
+      }} else {
+        onChange(editor.getHTML());
+      }
     },
+    immediatelyRender: false,
+ 
   });
   
   return (
     <div>
       <MenuBar editor={editor} />
-      <EditorContent ref={ref} editor={editor} />
+      <EditorContent editor={editor} />
     </div>
   );
 }

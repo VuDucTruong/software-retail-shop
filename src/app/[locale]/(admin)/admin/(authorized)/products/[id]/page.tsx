@@ -1,10 +1,12 @@
 "use client";
 
 import CommonInputOutline from "@/components/CommonInputOutline";
-import CategoryMultiSelect from "@/components/product/CategoryMultiSelect";
+import { CategoryMultiSelectField } from "@/components/product/CategoryMultiSelect";
+
 import DescriptionFieddArray from "@/components/product/DescriptionFieldArray";
 import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
+import RichTextEditor from "@/components/rich_text/RichTextEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -46,7 +48,7 @@ const sampleProduct: Product = {
   tags: ["sample", "product"],
   categories: [
     { id: 1, name: "Category 1", description: "Description 1" },
-    { id: 2, name: "Category 2", description: "Description 2" },
+    { id: 4, name: "Category 2", description: "Description 2" },
   ],
   note: "This is a sample note.",
   stock: 10,
@@ -71,18 +73,19 @@ export default function EditProductPage() {
   });
 
   const noteRef = useRef<string>(sampleProduct.note);
-  const descriptionRefs = useRef<Record<number , string>>({});
+  const descriptionRefs = useRef<Record<number, string>>({});
   const fileRef = useRef<HTMLInputElement>(null);
   const handleSubmit = () => {
     form.setValue("note", noteRef.current);
 
-    form.setValue("image", fileRef.current?.files?.[0] || null);
+    // @ts-ignore
+    form.setValue("image", fileRef.current?.files?.[0]);
     // For description fields, set the content from the refs
     descriptionFieldArray.fields.forEach((field, index) => {
       if (descriptionRefs.current[index] !== undefined) {
         form.setValue(
           `description.${index}.content`,
-          descriptionRefs.current[index],
+          descriptionRefs.current[index]
         );
       }
     });
@@ -111,7 +114,7 @@ export default function EditProductPage() {
           >
             {/* Image Upload */}
 
-            {/* <FormField
+            <FormField
               control={form.control}
               name="image"
               render={() => (
@@ -195,13 +198,35 @@ export default function EditProductPage() {
                 </CommonInputOutline>
               )}
             />
+            {/* Tags */}
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <CommonInputOutline title={t("Tags")} className="col-span-2">
+                  <TagsInput field={field} />
+                </CommonInputOutline>
+              )}
+            />
+
+            {/* Categories Multi-select */}
+            <FormField
+              control={form.control}
+              name="categories"
+              render={() => (
+                <CommonInputOutline title={t("Categories")}>
+                  <CategoryMultiSelectField />
+                </CommonInputOutline>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="note"
-              render={() => (
-                <CommonInputOutline title={t("Note")}>
-                  <MdxEditorInput
-                    markdown={noteRef.current}
+              render={({ field }) => (
+                <CommonInputOutline title={t("Note")} className="col-span-3">
+                  <RichTextEditor
+                    content={field.value}
                     onChange={(value) => {
                       noteRef.current = value;
                     }}
@@ -210,43 +235,16 @@ export default function EditProductPage() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="tags"
-              render={({ field }) => (
-                <CommonInputOutline title={t("Tags")}>
-                  <TagsInput field={field} />
-                </CommonInputOutline>
-              )}
-            /> */}
-
-            {/* Categories Multi-select */}
-            {/* <FormField
-              control={form.control}
-              name="categories"
-              render={() => (
-                <CommonInputOutline title={t("Categories")}>
-                  <CategoryMultiSelect/>
-                </CommonInputOutline>
-              )}
-            /> */}
-
             {/* Description FieldArray */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={() => (
-                <CommonInputOutline
-                  title={t("product_description")}
-                  className="col-span-3"
-                >
-                  <DescriptionFieddArray
-                    ref={descriptionRefs}
-                    fieldArray={descriptionFieldArray}
-                  />
-                </CommonInputOutline>
-              )}
-            />
+
+            <div className="col-span-3">
+              <h4 className="mb-2">{t("product_description")}</h4>
+              <DescriptionFieddArray
+                ref={descriptionRefs}
+                fieldArray={descriptionFieldArray}
+              />
+            </div>
+
             <Button
               className="col-start-3 bg-yellow-500 hover:bg-yellow-400"
               type="submit"

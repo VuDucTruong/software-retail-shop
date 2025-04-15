@@ -8,7 +8,11 @@ import { Badge } from "../ui/badge";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-export function TagsInput({field}: {field: ControllerRenderProps<any, string>}) {
+export function TagsInput({
+  field,
+}: {
+  field: ControllerRenderProps<any, string>;
+}) {
   const [inputValue, setInputValue] = useState("");
   const t = useTranslations();
   return (
@@ -41,31 +45,37 @@ export function TagsInput({field}: {field: ControllerRenderProps<any, string>}) 
             }
           }}
         >
-          {t('Add')}
+          {t("Add")}
         </Button>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
-        {field.value.map((tag: string, index: number) => (
-          <Badge
-            key={index}
-            variant="secondary"
-            className="flex items-center text-[14px] font-normal"
-          >
-            {tag}
-            <Button
-              variant="ghost"
-              type="button"
-              onClick={() => {
-                field.onChange(
-                  field.value.filter((_: string, i: number) => i !== index)
-                );
-              }}
-              className=" hover:text-red-500"
-            >
-              <X className="h-3 w-3" />
-            </Button>
-          </Badge>
-        ))}
+        {field.value.length > 0 ? (
+          <>
+            {field.value.map((tag: string, index: number) => (
+              <Badge
+                key={index}
+                variant="secondary"
+                className="flex items-center text-[14px] font-normal"
+              >
+                {tag}
+                <Button
+                  variant="ghost"
+                  type="button"
+                  onClick={() => {
+                    field.onChange(
+                      field.value.filter((_: string, i: number) => i !== index)
+                    );
+                  }}
+                  className=" hover:text-red-500"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            ))}
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">No category selected</p>
+        )}
       </div>
     </div>
   );
