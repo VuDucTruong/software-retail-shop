@@ -8,6 +8,7 @@ import {
   calcDiscountPercentage,
   convertPriceToVND,
 } from "@/lib/currency_helper";
+import { useRouter } from "@/i18n/navigation";
 
 type ProductItemProps = {
   title: string;
@@ -17,17 +18,21 @@ type ProductItemProps = {
 };
 
 export default function ProductItem(props: ProductItemProps) {
-  const format = useFormatter();
-  const convertedPrice = convertPriceToVND(props.price, format);
+  const convertedPrice = convertPriceToVND(props.price);
 
-  const convertedOriginalPrice = convertPriceToVND(props.originalPrice, format);
+  const convertedOriginalPrice = convertPriceToVND(props.originalPrice);
 
   const discountPercentage = calcDiscountPercentage(
     props.price,
     props.originalPrice
   );
+  const router = useRouter();
+  const handleClick = () => {
+    router.push("/product/" + props.title);
+  };
   return (
     <Card
+    onClick={handleClick}
       className={cn(
         "p-0 gap-2 bg-transparent hover:opacity-80 cursor-pointer",
         props.className

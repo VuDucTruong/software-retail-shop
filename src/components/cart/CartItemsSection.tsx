@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, CardContent, CardTitle } from "../ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { useTranslations } from "next-intl";
 
 import CartItemList from "./CartItemList";
@@ -46,14 +46,16 @@ export default function CartItemsSection(props: CardItemsProps) {
 
   return (
     <Card>
-      <CardTitle>
-        <h3>
-          {t("Cart")}{" "}
-          <span className="text-sm font-normal text-muted-foreground">
-            ( {props.cartItems.length} {t("product")} )
-          </span>
-        </h3>
-      </CardTitle>
+      <CardHeader>
+        <CardTitle>
+          <h3>
+            {t("Cart")}{" "}
+            <span className="text-sm font-normal text-muted-foreground">
+              ( {props.cartItems.length} {t("product")} )
+            </span>
+          </h3>
+        </CardTitle>
+      </CardHeader>
       <CardContent className="flex gap-8">
         {props.cartItems.length == 0 && <EmptyList />}
         {props.cartItems.length > 0 && (

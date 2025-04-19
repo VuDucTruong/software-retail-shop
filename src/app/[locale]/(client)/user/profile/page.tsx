@@ -70,7 +70,7 @@ export default function ProfilePage() {
         <Separator />
 
         {/* Avatar section */}
-        <EditAvatarSection avatarHint={t('avatar_hint')} name={t('change_avatar')} ref={fileRef}/>
+        <EditAvatarSection avatarHint={t('image_hint')} name={t('change_avatar')} ref={fileRef}/>
 
         {/* Information can be changed in here ! */}
         <h4 className="py-3">{t('edit_personal_info')}</h4>

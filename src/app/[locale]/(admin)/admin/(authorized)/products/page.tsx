@@ -111,21 +111,23 @@ export default function ProductManagementPage() {
     price: 100,
     originalPrice: 120,
     model: "Model 1",
-    categories: [],
-    variants: {
-      title: "Variants",
-      list: [
-        { id: 1, text: "Variant 1", slug: "variant-1", isAvailable: true },
-        { id: 2, text: "Variant 2", slug: "variant-2", isAvailable: false },
-      ],
-    },
+    categories: [
+      {
+        id: 1,
+        name: "Category 1",
+      },
+    ],
     tags: ["tag1", "tag2"],
     note: "This is a note.",
     description: [
       {
         title: "Description",
         content: "This is a description.",
-      }
+      },
+      {
+        title: "Additional Info",
+        content: "This is additional information.",
+      },
     ],
     stock: index % 2 === 0 ? 10 : 0,
   }));

@@ -236,6 +236,7 @@
   "update_product": "Update product",
   "update_product_success": "Product updated successfully",
   "update_product_error": "Product update failed",
-  "Add": "Add"
+  "Add": "Add",
+  "Tag": "Tag"
 
 }

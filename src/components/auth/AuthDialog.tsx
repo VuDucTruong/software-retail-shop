@@ -21,7 +21,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import LoginTab from "./LoginTab";
 import RegisterTab from "./RegisterTab";
-var isLoggedIn = true; // Replace with actual authentication logic
+var isLoggedIn = false; // Replace with actual authentication logic
 export function AuthDialog() {
   const t = useTranslations();
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CategoryScheme } from "./category";
+import { CategoryPreviewScheme, CategoryScheme } from "./category";
 
 export const DescriptionScheme = z.object({
   title: z.string().nonempty("Title is required"),
@@ -20,7 +20,7 @@ export const ProductBaseScheme = z.object({
     .number()
     .gte(0, { message: "Original Price must be greater than or equal to 0" }),
   model: z.string().nonempty("Model is required"),
-  categories: z.array(CategoryScheme).nonempty("At least one category is required"),
+  categories: z.array(CategoryPreviewScheme).nonempty("At least one category is required"),
   tags: z.array(z.string()).nonempty("Tags are required"),
   note: z.string().min(1 , { message: "Note must be at least 1 character" }),
   description: z.array(
@@ -82,3 +82,18 @@ export type ProductCreate = z.infer<typeof ProductCreateScheme>;
 export type ProductUpdate = z.infer<typeof ProductUpdateScheme>;
 export type Description = z.infer<typeof DescriptionScheme>; 
 
+
+
+const NewProductScheme = z.object({
+  id: z.number(),
+  name: z.string(),
+  imageUrl: z.string(),
+  price: z.number(),
+  originalPrice: z.number(),
+  model: z.string(),
+  categories: z.array(CategoryPreviewScheme),
+  tags: z.array(z.string()),
+  note: z.string(),
+  description: z.array(DescriptionScheme),
+  stock: z.number(),
+})

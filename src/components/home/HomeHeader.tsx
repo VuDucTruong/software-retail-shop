@@ -13,7 +13,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { CommonSelect } from "../CommonSelect";
 import { RiDiscountPercentLine } from "react-icons/ri";
-import { AuthDialog } from "../dialog/AuthDialog";
+import { AuthDialog } from "../auth/AuthDialog";
 import Logo from "../Logo";
 import SearchBar from "./SearchBar";
 import CartButton from "./CartButton";
