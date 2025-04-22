@@ -99,12 +99,6 @@ export const adminMenu: AdminMenu = {
         items: [],
       },
       {
-        title: "Brands",
-        url: "brands",
-        icon: SiBrandfolder,
-        items: [],
-      },
-      {
         title: "Coupons",
         url: "coupons",
         icon: BiSolidDiscount,

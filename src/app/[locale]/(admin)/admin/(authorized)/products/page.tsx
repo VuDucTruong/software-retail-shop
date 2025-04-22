@@ -4,6 +4,7 @@ import CommonConfirmDialog from "@/components/CommonConfirmDialog";
 import { CommmonDataTable } from "@/components/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { StatusBadge } from "@/components/StatusBadge";
+import TableOptionMenu from "@/components/TableOptionMenu";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,9 +15,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "@/i18n/navigation";
-import { Product } from "@/types/api/product";
+import { Product } from "@/types/api/product/product";
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreVerticalIcon } from "lucide-react";
+import { MoreVerticalIcon, Table } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,7 +60,7 @@ export default function ProductManagementPage() {
       accessorKey: "model",
       header: t("product_code"),
       cell: ({ row }) => {
-        return row.original.model;
+        return row.original.slug;
       },
     },
     {
@@ -103,34 +104,7 @@ export default function ProductManagementPage() {
     },
   ];
 
-  const sampleData: Product[] = Array.from({ length: 10 }, (_, index) => ({
-    id: index,
-    slug: "product-" + index,
-    name: "Product " + index,
-    imageUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-    price: 100,
-    originalPrice: 120,
-    model: "Model 1",
-    categories: [
-      {
-        id: 1,
-        name: "Category 1",
-      },
-    ],
-    tags: ["tag1", "tag2"],
-    note: "This is a note.",
-    description: [
-      {
-        title: "Description",
-        content: "This is a description.",
-      },
-      {
-        title: "Additional Info",
-        content: "This is additional information.",
-      },
-    ],
-    stock: index % 2 === 0 ? 10 : 0,
-  }));
+  const sampleData: Product[] = [];
 
   const handleDelete = (id: number) => {
     toast.success(t("delete_product_x_success", { x:id }));
@@ -164,28 +138,20 @@ export default function ProductManagementPage() {
           hasActions
           renderActions={(row) => {
             return (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex size-8" size="icon">
-                    <MoreVerticalIcon />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                  <DropdownMenuItem onClick={()=>handleViewDetails(row.id)}>{t("Detail")}</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                      <CommonConfirmDialog
-                        onConfirm={() => {
-                          handleDelete(row.id);
-                        }}
-                        triggerName={t("Delete")}
-                        title={t("delete_product_#x", { x: row.id })}
-                        description={t("delete_product_warning")}
-                      />
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <TableOptionMenu actions={[
+                {
+                  label: t("Detail"),
+                  onClick: () => handleViewDetails(row.id),
+                },
+                {
+                  label: t("Delete"),
+                  onClick: () => handleDelete(row.id),
+                  confirm: {
+                    title: t("delete_product_x", { x: row.id }),
+                    description: t("delete_product_warning"),
+                  },
+                },
+              ]} />
             );
           }}
         />

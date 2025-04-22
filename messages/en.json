@@ -237,6 +237,13 @@
   "update_product_success": "Product updated successfully",
   "update_product_error": "Product update failed",
   "Add": "Add",
-  "Tag": "Tag"
-
+  "Tag": "Tag",
+  "category_management": "Category Management",
+  "create_category": "Create category",
+  "delete_category_warning": "Are you sure you want to delete this category?",
+  "delete_category_x_success": "Category {x} deleted successfully",
+  "delete_category_error": "Category deletion failed",
+  "delete_category_x": "Delete category #{x}",
+  "create_category_success": "Category created successfully",
+  "create_category_error": "Category creation failed"
 }

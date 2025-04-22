@@ -4,7 +4,7 @@ import { UseFieldArrayReturn, useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus } from "lucide-react";
-import { ProductCreate, ProductUpdate } from "@/types/api/product";
+import { ProductCreate, ProductUpdate } from "@/types/api/product/product";
 import { useTranslations } from "next-intl";
 import RichTextEditor from "../rich_text/RichTextEditor";
 import {

@@ -27,7 +27,7 @@ import {
   ProductCreateScheme,
   ProductUpdate,
   ProductUpdateScheme,
-} from "@/types/api/product";
+} from "@/types/api/product/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
@@ -43,7 +43,7 @@ export default function CreateProductPage() {
   const t = useTranslations();
   const form = useForm<ProductCreate>({
     defaultValues: {
-      description: [],
+      productDescription: [],
       tags: [],
       categories: [],
       price: 0,
