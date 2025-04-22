@@ -1,6 +1,7 @@
 "use client";
 
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
+import EditCategoryDialog from "@/components/category/EditCategoryDialog";
 import { CommmonDataTable } from "@/components/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
@@ -90,9 +91,13 @@ export default function CategoryManagementPage() {
           data={sampleData}
           hasActions
           renderActions={(row) => (
-            <Button variant={"destructive"} onClick={()=>handleDelete(row.id)} size="icon" className="w-8 h-8">
+            <div className="flex items-center gap-2">
+               <EditCategoryDialog/>
+              <Button variant={"destructive"} onClick={()=>handleDelete(row.id)} size="icon" className="w-8 h-8">
               <Trash2Icon />
             </Button>
+             
+            </div>
           )}
         />
       </CardContent>

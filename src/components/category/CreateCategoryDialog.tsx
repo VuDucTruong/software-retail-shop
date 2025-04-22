@@ -1,15 +1,19 @@
+import { CategoryCreate, CategoryCreateScheme } from "@/types/api/category";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { CgAdd } from "react-icons/cg";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "../ui/dialog";
-import { CgAdd } from "react-icons/cg";
-import { Button } from "../ui/button";
-import { useTranslations } from "next-intl";
 import {
   Form,
   FormControl,
@@ -19,15 +23,8 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { CategoryCreate, CategoryCreateScheme } from "@/types/api/category";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import Image from "next/image";
-import { toast } from "sonner";
-import { on } from "events";
 
 
 type CreateCategoryDialogProps = {
@@ -40,7 +37,7 @@ export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
   const form = useForm<CategoryCreate>({
     defaultValues: {
       name: "",
-      image: null,
+      image: undefined,
       description: "",
     },
     resolver: zodResolver(CategoryCreateScheme),
@@ -67,7 +64,7 @@ export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
       </DialogTrigger>
       <DialogContent className="w-1/2">
         <DialogHeader>
-          <DialogTitle><h3>{t("create_category")}</h3></DialogTitle>
+          <DialogTitle asChild className="text-2xl"><h2>{t("create_category")}</h2></DialogTitle>
         </DialogHeader>
         <div>
           <Form {...form}>
@@ -85,7 +82,7 @@ export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
                         ref={field.ref}
                         accept="image/*"
                         name={field.name}
-                        onBlur={field.onBlur}
+                        
                       />
                     </FormControl>
                     <FormMessage />

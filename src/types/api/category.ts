@@ -18,14 +18,14 @@ export const CategoryScheme = z.object({
 
 export const CategoryCreateScheme = z.object({
     name: z.string().nonempty(messages.required.name),
-    image: z.instanceof(File, { message: messages.required.image }).nullable(),
+    image: z.instanceof(File, { message: messages.required.image }),
     description: z.string(),
 })
 
 export const CategoryUpdateScheme = z.object({
     id: z.number(),
     name: z.string().nonempty(messages.required.name),
-    image: z.instanceof(File, { message: messages.required.image }).nullable(),
+    image: z.instanceof(File).nullable(),
     description: z.string(),
 })
 

@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
             protocol: 'https',
             hostname: 'randomuser.me',
           },
+          {
+            protocol: 'https',
+            hostname: 'www.pokemon.com',
+          },
         ],
       },
       reactStrictMode: false
