@@ -251,6 +251,27 @@
   "update_category_error": "Category update failed",
   "coupon_management": "Coupon Management",
   "create_coupon": "Create coupon",
-  "delete_coupon_warning": "Are you sure you want to delete this coupon?"
+  "delete_coupon_warning": "Are you sure you want to delete this coupon?",
+  "delete_coupon_x": "Delete coupon #{x}",
+  "delete_coupon_x_success": "Coupon {x} deleted successfully",
+  "delete_coupon_error": "Coupon deletion failed",
+  "create_coupon_success": "Coupon created successfully",
+  "create_coupon_error": "Coupon creation failed",
+  "coupon_x": "Coupon #{x}",
+  "for_min_order_value_x": "For minimum order value is {x}",
+  "max_reduction_x": "Maximum reduction is {x}",
+  "coupon_code": "Coupon code",
+  "discount_type": "Discount type",
+  "discount_value": "Discount value",
+  "Fixed": "Fixed (VNĐ)",
+  "Percent": "Percent (%)",
+  "available_from": "Available from",
+  "available_to": "Available to",
+  "min_amount": "Minimum order amount to use",
+  "max_applied_amount": "Maximum amount can be applied to order",
+  "max_uses": "Maximum number of uses",
+  "update_coupon": "Update coupon",
+  "update_coupon_success": "Coupon updated successfully",
+  "update_coupon_error": "Coupon update failed"
 
 }

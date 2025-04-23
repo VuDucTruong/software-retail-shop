@@ -3,7 +3,7 @@ import {
   Category,
   CategoryUpdate,
   CategoryUpdateScheme,
-} from "@/types/api/category";
+} from "@/models/category";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";

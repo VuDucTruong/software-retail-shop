@@ -1,4 +1,4 @@
-import { CategoryCreate, CategoryCreateScheme } from "@/types/api/category";
+import { CategoryCreate, CategoryCreateScheme } from "@/models/category";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";

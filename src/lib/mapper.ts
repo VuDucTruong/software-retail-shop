@@ -1,4 +1,4 @@
-import { ProductScheme, ProductUpdateScheme } from "@/types/api/product/product";
+import { ProductScheme, ProductUpdateScheme } from "@/models/product/product";
 import { z } from "zod";
 
 // === Utility Function ===

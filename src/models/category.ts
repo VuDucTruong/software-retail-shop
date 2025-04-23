@@ -11,7 +11,7 @@ const messages = {
 
 export const CategoryScheme = z.object({
     id: z.number(),
-    name: z.string().nonempty(messages.required.name),
+    name: z.string(),
     imageUrl: z.string(),
     description: z.string(),
 })

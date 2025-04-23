@@ -20,7 +20,7 @@ const messages = {
 
 // === Schemas ===
 
-export const ProductBaseScheme = z.object({
+export const ProductScheme = z.object({
   id: z.number(),
   slug: z.string().nonempty(messages.required.slug),
   name: z.string().regex(/^[a-zA-Z0-9\s]{3,}$/, { message: messages.name }),
@@ -31,8 +31,7 @@ export const ProductBaseScheme = z.object({
   tags: z.array(z.string()).nonempty(messages.required.tags),
   productDescription: DescriptionScheme,
   stock: z.number().gt(0, { message: messages.stock }),
-  availableFrom: z.date().optional(),
-  availableTo: z.date().optional(),
+
 });
 
 // === Cross-field Validation ===
@@ -50,8 +49,6 @@ const applyProductValidation = <T extends z.ZodRawShape>(
   });
 };
 
-// === Product Schemas ===
-export const ProductScheme = applyProductValidation(ProductBaseScheme);
 
 // === Product Create / Update Common Shape ===
 const ImageAndCategoriesShape = {
@@ -61,20 +58,20 @@ const ImageAndCategoriesShape = {
 
 // Create
 export const ProductCreateScheme = applyProductValidation(
-  ProductBaseScheme
+  ProductScheme
     .omit({ id: true, imageUrl: true, categories: true })
     .extend(ImageAndCategoriesShape)
 );
 
 // Update
 export const ProductUpdateScheme = applyProductValidation(
-  ProductBaseScheme
+  ProductScheme
     .omit({ imageUrl: true, categories: true })
     .extend(ImageAndCategoriesShape)
 );
 
-export const ProductMetadataScheme = ProductBaseScheme.omit({id: true, categories:true, })
+export const ProductMetadataScheme = ProductScheme.omit({id: true, categories:true, })
 // === Types ===
-export type Product = z.infer<typeof ProductScheme>;
+export type Product = z.infer<ReturnType<typeof ProductScheme["partial"]>>;;
 export type ProductCreate = z.infer<typeof ProductCreateScheme>;
 export type ProductUpdate = z.infer<typeof ProductUpdateScheme>;

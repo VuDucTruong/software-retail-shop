@@ -6,7 +6,7 @@ import { CommmonDataTable } from "@/components/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Category, CategoryCreate } from "@/types/api/category";
+import { Category, CategoryCreate } from "@/models/category";
 import { ColumnDef } from "@tanstack/react-table";
 import { Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";

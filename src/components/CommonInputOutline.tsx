@@ -17,7 +17,7 @@ export default function CommonInputOutline({
   className?: string;
 }) {
   return (
-    <FormItem className={`${className} border-l-3 border-border pl-3`}>
+    <FormItem className={` border-l-3 border-border pl-3 ${className}`}>
       <FormLabel>{title}</FormLabel>
       <FormMessage />
       <FormControl>{children}</FormControl>

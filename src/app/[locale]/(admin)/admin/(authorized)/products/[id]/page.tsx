@@ -25,7 +25,7 @@ import {
   Product,
   ProductUpdate,
   ProductUpdateScheme,
-} from "@/types/api/product/product";
+} from "@/models/product/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";

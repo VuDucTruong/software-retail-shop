@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "@/i18n/navigation";
-import { Product } from "@/types/api/product/product";
+import { Product } from "@/models/product/product";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreVerticalIcon, Table } from "lucide-react";
 import { useTranslations } from "next-intl";
