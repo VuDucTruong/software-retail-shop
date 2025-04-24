@@ -272,6 +272,8 @@
   "max_uses": "Maximum number of uses",
   "update_coupon": "Update coupon",
   "update_coupon_success": "Coupon updated successfully",
-  "update_coupon_error": "Coupon update failed"
+  "update_coupon_error": "Coupon update failed",
+  "transaction_management": "Transaction Management",
+  "payment_method": "Pay through"
 
 }

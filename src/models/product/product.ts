@@ -17,10 +17,23 @@ const messages = {
   priceComparison: "Price must be less than or equal to original price",
   stock: "Stock must be greater than 0",
 };
+export const ProductScheme = z.object({
+  id: z.number(),
+  slug: z.string(),
+  name: z.string(),
+  imageUrl: z.string(),
+  price: z.number(),
+  originalPrice: z.number(),
+  categories: z.array(CategoryScheme),
+  tags: z.array(z.string()),
+  productDescription: DescriptionScheme,
+  stock: z.number(),
+  
+});
 
 // === Schemas ===
 
-export const ProductScheme = z.object({
+export const ProductValidation = z.object({
   id: z.number(),
   slug: z.string().nonempty(messages.required.slug),
   name: z.string().regex(/^[a-zA-Z0-9\s]{3,}$/, { message: messages.name }),
@@ -32,45 +45,34 @@ export const ProductScheme = z.object({
   productDescription: DescriptionScheme,
   stock: z.number().gt(0, { message: messages.stock }),
 
+}).superRefine((data, ctx) => {
+  if (data.price > data.originalPrice) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: messages.priceComparison,
+      path: ["price"],
+    });
+  }
 });
 
-// === Cross-field Validation ===
-const applyProductValidation = <T extends z.ZodRawShape>(
-  schema: z.ZodObject<T>
-): z.ZodEffects<z.ZodObject<T>> => {
-  return schema.superRefine((data, ctx) => {
-    if (data.price > data.originalPrice) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: messages.priceComparison,
-        path: ["price"],
-      });
-    }
-  });
-};
-
-
 // === Product Create / Update Common Shape ===
-const ImageAndCategoriesShape = {
+const FileShape = {
   image: z.instanceof(File, { message: "Image is required" }).nullable(),
-  categories: z.array(z.number()).nonempty(messages.required.categories),
 };
 
 // Create
-export const ProductCreateScheme = applyProductValidation(
+export const ProductCreateScheme = 
   ProductScheme
-    .omit({ id: true, imageUrl: true, categories: true })
-    .extend(ImageAndCategoriesShape)
-);
+    .omit({ id: true, imageUrl: true })
+    .extend(FileShape)
+
 
 // Update
-export const ProductUpdateScheme = applyProductValidation(
+export const ProductUpdateScheme = 
   ProductScheme
-    .omit({ imageUrl: true, categories: true })
-    .extend(ImageAndCategoriesShape)
-);
+    .omit({ imageUrl: true})
+    .extend(FileShape)
 
-export const ProductMetadataScheme = ProductScheme.omit({id: true, categories:true, })
 // === Types ===
 export type Product = z.infer<ReturnType<typeof ProductScheme["partial"]>>;;
 export type ProductCreate = z.infer<typeof ProductCreateScheme>;
