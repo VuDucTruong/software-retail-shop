@@ -26,7 +26,7 @@ export default function BlogPage() {
 
       <div className="flex flex-row-reverse gap-4">
 
-        <div className="w-1/5">
+        <div className="w-1/4">
         <BlogGenreSection genre="Moi nhat">
           {
             Array.from({ length: 5 }, (_, index) => (
@@ -35,6 +35,7 @@ export default function BlogPage() {
                 title="DOOM: The Dark Ages tung trailer mới – Chiến trường đẫm máu thời Trung cổ"
                 image="/empty_img.png"
                 date="22/04/2025"
+                author="Sang Ri"
               />
             ))
           }
@@ -61,6 +62,7 @@ export default function BlogPage() {
                     title="DOOM: The Dark Ages tung trailer mới – Chiến trường đẫm máu thời Trung cổ"
                     image="/empty_img.png"
                     date="22/04/2025"
+                    author="Sang Ri"
                   />
                 ))}
               </div>

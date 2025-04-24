@@ -25,6 +25,7 @@ export default function DetailBlogPage() {
               title="DOOM: The Dark Ages tung trailer mới – Chiến trường đẫm máu thời Trung cổ"
               image="/empty_img.png"
               date="22/04/2025"
+              author="Sang Ri"
             />
           ))}
         </BlogGenreSection>
@@ -91,6 +92,8 @@ export default function DetailBlogPage() {
               title="DOOM: The Dark Ages tung trailer mới – Chiến trường đẫm máu thời Trung cổ"
               image="/empty_img.png"
               category="GAME"
+              author="Sang Ri"
+              date="22/04/2025"
             />
           ))}
           </div>
