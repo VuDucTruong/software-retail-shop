@@ -8,6 +8,7 @@ import { IoHomeOutline } from "react-icons/io5";
 import { AdminMenu } from "@/types/admin_menu";
 import { BiSolidDiscount } from "react-icons/bi";
 import { LuShoppingBag } from "react-icons/lu";
+import { RiFolderUserLine } from "react-icons/ri";
 
 export const languages = ["en", "vi"];
 export const currencies = ["VND", "Token"];
@@ -110,6 +111,12 @@ export const adminMenu: AdminMenu = {
     title: "Customers",
     url: "Customers",
     items: [
+      {
+        title: "Customers",
+        url: "customers",
+        icon: RiFolderUserLine,
+        items: [],
+      },
       {
         title: "Orders",
         url: "orders",

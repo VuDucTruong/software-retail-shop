@@ -13,7 +13,7 @@ import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-export default function TransactionMangementPage() {
+export default function CustomerManagementPage() {
   const t = useTranslations();
 
   const cols: ColumnDef<Payment>[] = [

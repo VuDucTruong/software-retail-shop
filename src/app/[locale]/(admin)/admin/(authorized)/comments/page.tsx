@@ -1,5 +1,6 @@
 "use client";
 
+import EditCommentDialog from "@/components/comments/EditCommentDialog";
 import { CommmonDataTable } from "@/components/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -7,16 +8,17 @@ import TransactionDetailDialog from "@/components/transactions/TransactionDetail
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
+import { Comment } from "@/models/comment";
 import { Payment } from "@/models/payment";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
+import { ExternalLink, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
-export default function TransactionMangementPage() {
+export default function CommentManagementPage() {
   const t = useTranslations();
 
-  const cols: ColumnDef<Payment>[] = [
+  const cols: ColumnDef<Comment>[] = [
     {
         accessorKey: "Id",
         header: "ID",
@@ -29,64 +31,46 @@ export default function TransactionMangementPage() {
         accessorKey: "User",
         header: t("User"),
         cell: ({ row }) => {
-          return <div className="font-bold">{row.original.user.email}</div>;
+          return <div className="font-bold">{row.original.username}</div>;
         },
       },
       {
-        accessorKey: "By",
-        header: t("payment_method"),
+        accessorKey: "product",
+        header: t("Product"),
         cell: ({ row }) => {
-          return row.original.paymentMethod;
+          return <Link href={"/"}><Button variant={"link"}>{row.original.productName}</Button></Link>;
         },
       },
       {
-        accessorKey: "Amount",
-        header: t("Amount"),
+        accessorKey: "comment",
+        header: t("Comment"),
         cell: ({ row }) => {
-          return row.original.amount;
+          return row.original.content;
         },
       },
       {
-        accessorKey: "Status",
-        header: t("Status"),
-        cell: ({ row }) => {
-          return <StatusBadge status={"completed"} />;
-        },
-      },
-      {
-        accessorKey: "createAt",
+        accessorKey: "time",
         header: t("Time"),
         cell: ({ row }) => {
-          return row.original.createAt;
+          return row.original.date;
         },
       },
+      
   ];
 
-  const sampleData: Payment[] = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    status: "SUCCESS",
-    orderId: 20230423,
-    createAt: "2025-04-23T14:30:00Z",
-    user: {
-      id: 1,
-      fullName: "Alice Nguyen",
-      email: "alice.nguyen@example.com",
-      imageUrl: "https://example.com/avatar/alice.jpg",
-      createAt: "2023-09-01T08:00:00Z"
-    },
-    paymentMethod: "VISA",
-    amount: 150.75,
-    currency: "USD",
-    bankCode: "VCB",
-    orderInfo: "Payment for Order #20230423",
-    cardInfo: "**** **** **** 1234"
+  const sampleData: Comment[] = Array.from({ length: 20 }, (_, i) => ({
+    id: i + 1,
+    username: `User ${i + 1}`,
+    content: `This is a comment content for comment ${i + 1}`,
+    date: `2023-10-${i + 1}`,
+    productName: `Product ${i + 1}`,
   }));
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{t("transaction_management")}</h2>
+          <h2>{t("comment_management")}</h2>
           <div className="flex items-center gap-2">
             <ProductFilterSheet />
           </div>
@@ -99,7 +83,10 @@ export default function TransactionMangementPage() {
           hasActions
           renderActions={(row) => {
             return (
-              <TransactionDetailDialog payment={row} />
+              <div className="flex items-center gap-2 w-fit">
+                <EditCommentDialog />
+                <Link href={"/asdf"}><Button><ExternalLink/></Button></Link>
+              </div>
             );
           }}
         />

@@ -274,6 +274,8 @@
   "update_coupon_success": "Coupon updated successfully",
   "update_coupon_error": "Coupon update failed",
   "transaction_management": "Transaction Management",
-  "payment_method": "Pay through"
+  "payment_method": "Pay through",
+  "comment_management": "Comment Management",
+  "customers": "Customers"
 
 }

@@ -26,6 +26,7 @@ import {
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Payment } from "@/models/payment";
+import { Eye } from "lucide-react";
 
 type TransactionDetailDialogProps = {
     payment: Payment
@@ -40,7 +41,7 @@ export default function TransactionDetailDialog({payment}: TransactionDetailDial
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" className="bg-primary text-white">
-          <CgAdd /> {t("create_category")}
+          <Eye/> {t("Detail")}
         </Button>
       </DialogTrigger>
       <DialogContent className="w-1/2">
