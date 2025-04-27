@@ -14,7 +14,10 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      reactStrictMode: false
+      reactStrictMode: false,
+      env: {
+        GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+      }
 };
  
 const withNextIntl = createNextIntlPlugin();

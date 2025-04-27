@@ -8,6 +8,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "sonner";
+import ChatButton from "@/components/chatbot/ChatButton";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -40,7 +41,10 @@ export default async function LocaleLayout({
       <body className={`${roboto.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
             <HomeHeader />
-            <main>{children}</main>
+            <main>{children}
+            
+            </main>
+            <ChatButton/>
             <Toaster richColors/>
             <HomeFooter />
         </NextIntlClientProvider>

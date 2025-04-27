@@ -1,4 +1,5 @@
 "use client";
+import ChatButton from "@/components/chatbot/ChatButton";
 import BestSellerSection from "@/components/home/BestSellerSection";
 import BrandCarousel from "@/components/home/BrandCarousel";
 import CategoryCard from "@/components/home/CategoryCard";
@@ -37,7 +38,6 @@ export default function HomePage() {
       </div>
 
       {/* Main content */}
-
       <BrandCarousel />
       <HomeProductSection
         title={t("popular_products")}

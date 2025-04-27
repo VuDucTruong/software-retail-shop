@@ -276,6 +276,8 @@
   "transaction_management": "Transaction Management",
   "payment_method": "Pay through",
   "comment_management": "Comment Management",
-  "customers": "Customers"
+  "customers": "Customers",
+  "chat_ai": "Chat with AI",
+  "chat_ai_placeholder": "Ask me anything about products in the store"
 
 }
