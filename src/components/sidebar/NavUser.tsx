@@ -25,6 +25,8 @@ import { FaUserCircle } from "react-icons/fa"
 import { IoNotifications } from "react-icons/io5"
 import { MdLogout } from "react-icons/md"
 import { HiDotsVertical } from "react-icons/hi";
+import Link from "next/link"
+import { useTranslations } from "next-intl"
 
 export function NavUser({
   user,
@@ -36,7 +38,8 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-
+  const t = useTranslations();
+  const handleLogout = () => {}
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -82,18 +85,20 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
+                <Link href={"admin/profile"} className="flex items-center gap-2">
                 <FaUserCircle />
-                Account
+                {t('Account')}
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <IoNotifications />
-                Notifications
+                {t('Notifications')}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <MdLogout />
-              Log out
+              {t('Logout')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

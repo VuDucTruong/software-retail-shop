@@ -8,78 +8,102 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
 import { Payment } from "@/models/payment";
+import { User } from "@/models/user/user";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
+import { Eye, UserX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import UserDetailDialog from "./components/UserDetailDialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import CommonConfirmDialog from "@/components/CommonConfirmDialog";
+import { toast } from "sonner";
 
 export default function CustomerManagementPage() {
   const t = useTranslations();
 
-  const cols: ColumnDef<Payment>[] = [
+  const cols: ColumnDef<User>[] = [
     {
-        accessorKey: "Id",
-        header: "ID",
-        cell: ({ row }) => {
-          return row.original.id;
-        },
-        enableHiding: false,
+      accessorKey: "id",
+      header: "ID",
+      cell: ({ row }) => {
+        return row.original.id;
       },
-      {
-        accessorKey: "User",
-        header: t("User"),
-        cell: ({ row }) => {
-          return <div className="font-bold">{row.original.user.email}</div>;
-        },
+      enableHiding: false,
+    },
+    {
+      accessorKey: "image",
+      header: "Image",
+      cell: ({ row }) => {
+        return (
+          <div className="w-full flex items-center justify-center">
+            <Avatar className="size-16 border border-border">
+              <AvatarImage
+                className="object-cover"
+                src={row.original.profile.imageUrl}
+                alt={row.original.profile.fullName}
+              />
+              <AvatarFallback className="bg-gray-400">
+                {row.original.profile.fullName.at(0)?.toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+        );
       },
-      {
-        accessorKey: "By",
-        header: t("payment_method"),
-        cell: ({ row }) => {
-          return row.original.paymentMethod;
-        },
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => {
+        return row.original.profile.email;
       },
-      {
-        accessorKey: "Amount",
-        header: t("Amount"),
-        cell: ({ row }) => {
-          return row.original.amount;
-        },
+    },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => {
+        return row.original.profile.fullName;
       },
-      {
-        accessorKey: "Status",
-        header: t("Status"),
-        cell: ({ row }) => {
-          return <StatusBadge status={"completed"} />;
-        },
+    },
+
+    {
+      accessorKey: "createdAt",
+      header: "Registration Date",
+      cell: ({ row }) => {
+        const date = new Date(row.original.createdAt!);
+
+        return date.toLocaleDateString();
       },
-      {
-        accessorKey: "createAt",
-        header: t("Time"),
-        cell: ({ row }) => {
-          return row.original.createAt;
-        },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        return (
+          <StatusBadge status={row.original.isActive ? "active" : "banned"} />
+        );
       },
+    },
   ];
 
-  const sampleData: Payment[] = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    status: "SUCCESS",
-    orderId: 20230423,
-    createAt: "2025-04-23T14:30:00Z",
-    user: {
-      id: 1,
-      fullName: "Alice Nguyen",
-      email: "alice.nguyen@example.com",
-      imageUrl: "https://example.com/avatar/alice.jpg",
-      createAt: "2023-09-01T08:00:00Z"
+  const handleBanUser = (userId: number) => {
+    toast.success(t("ban_user_x_success", {x: userId}));
+
+    //toast.error(t("ban_user_error"));
+  };
+
+  const sampleData: User[] = Array.from({ length: 10 }, (_, i) => ({
+    id: i + 1,
+    profile: {
+      id: i + 1,
+      imageUrl: "/best_seller.png",
+      email: `user${i + 1}@example.com`,
+      fullName: `User ${i + 1}`,
+      createdAt: new Date().toISOString(),
     },
-    paymentMethod: "VISA",
-    amount: 150.75,
-    currency: "USD",
-    bankCode: "VCB",
-    orderInfo: "Payment for Order #20230423",
-    cardInfo: "**** **** **** 1234"
+    createdAt: new Date().toISOString(),
+    disableDate: "",
+    role: "customer",
+    isActive: i % 2 === 0,
   }));
 
   return (
@@ -99,7 +123,20 @@ export default function CustomerManagementPage() {
           hasActions
           renderActions={(row) => {
             return (
-              <TransactionDetailDialog payment={row} />
+              <div className="flex items-center gap-2">
+                <UserDetailDialog user={row} />
+
+                <CommonConfirmDialog
+                  triggerName={
+                    <Button variant="destructive" size="icon">
+                      <UserX className="h-4 w-4" />
+                    </Button>
+                  }
+                  title={t("ban_user_x", { x: row.id })}
+                  description={t("ban_user_warning")}
+                  onConfirm={() => handleBanUser(row.id)}
+                />
+              </div>
             );
           }}
         />

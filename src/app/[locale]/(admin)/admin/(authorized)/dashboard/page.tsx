@@ -4,7 +4,6 @@ import CardSection from "@/components/dashboard/CardSection";
 import { InteractiveLineChart } from "@/components/dashboard/InteractiveLineChart";
 
 import React from "react";
-import rawData from "@/data/orders.json";
 import { CommmonDataTable } from "@/components/CommonDataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import TableCellViewer from "@/components/dashboard/TableCellViewer";
@@ -78,7 +77,7 @@ export default function Page() {
         <CardContent>
           <CommmonDataTable
             columns={cols}
-            data={scheme.array().parse(rawData)}
+            data={[]}
           />
         </CardContent>
       </Card>

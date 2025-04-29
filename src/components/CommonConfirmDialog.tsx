@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "./ui/button";
 
 type CommonConfirmDialogProps = {
-    triggerName: string;
+    triggerName: any;
     title: string;
     description: string;
     onConfirm?: () => void; 
@@ -37,9 +37,12 @@ export default function CommonConfirmDialog(props: CommonConfirmDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="ghost" className="w-full font-normal flex justify-start px-2">
+        
+        {
+          typeof(triggerName) === "string" ? <Button variant="ghost" className="w-full font-normal flex justify-start px-2">
           {triggerName}
-        </Button>
+        </Button> : triggerName
+        }
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

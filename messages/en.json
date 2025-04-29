@@ -278,6 +278,15 @@
   "comment_management": "Comment Management",
   "customers": "Customers",
   "chat_ai": "Chat with AI",
-  "chat_ai_placeholder": "Ask me anything about products in the store"
+  "chat_ai_placeholder": "Ask me anything about products in the store",
+  "Active": "Active",
+  "Banned": "Banned",
+  "Role": "Role",
+  "registration_date": "Registration date",
+  "banned_in_x": "Banned in {x}",
+  "ban_user_warning": "Are you sure you want to ban this user?",
+  "ban_user_x": "Ban user #{x}",
+  "ban_user_x_success": "User {x} was banned successfully",
+  "ban_user_error": "User ban failed"
 
 }
