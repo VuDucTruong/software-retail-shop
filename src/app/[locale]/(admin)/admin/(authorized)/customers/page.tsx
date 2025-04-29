@@ -1,21 +1,17 @@
 "use client";
 
-import { CommmonDataTable } from "@/components/CommonDataTable";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
+import { CommmonDataTable } from "@/components/common/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { StatusBadge } from "@/components/StatusBadge";
-import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
+import { StatusBadge } from "@/components/common/StatusBadge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRouter } from "@/i18n/navigation";
-import { Payment } from "@/models/payment";
+import UserDetailDialog from "@/components/user/UserDetailDialog";
 import { User } from "@/models/user/user";
 import { ColumnDef } from "@tanstack/react-table";
-import { Eye, UserX } from "lucide-react";
+import { UserX } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
-import UserDetailDialog from "./components/UserDetailDialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import CommonConfirmDialog from "@/components/CommonConfirmDialog";
 import { toast } from "sonner";
 
 export default function CustomerManagementPage() {

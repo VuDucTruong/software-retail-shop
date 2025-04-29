@@ -1,8 +1,8 @@
 "use client";
 import { useTranslations } from "next-intl";
-import ProductItem from "../ProductItem";
+import ProductItem from "@/components/common/ProductItem";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardTitle } from "../ui/card";
+import { Card, CardContent } from "../ui/card";
 
 type HomeProductSectionProps = {
   title: string;

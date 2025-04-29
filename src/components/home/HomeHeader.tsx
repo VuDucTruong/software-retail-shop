@@ -11,10 +11,10 @@ import {
 import { FaEye, FaFireAlt, FaPercent } from "react-icons/fa";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { CommonSelect } from "../CommonSelect";
+import { CommonSelect } from "@/components/common/CommonSelect";
 import { RiDiscountPercentLine } from "react-icons/ri";
 import { AuthDialog } from "../auth/AuthDialog";
-import Logo from "../Logo";
+import Logo from "@/components/common/Logo";
 import SearchBar from "./SearchBar";
 import CartButton from "./CartButton";
 import { Separator } from "@/components/ui/separator";

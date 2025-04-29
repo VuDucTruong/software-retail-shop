@@ -1,21 +1,17 @@
-import React from "react";
+import CommonDisplayInput from "@/components/common/CommonDisplayInput";
+import { StatusBadge } from "@/components/common/StatusBadge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { User } from "@/models/user/user";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { User } from "@/models/user/user";
-import { userAgent } from "next/server";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import CommonDisplayInput from "@/components/CommonDisplayInput";
-import { StatusBadge } from "@/components/StatusBadge";
 
 type UserDetailDialogProps = {
   user: User;

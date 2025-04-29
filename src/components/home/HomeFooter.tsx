@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import React from "react";
 import { supportPhone } from "@/config/constants";
 import Link from "next/link";
-import Logo from "../Logo";
+import Logo from "@/components/common/Logo";
 
 export default function HomeFooter() {
   const t = useTranslations();

@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useTranslations } from "next-intl";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 type CommonConfirmDialogProps = {
     triggerName: any;

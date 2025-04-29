@@ -8,7 +8,7 @@ import { User } from "@/models/user/user";
 
 import { useTranslations } from "next-intl";
 import React from "react";
-import ChangePassDialog from "./components/ChangePassDialog";
+import ChangePassDialog from "@/components/profile/ChangePassDialog";
 
 const sampleUser: User = {
   id: 1,

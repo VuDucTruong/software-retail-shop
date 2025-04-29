@@ -5,7 +5,7 @@ import {
   FormControl,
   FormMessage,
   FormField,
-} from "./ui/form";
+} from "@/components/ui/form";
 
 export default function CommonInputOutline({
   title,

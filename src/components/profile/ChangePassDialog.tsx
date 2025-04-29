@@ -12,7 +12,7 @@ import { Edit3 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {  useForm } from "react-hook-form";
 import { Form,FormField } from "@/components/ui/form";
-import CommonInputOutline from "@/components/CommonInputOutline";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { Input } from "@/components/ui/input";
 import { ChangePassRequest, ChangePassScheme } from "@/models/user/request/change_pass";
 import { zodResolver } from "@hookform/resolvers/zod";

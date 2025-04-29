@@ -1,5 +1,5 @@
 'use client'
-import CommonInputOutline from "@/components/CommonInputOutline";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
 import ValueTypeInput from "@/components/coupon/ValueTypeInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

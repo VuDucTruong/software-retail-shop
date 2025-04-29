@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config/constants";
 
 interface DataTableProps<TData, TValue> {

@@ -1,5 +1,4 @@
 "use client";
-import OrderTable from "@/components/orders/OrderTable";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +14,7 @@ import { useTranslations } from "next-intl";
 import OrderDetailItem from "@/components/orders/OrderDetaiItem";
 import { useParams } from "next/navigation";
 import { FaCartPlus } from "react-icons/fa";
-import SimpleTable from "@/components/CommonDataTable";
+import {CommmonDataTable} from "@/components/common/CommonDataTable";
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -57,7 +56,7 @@ export default function OrderDetailPage() {
       <CardContent className="flex flex-col gap-4">
         <h4>{t("order_information")}</h4>
         {/* Order Info */}
-        <SimpleTable columns={cols} data={data} />
+        <CommmonDataTable columns={cols} data={data} />
       </CardContent>
 
       <CardFooter className="flex flex-col gap-4 max-h-[400px] overflow-y-auto">

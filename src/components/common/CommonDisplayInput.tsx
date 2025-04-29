@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input } from './ui/input'
+import { Input } from '@/components/ui/input'
 
 export default function CommonDisplayInput({title,value}: {title: string,value: string}) {
   return (

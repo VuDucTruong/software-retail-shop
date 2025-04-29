@@ -4,10 +4,10 @@ import CardSection from "@/components/dashboard/CardSection";
 import { InteractiveLineChart } from "@/components/dashboard/InteractiveLineChart";
 
 import React from "react";
-import { CommmonDataTable } from "@/components/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/CommonDataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import TableCellViewer from "@/components/dashboard/TableCellViewer";
-import { StatusBadge } from "@/components/StatusBadge";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import { z } from "zod";
 import { convertPriceToVND } from "@/lib/currency_helper";
 import { useTranslations } from "next-intl";

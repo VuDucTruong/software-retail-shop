@@ -1,4 +1,4 @@
-import ProductItem from "@/components/ProductItem";
+import ProductItem from "@/components/common/ProductItem";
 import { FilterForm } from "@/components/search/FilterForm";
 
 import { Button } from "@/components/ui/button";

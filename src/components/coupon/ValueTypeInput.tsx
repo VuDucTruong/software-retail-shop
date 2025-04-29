@@ -1,5 +1,5 @@
 import React from "react";
-import CommonInputOutline from "../CommonInputOutline";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { Input } from "../ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";

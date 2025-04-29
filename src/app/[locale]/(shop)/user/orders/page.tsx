@@ -1,8 +1,8 @@
 "use client";
 
-import { CommmonDataTable } from "@/components/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/CommonDataTable";
 import { OrdersFilterForm } from "@/components/orders/OrdersFilterForm";
-import { StatusBadge } from "@/components/StatusBadge";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

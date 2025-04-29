@@ -4,7 +4,7 @@ import { Card, CardContent } from "../ui/card";
 import { IoMdTrendingUp } from "react-icons/io";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
-import ProductItem from "../ProductItem";
+import ProductItem from "@/components/common/ProductItem";
 export default function BestSellerSection() {
   const t = useTranslations();
   return (

@@ -1,9 +1,9 @@
 "use client";
 
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
-import { CommmonDataTable } from "@/components/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import TableOptionMenu from "@/components/TableOptionMenu";
+import TableOptionMenu from "@/components/common/TableOptionMenu";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";

@@ -7,7 +7,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { GoHeartFill } from "react-icons/go";
 import { Button } from "../ui/button";
-import CommonPriceItem from "../CommonPriceItem";
+import CommonPriceItem from "@/components/common/CommonPriceItem";
 import { useRouter } from "next/navigation";
 
 type FavoriteProductItemProps = {

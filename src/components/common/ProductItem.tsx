@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { useFormatter } from "next-intl";
-import { Card, CardContent, CardTitle } from "./ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import DiscountItem from "./DiscountItem";
 import { cn } from "@/lib/utils";
 import {

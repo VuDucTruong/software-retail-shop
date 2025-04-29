@@ -1,10 +1,10 @@
 "use client";
 
-import CommonConfirmDialog from "@/components/CommonConfirmDialog";
-import { CommmonDataTable } from "@/components/CommonDataTable";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
+import { CommmonDataTable } from "@/components/common/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { StatusBadge } from "@/components/StatusBadge";
-import TableOptionMenu from "@/components/TableOptionMenu";
+import { StatusBadge } from "@/components/common/StatusBadge";
+import TableOptionMenu from "@/components/common/TableOptionMenu";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -25,137 +25,139 @@ import React from "react";
 import { CgAdd } from "react-icons/cg";
 import { toast } from "sonner";
 
-export default function ProductManagementPage() {
-  const t = useTranslations();
-  const router = useRouter();
-  const cols: ColumnDef<Product>[] = [
-    {
-      accessorKey: "id",
-      header: "ID",
-      cell: ({ row }) => {
-        return row.id;
-      },
-      enableHiding: false,
-    },
-    {
-      accessorKey: "image",
-      header: t("Image"),
-      cell: ({ row }) => {
-        return <div className="flex items-center justify-center">
-          <div className="relative size-20 ">
-          <Image alt={row.original.id.toString()} src={row.original.imageUrl} fill className="rounded-md object-cover" />
-        </div>
-        </div>;
-      },
-      enableHiding: false,
-    },
-    {
-      accessorKey: "name",
-      header: t("Name"),
-      cell: ({ row }) => {
-        return row.original.name;
-      },
-    },
-    {
-      accessorKey: "model",
-      header: t("product_code"),
-      cell: ({ row }) => {
-        return row.original.slug;
-      },
-    },
-    {
-      accessorKey: "tags",
-      header: t("Tags"),
-      cell: ({ row }) => {
-        return row.original.tags.join(", ");
-      },
-    },
-    {
-      accessorKey: "price",
-      header: t("Price"),
-      cell: ({ row }) => {
-        return row.original.price;
-      },
-    },
-    {
-      accessorKey: "original_price",
-      header: t("original_price"),
-      cell: ({ row }) => {
-        return row.original.originalPrice;
-      },
-    },
-    {
-      accessorKey: "stock",
-      header: t("Stock"),
-      cell: ({ row }) => {
-        return row.original.stock;
-      },
-    },
-    {
-      accessorKey: "status",
-      header: t("Status"),
-      cell: ({ row }) => {
-        return (
-          <StatusBadge
-            status={row.original.stock > 0 ? "in_stock" : "out_stock"}
-          />
-        );
-      },
-    },
-  ];
 
-  const sampleData: Product[] = [];
 
-  const handleDelete = (id: number) => {
-    toast.success(t("delete_product_x_success", { x:id }));
+// export default function ProductManagementPage() {
+//   const t = useTranslations();
+//   const router = useRouter();
+//   const cols: ColumnDef<Product>[] = [
+//     {
+//       accessorKey: "id",
+//       header: "ID",
+//       cell: ({ row }) => {
+//         return row.id;
+//       },
+//       enableHiding: false,
+//     },
+//     {
+//       accessorKey: "image",
+//       header: t("Image"),
+//       cell: ({ row }) => {
+//         return <div className="flex items-center justify-center">
+//           <div className="relative size-20 ">
+//           <Image alt={row.original.id.toString()} src={row.original.imageUrl} fill className="rounded-md object-cover" />
+//         </div>
+//         </div>;
+//       },
+//       enableHiding: false,
+//     },
+//     {
+//       accessorKey: "name",
+//       header: t("Name"),
+//       cell: ({ row }) => {
+//         return row.original.name;
+//       },
+//     },
+//     {
+//       accessorKey: "model",
+//       header: t("product_code"),
+//       cell: ({ row }) => {
+//         return row.original.slug;
+//       },
+//     },
+//     {
+//       accessorKey: "tags",
+//       header: t("Tags"),
+//       cell: ({ row }) => {
+//         return row.original.tags.join(", ");
+//       },
+//     },
+//     {
+//       accessorKey: "price",
+//       header: t("Price"),
+//       cell: ({ row }) => {
+//         return row.original.price;
+//       },
+//     },
+//     {
+//       accessorKey: "original_price",
+//       header: t("original_price"),
+//       cell: ({ row }) => {
+//         return row.original.originalPrice;
+//       },
+//     },
+//     {
+//       accessorKey: "stock",
+//       header: t("Stock"),
+//       cell: ({ row }) => {
+//         return row.original.stock;
+//       },
+//     },
+//     {
+//       accessorKey: "status",
+//       header: t("Status"),
+//       cell: ({ row }) => {
+//         return (
+//           <StatusBadge
+//             status={row.original.stock > 0 ? "in_stock" : "out_stock"}
+//           />
+//         );
+//       },
+//     },
+//   ];
+
+//   const sampleData: Product[] = [];
+
+//   const handleDelete = (id: number) => {
+//     toast.success(t("delete_product_x_success", { x:id }));
     
-  };
+//   };
 
-  const handleViewDetails = (id: number) => {
-    router.push(`products/${id}`);
-  };
+//   const handleViewDetails = (id: number) => {
+//     router.push(`products/${id}`);
+//   };
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <h2>{t("product_management")}</h2>
-          <div className="flex items-center gap-2">
-            <Link href={"products/create"}>
-              <Button variant="outline" className="bg-primary text-white">
-                <CgAdd /> {t("create_product")}
-              </Button>
-            </Link>
-            <ProductFilterSheet />
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <CommmonDataTable
-          columns={cols}
-          data={sampleData}
+//   return (
+//     <Card>
+//       <CardHeader>
+//         <CardTitle className="flex items-center justify-between">
+//           <h2>{t("product_management")}</h2>
+//           <div className="flex items-center gap-2">
+//             <Link href={"products/create"}>
+//               <Button variant="outline" className="bg-primary text-white">
+//                 <CgAdd /> {t("create_product")}
+//               </Button>
+//             </Link>
+//             <ProductFilterSheet />
+//           </div>
+//         </CardTitle>
+//       </CardHeader>
+//       <CardContent>
+//         <CommmonDataTable
+//           columns={cols}
+//           data={sampleData}
          
-          hasActions
-          renderActions={(row) => {
-            return (
-              <TableOptionMenu actions={[
-                {
-                  label: t("Detail"),
-                  onClick: () => handleViewDetails(row.id),
-                },
-                {
-                  label: t("Delete"),
-                  onClick: () => handleDelete(row.id),
-                  confirm: {
-                    title: t("delete_product_x", { x: row.id }),
-                    description: t("delete_product_warning"),
-                  },
-                },
-              ]} />
-            );
-          }}
-        />
-      </CardContent>
-    </Card>
-  );
-}
+//           hasActions
+//           renderActions={(row) => {
+//             return (
+//               <TableOptionMenu actions={[
+//                 {
+//                   label: t("Detail"),
+//                   onClick: () => handleViewDetails(row.id),
+//                 },
+//                 {
+//                   label: t("Delete"),
+//                   onClick: () => handleDelete(row.id),
+//                   confirm: {
+//                     title: t("delete_product_x", { x: row.id }),
+//                     description: t("delete_product_warning"),
+//                   },
+//                 },
+//               ]} />
+//             );
+//           }}
+//         />
+//       </CardContent>
+//     </Card>
+//   );
+// }

@@ -2,7 +2,7 @@
 
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
 import EditCategoryDialog from "@/components/category/EditCategoryDialog";
-import { CommmonDataTable } from "@/components/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

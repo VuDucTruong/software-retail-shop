@@ -1,7 +1,7 @@
 import BlogGenreSection from "@/components/blog/BlogGenreSection";
 import NavPostLink from "@/components/blog/NavPostLink";
 import HorizontalPostListItem from "@/components/blog/HorizontalPostListItem";
-import ThreeDButton from "@/components/ThreeDButton";
+import ThreeDButton from "@/components/common/ThreeDButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,

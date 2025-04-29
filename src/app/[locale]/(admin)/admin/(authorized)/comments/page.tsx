@@ -1,9 +1,9 @@
 "use client";
 
 import EditCommentDialog from "@/components/comments/EditCommentDialog";
-import { CommmonDataTable } from "@/components/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { StatusBadge } from "@/components/StatusBadge";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
