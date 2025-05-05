@@ -12,7 +12,7 @@ import {
 } from "../ui/breadcrumb";
 import { Separator } from "../ui/separator";
 import { usePathname } from "@/i18n/navigation";
-import SearchCommandDialog from "../SearchCommandDialog";
+import SearchCommandDialog from "@/components/common/SearchCommandDialog";
 
 export default function AdminHeader() {
   const pathName = usePathname();

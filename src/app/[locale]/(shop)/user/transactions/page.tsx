@@ -1,6 +1,6 @@
 'use client';
 
-import { CommmonDataTable } from "@/components/common/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 
 
 import { TransactionsFilterForm } from "@/components/transactions/TransactionsFilterForm";

@@ -1,7 +1,7 @@
 "use client";
 
 import EditCommentDialog from "@/components/comments/EditCommentDialog";
-import { CommmonDataTable } from "@/components/common/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";

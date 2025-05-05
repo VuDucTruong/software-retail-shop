@@ -73,7 +73,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="size-8">
+        <Button className="size-8 bg-yellow-400 hover:bg-yellow-500">
           <PenLine />
         </Button>
       </DialogTrigger>

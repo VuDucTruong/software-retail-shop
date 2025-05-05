@@ -1,7 +1,7 @@
 "use client";
 
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import { CommmonDataTable } from "@/components/common/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import TableOptionMenu from "@/components/common/TableOptionMenu";

@@ -1,7 +1,7 @@
 "use client";
 
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
-import { CommmonDataTable } from "@/components/common/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import TableOptionMenu from "@/components/common/TableOptionMenu";
 import { Button } from "@/components/ui/button";

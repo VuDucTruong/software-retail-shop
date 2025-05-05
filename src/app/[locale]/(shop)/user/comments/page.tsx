@@ -1,7 +1,7 @@
 "use client";
 
 import { CommentsFilterForm } from "@/components/comments/CommentsFilterForm";
-import { CommmonDataTable } from "@/components/common/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { sampleOrderItems } from "@/config/sampleData";
 import { useTranslations } from "next-intl";

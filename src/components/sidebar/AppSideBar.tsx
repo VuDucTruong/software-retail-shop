@@ -26,7 +26,7 @@ export default function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>\
+    <Sidebar collapsible="offcanvas" {...props}>
       {/* Logo place */}
       <SidebarHeader>
         <SidebarMenu>

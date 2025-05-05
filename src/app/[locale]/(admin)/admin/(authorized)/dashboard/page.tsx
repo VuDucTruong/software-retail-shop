@@ -4,7 +4,7 @@ import CardSection from "@/components/dashboard/CardSection";
 import { InteractiveLineChart } from "@/components/dashboard/InteractiveLineChart";
 
 import React from "react";
-import { CommmonDataTable } from "@/components/common/CommonDataTable";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import { ColumnDef } from "@tanstack/react-table";
 import TableCellViewer from "@/components/dashboard/TableCellViewer";
 import { StatusBadge } from "@/components/common/StatusBadge";

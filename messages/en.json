@@ -287,6 +287,9 @@
   "ban_user_warning": "Are you sure you want to ban this user?",
   "ban_user_x": "Ban user #{x}",
   "ban_user_x_success": "User {x} was banned successfully",
-  "ban_user_error": "User ban failed"
+  "ban_user_error": "User ban failed",
+  "delete_selected_x_of_y": "Delete {x} of {y} row(s) selected",
+  "page_x_of_y": "Page {x} of {y}",
+  "Notifications": "Notifications"
 
 }
