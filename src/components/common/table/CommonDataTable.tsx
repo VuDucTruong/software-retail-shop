@@ -216,7 +216,7 @@ export function CommmonDataTable<TData, TValue>({
       <div className="flex items-center justify-end">
         {canSelect && (
           <div className="hidden flex-1 lg:flex">
-            <Button variant={"destructive"} onClick={hanndleDeleteRows}>
+            <Button variant={"destructive"} onClick={hanndleDeleteRows} disabled={table.getFilteredSelectedRowModel().rows.length === 0}>
               {t("delete_selected_x_of_y", {
                 x: table.getFilteredSelectedRowModel().rows.length,
                 y: table.getFilteredRowModel().rows.length,

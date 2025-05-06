@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { DescriptionScheme } from "./product_description";
 import { CategoryScheme } from "../category";
+import { ProductMetadataScheme } from "./product_metadata";
+import { ProductItemScheme } from "./product_item";
 
 // === Validation Messages ===
 const messages = {
@@ -15,63 +17,65 @@ const messages = {
   price: "Price must be greater than or equal to 0",
   originalPrice: "Original Price must be greater than or equal to 0",
   priceComparison: "Price must be less than or equal to original price",
-  stock: "Stock must be greater than 0",
+  quantity: "quantity must be greater than 0",
 };
 export const ProductScheme = z.object({
-  id: z.number(),
-  slug: z.string(),
-  name: z.string(),
-  imageUrl: z.string(),
-  price: z.number(),
-  originalPrice: z.number(),
-  categories: z.array(CategoryScheme),
-  tags: z.array(z.string()),
+  id: z.number().default(0),
+  slug: z.string().default(""),
+  name: z.string().default(""),
+  imageUrl: z.string().default(""),
+  represent: z.boolean().default(true),
+  price: z.number().default(0),
+  originalPrice: z.number().default(0),
+  categories: z.array(CategoryScheme).default([]),
+  tags: z.array(z.string()).default([]),
   productDescription: DescriptionScheme,
-  stock: z.number(),
-  
+  quantity: z.number(),
+  status: z.string(),
+  variants: z.array(ProductMetadataScheme),
+  productItems: z.array(ProductItemScheme)
 });
 
 // === Schemas ===
 
 export const ProductValidation = z.object({
-  id: z.number(),
-  slug: z.string().nonempty(messages.required.slug),
+  slug: z.string().nonempty({ message: messages.required.slug }),
   name: z.string().regex(/^[a-zA-Z0-9\s]{3,}$/, { message: messages.name }),
-  imageUrl: z.string(),
+  image: z.instanceof(File, { message: "Image is required" }).nullable(),
   price: z.number().gte(0, { message: messages.price }),
   originalPrice: z.number().gte(0, { message: messages.originalPrice }),
-  categories: z.array(CategoryScheme).nonempty(messages.required.categories),
-  tags: z.array(z.string()).nonempty(messages.required.tags),
+  categories: z.array(z.number()).nonempty({ message: messages.required.categories }),
+  tags: z.array(z.string()).nonempty({ message: messages.required.tags }),
   productDescription: DescriptionScheme,
-  stock: z.number().gt(0, { message: messages.stock }),
-
-}).superRefine((data, ctx) => {
-  if (data.price > data.originalPrice) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: messages.priceComparison,
-      path: ["price"],
-    });
-  }
 });
 
-// === Product Create / Update Common Shape ===
-const FileShape = {
-  image: z.instanceof(File, { message: "Image is required" }).nullable(),
-};
 
 // Create
 export const ProductCreateScheme = 
-  ProductScheme
-    .omit({ id: true, imageUrl: true })
-    .extend(FileShape)
+  ProductValidation.superRefine((data, ctx) => {
+    if (data.price > data.originalPrice) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: messages.priceComparison,
+        path: ["price"],
+      });
+    }
+  })
 
 
 // Update
 export const ProductUpdateScheme = 
-  ProductScheme
-    .omit({ imageUrl: true})
-    .extend(FileShape)
+  ProductValidation.extend({
+    id: z.number().default(0),
+  }).superRefine((data, ctx) => {
+    if (data.price > data.originalPrice) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: messages.priceComparison,
+        path: ["price"],
+      });
+    }
+  });
 
 // === Types ===
 export type Product = z.infer<ReturnType<typeof ProductScheme["partial"]>>;;

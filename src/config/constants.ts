@@ -80,7 +80,7 @@ export const adminMenu: AdminMenu = {
   },
   navDashboard: {
     title: "Dashboard",
-    url: "dashboard",
+    url: "/admin/dashboard",
     icon: IoHomeOutline,
   },
   navProduct: {
@@ -89,19 +89,19 @@ export const adminMenu: AdminMenu = {
     items: [
       {
         title: "Products",
-        url: "products",
+        url: "/admin/products",
         icon: AiOutlineProduct,
         items: [],
       },
       {
         title: "Categories",
-        url: "categories",
+        url: "/admin/categories",
         icon: MdOutlineCategory,
         items: [],
       },
       {
         title: "Coupons",
-        url: "coupons",
+        url: "/admin/coupons",
         icon: BiSolidDiscount,
         items: [],
       },
@@ -113,25 +113,25 @@ export const adminMenu: AdminMenu = {
     items: [
       {
         title: "Customers",
-        url: "customers",
+        url: "/admin/customers",
         icon: RiFolderUserLine,
         items: [],
       },
       {
         title: "Orders",
-        url: "orders",
+        url: "/admin/orders",
         icon: LuShoppingBag,
         items: [],
       },
       {
         title: "Transactions",
-        url: "transactions",
+        url: "/admin/transactions",
         icon: FaMoneyCheck,
         items: [],
       },
       {
         title: "Comments",
-        url: "comments",
+        url: "/admin/comments",
         icon: FaComment,
         items: [],
       },
@@ -143,14 +143,8 @@ export const adminMenu: AdminMenu = {
     items: [
       {
         title: "Blogs",
-        url: "blogs",
+        url: "/admin/blogs",
         icon: FaBlog,
-        items: [],
-      },
-      {
-        title: "FAQs",
-        url: "faqs",
-        icon: FaQuestion,
         items: [],
       },
     ],
@@ -161,7 +155,7 @@ export const adminMenu: AdminMenu = {
     items: [
       {
         title: "Staffs",
-        url: "staffs",
+        url: "/admin/staffs",
         icon: MdSecurity,
         items: [],
       },

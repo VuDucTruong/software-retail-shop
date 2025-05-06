@@ -13,6 +13,7 @@ import TableRow from "@tiptap/extension-table-row";
 import TableHeader from "@tiptap/extension-table-header";
 import TableCell from "@tiptap/extension-table-cell";
 import "./rich_text.css"
+import { Skeleton } from "../ui/skeleton";
 
 
 
@@ -26,7 +27,10 @@ export default function RichTextEditor({
   content,
   onChange,
 }: RichTextEditorProps) {
-  
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -75,6 +79,10 @@ export default function RichTextEditor({
     immediatelyRender: false,
  
   });
+  if (!mounted) {
+    return <Skeleton className="h-40 w-full" />;
+  }
+  
   
   return (
     <div>

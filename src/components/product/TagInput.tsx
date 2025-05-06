@@ -19,7 +19,6 @@ export function TagsInput({
     <div className="space-y-2">
       <div className="flex gap-2">
         <Input
-          placeholder="Nhập tag và nhấn Enter"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={(e) => {
@@ -74,7 +73,7 @@ export function TagsInput({
             ))}
           </>
         ) : (
-          <p className="text-sm text-muted-foreground">No category selected</p>
+          <p className="text-sm text-muted-foreground">{t('no_tags_selected')}</p>
         )}
       </div>
     </div>

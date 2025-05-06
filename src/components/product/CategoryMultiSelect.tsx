@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 // fake options - replace with real API categories
 const options = [
@@ -26,7 +27,7 @@ const options = [
 export function CategoryMultiSelectField() {
   const { control } = useFormContext();
   const [open, setOpen] = useState(false);
-
+  const  t  = useTranslations();
   return (
     <Controller
       control={control}
@@ -56,7 +57,7 @@ export function CategoryMultiSelectField() {
                     : "Select Categories"}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full px-0">
+              <PopoverContent className="flex px-0">
                 <Command>
                   <CommandInput placeholder="Search category..." />
                   <CommandGroup>
@@ -77,7 +78,7 @@ export function CategoryMultiSelectField() {
             <div className="flex flex-wrap gap-2">
               {selectedIds.length === 0 && (
                 <p className="text-sm text-muted-foreground">
-                  No category selected
+                 {t("no_categories_selected")}
                 </p>
               )}
               {selectedIds.map((id: number) => {

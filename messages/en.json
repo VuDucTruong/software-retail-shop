@@ -290,6 +290,18 @@
   "ban_user_error": "User ban failed",
   "delete_selected_x_of_y": "Delete {x} of {y} row(s) selected",
   "page_x_of_y": "Page {x} of {y}",
-  "Notifications": "Notifications"
-
+  "Notifications": "Notifications",
+  "Infomation": "Information",
+  "Platform": "Platform",
+  "Policy": "Policy",
+  "Tutorial": "Tutorial",
+  "description_hint": "Description of the product, including features, specifications, and other details",
+  "info_hint": "Information about the product, including frequently asked questions, support, and other details",
+  "tutorial_hint": "Instructions for using the product, including installation, setup, and other details",
+  "policy_hint": "Policy of the product, including warranty, return policy, and other details",
+  "platform_hint": "Platform of the product, including supported platforms, system requirements, and other details",
+  "Update": "Update",
+  "Create": "Create",
+  "no_categories_selected": "No categories selected",
+  "no_tags_selected": "No tags selected"
 }
