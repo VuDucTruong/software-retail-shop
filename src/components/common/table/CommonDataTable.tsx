@@ -48,8 +48,9 @@ import {
 import { Checkbox } from "../../ui/checkbox";
 import CommonTablePagination from "./CommonTablePagination";
 import CommonTableVisibility from "./CommonTableVisibility";
+import { toast } from "sonner";
 
-interface DataTableProps<TData extends { id?: number }, TValue> {
+interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   canSelect?: boolean;
@@ -61,7 +62,7 @@ interface DataTableProps<TData extends { id?: number }, TValue> {
   onSortingChange?: (updater: Updater<SortingState>) => void;
 }
 
-export function CommmonDataTable<TData extends { id?: number }, TValue>({
+export function CommmonDataTable<TData, TValue>({
   columns,
   data,
   canSelect = false,
@@ -141,7 +142,14 @@ export function CommmonDataTable<TData extends { id?: number }, TValue>({
   const hanndleDeleteRows = () => {
     const selectedRowIds = table
       .getFilteredSelectedRowModel()
-      .rows.map((row) => row.original.id!);
+      .rows.map((row) => {
+        if(row.original != undefined) {
+          return (row.original as any).id;
+        } else {
+          toast.error("Not found id of row , you need to declare id in your data type");
+          return -1;
+        }
+      });
     setRowSelection({});
     onDeleteRows?.(selectedRowIds);
   };

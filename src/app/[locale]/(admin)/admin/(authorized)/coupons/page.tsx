@@ -9,17 +9,56 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
 import { Category, CategoryCreate } from "@/models/category";
 import { Coupon } from "@/models/coupon";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { CgAdd } from "react-icons/cg";
 import { toast } from "sonner";
-
+import { useState, useEffect } from "react";
+const sampleData: Coupon[] = Array.from({ length: 10 }, (_, i) => ({
+  id: i + 1,
+  code: `Coupon ${i + 1}`,
+  type: i % 2 === 0 ? "PERCENTAGE" : "FIXED",
+  availableFrom: new Date().toISOString(),
+  availableTo: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+  value: Math.floor(Math.random() * 100),
+  minAmount: Math.floor(Math.random() * 100),
+  maxAppliedAmount: Math.floor(Math.random() * 100),
+  usageLimit: Math.floor(Math.random() * 100),
+  description: `Description for Coupon ${i + 1}`,
+}));
 export default function CouponManagementPage() {
   const t = useTranslations();
   const router = useRouter();
+
+const [data, setData] = useState<Coupon[]>([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [sorting, setSorting] = useState<SortingState>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const sort = sorting[0];
+      const sortBy = sort?.id || "id";
+      const order = sort?.desc ? "desc" : "asc";
+      console.log(
+        "Fetching data with pagination:",
+        pagination,
+        "and sorting:",
+        sortBy,
+        order
+      );
+      setData(sampleData);
+      setPageCount(100);
+    };
+    fetchData();
+  }, [pagination, sorting]);
+
+
   const cols: ColumnDef<Coupon>[] = [
     {
       accessorKey: "code",
@@ -67,21 +106,32 @@ export default function CouponManagementPage() {
       cell: ({ row }) => {
         return row.original.description;
       },
+    },
+    {
+      accessorKey: "actions",
+      header: "",
+      cell: ({ row }) => {
+        return (
+          <TableOptionMenu actions={[
+            {
+              label: t("Detail"),
+              onClick: () => handleViewDetails(row.original.id!),
+            },
+            {
+              label: t("Delete"),
+              onClick: () => handleDelete(row.original.id!),
+              confirm: {
+                title: t("delete_coupon_x", { x: row.original.id! }),
+                description: t("delete_coupon_warning"),
+              },
+            },
+           ]}/>
+        );
+      },
     }
   ];
 
-  const sampleData: Coupon[] = Array.from({ length: 10 }, (_, i) => ({
-    id: i + 1,
-    code: `Coupon ${i + 1}`,
-    type: i % 2 === 0 ? "PERCENTAGE" : "FIXED",
-    availableFrom: new Date().toISOString(),
-    availableTo: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    value: Math.floor(Math.random() * 100),
-    minAmount: Math.floor(Math.random() * 100),
-    maxAppliedAmount: Math.floor(Math.random() * 100),
-    usageLimit: Math.floor(Math.random() * 100),
-    description: `Description for Coupon ${i + 1}`,
-  }));
+
 
   const handleDelete = (id: number) => {
     toast.success(t("Success", { x: id }));
@@ -108,26 +158,26 @@ export default function CouponManagementPage() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <CommmonDataTable
+      <CommmonDataTable
           columns={cols}
-          data={sampleData}
-          hasActions
-          renderActions={(row) => (
-           <TableOptionMenu actions={[
-            {
-              label: t("Detail"),
-              onClick: () => handleViewDetails(row.id!),
-            },
-            {
-              label: t("Delete"),
-              onClick: () => handleDelete(row.id!),
-              confirm: {
-                title: t("delete_coupon_x", { x: row.id! }),
-                description: t("delete_coupon_warning"),
-              },
-            },
-           ]}/>
-          )}
+          data={data}
+          pageCount={pageCount}
+          pagination={pagination}
+          onPaginationChange={(updater) => {
+            setPagination((old) =>
+              typeof updater === "function" ? updater(old) : updater
+            );
+          }}
+          canSelect
+          onDeleteRows={(rows) => {
+            console.log(rows);
+          }}
+          sorting={sorting}
+          onSortingChange={(updater) => {
+            setSorting((prev) =>
+              typeof updater === "function" ? updater(prev) : updater
+            );
+          }}
         />
       </CardContent>
     </Card>

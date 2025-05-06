@@ -8,24 +8,57 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { sampleOrderItems } from "@/config/sampleData";
 import { convertPriceToVND } from "@/lib/currency_helper";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
+import { Category } from "@/models/category";
+import { Order } from "@/models/order/order";
+const scheme = z.object({
+  time: z.string(),
+  order_id: z.string(),
+  product: z.string(),
+  quantity: z.number(),
+  total: z.number().transform((val) => convertPriceToVND(val)),
+  status: z.string(),
 
+});
+const sampleData = Array.from({ length: 10 }, (_, i) => ({
+  time: "2023-10-01 12:00:00",
+  order_id: `ORD${i + 1}`,
+  product: `Product ${i + 1}`,
+  quantity: Math.floor(Math.random() * 10) + 1,
+  total: Math.floor(Math.random() * 1000000) + 100000,
+  status: "pending",
+}));
 export default function OrderPage() {
   const t = useTranslations();
-
-  const scheme = z.object({
-    time: z.string(),
-    order_id: z.string(),
-    product: z.string(),
-    quantity: z.number(),
-    total: z.number().transform((val) => convertPriceToVND(val)),
-    status: z.string(),
-
+const [data, setData] = useState<any[]>([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
   });
+  const [sorting, setSorting] = useState<SortingState>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const sort = sorting[0];
+      const sortBy = sort?.id || "id";
+      const order = sort?.desc ? "desc" : "asc";
+      console.log(
+        "Fetching data with pagination:",
+        pagination,
+        "and sorting:",
+        sortBy,
+        order
+      );
+      setData(sampleData);
+      setPageCount(100);
+    };
+    fetchData();
+  }, [pagination, sorting]);
+
 
   const cols: ColumnDef<z.infer<typeof scheme>>[] = [
     { header: t("Time"), accessorKey: "time"},
@@ -62,15 +95,26 @@ export default function OrderPage() {
           <OrdersFilterForm />
 
           <CommmonDataTable
-            columns={cols}
-            data={scheme.array().parse(sampleOrderItems)}
-            hasActions
-            renderActions={(row) => (
-              <Link href="orders/[id]" as={`orders/${row.order_id}`}>
-                <Button variant={"link"}>{t("Detail")}</Button>
-              </Link>
-            )}
-          />
+          columns={cols}
+          data={data}
+          pageCount={pageCount}
+          pagination={pagination}
+          onPaginationChange={(updater) => {
+            setPagination((old) =>
+              typeof updater === "function" ? updater(old) : updater
+            );
+          }}
+          canSelect
+          onDeleteRows={(rows) => {
+            console.log(rows);
+          }}
+          sorting={sorting}
+          onSortingChange={(updater) => {
+            setSorting((prev) =>
+              typeof updater === "function" ? updater(prev) : updater
+            );
+          }}
+        />
         </div>
       </CardContent>
     </Card>

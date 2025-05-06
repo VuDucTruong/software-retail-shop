@@ -4,12 +4,10 @@ import { Button } from "../ui/button";
 import { MdDelete } from "react-icons/md";
 import { Card, CardContent } from "../ui/card";
 import QuantityCounter from "./QuantityCounter";
-import DiscountItem from "../DiscountItem";
 import { BsBox2 } from "react-icons/bs";
-import { useFormatter, useTranslations } from "next-intl";
-import { calcDiscountPercentage, convertPriceToVND } from "@/lib/currency_helper";
+import { useTranslations } from "next-intl";
 import { CartItemProps } from "@/types/cart_item";
-import CommonPriceItem from "../CommonPriceItem";
+import CommonPriceItem from "@/components/common/CommonPriceItem";
 
 
 

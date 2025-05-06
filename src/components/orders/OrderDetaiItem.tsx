@@ -36,7 +36,7 @@ export default function OrderDetaiItem() {
             {t("Quantity")}: {1}
           </h4>
             
-          <h4 className="text-lg">{convertPriceToVND(9000, format)}</h4>
+          <h4 className="text-lg">{convertPriceToVND(9000)}</h4>
         </div>
 
         <Accordion type="multiple" className="w-full bg-accent px-2 rounded-md">

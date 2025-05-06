@@ -20,7 +20,7 @@ import Link from "next/link";
 export default function Page() {
   const t = useTranslations();
   const scheme = z.object({
-    id: z.string(),
+    id: z.number(),
     purchaser: z.string(),
     status: z.string(),
     total: z.number().transform((val) => convertPriceToVND(val)),

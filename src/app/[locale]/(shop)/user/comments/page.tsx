@@ -19,6 +19,7 @@ export default function CommentsPage() {
   ];
 
   const sampleData = Array.from({ length: 20 }, (_, i) => ({
+    id: i + 1,
     time: new Date().toLocaleDateString(),
     description: `Gói gia hạn Zoom Pro ${i + 1}`,
   }));

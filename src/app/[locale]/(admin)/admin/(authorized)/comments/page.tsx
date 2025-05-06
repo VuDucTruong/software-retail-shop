@@ -10,61 +10,107 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
 import { Comment } from "@/models/comment";
 import { Payment } from "@/models/payment";
-import { ColumnDef } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  PaginationState,
+  SortingState,
+} from "@tanstack/react-table";
 import { ExternalLink, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-
+import { useEffect, useState } from "react";
+const sampleData: Comment[] = Array.from({ length: 20 }, (_, i) => ({
+  id: i + 1,
+  username: `User ${i + 1}`,
+  content: `This is a comment content for comment ${i + 1}`,
+  date: `2023-10-${i + 1}`,
+  productName: `Product ${i + 1}`,
+}));
 export default function CommentManagementPage() {
   const t = useTranslations();
+  const [data, setData] = useState<Comment[]>([]);
+  const [pageCount, setPageCount] = useState(0);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [sorting, setSorting] = useState<SortingState>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const sort = sorting[0];
+      const sortBy = sort?.id || "id";
+      const order = sort?.desc ? "desc" : "asc";
+      console.log(
+        "Fetching data with pagination:",
+        pagination,
+        "and sorting:",
+        sortBy,
+        order
+      );
+      setData(sampleData);
+      setPageCount(100);
+    };
+    fetchData();
+  }, [pagination, sorting]);
 
   const cols: ColumnDef<Comment>[] = [
     {
-        accessorKey: "Id",
-        header: "ID",
-        cell: ({ row }) => {
-          return row.original.id;
-        },
-        enableHiding: false,
+      accessorKey: "Id",
+      header: "ID",
+      cell: ({ row }) => {
+        return row.original.id;
       },
-      {
-        accessorKey: "User",
-        header: t("User"),
-        cell: ({ row }) => {
-          return <div className="font-bold">{row.original.username}</div>;
-        },
+      enableHiding: false,
+    },
+    {
+      accessorKey: "User",
+      header: t("User"),
+      cell: ({ row }) => {
+        return <div className="font-bold">{row.original.username}</div>;
       },
-      {
-        accessorKey: "product",
-        header: t("Product"),
-        cell: ({ row }) => {
-          return <Link href={"/"}><Button variant={"link"}>{row.original.productName}</Button></Link>;
-        },
+    },
+    {
+      accessorKey: "product",
+      header: t("Product"),
+      cell: ({ row }) => {
+        return (
+          <Link href={"/"}>
+            <Button variant={"link"}>{row.original.productName}</Button>
+          </Link>
+        );
       },
-      {
-        accessorKey: "comment",
-        header: t("Comment"),
-        cell: ({ row }) => {
-          return row.original.content;
-        },
+    },
+    {
+      accessorKey: "comment",
+      header: t("Comment"),
+      cell: ({ row }) => {
+        return row.original.content;
       },
-      {
-        accessorKey: "time",
-        header: t("Time"),
-        cell: ({ row }) => {
-          return row.original.date;
-        },
+    },
+    {
+      accessorKey: "time",
+      header: t("Time"),
+      cell: ({ row }) => {
+        return row.original.date;
       },
-      
+    },
+    {
+      accessorKey: "actions",
+      header: "",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2 w-fit">
+            <EditCommentDialog />
+            <Link href={"/asdf"}>
+              <Button>
+                <ExternalLink />
+              </Button>
+            </Link>
+          </div>
+        );
+      },
+    },
   ];
-
-  const sampleData: Comment[] = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    username: `User ${i + 1}`,
-    content: `This is a comment content for comment ${i + 1}`,
-    date: `2023-10-${i + 1}`,
-    productName: `Product ${i + 1}`,
-  }));
 
   return (
     <Card>
@@ -79,14 +125,22 @@ export default function CommentManagementPage() {
       <CardContent>
         <CommmonDataTable
           columns={cols}
-          data={sampleData}
-          hasActions
-          renderActions={(row) => {
-            return (
-              <div className="flex items-center gap-2 w-fit">
-                <EditCommentDialog />
-                <Link href={"/asdf"}><Button><ExternalLink/></Button></Link>
-              </div>
+          data={data}
+          pageCount={pageCount}
+          pagination={pagination}
+          onPaginationChange={(updater) => {
+            setPagination((old) =>
+              typeof updater === "function" ? updater(old) : updater
+            );
+          }}
+          canSelect
+          onDeleteRows={(rows) => {
+            console.log(rows);
+          }}
+          sorting={sorting}
+          onSortingChange={(updater) => {
+            setSorting((prev) =>
+              typeof updater === "function" ? updater(prev) : updater
             );
           }}
         />

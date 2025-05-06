@@ -13,7 +13,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import SearchCommandDialog from "../SearchCommandDialog";
+import SearchCommandDialog from "@/components/common/SearchCommandDialog";
 type Genre = {
   title: string;
   description?: string;

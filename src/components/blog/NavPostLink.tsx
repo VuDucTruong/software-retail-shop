@@ -1,6 +1,6 @@
 import { ArrowLeftCircle } from "lucide-react";
 import clsx from "clsx";
-import ThreeDButton from "../ThreeDButton";
+import ThreeDButton from "@/components/common/ThreeDButton";
 import Link from "next/link";
 
 interface NavPostLinkProps {

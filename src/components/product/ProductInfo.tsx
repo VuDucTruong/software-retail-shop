@@ -9,9 +9,9 @@ import {
   convertPriceToVND,
 } from "@/lib/currency_helper";
 import { FaCartPlus, FaHeart, FaRegCreditCard } from "react-icons/fa6";
-import DiscountItem from "../DiscountItem";
+import DiscountItem from "@/components/common/DiscountItem";
 import { Button } from "../ui/button";
-import CommonSwapIcon from "../CommonSwapIcon";
+import CommonSwapIcon from "@/components/common/CommonSwapIcon";
 
 export default function ProductInfo() {
   const t = useTranslations();
@@ -58,13 +58,13 @@ export default function ProductInfo() {
           {/* Price */}
           <div className="flex flex-col gap-4">
             <div className="flex gap-3 items-center">
-              <h4>{convertPriceToVND(100000, format)}</h4>
+              <h4>{convertPriceToVND(100000)}</h4>
               <CommonSwapIcon Icon={FaBell} activeColor="text-primary" inactiveColor="text-gray-400" activeMessage={t('notification_on_message')} inactiveMessage={t('notification_off_message')}/>
               <CommonSwapIcon Icon={FaHeart} activeColor=" text-red-500" inactiveColor="text-gray-400" activeMessage={t('favorite_message')} inactiveMessage={t('unfavorite_message')}/>
             </div>
 
             <div className="flex gap-4 items-center">
-              <p className="font-medium line-through text-muted-foreground">{convertPriceToVND(80000, format)}</p>
+              <p className="font-medium line-through text-muted-foreground">{convertPriceToVND(80000)}</p>
               <DiscountItem discountPercentage={discountPercentage} />
             </div>
           </div>

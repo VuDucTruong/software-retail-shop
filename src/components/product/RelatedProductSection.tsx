@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import React from "react";
-import ProductItem from "../ProductItem";
+import ProductItem from "@/components/common/ProductItem";
 
 type RelatedProductSectionProps = {
   title: string;
