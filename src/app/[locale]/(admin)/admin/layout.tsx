@@ -6,7 +6,6 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "sonner";
-import RedirectAuth from "@/components/auth/RedirectAuth";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -39,7 +38,6 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${roboto.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <RedirectAuth />
           {children}
           <Toaster richColors />
         </NextIntlClientProvider>

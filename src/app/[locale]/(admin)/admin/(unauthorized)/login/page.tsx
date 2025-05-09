@@ -46,7 +46,8 @@ export default function LoginPage() {
   useEffect(() => {
     if (error) {
       toast.dismiss();
-      toast.error(error);
+      console.log(error);
+      toast.error("ERROR");
     }
   }, [error]);
 
@@ -133,3 +134,6 @@ export default function LoginPage() {
     </main>
   );
 }
+
+
+

@@ -41,14 +41,6 @@ export class ApiClient {
                         case axios.AxiosError.ETIMEDOUT:
                             return Promise.reject("INTERNAL.ETIMEDOUT");
                         default:
-                            // if(error.response?.status === 401 && !window.location.pathname.includes("/login") ) {
-                            //     useAuthStore.setState({
-                            //         user: null,
-                            //         loading: false,
-                            //         error: null,
-                            //     })
-                            // }
-
                             const message = error.response?.data?.message || error.message;
                             return Promise.reject(message);
                     }

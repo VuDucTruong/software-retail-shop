@@ -8,7 +8,6 @@ import {
   User,
   UserSchema,
 } from "@/api";
-import { redirect } from "next/navigation";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 const authClient = new ApiClient();
@@ -93,18 +92,18 @@ const getUser = async (set: SetState<AuthStore>) => {
 };
 
 
-export const checkAuthorization = (router: AppRouterInstance) => useAuthStore.subscribe((state) => {
-    console.log("Checking authorization", state);
-    if (state.loading) {
-      return;
-    }
-    if (state.user) {
-      console.log("User is logged in:", state);
-      if(state.user.role === "ADMIN") {
-        router.replace("/admin/dashboard");
-      }
-    } else {
-      console.log("User is not logged in", state);
-      router.replace("/admin/login");
-    }
-  });
+// export const checkAuthorization = (router: AppRouterInstance) => useAuthStore.subscribe((state) => {
+//     console.log("Checking authorization", state);
+//     if (state.loading) {
+//       return;
+//     }
+//     if (state.user) {
+//       console.log("User is logged in:", state);
+//       if(state.user.role === "ADMIN") {
+//         router.replace("/admin/dashboard");
+//       }
+//     } else {
+//       console.log("User is not logged in", state);
+//       router.replace("/admin/login");
+//     }
+//   });

@@ -16,3 +16,9 @@ export function getRandomColor() {
   }
   return color;
 }
+
+export function decodeJWTPayload(token: string) {
+  const payload = token.split('.')[1]; // phần giữa
+  const decoded = atob(payload); // base64 decode
+  return JSON.parse(decoded);
+}
