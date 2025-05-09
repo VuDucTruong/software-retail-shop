@@ -1,4 +1,3 @@
-import { isoToDatetimeLocal } from "@/lib/date_helper";
 import { z } from "zod";
 
 const messages = {
@@ -15,59 +14,46 @@ const messages = {
   alphaNumberic: "Code must be alphanumeric",
 };
 
-export const CouponScheme = z.object({
+export const CouponSchema = z.object({
   id: z.number(),
   code: z.string(),
   type: z.string(),
-  availableFrom: z
-    .string(),
-  availableTo: z
-    .string(),
+  availableFrom: z.string(),
+  availableTo: z.string(),
   value: z.number(),
   minAmount: z.number(),
   maxAppliedAmount: z.number(),
   usageLimit: z.number(),
   description: z.string(),
-}).partial();
+});
 
-export const CouponValidation = z.object({
+const applyRefinement = (schema: z.ZodTypeAny) => {
+  return schema.refine((val) => {
+    const fromDate = new Date(val.availableFrom);
+    const toDate = new Date(val.availableTo);
+    return fromDate < toDate;
+  }, messages.fromtoConstraint);
+};
+
+const CouponValidation = z.object({
   code: z
     .string()
     .min(3, messages.code)
     .refine((val) => /^[a-zA-Z0-9]+$/.test(val), messages.alphaNumberic),
   type: z.string(),
-  availableFrom: z
-    .string(),
+  availableFrom: z.string(),
   availableTo: z.string(),
   value: z.preprocess((val) => Number(val), z.number().positive(messages.gt0)),
   minAmount: z.number().nonnegative(messages.nonnegative),
   maxAppliedAmount: z.number().nonnegative(messages.nonnegative),
   usageLimit: z.number().nonnegative(messages.nonnegative),
   description: z.string(),
-}).partial().superRefine((data, ctx) => {
-  const fromDate = new Date(data.availableFrom!);
-  const toDate = new Date(data.availableTo!);
-
-  if (fromDate > toDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['availableFrom'],
-      message: messages.fromtoConstraint,
-    });
-
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ['availableTo'],
-      message: messages.fromtoConstraint,
-    });
-  }
 });
 
-export type Coupon = z.infer<typeof CouponScheme>;
+export const CouponCreateSchema = applyRefinement(CouponValidation);
 
-const CouponCreateScheme = CouponScheme.omit({
-  id: true,
-});
-
-export type CouponCreate = z.infer<typeof CouponCreateScheme>;
-
+export const CouponUpdateSchema = applyRefinement(
+  CouponValidation.extend({
+    id: z.number(),
+  }).partial()
+);

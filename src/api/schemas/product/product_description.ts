@@ -1,7 +1,7 @@
 
 import { z } from "zod";
 
-export const DescriptionScheme = z.object({
+export const ProductDescriptionSchema = z.object({
   description: z.string(),
   info: z.string(),
   platform: z.string(),

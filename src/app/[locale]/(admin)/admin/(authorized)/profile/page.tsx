@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { User } from "@/api/user/user";
+import { User } from "@/api";
 
 import { useTranslations } from "next-intl";
 import React from "react";

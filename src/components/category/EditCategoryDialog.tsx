@@ -2,8 +2,8 @@
 import {
   Category,
   CategoryUpdate,
-  CategoryUpdateScheme,
-} from "@/api/category";
+  CategoryUpdateSchema,
+} from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -51,10 +51,10 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
   const form = useForm<CategoryUpdate>({
     defaultValues: {
       name: selectedCategory.name,
-      image: null,
+      image: undefined,
       description: selectedCategory.description,
     },
-    resolver: zodResolver(CategoryUpdateScheme),
+    resolver: zodResolver(CategoryUpdateSchema),
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

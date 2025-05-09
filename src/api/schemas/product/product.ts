@@ -1,8 +1,7 @@
+import { CategorySchema, ProductDescriptionSchema, ProductItemScheme, ProductMetadataScheme } from "@/api";
 import { z } from "zod";
-import { DescriptionScheme } from "./product_description";
-import { CategoryScheme } from "../../category";
-import { ProductMetadataScheme } from "./product_metadata";
-import { ProductItemScheme } from "./product_item";
+
+
 
 // === Validation Messages ===
 const messages = {
@@ -27,9 +26,9 @@ export const ProductScheme = z.object({
   represent: z.boolean(),
   price: z.number(),
   originalPrice: z.number(),
-  categories: z.array(CategoryScheme),
+  categories: z.array(CategorySchema),
   tags: z.array(z.string()).default([]),
-  productDescription: DescriptionScheme,
+  productDescription: ProductDescriptionSchema,
   quantity: z.number(),
   status: z.string(),
   variants: z.array(ProductMetadataScheme),
@@ -46,7 +45,7 @@ export const ProductValidation = z.object({
   originalPrice: z.number().gte(0, { message: messages.originalPrice }),
   categories: z.array(z.number()).nonempty({ message: messages.required.categories }),
   tags: z.array(z.string()).nonempty({ message: messages.required.tags }),
-  productDescription: DescriptionScheme,
+  productDescription: ProductDescriptionSchema,
 });
 
 

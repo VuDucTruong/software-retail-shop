@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
-import { User } from "@/api/user/user";
+import { User } from "@/api";
 import {
   ColumnDef,
   PaginationState,
@@ -63,7 +63,7 @@ export default function CustomerManagementPage() {
             <Avatar className="size-16 border border-border">
               <AvatarImage
                 className="object-cover"
-                src={row.original.profile.imageUrl}
+                src={row.original.profile.imageUrl ?? ""}
                 alt={row.original.profile.fullName}
               />
               <AvatarFallback className="bg-gray-400">

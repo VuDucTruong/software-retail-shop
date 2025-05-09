@@ -1,22 +1,18 @@
 "use client";
 
-import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
+import { Coupon } from "@/api";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import TableOptionMenu from "@/components/common/TableOptionMenu";
+import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
-import { Category, CategoryCreate } from "@/api/category";
-import { Coupon } from "@/api/coupon";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
-import { Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { CgAdd } from "react-icons/cg";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
 const sampleData: Coupon[] = Array.from({ length: 10 }, (_, i) => ({
   id: i + 1,
   code: `Coupon ${i + 1}`,

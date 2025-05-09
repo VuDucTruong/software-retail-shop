@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { isoToDatetimeLocal } from "@/lib/date_helper";
-import { CouponCreate, CouponValidation } from "@/api/coupon";
+import { CouponCreate, CouponCreateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
@@ -31,7 +31,7 @@ export default function CreateCouponPage() {
       description: "",
     },
     mode: "onSubmit",
-    resolver: zodResolver(CouponValidation),
+    resolver: zodResolver(CouponCreateSchema),
   });
 
 

@@ -7,12 +7,11 @@ import TransactionDetailDialog from "@/components/transactions/TransactionDetail
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
-import { Payment } from "@/api/payment";
+import { Payment ,Category} from "@/api";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Category } from "@/api/category";
 import { useState, useEffect } from "react";
 const sampleData: Payment[] = Array.from({ length: 20 }, (_, i) => ({
   id: i,

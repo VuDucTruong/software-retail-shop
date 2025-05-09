@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { isoToDatetimeLocal } from "@/lib/date_helper";
-import { Coupon, CouponCreate, CouponValidation } from "@/api/coupon";
+import { Coupon, CouponCreate, CouponUpdate, CouponUpdateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
@@ -38,14 +38,14 @@ export default function ConponDetailPage() {
   const t = useTranslations();
   const pathName = usePathname();
   const couponId = pathName.split("/").pop() ?? "0";
-  const form = useForm<Coupon>({
+  const form = useForm<CouponUpdate>({
     defaultValues: {
       ...selectedCoupon,
         availableFrom: isoToDatetimeLocal(selectedCoupon.availableFrom),
         availableTo: isoToDatetimeLocal(selectedCoupon.availableTo),
     },
     mode: "onSubmit",
-    resolver: zodResolver(CouponValidation),
+    resolver: zodResolver(CouponUpdateSchema),
   });
 
 

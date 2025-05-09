@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { User } from "@/api/user/user";
+import { User } from "@/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -35,7 +35,7 @@ export default function UserDetailDialog({ user }: UserDetailDialogProps) {
               <Avatar className="size-32 rounded-full border border-border ">
                 <AvatarImage
                   className="object-cover rounded-full size-full"
-                  src={user.profile.imageUrl}
+                  src={user.profile.imageUrl ?? ""}
                   alt={user.profile.fullName}
                 />
                 <AvatarFallback className="bg-gray-400">

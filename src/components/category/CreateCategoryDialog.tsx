@@ -1,4 +1,4 @@
-import { CategoryCreate, CategoryCreateScheme } from "@/api/category";
+import { CategoryCreate, CategoryCreateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -40,7 +40,7 @@ export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
       image: undefined,
       description: "",
     },
-    resolver: zodResolver(CategoryCreateScheme),
+    resolver: zodResolver(CategoryCreateSchema),
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

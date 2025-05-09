@@ -1,11 +1,13 @@
 import { z } from "zod";
-import { ProfileScheme } from "./profile";
+import { UserProfileSchema } from "@/api";
 
-export const PaymentScheme = z.object({
+
+
+export const PaymentSchema = z.object({
     id: z.number(),
     status: z.string(),
     orderId: z.number(),
-    user: ProfileScheme,
+    user: UserProfileSchema,
     paymentMethod: z.string(),
     amount: z.number(),
     currency: z.string(),
@@ -15,4 +17,3 @@ export const PaymentScheme = z.object({
     createAt: z.string(),
 })
 
-export type Payment = z.infer<typeof PaymentScheme>;

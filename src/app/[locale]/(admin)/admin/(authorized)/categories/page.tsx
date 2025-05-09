@@ -7,7 +7,7 @@ import SortingHeader from "@/components/common/table/SortingHeader";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Category, CategoryCreate } from "@/api/category";
+import { Category, CategoryCreate } from "@/api";
 import {
   ColumnDef,
   PaginationState,
