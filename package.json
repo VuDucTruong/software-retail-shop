@@ -50,6 +50,7 @@
     "embla-carousel-autoplay": "^8.5.2",
     "embla-carousel-react": "^8.5.2",
     "framer-motion": "^12.9.2",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.483.0",
     "next": "15.2.3",
     "next-intl": "^4.0.2",

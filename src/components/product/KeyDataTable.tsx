@@ -10,7 +10,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ProductItem } from "@/api/schemas/product/product_item";
+import { ProductItem } from "@/api";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {

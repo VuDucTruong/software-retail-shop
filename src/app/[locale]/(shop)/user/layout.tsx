@@ -1,7 +1,7 @@
 "use client";
 
 
-import { userOptions } from "@/config/constants";
+import { userOptions } from "@/lib/constants";
 import { usePathname } from "@/i18n/navigation";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";

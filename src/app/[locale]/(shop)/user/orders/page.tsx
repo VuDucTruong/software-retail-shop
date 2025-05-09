@@ -6,7 +6,6 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { sampleOrderItems } from "@/config/sampleData";
 import { convertPriceToVND } from "@/lib/currency_helper";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";

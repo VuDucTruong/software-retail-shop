@@ -8,7 +8,7 @@ import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
-import { Product } from "@/api/schemas/product/product";
+import { Product } from "@/api";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import Image from "next/image";

@@ -1,4 +1,4 @@
-import { SetState } from "@/types/set_state";
+import { SetState } from "@/lib/set_state";
 import { create } from "zustand";
 import {
   ApiClient,

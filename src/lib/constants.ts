@@ -1,15 +1,35 @@
-import { FaBlog, FaComment, FaHeart, FaMoneyCheck, FaQuestion, FaShareAlt, FaUserAlt } from "react-icons/fa";
+import { FaBlog, FaComment, FaHeart, FaMoneyCheck, FaShareAlt, FaUserAlt } from "react-icons/fa";
 import { IoCart, IoKeySharp } from "react-icons/io5";
 import { MdPayment, MdSecurity } from "react-icons/md";
 import { MdOutlineCategory } from "react-icons/md";
 import { AiOutlineProduct } from "react-icons/ai";
-import { SiBrandfolder } from "react-icons/si";
 import { IoHomeOutline } from "react-icons/io5";
-import { AdminMenu } from "@/types/admin_menu";
 import { BiSolidDiscount } from "react-icons/bi";
 import { LuShoppingBag } from "react-icons/lu";
 import { RiFolderUserLine } from "react-icons/ri";
+import { IconType } from "react-icons/lib";
 
+export type AdminMenuItem = {
+    title: string;
+    url: string;
+    icon?: IconType;
+    items?: AdminMenuItem[];
+}
+
+export type AdminUserSettings = {
+    name: string;
+    email: string;
+    avatar: string;
+}
+
+export type AdminMenu = {
+    userSettings: AdminUserSettings;
+    navDashboard: AdminMenuItem;
+    navProduct: AdminMenuItem;
+    navCustomer: AdminMenuItem;
+    navStaff: AdminMenuItem;
+    navAdmin: AdminMenuItem;
+  };
 export const languages = ["en", "vi"];
 export const currencies = ["VND", "Token"];
 export const shopName = "Phoenix Shop";

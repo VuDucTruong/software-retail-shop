@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import * as XLSX from "xlsx";
 
-import { ProductItem, ProductItemScheme } from "@/api/schemas/product/product_item";
+import { ProductItem, ProductItemSchema } from "@/api";
 import { Import } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -41,7 +41,7 @@ export default function KeyFileUploadDialog() {
         }
 
         // ✅ Validate headers
-        const expectedHeaders = Object.keys(ProductItemScheme.shape);
+        const expectedHeaders = Object.keys(ProductItemSchema.shape);
         const fileHeaders = Object.keys(jsonData[0] as Record<string, any>);
 
         const missingHeaders = expectedHeaders.filter(
@@ -53,7 +53,7 @@ export default function KeyFileUploadDialog() {
           return;
         }
 
-        const parsedData = ProductItemScheme.array().parse(jsonData);
+        const parsedData = ProductItemSchema.array().parse(jsonData);
         setData(parsedData);
 
         setError(null);

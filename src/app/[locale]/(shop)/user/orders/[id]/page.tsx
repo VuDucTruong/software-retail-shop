@@ -8,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { sampleOrderItems } from "@/config/sampleData";
-import { CustomerOrderItem } from "@/types/customer_order_item";
 import { useTranslations } from "next-intl";
 import OrderDetailItem from "@/components/orders/OrderDetaiItem";
 import { useParams } from "next/navigation";

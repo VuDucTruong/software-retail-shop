@@ -1,4 +1,4 @@
-import { CategorySchema, ProductDescriptionSchema, ProductItemScheme, ProductMetadataScheme } from "@/api";
+import { CategorySchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
 import { z } from "zod";
 
 
@@ -18,7 +18,7 @@ const messages = {
   priceComparison: "Price must be less than or equal to original price",
   quantity: "quantity must be greater than 0",
 };
-export const ProductScheme = z.object({
+export const ProductSchema = z.object({
   id: z.number(),
   slug: z.string(),
   name: z.string(),
@@ -31,8 +31,8 @@ export const ProductScheme = z.object({
   productDescription: ProductDescriptionSchema,
   quantity: z.number(),
   status: z.string(),
-  variants: z.array(ProductMetadataScheme),
-  productItems: z.array(ProductItemScheme)
+  variants: z.array(ProductMetadataSchema),
+  productItems: z.array(ProductItemSchema)
 });
 
 // === Schemas ===
@@ -50,7 +50,7 @@ export const ProductValidation = z.object({
 
 
 // Create
-export const ProductCreateScheme = 
+export const ProductCreateSchema = 
   ProductValidation.superRefine((data, ctx) => {
     if (data.price > data.originalPrice) {
       ctx.addIssue({
@@ -63,7 +63,7 @@ export const ProductCreateScheme =
 
 
 // Update
-export const ProductUpdateScheme = 
+export const ProductUpdateSchema = 
   ProductValidation.extend({
     id: z.number().default(0),
   }).superRefine((data, ctx) => {
@@ -75,8 +75,3 @@ export const ProductUpdateScheme =
       });
     }
   });
-
-// === Types ===
-export type Product = z.infer<ReturnType<typeof ProductScheme["partial"]>>;;
-export type ProductCreate = z.infer<typeof ProductCreateScheme>;
-export type ProductUpdate = z.infer<typeof ProductUpdateScheme>;

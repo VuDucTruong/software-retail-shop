@@ -14,7 +14,7 @@ import {
 
 import { NavUser } from "./NavUser";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { adminMenu } from "@/config/constants";
+import { adminMenu } from "@/lib/constants";
 import CommonNav from "./CommonNav";
 import { Skeleton } from "../ui/skeleton";
 

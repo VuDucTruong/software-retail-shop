@@ -8,8 +8,6 @@ import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
-import { Product } from "@/api/schemas/product/product";
-import { ProductItem } from "@/api/schemas/product/product_item";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -19,7 +17,6 @@ import { CgAdd } from "react-icons/cg";
 import { toast } from "sonner";
 
 
-const sampleData: ProductItem[] = [];
 export default function KeyManagementPage() {
   const t = useTranslations();
 

@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/stores/auth.store";
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 
@@ -33,12 +34,21 @@ export class ApiClient {
             (error) => {
                 console.error("Error", error);
                 if (axios.isAxiosError(error)) {
+                    
                     switch (error.code) {
                         case axios.AxiosError.ERR_NETWORK:
                             return Promise.reject("INTERNAL.ERR_NETWORK");
                         case axios.AxiosError.ETIMEDOUT:
                             return Promise.reject("INTERNAL.ETIMEDOUT");
                         default:
+                            // if(error.response?.status === 401 && !window.location.pathname.includes("/login") ) {
+                            //     useAuthStore.setState({
+                            //         user: null,
+                            //         loading: false,
+                            //         error: null,
+                            //     })
+                            // }
+
                             const message = error.response?.data?.message || error.message;
                             return Promise.reject(message);
                     }

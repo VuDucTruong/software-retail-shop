@@ -10,10 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ProductCreate, ProductCreateScheme } from "@/api/schemas/product/product";
+import { ProductCreate, ProductCreateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -38,7 +37,7 @@ export default function CreateProductPage() {
         tutorial: "",
       }
     },
-    resolver: zodResolver(ProductCreateScheme),
+    resolver: zodResolver(ProductCreateSchema),
     mode: "onSubmit",
   });
 

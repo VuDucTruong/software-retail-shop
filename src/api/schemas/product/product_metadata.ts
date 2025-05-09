@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const ProductMetadataScheme = z.object({
+export const ProductMetadataSchema = z.object({
     id: z.number(),
     name: z.string(),
     slug: z.string(),

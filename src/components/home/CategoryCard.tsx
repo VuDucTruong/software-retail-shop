@@ -8,7 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-import { sampleCategoryList } from "@/config/sampleData";
+import { Category } from "@/api";
+
+const sampleCategoryList:Category[] = []
 
 export default function CategoryCard() {
   const t = useTranslations();

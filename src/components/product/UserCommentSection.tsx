@@ -1,22 +1,22 @@
-import { v4 as uuidv4 } from "uuid";
+
 import { useTranslations } from "next-intl";
 import React, { useRef, useState } from "react";
-import { CommentItemProps } from "@/types/comment_item";
+
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { UserComment, Reply } from "@/api";
 
-export default function UserCommentSection({
-  id,
-  avatarUrl,
-  username,
-  content,
-  timestamp,
-  isOwner,
-  replies = [],
-  onReply,
-  onDelete,
-}: CommentItemProps) {
+
+type Props = {
+  comment: UserComment | Reply;
+}
+
+function isUserComment(comment: UserComment | Reply): comment is UserComment {
+  return (comment as UserComment).replies !== undefined;
+}
+
+export default function UserCommentSection({ comment }: Props) {
   const t = useTranslations();
   const [showReplyInput, setShowReplyInput] = useState(false);
   const replyRef = useRef<HTMLTextAreaElement>(null);
@@ -24,17 +24,13 @@ export default function UserCommentSection({
   const handleReplySubmit = () => {
     if (!replyRef.current?.value.trim()) return;
     const replyContent = replyRef.current.value.trim();
-    const newReply: CommentItemProps = {
-      id: uuidv4(),
-      avatarUrl: "https://randomuser.me/api/portraits/women/5.jpg",
-      username: "Bạn",
-      content: replyContent,
-      timestamp: "Vừa xong",
-      isOwner: true,
-    };
-    onReply?.(newReply);
+    
     setShowReplyInput(false);
   };
+
+  const handleDelete = (id: number) => {
+
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -44,15 +40,15 @@ export default function UserCommentSection({
             alt="Avatar"
             fill
             className="rounded-full object-cover"
-            src={avatarUrl}
+            src={""}
           />
         </div>
         <div className="flex flex-col items-start">
-          <h4 className="font-semibold">{username}</h4>
+          <h4 className="font-semibold">{"FAFAF"}</h4>
           <div className="text-muted-foreground">
-            {t("comment_on_date")} {timestamp}
+            {t("comment_on_date")} {"2023-10-01"}
           </div>
-          <p>{content}</p>
+          <p>{"GSF"}</p>
           {/* Hành động */}
           <div className="flex gap-6">
             <Button
@@ -62,10 +58,10 @@ export default function UserCommentSection({
             >
               {t("Respond")}
             </Button>
-            {isOwner && (
+            {false && (
               <Button
                 variant={"link"}
-                onClick={() => onDelete?.(id)}
+                onClick={() => handleDelete(comment.id)}
                 className=" text-red-500 p-0"
               >
                 {t("Delete")}
@@ -93,13 +89,12 @@ export default function UserCommentSection({
       )}
 
       {/* Hiển thị danh sách phản hồi */}
-      {replies.length > 0 && (
+      {(isUserComment(comment)) && comment.replies.length > 0 && (
         <div className="ml-12 border-l-2 pl-4 border-border">
-          {replies.map((reply, index) => (
+          {comment.replies.map((reply, index) => (
             <UserCommentSection
               key={index}
-              {...reply}
-              onDelete={(id) => onDelete?.(id)}
+              comment={reply}
             />
           ))}
         </div>

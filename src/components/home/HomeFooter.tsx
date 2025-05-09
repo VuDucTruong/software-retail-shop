@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import React from "react";
-import { supportPhone } from "@/config/constants";
+import { supportPhone } from "@/lib/constants";
 import Link from "next/link";
 import Logo from "@/components/common/Logo";
 

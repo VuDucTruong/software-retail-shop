@@ -8,7 +8,7 @@ import TransactionDetailDialog from "@/components/transactions/TransactionDetail
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
-import { Comment, Payment } from "@/api";
+import { UserComment, Payment } from "@/api";
 import {
   ColumnDef,
   PaginationState,
@@ -18,16 +18,10 @@ import { ExternalLink, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-const sampleData: Comment[] = Array.from({ length: 20 }, (_, i) => ({
-  id: i + 1,
-  username: `User ${i + 1}`,
-  content: `This is a comment content for comment ${i + 1}`,
-  date: `2023-10-${i + 1}`,
-  productName: `Product ${i + 1}`,
-}));
+const sampleData: UserComment[] = [];
 export default function CommentManagementPage() {
   const t = useTranslations();
-  const [data, setData] = useState<Comment[]>([]);
+  const [data, setData] = useState<UserComment[]>([]);
   const [pageCount, setPageCount] = useState(0);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
@@ -52,7 +46,7 @@ export default function CommentManagementPage() {
     fetchData();
   }, [pagination, sorting]);
 
-  const cols: ColumnDef<Comment>[] = [
+  const cols: ColumnDef<UserComment>[] = [
     {
       accessorKey: "Id",
       header: "ID",
@@ -65,7 +59,7 @@ export default function CommentManagementPage() {
       accessorKey: "User",
       header: t("User"),
       cell: ({ row }) => {
-        return <div className="font-bold">{row.original.username}</div>;
+        return <div className="font-bold">{row.original.author.fullName}</div>;
       },
     },
     {
@@ -74,7 +68,7 @@ export default function CommentManagementPage() {
       cell: ({ row }) => {
         return (
           <Link href={"/"}>
-            <Button variant={"link"}>{row.original.productName}</Button>
+            <Button variant={"link"}>{"Not impletemed"}</Button>
           </Link>
         );
       },
@@ -90,7 +84,7 @@ export default function CommentManagementPage() {
       accessorKey: "time",
       header: t("Time"),
       cell: ({ row }) => {
-        return row.original.date;
+        return row.original.createdAt;
       },
     },
     {

@@ -7,7 +7,7 @@ import {
   languages,
   shopName,
   supportPhone,
-} from "@/config/constants";
+} from "@/lib/constants";
 import { FaEye, FaFireAlt, FaPercent } from "react-icons/fa";
 import Image from "next/image";
 import { useTranslations } from "next-intl";

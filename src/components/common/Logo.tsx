@@ -1,5 +1,5 @@
 'use client'
-import { shopName } from "@/config/constants";
+import { shopName } from "@/lib/constants";
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/navigation";

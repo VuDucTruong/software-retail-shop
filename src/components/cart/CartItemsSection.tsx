@@ -1,9 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { useTranslations } from "next-intl";
-
 import CartItemList from "./CartItemList";
-import { CartItemProps } from "@/types/cart_item";
 import { Button } from "../ui/button";
 import { MdPayment, MdQrCodeScanner } from "react-icons/md";
 import {
@@ -15,12 +13,13 @@ import {
 import { Input } from "../ui/input";
 import EmptyList from "./EmptyList";
 import { IoIosArrowBack } from "react-icons/io";
+import { Cart } from "@/api";
 
 type CardItemsProps = {
   stepIndex: number;
   handleNextStep: () => void;
   handlePrevStep: () => void;
-  cartItems: CartItemProps[];
+  cartItems: Cart[];
 };
 
 export default function CartItemsSection(props: CardItemsProps) {

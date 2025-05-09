@@ -10,13 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Category } from "@/api";
-import {
-  Product,
+import { Category,Product,
   ProductUpdate,
-  ProductUpdateScheme,
-  ProductValidation,
-} from "@/api/schemas/product/product";
+  ProductUpdateSchema, } from "@/api";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
@@ -44,6 +41,10 @@ const sampleProduct: Product = {
   tags: ["sample", "product"],
   categories: categories,
   quantity: 10,
+  status: "active",
+  productItems: [],
+  represent: false,
+  variants: [],
 };
 
 export default function EditProductPage() {
@@ -58,7 +59,7 @@ export default function EditProductPage() {
     },
    
     mode: "onSubmit",
-    resolver: zodResolver(ProductUpdateScheme),
+    resolver: zodResolver(ProductUpdateSchema),
   });
 
   

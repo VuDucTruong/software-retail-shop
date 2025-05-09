@@ -1,9 +1,21 @@
 import { z } from "zod";
 
-export const CommentSchema = z.object({
+export const AuthorSchema = z.object({
     id: z.number(),
-    username: z.string(),
-    content: z.string(),
-    date: z.string(),
-    productName: z.string(),
+    fullName: z.string(),
+    createdAt: z.string(),
+    imageUrl: z.string(),
+})
+
+
+export const ReplySchema = z.object({
+    id: z.number(),
+    author: AuthorSchema,
+    createdAt: z.string(),
+    deletedAt: z.string().nullable(),
+    content: z.string(), 
+})
+
+export const CommentSchema = ReplySchema.extend({
+    replies: z.array(ReplySchema),
 })

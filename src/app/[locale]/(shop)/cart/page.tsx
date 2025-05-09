@@ -2,7 +2,6 @@
 
 import CartItemsSection from "@/components/cart/CartItemsSection";
 import PaymentSection from "@/components/cart/PaymentSection";
-import { CartItemProps } from "@/types/cart_item";
 import { useRef, useState } from "react";
 import { GiConfirmed } from "react-icons/gi";
 import { IoCartSharp } from "react-icons/io5";
@@ -16,50 +15,6 @@ export default function Page() {
     { name: "Confirm", icon: GiConfirmed },
     { name: "Payment", icon: MdOutlinePayments },
   ];
-  const productItems:CartItemProps[] = [
-    {
-        id: 0,
-        title: "Product 1",
-        tags: ["tag1", "tag2"],
-        image: "/banner.png",
-        isAvailable: true,
-        price: 100,
-        originalPrice: 120,
-        quantity: useRef(1),
-        status: "in_stock",
-        onDelete: (id: number) => {
-            console.log(productItems[id].quantity)
-        },
-    },
-    {
-        id: 1,
-        title: "Product 2",
-        tags: ["tag3", "tag4"],
-        image: "/banner.png",
-        isAvailable: false,
-        price: 200,
-        originalPrice: 250,
-        quantity: useRef(1),
-        status: "in_stock",
-        onDelete: (id: number) => {
-            console.log(productItems[id].quantity)
-        },
-    },
-    {
-        id: 2,
-        title: "Product 3",
-        tags: ["tag5", "tag6"],
-        image: "/banner.png",
-        isAvailable: true,
-        price: 150,
-        originalPrice: 180,
-        quantity: useRef(1),
-        status: "out_of_stock",
-        onDelete: (id: number) => {
-            console.log(productItems[id].quantity)
-        },
-    },
-]
   const [stepIndex, setStepIndex] = useState(0);
 
   return (
@@ -87,7 +42,7 @@ export default function Page() {
       </div>
 
       {
-        stepIndex == 0 || stepIndex == 1 ? <CartItemsSection cartItems={productItems} stepIndex={stepIndex} handleNextStep={()=>{
+        stepIndex == 0 || stepIndex == 1 ? <CartItemsSection cartItems={[]} stepIndex={stepIndex} handleNextStep={()=>{
           setStepIndex(stepIndex + 1)
         }} handlePrevStep={()=>setStepIndex(stepIndex - 1)}/> : <PaymentSection/>
       }
