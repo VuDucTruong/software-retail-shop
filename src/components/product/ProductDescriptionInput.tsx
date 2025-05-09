@@ -4,7 +4,7 @@ import { UseFieldArrayReturn, useFormContext } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus } from "lucide-react";
-import { ProductCreate, ProductUpdate } from "@/models/product/product";
+import { ProductCreate, ProductUpdate } from "@/api/schemas/product/product";
 import { useTranslations } from "next-intl";
 import RichTextEditor from "../rich_text/RichTextEditor";
 import {
@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { ProductDescription } from "@/models/product/product_description";
+
 
 type Props = {
   name: string;

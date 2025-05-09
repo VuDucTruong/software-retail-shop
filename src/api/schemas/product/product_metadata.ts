@@ -8,5 +8,3 @@ export const ProductMetadataScheme = z.object({
     price: z.number(),
     originalPrice: z.number(),
 })
-
-export type ProductMetadata = z.infer<typeof ProductMetadataScheme>;

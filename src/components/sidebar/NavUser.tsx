@@ -27,6 +27,7 @@ import { MdLogout } from "react-icons/md"
 import { HiDotsVertical } from "react-icons/hi";
 import Link from "next/link"
 import { useTranslations } from "next-intl"
+import { useAuthStore } from "@/stores/auth.store"
 
 export function NavUser({
   user,
@@ -39,7 +40,10 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const t = useTranslations();
-  const handleLogout = () => {}
+  const logout = useAuthStore((state) => state.logout);
+  const handleLogout = () => {
+    logout();
+  }
   return (
     <SidebarMenu>
       <SidebarMenuItem>

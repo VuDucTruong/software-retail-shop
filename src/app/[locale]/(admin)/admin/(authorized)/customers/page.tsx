@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
-import { User } from "@/models/user/user";
+import { User } from "@/api/user/user";
 import {
   ColumnDef,
   PaginationState,
@@ -18,20 +18,7 @@ import { UserX } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-const sampleData: User[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  profile: {
-    id: i + 1,
-    imageUrl: "/best_seller.png",
-    email: `user${i + 1}@example.com`,
-    fullName: `User ${i + 1}`,
-    createdAt: new Date().toISOString(),
-  },
-  createdAt: new Date().toISOString(),
-  disableDate: "",
-  role: "customer",
-  isActive: i % 2 === 0,
-}));
+
 export default function CustomerManagementPage() {
   const t = useTranslations();
   const [data, setData] = useState<User[]>([]);
@@ -53,7 +40,7 @@ export default function CustomerManagementPage() {
         sortBy,
         order
       );
-      setData(sampleData);
+      setData([]);
       setPageCount(100);
     };
     fetchData();
@@ -116,7 +103,7 @@ export default function CustomerManagementPage() {
       header: "Status",
       cell: ({ row }) => {
         return (
-          <StatusBadge status={row.original.isActive ? "active" : "banned"} />
+          <StatusBadge status={row.original.deletedAt ? "banned" : "active"} />
         );
       },
     },

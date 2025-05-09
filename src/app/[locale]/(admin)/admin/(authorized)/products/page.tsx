@@ -1,27 +1,19 @@
 "use client";
 
-import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { StatusBadge } from "@/components/common/StatusBadge";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import TableOptionMenu from "@/components/common/TableOptionMenu";
+import KeyFileUploadDialog from "@/components/product/KeyFileUploadDialog";
+import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useRouter } from "@/i18n/navigation";
-import { Product } from "@/models/product/product";
+import { Product } from "@/api/schemas/product/product";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
-import { MoreVerticalIcon, Table } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CgAdd } from "react-icons/cg";
 import { toast } from "sonner";
 
@@ -160,6 +152,7 @@ export default function ProductManagementPage() {
         <CardTitle className="flex items-center justify-between">
           <h2>{t("product_management")}</h2>
           <div className="flex items-center gap-2">
+            <KeyFileUploadDialog />
             <Link href={"products/create"}>
               <Button variant="outline" className="bg-primary text-white">
                 <CgAdd /> {t("create_product")}

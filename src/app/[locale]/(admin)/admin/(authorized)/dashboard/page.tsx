@@ -17,7 +17,7 @@ import Link from "next/link";
 
 
 
-export default function Page() {
+export default function DashboardPage() {
   const t = useTranslations();
   const scheme = z.object({
     id: z.number(),

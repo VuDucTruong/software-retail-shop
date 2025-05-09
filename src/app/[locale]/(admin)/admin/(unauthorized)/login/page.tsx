@@ -1,11 +1,11 @@
 "use client";
+import { LoginRequest, LoginRequestSchema } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import {
   Form,
@@ -16,49 +16,59 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/stores/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { toast } from "sonner";
 
-export default function AuthPage() {
+export default function LoginPage() {
   const t = useTranslations();
-
-  const formSchema = z.object({
-    email: z
-      .string()
-      .min(1, {
-        message: t("Input.error_email_empty"),
-      })
-      .email({
-        message: t("Input.error_email_format"),
-      }),
-    password: z
-      .string()
-      .min(1, {
-        message: t("Input.error_password_empty"),
-      })
-      .min(8, {
-        message: t("Input.error_pass_length"),
-      }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const login = useAuthStore((state) => state.login);
+  const loading = useAuthStore((state) => state.loading);
+  const error = useAuthStore((state) => state.error);
+  const user = useAuthStore((state) => state.user);
+  const form = useForm<LoginRequest>({
+    resolver: zodResolver(LoginRequestSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  function onSubmit(request: LoginRequest) {
+    login(request)
   }
 
+  useEffect(() => {
+    if (error) {
+      toast.dismiss();
+      toast.error(error);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (loading) {
+      toast.dismiss();
+      toast.loading(t("Loading"));
+    }
+  }, [loading]);
+
+
+  useEffect(() => {
+    if (user) {
+      toast.dismiss();
+      toast.success(t("login_success"));
+    }
+  }, [user]);
+
+
   return (
-    <Card className="w-1/2">
+    <main className="h-screen flex flex-col items-center justify-center">
+      <Card className="w-1/2">
       <CardHeader>
         <CardTitle className="flex flex-col items-center gap-2">
           <h2>{t("Login")}</h2>
@@ -120,5 +130,6 @@ export default function AuthPage() {
         </Form>
       </CardContent>
     </Card>
+    </main>
   );
 }

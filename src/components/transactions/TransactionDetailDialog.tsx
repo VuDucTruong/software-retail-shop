@@ -1,4 +1,4 @@
-import { CategoryCreate, CategoryCreateScheme } from "@/models/category";
+import { CategoryCreate, CategoryCreateScheme } from "@/api/category";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -25,7 +25,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Payment } from "@/models/payment";
+import { Payment } from "@/api/payment";
 import { Eye } from "lucide-react";
 
 type TransactionDetailDialogProps = {

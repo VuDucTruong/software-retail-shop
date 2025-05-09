@@ -14,23 +14,24 @@ import {  useForm } from "react-hook-form";
 import { Form,FormField } from "@/components/ui/form";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { Input } from "@/components/ui/input";
-import { ChangePassRequest, ChangePassScheme } from "@/models/user/request/change_pass";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ChangePasswordRequest, ChangepasswordRequestSchema } from "@/api";
 
 
 
 export default function ChangePassDialog() {
   const t = useTranslations();
-  const form = useForm<ChangePassRequest>({
+  const form = useForm<ChangePasswordRequest>({
     defaultValues: {
-        new_password: "",
-        confirm_password: "",
+        newPassword: "",
+        confirmPassword: "",
     },
-    resolver: zodResolver(ChangePassScheme),
+    resolver: zodResolver(ChangepasswordRequestSchema),
   });
 
 
-  const onSubmit = async (data: ChangePassRequest) => {
+  const onSubmit = async (data: ChangePasswordRequest) => {
     try {
       // Call your API to change the password here
       console.log(data);
@@ -57,7 +58,7 @@ export default function ChangePassDialog() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 max-w-1/2 mt-8">
               <FormField
-                name="new_password"
+                name="newPassword"
                 control={form.control}
                 render={({ field }) => (
                   <CommonInputOutline title={t("new_password")}>
@@ -66,7 +67,7 @@ export default function ChangePassDialog() {
                 )}
               />
               <FormField
-                name="confirm_password"
+                name="confirmPassword"
                 control={form.control}
                 render={({ field }) => (
                   <CommonInputOutline title={t("confirm_password")}>

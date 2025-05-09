@@ -1,8 +1,16 @@
-import { redirect } from 'next/navigation'
-const isAuthorized = true; // TODO: check if user is authorized
+"use client";
+
+import LoadingPage from "@/components/special/LoadingPage";
+import { useAuthStore } from "@/stores/auth.store";
+import {useEffect } from "react";
+
 export default function AdminPage() {
-  if (isAuthorized) {
-    redirect('admin/dashboard')
-  }
-  redirect('admin/login')
+  
+  const getUser = useAuthStore((state) => state.getUser);
+  useEffect(() => {
+     
+    getUser();
+  }, []);
+
+  return LoadingPage();
 }

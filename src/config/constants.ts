@@ -1,5 +1,5 @@
 import { FaBlog, FaComment, FaHeart, FaMoneyCheck, FaQuestion, FaShareAlt, FaUserAlt } from "react-icons/fa";
-import { IoCart } from "react-icons/io5";
+import { IoCart, IoKeySharp } from "react-icons/io5";
 import { MdPayment, MdSecurity } from "react-icons/md";
 import { MdOutlineCategory } from "react-icons/md";
 import { AiOutlineProduct } from "react-icons/ai";
@@ -157,6 +157,12 @@ export const adminMenu: AdminMenu = {
         title: "Staffs",
         url: "/admin/staffs",
         icon: MdSecurity,
+        items: [],
+      },
+      {
+        title: "Product Keys",
+        url: "/admin/keys",
+        icon: IoKeySharp,
         items: [],
       },
     ],

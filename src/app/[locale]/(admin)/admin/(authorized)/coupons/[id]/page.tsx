@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { isoToDatetimeLocal } from "@/lib/date_helper";
-import { Coupon, CouponCreate, CouponValidation } from "@/models/coupon";
+import { Coupon, CouponCreate, CouponValidation } from "@/api/coupon";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";

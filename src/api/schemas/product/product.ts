@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { DescriptionScheme } from "./product_description";
-import { CategoryScheme } from "../category";
+import { CategoryScheme } from "../../category";
 import { ProductMetadataScheme } from "./product_metadata";
 import { ProductItemScheme } from "./product_item";
 
@@ -20,14 +20,14 @@ const messages = {
   quantity: "quantity must be greater than 0",
 };
 export const ProductScheme = z.object({
-  id: z.number().default(0),
-  slug: z.string().default(""),
-  name: z.string().default(""),
-  imageUrl: z.string().default(""),
-  represent: z.boolean().default(true),
-  price: z.number().default(0),
-  originalPrice: z.number().default(0),
-  categories: z.array(CategoryScheme).default([]),
+  id: z.number(),
+  slug: z.string(),
+  name: z.string(),
+  imageUrl: z.string(),
+  represent: z.boolean(),
+  price: z.number(),
+  originalPrice: z.number(),
+  categories: z.array(CategoryScheme),
   tags: z.array(z.string()).default([]),
   productDescription: DescriptionScheme,
   quantity: z.number(),

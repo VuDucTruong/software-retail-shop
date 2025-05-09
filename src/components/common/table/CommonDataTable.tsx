@@ -129,12 +129,12 @@ export function CommmonDataTable<TData, TValue>({
     },
     onRowSelectionChange: setRowSelection,
     onPaginationChange,
-    manualPagination: true,
+    manualPagination: !!pagination,
     pageCount,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange,
-    manualSorting: true,
+    manualSorting: sorting !== undefined,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -225,7 +225,7 @@ export function CommmonDataTable<TData, TValue>({
           </div>
         )}
 
-        <CommonTablePagination table={table}/>
+        {pagination && <CommonTablePagination table={table}/>}
       </div>
     </div>
   );

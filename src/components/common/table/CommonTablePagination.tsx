@@ -30,7 +30,7 @@ export default function CommonTablePagination({
           {t("rows_per_page")}
         </Label>
         <Select
-          value={`${table.getState().pagination.pageSize}`}
+          value={`${table.getState().pagination?.pageSize}`}
           onValueChange={(value) => {
             table.setPageSize(Number(value));
           }}

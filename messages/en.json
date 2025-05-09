@@ -167,18 +167,17 @@
     "error_email_empty": "Email cannot be empty",
     "error_password_empty": "Password cannot be empty",
     "error_name_empty": "Username cannot be empty",
-    
+
     "error_email_format": "Email format is incorrect",
     "error_pass_length": "Password must be at least 8 characters",
     "error_name_length": "Username must be at least 3 characters",
     "error_comment_min_length": "Comment must be at least 10 characters",
     "error_comment_max_length": "Comment must be less than 500 characters",
-    
+
     "error_pass_not_match": "Password does not match",
-    
+
     "error_pass_wrong": "Password is incorrect",
     "error_email_wrong": "Email is incorrect"
-
   },
   "ORDER_STATUS": {
     "Pending": "Pending",
@@ -303,5 +302,43 @@
   "Update": "Update",
   "Create": "Create",
   "no_categories_selected": "No categories selected",
-  "no_tags_selected": "No tags selected"
+  "no_tags_selected": "No tags selected",
+  "import_key": "Import keys",
+  "Accept": "Accept",
+  "Loading": "Loading, please wait...",
+  "login_success": "Login successfully",
+  "register_success": "Register successfully",
+  "API": {
+    "LOGIN_FAILED": "Login failed",
+    "USER_NOT_FOUND": "User not found",
+    "INVALID_PASSWORD": "Invalid password",
+    "INVALID_TOKEN": "Invalid token",
+    "USERNAME_ALREADY_EXISTS": "Username already exists",
+    "EMAIL_ALREADY_EXISTS": "Email already exists",
+    "INVALID_EMAIL": "Invalid email format",
+    "PASSWORD_TOO_WEAK": "Password is too weak",
+    "ACCOUNT_NOT_FOUND": "Account not found",
+    "PRODUCT_NOT_FOUND": "Product not found",
+    "ORDER_NOT_FOUND": "Order not found",
+    "OTP_NOT_FOUND": "OTP not found",
+    "PRODUCT_OUT_OF_STOCK": "Product out of stock",
+    "RESOURCE_NOT_FOUND": "Resource not found",
+    "AUTHORISATION_NULL": "Authorisation null",
+    "AUTHORISATION_ANNONYMOUS": "Authorisation user is anonymous",
+    "AUTHORISATION_INVALID": "Authorisation invalid",
+    "CART_EMPTY": "Cart is empty",
+    "PAYMENT_FAILED": "Payment failed",
+    "INVALID_COUPON": "Invalid coupon",
+    "COUPON_EXPIRED": "Coupon expired",
+    "COUPON_ALREADY_USED": "Coupon already used",
+    "INVALID_ADDRESS": "Invalid address",
+    "ADDRESS_NOT_FOUND": "Address not found",
+    "FORBIDDEN_ACTION": "You don't have permission to do this action",
+    "INVALID_DATE": "Invalid date format"
+  },
+  "INTERNAL": {
+    "ERR_NETWORK": "Network error",
+    "ERR_ETIMEDOUT": "Request timed out",
+    "UNKNOWN": "Unknown error"
+  }
 }

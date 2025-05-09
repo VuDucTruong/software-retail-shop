@@ -8,8 +8,8 @@ import TransactionDetailDialog from "@/components/transactions/TransactionDetail
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from "@/i18n/navigation";
-import { Comment } from "@/models/comment";
-import { Payment } from "@/models/payment";
+import { Comment } from "@/api/comment";
+import { Payment } from "@/api/payment";
 import {
   ColumnDef,
   PaginationState,

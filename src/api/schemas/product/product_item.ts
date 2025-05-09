@@ -2,9 +2,10 @@ import { z } from "zod";
 
 export const ProductItemScheme = z.object({
     productId: z.number(),
+    productSlug: z.string(),
     productKey: z.string(),
     region: z.string(),
-    active: z.boolean(),
 })
+
 
 export type ProductItem = z.infer<typeof ProductItemScheme>;

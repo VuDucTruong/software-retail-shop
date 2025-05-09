@@ -13,8 +13,8 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { z } from "zod";
-import { Category } from "@/models/category";
-import { Order } from "@/models/order/order";
+import { Category } from "@/api/category";
+import { Order } from "@/api/order/order";
 const scheme = z.object({
   time: z.string(),
   order_id: z.string(),

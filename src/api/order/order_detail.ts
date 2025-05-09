@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ProductMetadataScheme } from "../product/product_metadata";
+import { ProductMetadataScheme } from "../schemas/product/product_metadata";
 
 export const OrderDetailScheme = z.object({
     price: z.number(),

@@ -4,26 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { User } from "@/models/user/user";
+import { User } from "@/api/user/user";
 
 import { useTranslations } from "next-intl";
 import React from "react";
 import ChangePassDialog from "@/components/profile/ChangePassDialog";
-
-const sampleUser: User = {
-  id: 1,
-  profile: {
-    id:  1,
-    imageUrl: "/best_seller.png",
-    email: `user${ 1}@example.com`,
-    fullName: `User ${ 1}`,
-    createdAt: new Date().toISOString(),
-  },
-  createdAt: new Date().toISOString(),
-  disableDate: "",
-  role: "customer",
-  isActive: true,
-}
 
 export default function AdminProfilePage() {
   const t = useTranslations();

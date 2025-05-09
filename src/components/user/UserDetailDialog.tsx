@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
-import { User } from "@/models/user/user";
+import { User } from "@/api/user/user";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -61,8 +61,8 @@ export default function UserDetailDialog({ user }: UserDetailDialogProps) {
               <label className="text-sm font-medium capitalize">
                 {t("Status")}
               </label>
-              <StatusBadge status={user.isActive ? "active" : "banned"} />
-              {user.isActive ? null : (
+              <StatusBadge status={user.disableDate ? "banned" : "active"} />
+              {!user.disableDate ? null : (
                 <span className="italic text-muted-foreground text-xs">
                   {t("banned_in_x", { x: user.disableDate })}
                 </span>

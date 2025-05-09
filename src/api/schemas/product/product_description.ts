@@ -8,6 +8,3 @@ export const DescriptionScheme = z.object({
   policy: z.string(),
   tutorial: z.string(),
 });
-
-
-export type ProductDescription = z.infer<typeof DescriptionScheme>;

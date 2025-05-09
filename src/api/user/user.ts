@@ -1,8 +1,8 @@
-import { profile } from "console";
+
 import { boolean, number, string, z } from "zod";
 import { ProfileScheme } from "../profile";
 
-export const UserResponse = z.object({
+export const UserScheme = z.object({
     id: number(),
     enableDate: string().nullable(),
     disableDate: string().nullable(),
@@ -10,16 +10,6 @@ export const UserResponse = z.object({
     deletedAt: string().nullable(),
     isVerified: boolean(),
     role: string(),
-    profile: ProfileScheme
-})
-
-
-export const UserScheme = z.object({
-    id: number(),
-    disableDate: string(),
-    createdAt: string(),
-    role: string(),
-    isActive: boolean(),
     profile: ProfileScheme
 })
 

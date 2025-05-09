@@ -1,6 +1,5 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { ProductDescription } from "@/models/product/product_description";
 import { Trash2 } from "lucide-react";
 import RichTextEditor from "../rich_text/RichTextEditor";
 import { Button } from "../ui/button";
