@@ -8,9 +8,9 @@ const intlMiddleware = createMiddleware(routing);
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-
+  const isAdminRootPage = pathname.endsWith('/admin') || pathname.endsWith('/admin/');
   const isAdminLoginPage = pathname.endsWith('/admin/login');
-  const isProtectedRoute = (pathname.startsWith('/vi/admin') || pathname.startsWith('/en/admin')) && !isAdminLoginPage;
+  const isProtectedRoute = (pathname.startsWith('/vi/admin') || pathname.startsWith('/en/admin')) && !isAdminLoginPage && !isAdminRootPage;
 
   const token = request.cookies.get('refreshToken')?.value;
 
@@ -19,12 +19,12 @@ export function middleware(request: NextRequest) {
       const payload = decodeJWTPayload(token!);
       const exp = payload.exp;
       const now = Math.floor(Date.now() / 1000);
-
+      
       if (exp < now) throw new Error("Token expired");
     } catch (err) {
       const locale = pathname.split('/')[1] || routing.defaultLocale;
-      const loginUrl = new URL(`/${locale}/admin/login`, request.url);
-      return NextResponse.redirect(loginUrl);
+      const notFound = new URL(`/${locale}/admin/login`, request.url);
+      return NextResponse.redirect(notFound);
     }
   }
 

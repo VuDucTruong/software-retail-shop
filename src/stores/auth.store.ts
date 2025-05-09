@@ -49,6 +49,7 @@ const login = async (set: SetState<AuthStore>, request: LoginRequest) => {
 
     set({ user: data.user, loading: false });
   } catch (error) {
+    console.error(error);
     set({ error: error as string, loading: false });
   }
 };
@@ -61,6 +62,7 @@ const register = async (set: SetState<AuthStore>, request: RegisterRequest) => {
 
     set({ loading: false });
   } catch (error) {
+    console.error(error);
     set({ error: error as string, loading: false });
   }
 };
@@ -73,6 +75,7 @@ const logout = async (set: SetState<AuthStore>) => {
 
     set({ user: null, loading: false });
   } catch (error) {
+    console.error(error);
     set({ error: error as string, loading: false });
   }
 };
@@ -86,24 +89,23 @@ const getUser = async (set: SetState<AuthStore>) => {
 
     set({ user: data, loading: false });
   } catch (error) {
-    
     set({ user: null, loading: false });
   }
 };
 
 
-// export const checkAuthorization = (router: AppRouterInstance) => useAuthStore.subscribe((state) => {
-//     console.log("Checking authorization", state);
-//     if (state.loading) {
-//       return;
-//     }
-//     if (state.user) {
-//       console.log("User is logged in:", state);
-//       if(state.user.role === "ADMIN") {
-//         router.replace("/admin/dashboard");
-//       }
-//     } else {
-//       console.log("User is not logged in", state);
-//       router.replace("/admin/login");
-//     }
-//   });
+export const checkAuthorization = (router: AppRouterInstance) => useAuthStore.subscribe((state) => {
+    console.log("Checking authorization", state);
+    if (state.loading) {
+      return;
+    }
+    if (state.user) {
+      console.log("User is logged in:", state);
+      if(state.user.role === "ADMIN") {
+        router.replace("/admin/dashboard");
+      }
+    } else {
+      console.log("User is not logged in", state);
+      router.replace("/admin/login");
+    }
+  });

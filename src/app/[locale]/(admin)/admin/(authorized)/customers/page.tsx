@@ -78,7 +78,7 @@ export default function CustomerManagementPage() {
       accessorKey: "email",
       header: "Email",
       cell: ({ row }) => {
-        return row.original.profile.email;
+        return row.original.email;
       },
     },
     {

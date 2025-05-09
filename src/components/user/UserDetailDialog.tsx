@@ -51,7 +51,7 @@ export default function UserDetailDialog({ user }: UserDetailDialogProps) {
               title={t("Name")}
               value={user.profile.fullName}
             />
-            <CommonDisplayInput title="Email" value={user.profile.email} />
+            <CommonDisplayInput title="Email" value={user.email} />
             <CommonDisplayInput title={t("Role")} value={user.role} />
             <CommonDisplayInput
               title={t("registration_date")}

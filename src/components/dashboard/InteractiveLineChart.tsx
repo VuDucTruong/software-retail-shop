@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useTranslations } from "next-intl";
+import { Skeleton } from "../ui/skeleton";
 const chartData = Array.from({ length: 60 }, (_, index) => {
   const date = new Date();
   date.setDate(date.getDate() - index);
@@ -60,6 +61,12 @@ const barConfig = [
 ];
 export function InteractiveLineChart() {
   const t = useTranslations();
+
+
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const chartConfig = {
     pending: {
@@ -103,6 +110,8 @@ export function InteractiveLineChart() {
     return date >= startDate;
   });
 
+
+
   return (
     <Card className="@container/card">
       <CardHeader className="relative">
@@ -134,7 +143,8 @@ export function InteractiveLineChart() {
         </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer config={chartConfig}>
+        {
+          mounted ? (<ChartContainer config={chartConfig}>
           <BarChart accessibilityLayer data={filteredData} >
             <XAxis
               dataKey="date"
@@ -169,7 +179,10 @@ export function InteractiveLineChart() {
               defaultIndex={1}
             />
           </BarChart>
-        </ChartContainer>
+        </ChartContainer>) : (
+          <Skeleton className="h-80 w-full" />
+        )
+        }
       </CardContent>
     </Card>
   );

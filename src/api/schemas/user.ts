@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const UserProfileSchema = z.object({
     id: z.number(),
-    email: z.string().email(),
     fullName: z.string(),
     createdAt: z.string().date(),
     imageUrl: z.string().nullable().default(""),
@@ -16,5 +15,6 @@ export const UserSchema = z.object({
     deletedAt: z.string().datetime().nullable(),
     isVerified: z.boolean(),
     role: z.string(),
+    email: z.string().email(),
     profile: UserProfileSchema,
 })

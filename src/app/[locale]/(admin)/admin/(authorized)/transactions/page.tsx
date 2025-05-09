@@ -71,7 +71,7 @@ const [data, setData] = useState<Payment[]>([]);
         accessorKey: "User",
         header: t("User"),
         cell: ({ row }) => {
-          return <div className="font-bold">{row.original.user.email}</div>;
+          return <div className="font-bold">{"Email"}</div>;
         },
       },
       {
