@@ -1,7 +1,7 @@
 import { ApiClient, User } from "@/api";
 import { create } from "zustand";
 
-const userClient = new ApiClient("/users");
+const userClient = ApiClient.getInstance();
 
 type UserState = {
   user: User | null;

@@ -17,11 +17,15 @@ import { Table as TableType } from "@tanstack/react-table";
 import React from "react";
 import { useTranslations } from "next-intl";
 
+type TablePaginationProps = {
+  table: TableType<any>;
+}
+
 export default function CommonTablePagination({
   table,
-}: {
-  table: TableType<any>;
-}) {
+}: 
+  TablePaginationProps
+) {
   const t = useTranslations();
   return (
     <div className="flex w-full items-center gap-8 lg:w-fit">

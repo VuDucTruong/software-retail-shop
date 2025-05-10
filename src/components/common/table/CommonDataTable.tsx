@@ -1,18 +1,5 @@
-import * as React from "react";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-  getFilteredRowModel,
-  RowSelectionState,
-  VisibilityState,
-  Table as TableType,
-  PaginationState,
-  Updater,
-  SortingState,
-} from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -21,40 +8,34 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  ChevronsLeftIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsRightIcon,
-  ColumnsIcon,
-  ChevronDownIcon,
-} from "lucide-react";
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  PaginationState,
+  RowSelectionState,
+  SortingState,
+  Updater,
+  useReactTable,
+  VisibilityState
+} from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import * as React from "react";
+import { toast } from "sonner";
 import { Checkbox } from "../../ui/checkbox";
+import CommonConfirmDialog from "../CommonConfirmDialog";
 import CommonTablePagination from "./CommonTablePagination";
 import CommonTableVisibility from "./CommonTableVisibility";
-import { toast } from "sonner";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading?: boolean;
   canSelect?: boolean;
   pageCount?: number;
+  totalCount?: number;
   pagination?: PaginationState;
   onPaginationChange?: (updater: Updater<PaginationState>) => void;
   onDeleteRows?: (rows: number[]) => void;
@@ -71,13 +52,18 @@ export function CommmonDataTable<TData, TValue>({
   pagination,
   onPaginationChange,
   sorting,
+  totalCount,
+  isLoading,
   onSortingChange,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const t = useTranslations();
-
+  const [mounted , setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   // Add selection and actions columns if needed
   const tableColumns = React.useMemo(() => {
     const cols = [...columns];
@@ -140,18 +126,23 @@ export function CommmonDataTable<TData, TValue>({
   });
 
   const hanndleDeleteRows = () => {
+    const ids = getSelectedIds();
+    setRowSelection({});
+    onDeleteRows?.(ids);
+  };
+
+  const getSelectedIds = (): number[] => {
     const selectedRowIds = table
       .getFilteredSelectedRowModel()
       .rows.map((row) => {
-        if(row.original != undefined) {
+        if (row.original != undefined) {
           return (row.original as any).id;
         } else {
-          toast.error("Not found id of row , you need to declare id in your data type");
-          return -1;
+          toast.error("Không thể lấy id của item đã chọn");
+          return [];
         }
       });
-    setRowSelection({});
-    onDeleteRows?.(selectedRowIds);
+    return selectedRowIds;
   };
 
   return (
@@ -175,59 +166,87 @@ export function CommmonDataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={() => {
-                    canSelect && row.toggleSelected();
-                  }}
-                  className={
-                    canSelect
-                      ? "relative z-0 data-[state=selected]:bg-primary data-[state=selected]:text-white hover:bg-muted"
-                      : ""
-                  }
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
+          {isLoading || !mounted ? (
+            <TableBody>
               <TableRow>
-                <TableCell
-                  colSpan={tableColumns.length}
-                  className="h-24 text-center"
-                >
-                  {t("no_results")}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+                  <TableCell
+                    colSpan={tableColumns.length}
+                    className="h-24 text-center"
+                  >
+                    <Skeleton className="size-full"/>
+                  </TableCell>
+                </TableRow>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    onClick={() => {
+                      canSelect && row.toggleSelected();
+                    }}
+                    className={
+                      canSelect
+                        ? "relative z-0 data-[state=selected]:bg-primary data-[state=selected]:text-white hover:bg-muted"
+                        : ""
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id} className="text-center">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={tableColumns.length}
+                    className="h-24 text-center"
+                  >
+                    {t("no_results")}
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          )}
         </Table>
       </div>
       <div className="flex items-center justify-end">
         {canSelect && (
           <div className="hidden flex-1 lg:flex">
-            <Button variant={"destructive"} onClick={hanndleDeleteRows} disabled={table.getFilteredSelectedRowModel().rows.length === 0}>
-              {t("delete_selected_x_of_y", {
-                x: table.getFilteredSelectedRowModel().rows.length,
-                y: table.getFilteredRowModel().rows.length,
-              })}
-            </Button>
+            <CommonConfirmDialog
+              title={`Xóa ${
+                table.getFilteredSelectedRowModel().rows.length
+              } danh mục`}
+              description={`Bạn có chắc chắn muốn xóa các danh mục ${getSelectedIds().join(
+                ","
+              )} ?`}
+              triggerName={
+                <Button
+                  variant={"destructive"}
+                  disabled={
+                    table.getFilteredSelectedRowModel().rows.length === 0
+                  }
+                >
+                  {t("delete_selected_x_of_y", {
+                    x: table.getFilteredSelectedRowModel().rows.length,
+                    y: totalCount?.toString() ?? "0",
+                  })}
+                </Button>
+              }
+              onConfirm={hanndleDeleteRows}
+            />
           </div>
         )}
 
-        {pagination && <CommonTablePagination table={table}/>}
+        {pagination && <CommonTablePagination table={table} />}
       </div>
     </div>
   );
 }
-

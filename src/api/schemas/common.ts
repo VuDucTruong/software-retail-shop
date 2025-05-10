@@ -11,3 +11,23 @@ export const PasswordSchema = z
     .regex(passwordRegex, {
       message: "Input.error_password_format",
     })
+
+
+export const QueyParamsSchema = z.object({
+  pageRequest: z.object({
+    page: z.number(),
+    size: z.number(),
+    sortBy: z.string(),
+    sortDirection: z.enum(["asc", "desc"]),
+  }),
+  ids: z.array(z.number()).optional(),
+
+}).catchall(z.any()).partial().optional();
+
+  export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) => 
+  z.object({
+    data: dataSchema,
+    totalInstances: z.number().optional(),
+    currentPage: z.number().optional(),
+    totalPages: z.number().optional(),
+  });

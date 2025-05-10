@@ -9,8 +9,10 @@ import {
   UserSchema,
 } from "@/api";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { ApiError } from "next/dist/server/api-utils";
+import { z } from "zod";
 
-const authClient = new ApiClient();
+const authClient = ApiClient.getInstance();
 
 type AuthState = {
   user: User | null;
@@ -44,13 +46,12 @@ const login = async (set: SetState<AuthStore>, request: LoginRequest) => {
   set({ loading: true, error: null });
 
   try {
-    const response = await authClient.post("/accounts/login", request);
-    const data = LoginResponseSchema.parse(response);
+    const response = await authClient.post("/accounts/login",LoginResponseSchema, request);
 
-    set({ user: data.user, loading: false });
+    set({ user: response.user, loading: false });
   } catch (error) {
-    console.error(error);
-    set({ error: error as string, loading: false });
+    const appError = error as ApiError;
+    set({ error: appError.message, loading: false });
   }
 };
 
@@ -58,12 +59,12 @@ const register = async (set: SetState<AuthStore>, request: RegisterRequest) => {
   set({ loading: true, error: null });
 
   try {
-    const response = await authClient.post("/accounts/register", request);
+    await authClient.post("/accounts/register", z.void() ,request);
 
     set({ loading: false });
   } catch (error) {
-    console.error(error);
-    set({ error: error as string, loading: false });
+    const appError = error as ApiError;
+    set({ error: appError.message, loading: false });
   }
 };
 
@@ -71,12 +72,12 @@ const logout = async (set: SetState<AuthStore>) => {
   set({ loading: true, error: null });
 
   try {
-    await authClient.delete("/accounts/logout");
+    await authClient.delete("/accounts/logout", z.void());
 
     set({ user: null, loading: false });
   } catch (error) {
-    console.error(error);
-    set({ error: error as string, loading: false });
+    const appError = error as ApiError;
+    set({ error: appError.message, loading: false });
   }
 };
 
@@ -84,7 +85,7 @@ const getUser = async (set: SetState<AuthStore>) => {
   set({ loading: true, error: null });
 
   try {
-    const response = await authClient.get("/users");
+    const response = await authClient.get("/users", UserSchema);
     const data = UserSchema.parse(response);
 
     set({ user: data, loading: false });

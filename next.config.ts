@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
             protocol: 'https',
             hostname: 'www.pokemon.com',
           },
+          {
+            protocol: 'https',
+            hostname: 'res.cloudinary.com',
+            port: '',
+            pathname: '/**',
+          },
         ],
       },
       reactStrictMode: false,

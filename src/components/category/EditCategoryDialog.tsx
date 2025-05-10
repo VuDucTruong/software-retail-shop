@@ -7,7 +7,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "../ui/button";
@@ -29,25 +29,22 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { MdUpdate } from "react-icons/md";
 import { PenLine } from "lucide-react";
 import { toast } from "sonner";
+import { useCategoryStore } from "@/stores/category.store";
+import { urlToFile } from "@/lib/utils";
 
 type EditCategoryDialogProps = {
-  onUpdate?: (data: CategoryUpdate) => void;
-};
-
-const selectedCategory: Category = {
-  id: 1,
-  name: "Sample Category",
-  description: "This is a sample category",
-  imageUrl:
-    "https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/025.png",
+  selectedCategory: Category;
 };
 
 export default function EditCategoryDialog(props: EditCategoryDialogProps) {
-  const { onUpdate } = props;
+  const { selectedCategory } = props;
   const t = useTranslations();
+  const updateCategory = useCategoryStore(
+    (state) => state.updateCategory
+  );
+
   const form = useForm<CategoryUpdate>({
     defaultValues: {
       name: selectedCategory.name,
@@ -57,15 +54,15 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
     resolver: zodResolver(CategoryUpdateSchema),
   });
 
+  
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     form.setValue("id", selectedCategory.id);
-    form.handleSubmit((data) => {
-      console.log(data);
-      onUpdate?.(data);
-      toast.success(t("update_category_success"));
-      // Handle form submission logic here
-      // For example, you can send the data to an API endpoint
+    form.handleSubmit(async (data) => {
+      if(!data.image) {
+        data.image = await urlToFile(selectedCategory.imageUrl ?? "/empty_img.png");
+      }
+      updateCategory(data);
     })();
   };
 
@@ -77,7 +74,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
           <PenLine />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-1/2">
+      <DialogContent className="w-1/2 aria-describedby={undefined}">
         <DialogHeader>
           <DialogTitle className="text-2xl" asChild>
             <h2>{t("update_category_x", { x: selectedCategory.id })}</h2>
@@ -107,7 +104,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
                         alt="category image"
                         src={
                           field.value == null
-                            ? selectedCategory.imageUrl
+                            ? selectedCategory.imageUrl ?? "/empty_img.png"
                             : URL.createObjectURL(field.value)
                         }
                         width={100}

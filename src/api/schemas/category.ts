@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ApiResponseSchema } from "./common";
 
 const messages = {
   required: {
@@ -10,7 +11,7 @@ const messages = {
 export const CategorySchema = z.object({
   id: z.number(),
   name: z.string(),
-  imageUrl: z.string(),
+  imageUrl: z.string().nullable(),
   description: z.string(),
 });
 
@@ -23,3 +24,6 @@ export const CategoryCreateSchema = z.object({
 export const CategoryUpdateSchema = CategoryCreateSchema.extend({
   id: z.number(),
 }).partial();
+
+
+export const CategoryListSchema = ApiResponseSchema(z.array(CategorySchema));

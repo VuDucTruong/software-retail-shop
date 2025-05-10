@@ -16,42 +16,72 @@ import {
 import { Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
-
-const sampleData: Category[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1 + 1000,
-  name: `Category ${i + 1}`,
-  imageUrl: "/empty_img.png",
-  description: `Description for Category ${i + 1}`,
-}));
+import { useCategoryStore } from "@/stores/category.store";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
+import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { shallow, useShallow } from "zustand/shallow";
 export default function CategoryManagementPage() {
   const t = useTranslations();
 
-  const [data, setData] = useState<Category[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
+  
+
+  const [
+    status,
+    lastAction,
+    error,
+    categories,
+    getCategories,
+    queryParams,
+    deleteCategories,
+    deleteCategory,
+  ] = useCategoryStore(
+    useShallow((state) => [
+      state.status,
+      state.lastAction,
+      state.error,
+      state.categories,
+      state.getCategories,
+      state.queryParams,
+      state.deleteCategories,
+      state.deleteCategory,
+    ])
+  );
+
   useEffect(() => {
-    const fetchData = async () => {
-      const sort = sorting[0];
-      const sortBy = sort?.id || "id";
-      const order = sort?.desc ? "desc" : "asc";
-      console.log(
-        "Fetching data with pagination:",
-        pagination,
-        "and sorting:",
-        sortBy,
-        order
-      );
-      setData(sampleData);
-      setPageCount(100);
-    };
-    fetchData();
-  }, [pagination, sorting]);
+    useCategoryStore.getState().resetStatus();
+  },[]); 
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: queryParams?.pageRequest?.page ?? 0,
+    pageSize: queryParams?.pageRequest?.size ?? 10,
+  });
+
+  useActionToast({
+    status,
+    lastAction,
+    errorMessage: error || undefined,
+  });
+
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+      desc: queryParams?.pageRequest?.sortDirection === "desc",
+    },
+  ]);
+
+  useEffect(() => {
+    getCategories({
+      pageRequest: {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+      },
+    });
+  }, [sorting, pagination]);
 
   const cols: ColumnDef<Category>[] = [
     {
@@ -71,8 +101,9 @@ export default function CategoryManagementPage() {
             <div className="relative size-20 border border-border rounded-lg">
               <Image
                 alt={row.original.id.toString()}
-                src={row.original.imageUrl}
+                src={row.original.imageUrl ?? "/empty_img.png"}
                 fill
+                sizes="100%"
                 className="rounded-md object-cover"
               />
             </div>
@@ -82,7 +113,9 @@ export default function CategoryManagementPage() {
     },
     {
       accessorKey: "name",
-      header: ({ column }) => <SortingHeader column={column} title={t("Name")} />,
+      header: ({ column }) => (
+        <SortingHeader column={column} title={t("Name")} />
+      ),
       cell: ({ row }) => {
         return <div className="font-bold">{row.original.name}</div>;
       },
@@ -101,15 +134,18 @@ export default function CategoryManagementPage() {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
-            <EditCategoryDialog />
-            <Button
-              variant={"destructive"}
-              onClick={() => handleDelete(row.original.id)}
-              size="icon"
-              className="w-8 h-8"
-            >
-              <Trash2Icon />
-            </Button>
+            <EditCategoryDialog selectedCategory={row.original} />
+
+            <CommonConfirmDialog
+              triggerName={
+                <Button variant={"destructive"} size="icon" className="w-8 h-8">
+                  <Trash2Icon />
+                </Button>
+              }
+              title={"Xóa danh mục"}
+              description={"Bạn có chắc chắn muốn xóa danh mục này không?"}
+              onConfirm={() => handleDelete(row.original.id)}
+            />
           </div>
         );
       },
@@ -117,10 +153,8 @@ export default function CategoryManagementPage() {
   ];
 
   const handleDelete = (id: number) => {
-    toast.success(t("Success", { x: id }));
+    deleteCategory(id)
   };
-
-  const onCreate = (data: CategoryCreate) => {};
 
   return (
     <Card>
@@ -128,16 +162,19 @@ export default function CategoryManagementPage() {
         <CardTitle className="flex items-center justify-between">
           <h2>{t("category_management")}</h2>
           <div className="flex items-center gap-2">
-            <CreateCategoryDialog onCreate={onCreate} />
-            <ProductFilterSheet />
+            <CreateCategoryDialog />
+            <CategoryFilterSheet />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <CommmonDataTable
+        
+          <CommmonDataTable
+          isLoading={status === "loading" && lastAction === null}
           columns={cols}
-          data={data}
-          pageCount={pageCount}
+          data={categories?.data ?? []}
+          totalCount={categories?.totalInstances ?? 0}
+          pageCount={categories?.totalPages ?? 0}
           pagination={pagination}
           onPaginationChange={(updater) => {
             setPagination((old) =>
@@ -146,7 +183,7 @@ export default function CategoryManagementPage() {
           }}
           canSelect
           onDeleteRows={(rows) => {
-            console.log(rows);
+            deleteCategories(rows);
           }}
           sorting={sorting}
           onSortingChange={(updater) => {
@@ -155,6 +192,7 @@ export default function CategoryManagementPage() {
             );
           }}
         />
+        
       </CardContent>
     </Card>
   );

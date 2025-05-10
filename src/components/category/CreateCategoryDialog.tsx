@@ -12,7 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from "../ui/dialog";
 import {
   Form,
@@ -25,14 +25,9 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { useCategoryStore } from "@/stores/category.store";
 
-
-type CreateCategoryDialogProps = {
-  onCreate?: (data: CategoryCreate) => void;
-};
-
-export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
-  const { onCreate } = props;
+export default function CreateCategoryDialog() {
   const t = useTranslations();
   const form = useForm<CategoryCreate>({
     defaultValues: {
@@ -42,16 +37,14 @@ export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
     },
     resolver: zodResolver(CategoryCreateSchema),
   });
+  const createCategory = useCategoryStore((state) => state.createCategory);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     form.handleSubmit((data) => {
-      console.log(data);
-      onCreate?.(data);
       form.reset();
-      toast.success(t("create_category_success"));
-      // Handle form submission logic here
-      // For example, you can send the data to an API endpoint
+      createCategory(data)
     })();
   };
 
@@ -62,9 +55,11 @@ export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
           <CgAdd /> {t("create_category")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-1/2">
+      <DialogContent className="w-1/2 aria-describedby={undefined}">
         <DialogHeader>
-          <DialogTitle asChild className="text-2xl"><h2>{t("create_category")}</h2></DialogTitle>
+          <DialogTitle asChild className="text-2xl">
+            <h2>{t("create_category")}</h2>
+          </DialogTitle>
         </DialogHeader>
         <div>
           <Form {...form}>
@@ -82,7 +77,6 @@ export default function CreateCategoryDialog(props: CreateCategoryDialogProps) {
                         ref={field.ref}
                         accept="image/*"
                         name={field.name}
-                        
                       />
                     </FormControl>
                     <FormMessage />
