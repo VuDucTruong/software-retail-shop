@@ -1,4 +1,4 @@
-import { CategorySchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
+import { ApiResponseSchema, CategorySchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
 import { z } from "zod";
 
 
@@ -12,7 +12,7 @@ const messages = {
     tags: "Tags are required",
     categories: "At least one category is required",
   },
-  name: "Must be at least 3 characters, letters and numbers only.",
+  name: "Must be at least 3 characters",
   price: "Price must be greater than or equal to 0",
   originalPrice: "Original Price must be greater than or equal to 0",
   priceComparison: "Price must be less than or equal to original price",
@@ -22,7 +22,7 @@ export const ProductSchema = z.object({
   id: z.number(),
   slug: z.string(),
   name: z.string(),
-  imageUrl: z.string(),
+  imageUrl: z.string().nullable(),
   represent: z.boolean(),
   price: z.number(),
   originalPrice: z.number(),
@@ -31,42 +31,28 @@ export const ProductSchema = z.object({
   productDescription: ProductDescriptionSchema,
   quantity: z.number(),
   status: z.string(),
-  variants: z.array(ProductMetadataSchema),
-  productItems: z.array(ProductItemSchema)
+  variants: z.array(ProductMetadataSchema).nullable(),
+  productItems: z.array(ProductItemSchema).nullable(),
 });
 
 // === Schemas ===
 
 export const ProductValidation = z.object({
-  slug: z.string().nonempty({ message: messages.required.slug }),
-  name: z.string().regex(/^[a-zA-Z0-9\s]{3,}$/, { message: messages.name }),
+  slug: z.string(),
+  name: z.string().min(3, { message: messages.name }),
   image: z.instanceof(File, { message: "Image is required" }).nullable(),
+  represent: z.boolean().default(true),
   price: z.number().gte(0, { message: messages.price }),
   originalPrice: z.number().gte(0, { message: messages.originalPrice }),
-  categories: z.array(z.number()).nonempty({ message: messages.required.categories }),
+  categoryIds: z.array(z.number()).nonempty({ message: messages.required.categories }),
   tags: z.array(z.string()).nonempty({ message: messages.required.tags }),
   productDescription: ProductDescriptionSchema,
+  groupId: z.number().optional(),
 });
 
 
-// Create
-export const ProductCreateSchema = 
-  ProductValidation.superRefine((data, ctx) => {
-    if (data.price > data.originalPrice) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: messages.priceComparison,
-        path: ["price"],
-      });
-    }
-  })
-
-
-// Update
-export const ProductUpdateSchema = 
-  ProductValidation.extend({
-    id: z.number().default(0),
-  }).superRefine((data, ctx) => {
+const applyRefinement = (schema: z.ZodObject<any>) => {
+  return schema.superRefine((data, ctx) => {
     if (data.price > data.originalPrice) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -75,3 +61,16 @@ export const ProductUpdateSchema =
       });
     }
   });
+}
+
+// Create
+export const ProductCreateSchema = applyRefinement(ProductValidation)
+
+
+// Update
+export const ProductUpdateSchema = applyRefinement(ProductValidation.extend({
+    id: z.number(),
+  }))
+  
+
+export const ProductListSchema = ApiResponseSchema(z.array(ProductSchema));

@@ -8,7 +8,7 @@ import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormField } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ProductCreate, ProductCreateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,17 +16,31 @@ import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useProductStore } from "@/stores/product.store";
+import { useShallow } from "zustand/shallow";
+import { useActionToast } from "@/hooks/use-action-toast";
+import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
 
 export default function CreateProductPage() {
 
   const t = useTranslations();
+
+  const [createProduct , lastAction , status , error] = useProductStore(useShallow((state) => [
+    state.createProduct,
+    state.lastAction,
+    state.status,
+    state.error,
+  ]));
+
+  useActionToast({
+    lastAction, status , errorMessage: error || undefined})
+
   const form = useForm<ProductCreate>({
     defaultValues: {
       tags: [],
-      categories: [],
+      categoryIds: [],
       name: "",
       slug: "",
-      image: null,
       originalPrice: 0,
       price: 0,
       productDescription: {
@@ -43,12 +57,12 @@ export default function CreateProductPage() {
 
   const fileRef = useRef<HTMLInputElement>(null);
   const handleSubmit = () => {
-    // @ts-ignore
-    form.setValue("image", fileRef.current?.files?.[0]);
+
+    console.log("🔥 Form Data before submit:", form.getValues());
     
     form.handleSubmit((data) => {
       console.log("🔥 Form Data:", data);
-      toast.success(t("update_product_success"));
+      
     })();
   };
 
@@ -65,6 +79,7 @@ export default function CreateProductPage() {
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
+             
             }}
             className=" grid grid-cols-3 space-x-4 gap-6"
           >
@@ -73,19 +88,22 @@ export default function CreateProductPage() {
             <FormField
               control={form.control}
               name="image"
-              render={() => (
+              render={({field}) => (
                 <CommonInputOutline
                   title={t("product_image")}
                   className="col-span-3"
                 >
                   <EditAvatarSection
-                    ref={fileRef}
+                    field={field}
+                    fileRef={fileRef}
                     name={t("upload_image")}
                     avatarHint={t("image_hint")}
                   />
                 </CommonInputOutline>
               )}
             />
+
+  
 
             <FormField
               control={form.control}
@@ -114,7 +132,7 @@ export default function CreateProductPage() {
                 <CommonInputOutline title={t("original_price")}>
                   <Input
                     type="number"
-                    step={1000}
+                    step={100}
                     placeholder={t("original_price")}
                     {...field}
                     onChange={(e) =>
@@ -132,7 +150,7 @@ export default function CreateProductPage() {
               render={({ field }) => (
                 <CommonInputOutline title={t("Price")}>
                   <Input
-                    step={1000}
+                    step={100}
                     placeholder={t("Price")}
                     type="number"
                     {...field}
@@ -159,13 +177,26 @@ export default function CreateProductPage() {
             {/* Categories Multi-select */}
             <FormField
               control={form.control}
-              name="categories"
-              render={() => (
+              name="categoryIds"
+              render={({field}) => (
                 <CommonInputOutline title={t("Categories")}>
-                  <CategoryMultiSelectField />
+                  <CategoryMultiSelectField field={field}/>
                 </CommonInputOutline>
               )}
             />
+
+
+              {/* Categories Multi-select */}
+            <FormField
+              control={form.control}
+              name="groupId"
+              render={({field}) => (
+                <CommonInputOutline title={"Nhóm sản phẩm"}>
+                  <ProductGroupComboBox field={field}/>
+                </CommonInputOutline>
+              )}
+            />
+
 
             <div className="col-span-3">
               <ProductDescriptionTab />

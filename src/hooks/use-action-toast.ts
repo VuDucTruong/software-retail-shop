@@ -36,6 +36,7 @@ export function useActionToast({
   status,
   lastAction,
   errorMessage,
+  reset
 }: UseActionToastProps) {
   useEffect(() => {
     if (!lastAction || status === "idle") return;
@@ -53,7 +54,10 @@ export function useActionToast({
       } else if (status === "error") {
         toast.error(`${message}${errorMessage ? ": " + errorMessage : ""}`);
       }
+      reset?.();
     }
+
+    
 
   }, [status, lastAction]);
 }

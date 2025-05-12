@@ -16,36 +16,62 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CgAdd } from "react-icons/cg";
 import { toast } from "sonner";
+import { useProductStore } from "@/stores/product.store";
+import { useShallow } from "zustand/shallow";
+import { useActionToast } from "@/hooks/use-action-toast";
 
 
-const sampleData: Product[] = [];
 export default function ProductManagementPage() {
   const t = useTranslations();
   const router = useRouter();
-  const [data, setData] = useState<Product[]>([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [pagination, setPagination] = useState<PaginationState>({
-      pageIndex: 0,
-      pageSize: 10,
+ 
+
+  const [getProducts , products , queryParams , lastAction , error , status , resetStatus] = useProductStore(useShallow((state) => [
+    state.getProducts,
+    state.products,
+    state.queryParams,
+    state.lastAction,
+    state.error,
+    state.status,
+    state.resetStatus,
+  ]));
+
+  useEffect(() => {
+    resetStatus();
+  },[])
+
+  useActionToast({lastAction , status , errorMessage: error || undefined})
+
+   const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: queryParams?.pageRequest?.page ?? 0,
+    pageSize: queryParams?.pageRequest?.size ?? 10,
+  });
+
+  useActionToast({
+    status,
+    lastAction,
+    errorMessage: error || undefined,
+  });
+
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+      desc: queryParams?.pageRequest?.sortDirection === "desc",
+    },
+  ]);
+
+  useEffect(() => {
+    getProducts({
+      pageRequest: {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+      },
     });
-    const [sorting, setSorting] = useState<SortingState>([]);
-    useEffect(() => {
-      const fetchData = async () => {
-        const sort = sorting[0];
-        const sortBy = sort?.id || "id";
-        const order = sort?.desc ? "desc" : "asc";
-        console.log(
-          "Fetching data with pagination:",
-          pagination,
-          "and sorting:",
-          sortBy,
-          order
-        );
-        setData(sampleData);
-        setPageCount(100);
-      };
-      fetchData();
-    }, [pagination, sorting]);
+  }, [sorting, pagination]);
+
+
   const cols: ColumnDef<Product>[] = [
     {
       accessorKey: "id",
@@ -60,10 +86,16 @@ export default function ProductManagementPage() {
       header: t("Image"),
       cell: ({ row }) => {
         return <div className="flex items-center justify-center">
-          <div className="relative size-20 ">
-          <Image alt={row.original.id!.toString()} src={row.original.imageUrl ?? ""} fill className="rounded-md object-cover" />
-        </div>
-        </div>;
+                    <div className="relative size-20 border border-border rounded-lg">
+                      <Image
+                        alt={row.original.id.toString()}
+                        src={row.original.imageUrl ?? "/empty_img.png"}
+                        fill
+                        sizes="100%"
+                        className="rounded-md object-cover"
+                      />
+                    </div>
+                  </div>
       },
       enableHiding: false,
     },
@@ -164,9 +196,11 @@ export default function ProductManagementPage() {
       </CardHeader>
       <CardContent>
       <CommmonDataTable
+          isLoading={status === "loading" && lastAction === null}
           columns={cols}
-          data={data}
-          pageCount={pageCount}
+          data={products?.data ?? []}
+          totalCount={products?.totalInstances ?? 0}
+          pageCount={products?.totalPages ?? 0}
           pagination={pagination}
           onPaginationChange={(updater) => {
             setPagination((old) =>
@@ -175,7 +209,7 @@ export default function ProductManagementPage() {
           }}
           canSelect
           onDeleteRows={(rows) => {
-            console.log(rows);
+            
           }}
           sorting={sorting}
           onSortingChange={(updater) => {

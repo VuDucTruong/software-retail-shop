@@ -21,5 +21,7 @@ export default function AdminPage() {
     }
   }, [lastAction , status]);
 
-  return LoadingPage();
+  return <main className="min-h-screen">
+    <LoadingPage />
+  </main>;
 }

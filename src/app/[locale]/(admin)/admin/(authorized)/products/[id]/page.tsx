@@ -95,13 +95,14 @@ export default function EditProductPage() {
             <FormField
               control={form.control}
               name="image"
-              render={() => (
+              render={({field}) => (
                 <CommonInputOutline
                   title={t("product_image")}
                   className="col-span-3"
                 >
                   <EditAvatarSection
-                    ref={fileRef}
+                    fileRef={fileRef}
+                  field={field}
                     name={t("upload_image")}
                     avatarHint={t("image_hint")}
                   />
@@ -136,7 +137,7 @@ export default function EditProductPage() {
                 <CommonInputOutline title={t("original_price")}>
                   <Input
                     type="number"
-                    step={1000}
+                    step={100}
                     placeholder={t("original_price")}
                     {...field}
                     onChange={(e) =>
@@ -154,7 +155,7 @@ export default function EditProductPage() {
               render={({ field }) => (
                 <CommonInputOutline title={t("Price")}>
                   <Input
-                    step={1000}
+                    step={100}
                     placeholder={t("Price")}
                     type="number"
                     {...field}
@@ -182,9 +183,9 @@ export default function EditProductPage() {
             <FormField
               control={form.control}
               name="categories"
-              render={() => (
+              render={({field}) => (
                 <CommonInputOutline title={t("Categories")}>
-                  <CategoryMultiSelectField />
+                  <CategoryMultiSelectField field={field} />
                 </CommonInputOutline>
               )}
             />

@@ -1,65 +1,83 @@
-import React from 'react'
-import { Separator } from "@/components/ui/separator"	
-import Image from 'next/image'
-import { Button } from '../ui/button';
-
+import React, { RefObject, use } from "react";
+import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import { ControllerRenderProps, useFormContext } from "react-hook-form";
 
 type EditAvatarProps = {
-    ref: React.RefObject<HTMLInputElement | null>;
-    name: string;
-    avatarHint: string; // Hint for the avatar
-    defaultAvatar?: string; // Optional default avatar URL
+  fileRef: RefObject<HTMLInputElement | null>;
+  name: string;
+  avatarHint: string; // Hint for the avatar
+  defaultAvatar?: string; // Optional default avatar URL
+  field?: ControllerRenderProps;
+};
+
+export default function EditAvatarSection({
+  fileRef,
+  name,
+  avatarHint,
+  defaultAvatar = "/empty_img.png",
+  field,
+}: EditAvatarProps) {
+  const [avatar, setAvatar] = React.useState<string | null>(null); // State to hold the avatar URL
+
+
+  const handleButtonClick = () => {
+    fileRef.current?.click();
   };
+  
 
-
-export default function EditAvatarSection({ ref, name,avatarHint,defaultAvatar="/empty_img.png" }: EditAvatarProps) {
-
-    const [avatar, setAvatar] = React.useState<string | null>(null); // State to hold the avatar URL
-
-    const handleButtonClick = () => {
-        ref.current?.click(); // Trigger file input click
-      };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     
-      const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]; // Get selected file safely
-        if (file) {
-          console.log(ref.current?.files?.[0]); // Log the file object for debugging
-          setAvatar(URL.createObjectURL(file)); // Create a URL for the selected file
-        }
-      };
-
+    field?.onChange(file);
+    if (file) {
+      console.log("Selected file:", file);
+      setAvatar(URL.createObjectURL(file));
+    }
+  };
 
   return (
     <div className="flex flex-row gap-4 items-center">
-          {/* Just avatar display */}
-            <div className="relative ring-border ring-offset-base-100 size-40 rounded-lg ring ring-offset-2">
-              <Image
-                alt="Avatar"
-                fill
-                sizes='100%'
-                className="object-cover rounded-lg"
-                src={avatar || defaultAvatar} // Use the avatar URL or a default image
-              />
-            </div>
-          {/* Change avatar button */}
-          <div className="flex flex-col items-center gap-4">
-      {/* Hidden file input */}
-      <input
-        type="file"
-        accept="image/*"
-        ref={ref}
-        className="hidden"
-        onChange={handleFileChange}
-      />
+      {/* Just avatar display */}
+      <div className="relative ring-border ring-offset-base-100 size-40 rounded-lg ring ring-offset-2">
+        <Image
+          alt="Avatar"
+          fill
+          sizes="100%"
+          className="object-cover rounded-lg"
+          src={avatar || defaultAvatar} // Use the avatar URL or a default image
+        />
+      </div>
+      {/* Change avatar button */}
+      <div className="flex flex-col items-center gap-4">
+        {/* Hidden file input */}
 
-      {/* Clickable Button */}
-      <Button variant="outline" onClick={handleButtonClick} className="btn btn-primary w-fit">
-        {name}
-      </Button>
+        <input
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+          ref={(e) => {
+            field?.ref(e);
+            fileRef.current = e;
+          }}
+          {...fileRef}
+          
+        />
+        {/* Clickable Button */}
+        <Button
+          variant="outline"
+          type="button"
+          onClick={handleButtonClick}
+          className="btn btn-primary w-fit"
+        >
+          {name}
+        </Button>
+      </div>
+      <Separator orientation="vertical" className="!w-1 !bg-primary" />
+      {/* Avatar hint */}
+      <p className="whitespace-pre-line body-sm">{avatarHint}</p>
     </div>
-          <Separator orientation="vertical" className="!w-1 !bg-primary" />
-          {/* Avatar hint */}
-          <p className="whitespace-pre-line body-sm">{avatarHint}</p>
-        </div>
-  )
+  );
 }

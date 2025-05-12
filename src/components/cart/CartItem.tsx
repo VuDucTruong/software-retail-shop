@@ -31,8 +31,9 @@ export default function CartItem(data: Cart) {
         <div className="relative w-[270px] aspect-[2/1]">
           <Image
             alt="product"
-            src={product.imageUrl}
+            src={product.imageUrl ?? "/empty_img.png"}
             fill
+            sizes="100%"
             className="object-cover rounded-md"
           />
         </div>

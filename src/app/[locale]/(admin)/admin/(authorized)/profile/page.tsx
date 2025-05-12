@@ -90,9 +90,9 @@ export default function AdminProfilePage() {
 
           {/* Avatar section */}
           <EditAvatarSection
+            fileRef={fileRef}
             avatarHint={t("image_hint")}
             name={t("change_avatar")}
-            ref={fileRef}
             defaultAvatar={user?.profile.imageUrl ?? undefined}
           />
 
