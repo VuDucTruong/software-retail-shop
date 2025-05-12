@@ -1,24 +1,22 @@
 "use client";
 
+import { Product } from "@/api";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import TableOptionMenu from "@/components/common/TableOptionMenu";
-import KeyFileUploadDialog from "@/components/product/KeyFileUploadDialog";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "@/i18n/navigation";
-import { Product } from "@/api";
+import { useProductStore } from "@/stores/product.store";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CgAdd } from "react-icons/cg";
-import { toast } from "sonner";
-import { useProductStore } from "@/stores/product.store";
 import { useShallow } from "zustand/shallow";
-import { useActionToast } from "@/hooks/use-action-toast";
 
 
 export default function ProductManagementPage() {
@@ -26,7 +24,7 @@ export default function ProductManagementPage() {
   const router = useRouter();
  
 
-  const [getProducts , products , queryParams , lastAction , error , status , resetStatus] = useProductStore(useShallow((state) => [
+  const [getProducts , products , queryParams , lastAction , error , status , resetStatus, deleteProduct , deleteProducts] = useProductStore(useShallow((state) => [
     state.getProducts,
     state.products,
     state.queryParams,
@@ -34,6 +32,8 @@ export default function ProductManagementPage() {
     state.error,
     state.status,
     state.resetStatus,
+    state.deleteProduct,
+    state.deleteProducts,
   ]));
 
   useEffect(() => {
@@ -45,12 +45,6 @@ export default function ProductManagementPage() {
    const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
-  });
-
-  useActionToast({
-    status,
-    lastAction,
-    errorMessage: error || undefined,
   });
 
   const [sorting, setSorting] = useState<SortingState>([
@@ -170,8 +164,7 @@ export default function ProductManagementPage() {
 
 
   const handleDelete = (id: number) => {
-    toast.success(t("delete_product_x_success", { x:id }));
-    
+    deleteProduct(id)
   };
 
   const handleViewDetails = (id: number) => {
@@ -184,7 +177,6 @@ export default function ProductManagementPage() {
         <CardTitle className="flex items-center justify-between">
           <h2>{t("product_management")}</h2>
           <div className="flex items-center gap-2">
-            <KeyFileUploadDialog />
             <Link href={"products/create"}>
               <Button variant="outline" className="bg-primary text-white">
                 <CgAdd /> {t("create_product")}
@@ -209,7 +201,7 @@ export default function ProductManagementPage() {
           }}
           canSelect
           onDeleteRows={(rows) => {
-            
+            deleteProducts(rows);
           }}
           sorting={sorting}
           onSortingChange={(updater) => {

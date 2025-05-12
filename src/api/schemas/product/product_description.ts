@@ -2,9 +2,9 @@
 import { z } from "zod";
 
 export const ProductDescriptionSchema = z.object({
-  description: z.string(),
-  info: z.string(),
-  platform: z.string(),
-  policy: z.string(),
-  tutorial: z.string(),
+  description: z.string().nullable(),
+  info: z.string().nullable(),
+  platform: z.string().nullable(),
+  policy: z.string().nullable(),
+  tutorial: z.string().nullable(),
 }).optional();

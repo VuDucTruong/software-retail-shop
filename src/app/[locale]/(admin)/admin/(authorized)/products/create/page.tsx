@@ -57,12 +57,9 @@ export default function CreateProductPage() {
 
   const fileRef = useRef<HTMLInputElement>(null);
   const handleSubmit = () => {
-
-    console.log("🔥 Form Data before submit:", form.getValues());
     
     form.handleSubmit((data) => {
-      console.log("🔥 Form Data:", data);
-      
+      createProduct(data)
     })();
   };
 
