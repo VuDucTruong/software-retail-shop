@@ -8,10 +8,12 @@ type CacheEntry = {
 type ApiClientOptions = {
   useCache?: boolean;
   cacheTTL?: number; // in milliseconds
+  isForm: boolean;
 };
 export class ApiClient {
   private static instances: Record<string, ApiClient> = {};
   private instance: AxiosInstance;
+
   private cache = new Map<string, CacheEntry>();
   private constructor(basePath: string = '') {
     this.instance = axios.create({
@@ -34,6 +36,41 @@ export class ApiClient {
     return ApiClient.instances[basePath];
   }
 
+  public static toForm<T extends Record<string, any>>(obj: T): FormData {
+    const formData = new FormData();
+    const stack: { value: any; parentKey: string | null }[] = [{ value: obj, parentKey: null }];
+
+    while (stack.length > 0) {
+      const { value, parentKey } = stack.pop()!;
+
+      if (
+        value !== null &&
+        typeof value === "object" &&
+        !(value instanceof File || value instanceof Blob)
+      ) {
+        if (Array.isArray(value)) {
+          
+          value.forEach((item, index) => {
+            const key = parentKey ? `${parentKey}[${index}]` : `${index}`;
+            stack.push({ value: item, parentKey: key });
+          });
+        } else {
+          for (const key in value) {
+            if (Object.prototype.hasOwnProperty.call(value, key)) {
+              const fullKey = parentKey ? `${parentKey}.${key}` : key;
+              stack.push({ value: value[key], parentKey: fullKey });
+            }
+          }
+        }
+      } else if (value !== undefined && value !== null) {
+        formData.append(parentKey!, value);
+      }
+    }
+
+    return formData;
+  }
+
+
   private initInterceptors() {
     // Request interceptor
     this.instance.interceptors.request.use((config) => {
@@ -42,7 +79,7 @@ export class ApiClient {
         method: config.method,
         params: config.params,
         data: config.data,
-      });	
+      });
       return config;
     });
 
@@ -81,17 +118,17 @@ export class ApiClient {
     );
   }
 
-   private generateCacheKey(config: AxiosRequestConfig): string {
+  private generateCacheKey(config: AxiosRequestConfig): string {
     const { url, method, params, data } = config;
     return JSON.stringify({ url, method, params, data });
   }
 
-   public async request<T extends ZodType>(
+  public async request<T extends ZodType>(
     config: AxiosRequestConfig,
     schema: T,
     options?: ApiClientOptions
   ): Promise<z.infer<T>> {
-    
+
     const useCache = false; // default false
     console.log("useCache", useCache);
     const cacheTTL = options?.cacheTTL ?? 5 * 60 * 1000; // default 5 minutes
@@ -151,7 +188,7 @@ export class ApiClient {
     config?: AxiosRequestConfig,
     options?: ApiClientOptions
   ): Promise<z.infer<T>> {
-    return this.request({ ...config, method: 'GET', url }, schema , options);
+    return this.request({ ...config, method: 'GET', url }, schema, options);
   }
 
   public async post<T extends ZodType>(
@@ -163,6 +200,8 @@ export class ApiClient {
   ): Promise<z.infer<T>> {
     return this.request({ ...config, method: 'POST', url, data }, schema, options);
   }
+
+
 
   public async put<T extends ZodType>(
     url: string,

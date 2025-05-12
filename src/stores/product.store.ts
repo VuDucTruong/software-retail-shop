@@ -120,7 +120,7 @@ const createProduct = async (
     const response = await productApiClient.post(
       "/products",
       ProductSchema,
-      product,
+      ApiClient.toForm(product),
       {
         headers: {
           "Content-Type": "multipart/form-data",
