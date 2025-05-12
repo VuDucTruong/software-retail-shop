@@ -75,7 +75,7 @@ export const RegisterRequestSchema = z.object({
 })
 
 
-export const ChangepasswordRequestSchema = z.object({
+export const ChangePasswordSchema = z.object({
   newPassword: PasswordSchema,
   confirmPassword: PasswordSchema,
 }).refine((data) => data.newPassword === data.confirmPassword, {

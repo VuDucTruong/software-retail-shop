@@ -16,22 +16,23 @@ import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangePasswordRequest, ChangepasswordRequestSchema } from "@/api";
+import { ChangePassword, ChangePasswordSchema } from "@/api";
 
 
 
 export default function ChangePassDialog() {
   const t = useTranslations();
-  const form = useForm<ChangePasswordRequest>({
+  
+  const form = useForm<ChangePassword>({
     defaultValues: {
         newPassword: "",
         confirmPassword: "",
     },
-    resolver: zodResolver(ChangepasswordRequestSchema),
+    resolver: zodResolver(ChangePasswordSchema),
   });
 
 
-  const onSubmit = async (data: ChangePasswordRequest) => {
+  const onSubmit = async (data: ChangePassword) => {
     try {
       // Call your API to change the password here
       console.log(data);

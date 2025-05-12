@@ -18,3 +18,9 @@ export const UserSchema = z.object({
     email: z.string().email(),
     profile: UserProfileSchema,
 })
+
+
+const UserProfileUpdateSchema = z.object({
+    fullName: z.string().min(2, "Full name must be at least 2 characters long").max(40, "Full name must be at most 40 characters long"),
+    image: z.instanceof(File),
+}).partial();

@@ -3,57 +3,71 @@
 import { Coupon } from "@/api";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import TableOptionMenu from "@/components/common/TableOptionMenu";
+import CouponFilterSheet from "@/components/coupon/CouponFilterSheet";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "@/i18n/navigation";
+import { useCouponStore } from "@/stores/coupon.store";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CgAdd } from "react-icons/cg";
 import { toast } from "sonner";
-const sampleData: Coupon[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  code: `Coupon ${i + 1}`,
-  type: i % 2 === 0 ? "PERCENTAGE" : "FIXED",
-  availableFrom: new Date().toISOString(),
-  availableTo: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-  value: Math.floor(Math.random() * 100),
-  minAmount: Math.floor(Math.random() * 100),
-  maxAppliedAmount: Math.floor(Math.random() * 100),
-  usageLimit: Math.floor(Math.random() * 100),
-  description: `Description for Coupon ${i + 1}`,
-}));
+import { useShallow } from "zustand/shallow";
+
 export default function CouponManagementPage() {
   const t = useTranslations();
   const router = useRouter();
 
-const [data, setData] = useState<Coupon[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const sort = sorting[0];
-      const sortBy = sort?.id || "id";
-      const order = sort?.desc ? "desc" : "asc";
-      console.log(
-        "Fetching data with pagination:",
-        pagination,
-        "and sorting:",
-        sortBy,
-        order
-      );
-      setData(sampleData);
-      setPageCount(100);
-    };
-    fetchData();
-  }, [pagination, sorting]);
+  const [queryParams , getCoupons , resetStatus , status , lastAction , error , coupons, deleteCoupon , deleteCouponns] = useCouponStore(
+    useShallow((state) => [
+      state.queryParams,
+      state.getCoupons,
+      state.resetStatus,
+      state.status,
+      state.lastAction,
+      state.error,
+      state.coupons,
+      state.deleteCoupon,
+      state.deleteCoupons,
+    ])
+  )
 
+  useEffect(() => {
+    resetStatus();
+  },[])
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: queryParams?.pageRequest?.page ?? 0,
+    pageSize: queryParams?.pageRequest?.size ?? 0,
+  });
+  
+  useActionToast({
+      status,
+      lastAction,
+      errorMessage: error || undefined,
+    });
+  
+    const [sorting, setSorting] = useState<SortingState>([
+      {
+        id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+        desc: queryParams?.pageRequest?.sortDirection === "desc",
+      },
+    ]);
+  
+    useEffect(() => {
+      getCoupons({
+        pageRequest: {
+          page: pagination.pageIndex,
+          size: pagination.pageSize,
+          sortBy: sorting[0]?.id,
+          sortDirection: sorting[0]?.desc ? "desc" : "asc",
+        },
+      });
+    }, [sorting, pagination]);
 
   const cols: ColumnDef<Coupon>[] = [
     {
@@ -85,7 +99,7 @@ const [data, setData] = useState<Coupon[]>([]);
         return <div className="flex flex-col gap-1">
           <div>{row.original.value} {row.original.type === "PERCENTAGE" ? <span>%</span> : ""}</div>
           <div className="text-muted-foreground">{t("for_min_order_value_x", {x: row.original.minAmount ?? 0})}</div>
-          <div className="text-muted-foreground">{t("max_reduction_x", {x: row.original.maxAppliedAmount ?? 0})}</div>
+          <div className="text-muted-foreground">{t("max_reduction_x", {x: row.original.maxAppliedAmount ?? "∞"})}</div>
         </div>;
       },
     },
@@ -130,12 +144,16 @@ const [data, setData] = useState<Coupon[]>([]);
 
 
   const handleDelete = (id: number) => {
-    toast.success(t("Success", { x: id }));
+    deleteCoupon(id)
   };
 
   const handleViewDetails = (id: number) => {
     router.push(`coupons/${id}`);
   };
+
+  const deleteCoupons = (ids : number[]) => {
+    deleteCouponns(ids)
+  }
 
 
   return (
@@ -149,15 +167,17 @@ const [data, setData] = useState<Coupon[]>([]);
                 <CgAdd /> {t("create_coupon")}
               </Button>
             </Link>
-            <ProductFilterSheet />
+            <CouponFilterSheet />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
       <CommmonDataTable
+          isLoading={status === "loading" && lastAction === null}
           columns={cols}
-          data={data}
-          pageCount={pageCount}
+          data={coupons?.data ?? []}
+          totalCount={coupons?.totalInstances ?? 0}
+          pageCount={coupons?.totalPages ?? 0}
           pagination={pagination}
           onPaginationChange={(updater) => {
             setPagination((old) =>
@@ -166,7 +186,7 @@ const [data, setData] = useState<Coupon[]>([]);
           }}
           canSelect
           onDeleteRows={(rows) => {
-            console.log(rows);
+            deleteCoupons(rows);
           }}
           sorting={sorting}
           onSortingChange={(updater) => {

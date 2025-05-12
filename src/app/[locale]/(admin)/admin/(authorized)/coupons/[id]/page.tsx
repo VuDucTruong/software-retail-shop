@@ -15,22 +15,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { useForm } from "react-hook-form";
-
-
-const selectedCoupon = {
-    id: 1,
-    code: "TEST",
-    type: "FIXED",
-    availableFrom: new Date().toISOString(),
-    availableTo: new Date().toISOString(),
-    value: 10,
-    minAmount: 100,
-    maxAppliedAmount: 50,
-    usageLimit: 10,
-    description: "Test coupon",
-}
-
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useShallow } from "zustand/shallow";
+import { useCouponStore } from "@/stores/coupon.store";
+import { useActionToast } from "@/hooks/use-action-toast";
+import LoadingPage from "@/components/special/LoadingPage";
 
 
 
@@ -38,22 +27,57 @@ export default function ConponDetailPage() {
   const t = useTranslations();
   const pathName = usePathname();
   const couponId = pathName.split("/").pop() ?? "0";
+
+  const [selectedCoupon , getCouponById , lastAction , status , error , updateCoupon ] = useCouponStore(useShallow((state) => [
+    state.selectedCoupon,
+    state.getCouponById,
+    state.lastAction,
+    state.status,
+    state.error,
+    state.updateCoupon,
+  ]));
+
+
+  useActionToast({
+    status,
+    lastAction,
+    errorMessage: error || undefined,
+  });
+
+
+  useEffect(() => {
+    if (couponId) {
+      getCouponById(Number(couponId));
+    }
+  }
+  , []);
+
   const form = useForm<CouponUpdate>({
-    defaultValues: {
-      ...selectedCoupon,
-        availableFrom: isoToDatetimeLocal(selectedCoupon.availableFrom),
-        availableTo: isoToDatetimeLocal(selectedCoupon.availableTo),
-    },
     mode: "onSubmit",
     resolver: zodResolver(CouponUpdateSchema),
   });
 
+  useEffect(() => {
+    if (selectedCoupon) {
+      form.reset({
+        ...selectedCoupon,
+        availableFrom: isoToDatetimeLocal(selectedCoupon.availableFrom),
+        availableTo: isoToDatetimeLocal(selectedCoupon.availableTo),
+      });
+    }
+  }, [selectedCoupon]);
+
+
+  if(!selectedCoupon) {
+    return LoadingPage();
+  }
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
     form.handleSubmit(async (data) => {
       console.log(data);
+      updateCoupon(data)
     })();
   };
   return (
@@ -88,7 +112,6 @@ export default function ConponDetailPage() {
                   <Input
                     {...field}
                     type="datetime-local"
-                    min={isoToDatetimeLocal(new Date().toISOString())}
                   />
                 </CommonInputOutline>
               )}

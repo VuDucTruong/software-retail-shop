@@ -16,21 +16,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoginToast } from "@/hooks/use-login-toast";
 import { useAuthStore } from "@/stores/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 export default function LoginPage() {
   const t = useTranslations();
   const login = useAuthStore((state) => state.login);
-  const loading = useAuthStore((state) => state.loading);
-  const error = useAuthStore((state) => state.error);
-  const user = useAuthStore((state) => state.user);
   const form = useForm<LoginRequest>({
     resolver: zodResolver(LoginRequestSchema),
     defaultValues: {
@@ -39,31 +35,23 @@ export default function LoginPage() {
     },
   });
 
+  useEffect(() => {
+    console.log("Reset status");
+    useAuthStore.getState().resetStatus();
+  }
+  , []);
+
   function onSubmit(request: LoginRequest) {
     login(request)
   }
 
-  useEffect(() => {
-    if (error) {
-      toast.dismiss();
-      toast.error(error);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (loading) {
-      toast.dismiss();
-      toast.loading(t("Loading"));
-    }
-  }, [loading]);
 
 
-  useEffect(() => {
-    if (user) {
-      toast.dismiss();
-      toast.success(t("login_success"));
-    }
-  }, [user]);
+  useLoginToast({
+    status: useAuthStore((state) => state.status),
+    lastAction: useAuthStore((state) => state.lastAction),
+    errorMessage: useAuthStore((state) => state.error) || undefined,
+  });
 
 
   return (

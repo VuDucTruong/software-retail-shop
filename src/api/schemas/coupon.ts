@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ApiResponseSchema } from "./common";
 
 const messages = {
   required: {
@@ -28,25 +29,53 @@ export const CouponSchema = z.object({
 });
 
 const applyRefinement = (schema: z.ZodTypeAny) => {
-  return schema.refine((val) => {
+  return schema.superRefine((val, ctx) => {
     const fromDate = new Date(val.availableFrom);
     const toDate = new Date(val.availableTo);
-    return fromDate < toDate;
-  }, messages.fromtoConstraint);
+
+    if (fromDate >= toDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: messages.fromtoConstraint,
+        path: ["availableFrom"],
+      });
+    }
+
+    if(val.type === "PERCENTAGE") {
+      if(val.maxAppliedAmount < 10000) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Max applied amount must be greater than 10000 for percentage coupons",
+          path: ["maxAppliedAmount"],
+      })
+    } else {
+      if(val.value > val.minAmount) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Value must be less than min amount",
+        });
+      }
+    }
+  }});
 };
 
 const CouponValidation = z.object({
   code: z
     .string()
-    .min(3, messages.code)
-    .refine((val) => /^[a-zA-Z0-9]+$/.test(val), messages.alphaNumberic),
+    .min(3, messages.code),
   type: z.string(),
-  availableFrom: z.string(),
-  availableTo: z.string(),
+  availableFrom: z.preprocess((val) => {
+    const date = new Date(val as string);
+    return date.toISOString();
+  }, z.string()),
+  availableTo: z.preprocess((val) => {
+    const date = new Date(val as string);
+    return date.toISOString();
+  }, z.string()),
   value: z.preprocess((val) => Number(val), z.number().positive(messages.gt0)),
-  minAmount: z.number().nonnegative(messages.nonnegative),
-  maxAppliedAmount: z.number().nonnegative(messages.nonnegative),
-  usageLimit: z.number().nonnegative(messages.nonnegative),
+  minAmount:z.preprocess((val) => Number(val), z.number().nonnegative(messages.nonnegative)) ,
+  maxAppliedAmount:z.preprocess((val) => Number(val), z.number().nonnegative(messages.nonnegative)) ,
+  usageLimit: z.preprocess((val) => Number(val), z.number().nonnegative(messages.nonnegative)) ,
   description: z.string(),
 });
 
@@ -57,3 +86,6 @@ export const CouponUpdateSchema = applyRefinement(
     id: z.number(),
   }).partial()
 );
+
+
+export const CouponListSchema = ApiResponseSchema(z.array(CouponSchema));

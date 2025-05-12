@@ -31,3 +31,7 @@ export async function urlToFile(url: string): Promise<File> {
   const fileName = url.split('/').pop() || "image.jpg"; // Lấy tên file từ URL
   return new File([blob],fileName, { type: contentType });
 }
+
+export function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

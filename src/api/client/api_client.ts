@@ -5,10 +5,14 @@ type CacheEntry = {
   data: any;
   timestamp: number;
 };
+type ApiClientOptions = {
+  useCache?: boolean;
+  cacheTTL?: number; // in milliseconds
+};
 export class ApiClient {
   private static instances: Record<string, ApiClient> = {};
   private instance: AxiosInstance;
- private cache = new Map<string, CacheEntry>();
+  private cache = new Map<string, CacheEntry>();
   private constructor(basePath: string = '') {
     this.instance = axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_API_URL}${basePath}`,
@@ -85,10 +89,11 @@ export class ApiClient {
    public async request<T extends ZodType>(
     config: AxiosRequestConfig,
     schema: T,
-    options?: { useCache?: boolean; cacheTTL?: number }
+    options?: ApiClientOptions
   ): Promise<z.infer<T>> {
     
-    const useCache = options?.useCache !== false; // default false
+    const useCache = false; // default false
+    console.log("useCache", useCache);
     const cacheTTL = options?.cacheTTL ?? 5 * 60 * 1000; // default 5 minutes
 
     const cacheKey = this.generateCacheKey(config);
@@ -143,27 +148,20 @@ export class ApiClient {
   public async get<T extends ZodType>(
     url: string,
     schema: T,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    options?: ApiClientOptions
   ): Promise<z.infer<T>> {
-    return this.request({ ...config, method: 'GET', url }, schema);
-  }
-
-
-  public async getPaginated<T extends ZodType>(
-    url: string,
-    schema: T,
-    config?: AxiosRequestConfig
-  ): Promise<z.infer<T>> {
-    return this.request({ ...config, method: 'GET', url }, schema);
+    return this.request({ ...config, method: 'GET', url }, schema , options);
   }
 
   public async post<T extends ZodType>(
     url: string,
     schema: T,
     data?: unknown,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig,
+    options?: ApiClientOptions
   ): Promise<z.infer<T>> {
-    return this.request({ ...config, method: 'POST', url, data }, schema);
+    return this.request({ ...config, method: 'POST', url, data }, schema, options);
   }
 
   public async put<T extends ZodType>(

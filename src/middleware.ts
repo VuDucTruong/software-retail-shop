@@ -23,8 +23,8 @@ export function middleware(request: NextRequest) {
       if (exp < now) throw new Error("Token expired");
     } catch (err) {
       const locale = pathname.split('/')[1] || routing.defaultLocale;
-      const notFound = new URL(`/${locale}/admin/login`, request.url);
-      return NextResponse.redirect(notFound);
+      const login = new URL(`/${locale}/admin/login`, request.url);
+      return NextResponse.redirect(login);
     }
   }
 

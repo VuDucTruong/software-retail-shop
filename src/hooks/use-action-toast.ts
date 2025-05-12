@@ -40,12 +40,14 @@ export function useActionToast({
   useEffect(() => {
     if (!lastAction || status === "idle") return;
 
-    const message = messages[lastAction][status];
+    
 
+    const message = messages[lastAction][status];
+    let toastId: string | number | undefined;
     if (status === "loading") {
-      toast.loading(message);
+      toastId = toast.loading(message);
     } else {
-      toast.dismiss();
+      toast.dismiss(toastId);
       if (status === "success") {
         toast.success(message);
       } else if (status === "error") {

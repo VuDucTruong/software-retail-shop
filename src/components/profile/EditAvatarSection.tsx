@@ -36,6 +36,7 @@ export default function EditAvatarSection({ ref, name,avatarHint,defaultAvatar="
               <Image
                 alt="Avatar"
                 fill
+                sizes='100%'
                 className="object-cover rounded-lg"
                 src={avatar || defaultAvatar} // Use the avatar URL or a default image
               />

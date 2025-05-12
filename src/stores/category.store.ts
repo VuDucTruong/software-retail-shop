@@ -222,6 +222,7 @@ const deleteCategories = async (
     });
     if (res > 0) {
       set({ status: "success", lastAction: "delete" });
+      
     } else {
       throw new ApiError("Xóa danh mục thất bại");
     }

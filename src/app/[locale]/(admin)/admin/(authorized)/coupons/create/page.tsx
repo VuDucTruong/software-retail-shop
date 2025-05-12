@@ -14,10 +14,21 @@ import { CouponCreate, CouponCreateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
+import { useCouponStore } from "@/stores/coupon.store";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { useShallow } from "zustand/shallow";
 
 
 export default function CreateCouponPage() {
   const t = useTranslations();
+
+  const [createCoupon , status , lastAction , error] = useCouponStore(useShallow((state) => [
+    state.createCoupon,
+    state.status,
+    state.lastAction,
+    state.error,
+  ]));
+
   const form = useForm<CouponCreate>({
     defaultValues: {
       code: "",
@@ -34,11 +45,13 @@ export default function CreateCouponPage() {
     resolver: zodResolver(CouponCreateSchema),
   });
 
+  useActionToast({status, lastAction, errorMessage: error || undefined});
+
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    form.handleSubmit(async (data) => {
-      console.log("in form submit",data);
+    form.handleSubmit((data) => {
+      createCoupon(data)
     })();
   };
   return (
@@ -73,7 +86,6 @@ export default function CreateCouponPage() {
                   <Input
                     {...field}
                     type="datetime-local"
-                    min={isoToDatetimeLocal(new Date().toISOString())}
                   />
                 </CommonInputOutline>
               )}
@@ -110,11 +122,13 @@ export default function CreateCouponPage() {
             <FormField
               name="maxAppliedAmount"
               control={form.control}
+              disabled={form.watch("type") === "FIXED"}
               render={({ field }) => (
                 <CommonInputOutline title={t("max_applied_amount")}>
                   <Input
                     {...field}
                     type="number"
+                    value={form.watch("type") === "FIXED" ? form.watch('value') : field.value}
                   />
                 </CommonInputOutline>
               )}
