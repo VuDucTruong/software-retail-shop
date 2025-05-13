@@ -8,69 +8,66 @@ import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormField } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Category,Product,
-  ProductUpdate,
-  ProductUpdateSchema, } from "@/api";
-
+import { ProductCreate, ProductCreateSchema, ProductUpdate, ProductUpdateSchema, ProductValidation } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-const categories:Category[] = [
-  { id: 1, name: "Category 1", description: "Description 1", imageUrl: "" },
-  { id: 4, name: "Category 2", description: "Description 2", imageUrl: "" },
-]
-const sampleProduct: Product = {
-  id: 1,
-  name: "Sample Product",
-  slug: "sample-product",
-  originalPrice: 100,
-  price: 80,
-  imageUrl: "/banner.png",
-  productDescription: {
-    description: "Sample description",
-    info: "Sample info",
-    platform: "Sample platform",
-    policy: "Sample policy",
-    tutorial: "Sample tutorial",
-  },
-  tags: ["sample", "product"],
-  categories: categories,
-  quantity: 10,
-  status: "active",
-  productItems: [],
-  represent: false,
-  variants: [],
-};
+import { useProductStore } from "@/stores/product.store";
+import { useShallow } from "zustand/shallow";
+import { useActionToast } from "@/hooks/use-action-toast";
+import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
+import { usePathname } from "next/navigation";
 
-export default function EditProductPage() {
-  const pathName = usePathname();
+export default function CreateProductPage() {
+ const pathName = usePathname();
   const id = pathName.split("/").pop() || "";
-
   const t = useTranslations();
+
+  const [lastAction , status , error, getProductById , updateProduct, selectedProduct] = useProductStore(useShallow((state) => [
+    state.lastAction,
+    state.status,
+    state.error,
+    state.getProductById,
+    state.updateProduct,
+    state.selectedProduct,
+  ]));
+
+
+  useEffect(() => {
+      getProductById(Number(id));
+  }, []);
+
+
+
+  useActionToast({
+    lastAction, status , errorMessage: error || undefined})
+
   const form = useForm<ProductUpdate>({
     defaultValues: {
-      ...sampleProduct,
-      categories: sampleProduct.categories?.map((category) => category.id),
+      tags: selectedProduct?.tags || [],
+      categoryIds: selectedProduct?.categories?.map((item) => item.id) || [],
+      name: selectedProduct?.name || "",
+      slug: selectedProduct?.slug || "",
+      originalPrice: selectedProduct?.originalPrice || 0,
+      price: selectedProduct?.price || 0,
+      productDescription: selectedProduct?.productDescription,
+      image: null,
+      represent: selectedProduct?.represent || true,
+      groupId: selectedProduct?.groupId || null,
     },
-   
-    mode: "onSubmit",
     resolver: zodResolver(ProductUpdateSchema),
+    mode: "onSubmit",
   });
 
-  
   const fileRef = useRef<HTMLInputElement>(null);
   const handleSubmit = () => {
-    // @ts-ignore
-    form.setValue("image", fileRef.current?.files?.[0]);
-    console.log("🔥 Form Data before sumbit:", form.getValues());
+    form.setValue("id", Number(id));
     form.handleSubmit((data) => {
-      console.log("🔥 Form Data:", data);
-      toast.success(t("update_product_success"));
+      updateProduct(data)
     })();
   };
 
@@ -78,7 +75,7 @@ export default function EditProductPage() {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>{t("product_x", { x: id })}</h2>
+          <h2>{t("create_product")}</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -87,6 +84,7 @@ export default function EditProductPage() {
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
+             
             }}
             className=" grid grid-cols-3 space-x-4 gap-6"
           >
@@ -101,14 +99,16 @@ export default function EditProductPage() {
                   className="col-span-3"
                 >
                   <EditAvatarSection
+                    field={field}
                     fileRef={fileRef}
-                  field={field}
                     name={t("upload_image")}
                     avatarHint={t("image_hint")}
                   />
                 </CommonInputOutline>
               )}
             />
+
+  
 
             <FormField
               control={form.control}
@@ -182,20 +182,33 @@ export default function EditProductPage() {
             {/* Categories Multi-select */}
             <FormField
               control={form.control}
-              name="categories"
+              name="categoryIds"
               render={({field}) => (
                 <CommonInputOutline title={t("Categories")}>
-                  <CategoryMultiSelectField field={field} />
+                  <CategoryMultiSelectField field={field}/>
                 </CommonInputOutline>
               )}
             />
+
+
+              {/* Categories Multi-select */}
+            <FormField
+              control={form.control}
+              name="groupId"
+              render={({field}) => (
+                <CommonInputOutline title={"Nhóm sản phẩm"}>
+                  <ProductGroupComboBox field={field}/>
+                </CommonInputOutline>
+              )}
+            />
+
 
             <div className="col-span-3">
               <ProductDescriptionTab />
             </div>
 
             <Button
-              className="col-start-3 bg-yellow-400 hover:bg-yellow-500"
+              className="col-start-3 bg-green-400 hover:bg-green-500"
               type="submit"
             >
               {t("Update")}
@@ -206,3 +219,8 @@ export default function EditProductPage() {
     </Card>
   );
 }
+
+
+
+
+

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 import { Clock, Loader2, CheckCircle2, XCircle, PackageCheck, PackageX, Ban, Rss } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-type Status = "pending" | "processing" | "completed" | "canceled" | "in_stock" | "out_stock"	| "active" | "banned"
+type Status = "pending" | "processing" | "completed" | "canceled" | "in_stock" | "out_stock"	| "active" | "banned" | "used" | "unused"
 
 interface StatusBadgeProps {
   status: Status
@@ -53,6 +53,16 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       icon: <Ban className="h-3 w-3 mr-1" />,
       label: "Banned",
       styles: "bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-900 dark:text-red-100",
+    },
+    used: {
+      icon: <Clock className="h-3 w-3 mr-1" />,
+      label: "Used",
+      styles: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100/80 dark:bg-yellow-900 dark:text-yellow-100",
+    },
+    unused: {
+      icon: <Rss className="h-3 w-3 mr-1" />,
+      label: "Unused",
+      styles: "bg-green-100 text-green-800 hover:bg-green-100/80 dark:bg-green-900 dark:text-green-100",
     },
   }
 

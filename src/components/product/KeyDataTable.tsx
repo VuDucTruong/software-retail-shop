@@ -10,7 +10,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ProductItem } from "@/api";
+import { ProductItem, ProductItemDetail } from "@/api";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -30,9 +30,10 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { on } from "events";
+import { ProductItemPreview } from "./KeyFileUploadDialog";
 
 type Props = {
-  data: ProductItem[];
+  data: ProductItemPreview[];
   onDelete?: (ids: number[]) => void;
 };
 
@@ -42,13 +43,13 @@ export function KeyDataTable({ data, onDelete }: Props) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
-  const [tableData, setTableData] = React.useState<ProductItem[]>(data);
+  const [tableData, setTableData] = React.useState<ProductItemPreview[]>(data);
 
   useEffect(() => {
     setTableData(data);
   }, [data]);
 
-  const columns: ColumnDef<ProductItem>[] = [
+  const columns: ColumnDef<ProductItemPreview>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -76,6 +77,18 @@ export function KeyDataTable({ data, onDelete }: Props) {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Product ID
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+    },
+    {
+      accessorKey: "productName",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Tên
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
@@ -156,7 +169,7 @@ export function KeyDataTable({ data, onDelete }: Props) {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} onClick={row.getToggleSelectedHandler()}>
+                <TableRow key={row.id} onClick={row.getToggleSelectedHandler()} className={`${row.original.productName === "Không xác định" ? "text-red-400" : ""}`}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="text-center">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

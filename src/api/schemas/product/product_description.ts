@@ -7,4 +7,4 @@ export const ProductDescriptionSchema = z.object({
   platform: z.string().nullable(),
   policy: z.string().nullable(),
   tutorial: z.string().nullable(),
-}).optional();
+}).optional().nullable();

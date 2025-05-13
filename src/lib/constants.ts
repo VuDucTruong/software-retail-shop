@@ -188,3 +188,12 @@ export const adminMenu: AdminMenu = {
     ],
   }
 };
+
+
+export const regions = [
+  { label: "Global", value: "global" },
+  { label: "ROW", value: "row" },
+  { label: "NA/US", value: "na/us" },
+  { label: "SEA", value: "sea" },
+  { label: "CN", value: "cn" },
+]

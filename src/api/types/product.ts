@@ -5,6 +5,9 @@ import {
   ProductGroupCreateSchema,
   ProductGroupSchema,
   ProductGroupUpdateSchema,
+  ProductItemCreateSchema,
+  ProductItemDetailListSchema,
+  ProductItemDetailSchema,
   ProductItemSchema,
   ProductListSchema,
   ProductMetadataSchema,
@@ -22,3 +25,6 @@ export type ProductGroup = z.infer<typeof ProductGroupSchema>;
 export type ProductGroupCreate = z.infer<typeof ProductGroupCreateSchema>;
 export type ProductGroupUpdate = z.infer<typeof ProductGroupUpdateSchema>;
 export type ProductList = z.infer<typeof ProductListSchema>;
+export type ProductItemDetail = z.infer<typeof ProductItemDetailSchema>;
+export type ProductItemDetailList = z.infer<typeof ProductItemDetailListSchema>;
+export type ProductItemCreate = z.infer<typeof ProductItemCreateSchema>;

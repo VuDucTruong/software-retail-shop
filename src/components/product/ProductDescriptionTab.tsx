@@ -1,11 +1,6 @@
-import React from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { Trash2 } from "lucide-react";
-import RichTextEditor from "../rich_text/RichTextEditor";
-import { Button } from "../ui/button";
-import { FormField, FormItem, FormControl, FormMessage } from "../ui/form";
-import ProductDescriptionInput from "./ProductDescriptionInput";
 import { useTranslations } from "next-intl";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import ProductDescriptionInput from "./ProductDescriptionInput";
 
 export default function ProductDescriptionTab() {
     const t = useTranslations();

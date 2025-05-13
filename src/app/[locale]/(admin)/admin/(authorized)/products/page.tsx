@@ -71,7 +71,7 @@ export default function ProductManagementPage() {
       accessorKey: "id",
       header: "ID",
       cell: ({ row }) => {
-        return row.id;
+        return row.original.id;
       },
       enableHiding: false,
     },

@@ -26,13 +26,14 @@ export const ProductSchema = z.object({
   represent: z.boolean(),
   price: z.number(),
   originalPrice: z.number(),
-  categories: z.array(CategorySchema),
+  categories: z.array(CategorySchema).nullable(),
   tags: z.array(z.string()).default([]),
   productDescription: ProductDescriptionSchema,
   quantity: z.number(),
   status: z.string(),
   variants: z.array(ProductMetadataSchema).nullable(),
   productItems: z.array(ProductItemSchema).nullable(),
+  groupId: z.number().nullable(),
 });
 
 // === Schemas ===
@@ -47,7 +48,7 @@ export const ProductValidation = z.object({
   categoryIds: z.array(z.number()).nonempty({ message: messages.required.categories }),
   tags: z.array(z.string()).nonempty({ message: messages.required.tags }),
   productDescription: ProductDescriptionSchema,
-  groupId: z.number().optional(),
+  groupId: z.number().optional().nullable(),
 });
 
 

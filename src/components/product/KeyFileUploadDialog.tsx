@@ -1,10 +1,10 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 
-import { ProductItem, ProductItemSchema } from "@/api";
-import { Import } from "lucide-react";
+import { ProductItem, ProductItemDetail, ProductItemSchema } from "@/api";
+import { Import, RefreshCcw } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -14,11 +14,30 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { KeyDataTable } from "./KeyDataTable";
+import { useProductItemStore } from "@/stores/product.item.store";
+import { create } from "domain";
+import { useProductStore } from "@/stores/product.store";
+import { get } from "http";
+
+export type ProductItemPreview = {
+  productName: string;
+  productId: number;
+  productKey: string;
+  region: string;
+}
+
 
 export default function KeyFileUploadDialog() {
   const t = useTranslations();
+  const createProductItems = useProductItemStore(
+    (state) => state.createProductItems
+  );
+  const getProducts = useProductStore((state) => state.getProducts);
+  const products = useProductStore((state) => state.products);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<ProductItem[]>([]);
+  const [data, setData] = useState<ProductItemPreview[]>([]);
+  const dataRef = useRef<ProductItem[]>([]);
+  const fileRef = useRef<HTMLInputElement>(null);
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -54,8 +73,19 @@ export default function KeyFileUploadDialog() {
         }
 
         const parsedData = ProductItemSchema.array().parse(jsonData);
-        setData(parsedData);
+        dataRef.current = parsedData;
+        
+        // get all existing products
+        getProducts({
+          ids: parsedData.map((item) => item.productId),
+        });
+    
+        
 
+        setData(parsedData.map((item) => ({
+          ...item,
+          productName: products?.data.find((product) => product.id === item.productId)?.name ?? "Không xác định",
+        })));
         setError(null);
       } catch (err) {
         console.error(err);
@@ -71,17 +101,21 @@ export default function KeyFileUploadDialog() {
     setData(newData);
   };
 
-  const handleImportKeys = () => {};
+  const handleReset = () => {
+    setData([]);
+    setError(null);
+    if (fileRef.current) {
+      fileRef.current.value = "";
+    }
+  };
+
+  const handleImportKeys = () => {
+    createProductItems(dataRef.current);
+    handleReset();
+  };
 
   return (
-    <Dialog
-      onOpenChange={(open) => {
-        if (!open) {
-          setError(null);
-          setData([]);
-        }
-      }}
-    >
+    <Dialog>
       <DialogTrigger asChild>
         <Button className="flex items-center bg-green-400 hover:bg-green-500 gap-2">
           <Import />
@@ -96,6 +130,7 @@ export default function KeyFileUploadDialog() {
         <div className="mt-4">
           <input
             type="file"
+            ref={fileRef}
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
             onChange={handleFileUpload}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
@@ -107,11 +142,20 @@ export default function KeyFileUploadDialog() {
           {error && <p className="text-red-500 mt-2">{error}</p>}
 
           <KeyDataTable data={data} onDelete={handleDelete} />
-          <Button className="w-full mt-4" onClick={handleImportKeys}>
+          <div className="flex items-center gap-6 mt-4">
+            <Button className="flex-1" onClick={handleImportKeys}>
               {t("Accept")}
             </Button>
+            <Button
+              className="flex-1"
+              variant={"destructive"}
+              onClick={handleReset}
+            >
+              <RefreshCcw />
+              {"Đặt lại"}
+            </Button>
+          </div>
         </div>
-        
       </DialogContent>
     </Dialog>
   );

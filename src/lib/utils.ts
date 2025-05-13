@@ -35,3 +35,17 @@ export async function urlToFile(url: string): Promise<File> {
 export function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export function flattenObject(obj: Record<string, any>, prefix = ""): Record<string, any> {
+  return Object.keys(obj).reduce((acc, k) => {
+    const pre = prefix.length ? `${prefix}.` : "";
+    const value = obj[k];
+    
+    if (value !== null && typeof value === "object" && !Array.isArray(value) && !(value instanceof File)) {
+      Object.assign(acc, flattenObject(value, `${pre}${k}`));
+    } else {
+      acc[`${pre}${k}`] = value;
+    }
+    return acc;
+  }, {} as Record<string, any>);
+}

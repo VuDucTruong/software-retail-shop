@@ -8,7 +8,7 @@ export const convertProductToProductUpdate = (
   ) => ProductUpdateSchema.parse({
     ...product,
     image: null,
-    categories: product.categories.map(category => category.id),
+    categories: product.categories?.map(category => category.id),
   });
 
 

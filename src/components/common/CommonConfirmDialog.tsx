@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 type CommonConfirmDialogProps = {
     triggerName: any;
     title: string;
-    description: string;
+    description: string | ReactElement;
     onConfirm?: () => void; 
     onCancel?: () => void;
 }
