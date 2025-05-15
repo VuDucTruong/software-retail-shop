@@ -5,7 +5,7 @@ import { useUserStore } from "@/stores/user.store";
 import { useEffect } from "react";
 
 export default function AdminPage() {
-  const getProfile = useUserStore((state) => state.getProfile);
+  const getProfile = useUserStore((state) => state.getUser);
   const user = useUserStore((state) => state.user);
   const status = useUserStore((state) => state.status);
   const lastAction = useUserStore((state) => state.lastAction);
@@ -14,14 +14,14 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (lastAction === "getProfile" && status !== "loading") {
+    if (lastAction === "getUser" && status !== "loading") {
       useAuthStore.setState({
         user: user,
       });
     }
   }, [lastAction , status]);
 
-  return <main className="min-h-screen">
+  return <main className="min-h-screen flex items-center justify-center">
     <LoadingPage />
   </main>;
 }

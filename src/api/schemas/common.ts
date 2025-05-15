@@ -31,3 +31,14 @@ export const QueyParamsSchema = z.object({
     currentPage: z.number().optional(),
     totalPages: z.number().optional(),
   });
+
+
+  export const DateSchema = z.string().transform((value) => {
+    const date = new Date(value)
+    return date.toLocaleDateString()
+  })
+
+  export const DatetimeSchema = z.string().transform((value) => {
+    const date = new Date(value)
+    return date.toLocaleString()
+  })

@@ -17,11 +17,13 @@ import { Input } from "@/components/ui/input";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChangePassword, ChangePasswordSchema } from "@/api";
+import { useAuthStore } from "@/stores/auth.store";
 
 
 
 export default function ChangePassDialog() {
   const t = useTranslations();
+  const changePassword = useAuthStore((state) => state.changePassword);
   
   const form = useForm<ChangePassword>({
     defaultValues: {

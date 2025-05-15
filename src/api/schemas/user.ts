@@ -1,18 +1,22 @@
 import { z } from "zod";
+import { DateSchema, DatetimeSchema } from "./common";
 
 export const UserProfileSchema = z.object({
     id: z.number(),
-    fullName: z.string(),
-    createdAt: z.string().date(),
+    fullName: z.preprocess((value) => {
+        if(value) return value
+        else return "Vô danh"
+    } , z.string()),
+    createdAt: DateSchema.nullable(),
     imageUrl: z.string().nullable().default(""),
 })
 
 export const UserSchema = z.object({
     id: z.number(),
-    enableDate: z.string().date(),
-    disableDate: z.string().date(),
-    createdAt: z.string().datetime(),
-    deletedAt: z.string().datetime().nullable(),
+    enableDate: DateSchema,
+    disableDate: DateSchema,
+    createdAt: DatetimeSchema,
+    deletedAt: DatetimeSchema.nullable(),
     isVerified: z.boolean(),
     role: z.string(),
     email: z.string().email(),
@@ -20,7 +24,8 @@ export const UserSchema = z.object({
 })
 
 
-const UserProfileUpdateSchema = z.object({
+export const UserProfileUpdateSchema = z.object({
+    id: z.number(),
     fullName: z.string().min(2, "Full name must be at least 2 characters long").max(40, "Full name must be at most 40 characters long"),
     image: z.instanceof(File),
 }).partial();

@@ -77,7 +77,7 @@ export default function AppSidebar({
       {/* User settings */}
       <SidebarFooter>
         {mounted ? (
-          <NavUser user={adminMenu.userSettings} />
+          <NavUser />
         ) : (
           <div className="flex items-center gap-3">
             <Skeleton className="h-10 w-10 rounded-full" />
