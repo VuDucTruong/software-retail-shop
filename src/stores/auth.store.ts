@@ -1,5 +1,6 @@
 import { SetState } from "@/lib/set_state";
 import { create } from "zustand";
+import {persist} from "zustand/middleware";
 import {
   ApiClient,
   ChangePassword,
@@ -40,14 +41,25 @@ const initialState: AuthState = {
   error: null,
 };
 
-export const useAuthStore = create<AuthStore>((set) => ({
-  ...initialState,
-  login: (request) => login(set, request),
-  register: (request) => register(set, request),
-  logout: () => logout(set),
-  resetStatus: () => set({ status: "idle", lastAction: null, error: null }),
-  changePassword: (request) => changePassword(set, request),
-}));
+
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      ...initialState,
+      login: (request) => login(set, request),
+      register: (request) => register(set, request),
+      logout: () => logout(set),
+      resetStatus: () => set({ status: "idle", lastAction: null, error: null }),
+      changePassword: (request) => changePassword(set, request),
+    }),
+    {
+      name: 'auth-storage', // tên key trong localStorage
+      partialize: (state) => ({
+        user: state.user,
+      }), // chỉ lưu những field cần thiết
+    }
+  )
+);
 const login = async (set: SetState<AuthStore>, request: LoginRequest) => {
   set({ lastAction: "login", error: null });
 

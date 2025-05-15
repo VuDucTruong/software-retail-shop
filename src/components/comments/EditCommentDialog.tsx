@@ -12,11 +12,15 @@ import {
 } from "../ui/dialog";
 
 import { Eye, Pen } from "lucide-react";
+import { UserComment } from "@/api";
+import UserCommentSection from "../product/UserCommentSection";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 type EditCommentDialogProps = {
+  comment: UserComment;
 }
 
-export default function EditCommentDialog() {
+export default function EditCommentDialog({comment}: EditCommentDialogProps) {
 
   const t = useTranslations();
 
@@ -25,15 +29,18 @@ export default function EditCommentDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" className="hover:text-yellow-500 hover:border-yellow-500">
-          <Pen/>
+          <Eye/>
         </Button>
       </DialogTrigger>
       <DialogContent className="w-1/2">
         <DialogHeader>
-          <DialogTitle asChild className="text-2xl"><h2>{t("create_category")}</h2></DialogTitle>
+          <DialogTitle asChild className="text-2xl"><h2>{"Chi tiết bình luận"}</h2></DialogTitle>
+          <DialogDescription>
+            Chi tiết bình luận của {comment.author.fullName} trên sản phẩm {"XXXX"} vào ngày {comment.createdAt}.
+          </DialogDescription>
         </DialogHeader>
         <div>
-          
+          <UserCommentSection comment={comment} />
         </div>
       </DialogContent>
     </Dialog>

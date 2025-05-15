@@ -1,11 +1,14 @@
 
 import { useTranslations } from "next-intl";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { UserComment, Reply } from "@/api";
+import { useAuthStore } from "@/stores/auth.store";
+import { Role } from "@/lib/constants";
+import { getRoleWeight } from "@/lib/utils";
 
 
 type Props = {
@@ -20,13 +23,16 @@ export default function UserCommentSection({ comment }: Props) {
   const t = useTranslations();
   const [showReplyInput, setShowReplyInput] = useState(false);
   const replyRef = useRef<HTMLTextAreaElement>(null);
-
+  const user = useAuthStore((state) => state.user);
+  const enableDelete = user?.id === comment.author.id || getRoleWeight(user?.role ?? "") >= Role.STAFF.weight;
   const handleReplySubmit = () => {
     if (!replyRef.current?.value.trim()) return;
     const replyContent = replyRef.current.value.trim();
     
     setShowReplyInput(false);
   };
+
+  useEffect(() => {} , []);
 
   const handleDelete = (id: number) => {
 
@@ -35,21 +41,18 @@ export default function UserCommentSection({ comment }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row gap-4 items-center w-full">
-        <div className="relative ring-primary size-24 rounded-full ring ring-offset-2">
+        <div className="relative ring-primary size-20 rounded-full ring ring-offset-2">
           <Image
             alt="Avatar"
             fill
             className="rounded-full object-cover"
-            src={""}
+            src={comment.author.imageUrl || "/empty_user.png"}
           />
         </div>
         <div className="flex flex-col items-start">
-          <h4 className="font-semibold">{"FAFAF"}</h4>
-          <div className="text-muted-foreground">
-            {t("comment_on_date")} {"2023-10-01"}
-          </div>
-          <p>{"GSF"}</p>
-          {/* Hành động */}
+          <div className="font-semibold">{comment.author.fullName} <span className="italic font-normal text-sm">{(new Date(comment.createdAt)).toLocaleDateString()}</span></div>
+          <p>{comment.content}</p>
+          {/* Actions */}
           <div className="flex gap-6">
             <Button
               variant={"link"}
@@ -58,7 +61,7 @@ export default function UserCommentSection({ comment }: Props) {
             >
               {t("Respond")}
             </Button>
-            {false && (
+            {enableDelete && (
               <Button
                 variant={"link"}
                 onClick={() => handleDelete(comment.id)}

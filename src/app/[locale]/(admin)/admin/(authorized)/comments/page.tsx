@@ -18,33 +18,65 @@ import { ExternalLink, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-const sampleData: UserComment[] = [];
+import { useCommentStore } from "@/stores/comment.store";
+import { useShallow } from "zustand/shallow";
+import { useActionToast } from "@/hooks/use-action-toast";
 export default function CommentManagementPage() {
   const t = useTranslations();
-  const [data, setData] = useState<UserComment[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const sort = sorting[0];
-      const sortBy = sort?.id || "id";
-      const order = sort?.desc ? "desc" : "asc";
-      console.log(
-        "Fetching data with pagination:",
-        pagination,
-        "and sorting:",
-        sortBy,
-        order
-      );
-      setData(sampleData);
-      setPageCount(100);
-    };
-    fetchData();
-  }, [pagination, sorting]);
+  
+  const [
+      status,
+      lastAction,
+      error,
+      getComments,
+      resetStatus,
+      queryParams,
+      comments
+    ] = useCommentStore(
+      useShallow((state) => [
+        state.status,
+        state.lastAction,
+        state.error,
+        state.getComments,
+        state.resetStatus,
+        state.queryParams,
+        state.comments,
+      ])
+    );
+  
+    useEffect(() => {
+      resetStatus();
+    },[]); 
+  
+    const [pagination, setPagination] = useState<PaginationState>({
+      pageIndex: queryParams?.pageRequest?.page ?? 0,
+      pageSize: queryParams?.pageRequest?.size ?? 10,
+    });
+  
+    useActionToast({
+      status,
+      lastAction,
+      errorMessage: error || undefined,
+    });
+  
+    const [sorting, setSorting] = useState<SortingState>([
+      {
+        id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+        desc: queryParams?.pageRequest?.sortDirection === "desc",
+      },
+    ]);
+  
+    useEffect(() => {
+      getComments({
+        pageRequest: {
+          page: pagination.pageIndex,
+          size: pagination.pageSize,
+          sortBy: sorting[0]?.id,
+          sortDirection: sorting[0]?.desc ? "desc" : "asc",
+        },
+      });
+    }, [sorting, pagination]);
+
 
   const cols: ColumnDef<UserComment>[] = [
     {
@@ -84,7 +116,8 @@ export default function CommentManagementPage() {
       accessorKey: "time",
       header: t("Time"),
       cell: ({ row }) => {
-        return row.original.createdAt;
+        const date = new Date(row.original.createdAt);
+        return date.toLocaleDateString();
       },
     },
     {
@@ -93,7 +126,7 @@ export default function CommentManagementPage() {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2 w-fit">
-            <EditCommentDialog />
+            <EditCommentDialog comment={row.original}/>
             <Link href={"/asdf"}>
               <Button>
                 <ExternalLink />
@@ -117,9 +150,11 @@ export default function CommentManagementPage() {
       </CardHeader>
       <CardContent>
         <CommmonDataTable
+          isLoading={status === "loading" && lastAction === null}
           columns={cols}
-          data={data}
-          pageCount={pageCount}
+          data={comments?.data ?? []}
+          totalCount={comments?.totalInstances ?? 0}
+          pageCount={comments?.totalPages ?? 0}
           pagination={pagination}
           onPaginationChange={(updater) => {
             setPagination((old) =>
@@ -128,7 +163,7 @@ export default function CommentManagementPage() {
           }}
           canSelect
           onDeleteRows={(rows) => {
-            console.log(rows);
+            
           }}
           sorting={sorting}
           onSortingChange={(updater) => {

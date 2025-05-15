@@ -22,6 +22,21 @@ export type AdminUserSettings = {
     avatar: string;
 }
 
+export const Role = {
+  ADMIN: {
+    weight: 999,
+    value: "ADMIN",
+  },
+  STAFF: {
+    weight: 100,
+    value: "STAFF",
+  },
+  CUSTOMER: {
+    weight: 1,
+    value: "CUSTOMER",
+  },
+}
+
 export type AdminMenu = {
     userSettings: AdminUserSettings;
     navDashboard: AdminMenuItem;

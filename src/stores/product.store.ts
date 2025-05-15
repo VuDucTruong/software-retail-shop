@@ -16,7 +16,7 @@ import {
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
-import { delay } from "@/lib/utils";
+import { delay, urlToFile } from "@/lib/utils";
 import { use } from "react";
 import { z } from "zod";
 
@@ -100,9 +100,16 @@ const getProductById = async (set: SetState<ProductStore>, id: number) => {
 
   try {
     const response = await productApiClient.get(
-      `/products/${id}`,
-      ProductSchema
+      `/products`,
+      ProductSchema,
+      {
+        params: { id },
+      }
     );
+
+    response.image = await urlToFile(
+      response.imageUrl ?? "")
+
     set({ selectedProduct: response, status: "success" });
   } catch (error) {
     const appError = error as ApiError;
@@ -197,7 +204,7 @@ const updateProduct = async (
 
   try {
     const response = await productApiClient.put(
-      `/products/${product.id}`,
+      `/products`,
       ProductSchema,
       product,
       {
@@ -206,7 +213,7 @@ const updateProduct = async (
         },
       }
     );
-    set({ selectedProduct: response, status: "success", lastAction: "update" });
+    set({ selectedProduct: response, status: "success" });
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

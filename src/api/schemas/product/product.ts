@@ -34,6 +34,7 @@ export const ProductSchema = z.object({
   variants: z.array(ProductMetadataSchema).nullable(),
   productItems: z.array(ProductItemSchema).nullable(),
   groupId: z.number().nullable(),
+  image: z.instanceof(File).nullable().optional(),
 });
 
 // === Schemas ===

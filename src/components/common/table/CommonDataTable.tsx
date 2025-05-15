@@ -148,7 +148,7 @@ export function CommmonDataTable<TData, TValue>({
   return (
     <div className="flex flex-col space-y-4">
       <CommonTableVisibility table={table} />
-      <div className="rounded-md border px-2">
+      <div className="rounded-md border p-2">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -184,12 +184,12 @@ export function CommmonDataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    onClick={() => {
-                      canSelect && row.toggleSelected();
-                    }}
+                    // onClick={() => {
+                    //   canSelect && row.toggleSelected();
+                    // }}
                     className={
                       canSelect
-                        ? "relative z-0 data-[state=selected]:bg-primary data-[state=selected]:text-white hover:bg-muted"
+                        ? "relative z-0 data-[state=selected]:bg-zinc-200 data-[state=selected]:text-black hover:bg-muted"
                         : ""
                     }
                   >

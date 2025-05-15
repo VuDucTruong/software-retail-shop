@@ -8,7 +8,7 @@ type EditAvatarProps = {
   fileRef: RefObject<HTMLInputElement | null>;
   name: string;
   avatarHint: string; // Hint for the avatar
-  defaultAvatar?: string; // Optional default avatar URL
+  defaultAvatar?: string | null; // Optional default avatar URL
   field?: ControllerRenderProps;
 };
 
@@ -46,7 +46,7 @@ export default function EditAvatarSection({
           fill
           sizes="100%"
           className="object-cover rounded-lg"
-          src={avatar || defaultAvatar} // Use the avatar URL or a default image
+          src={avatar || defaultAvatar || "empty_img.png"} // Use the avatar URL or a default image
         />
       </div>
       {/* Change avatar button */}

@@ -8,43 +8,83 @@ import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ProductCreate, ProductCreateSchema, ProductUpdate, ProductUpdateSchema, ProductValidation } from "@/api";
+import {
+  ProductCreate,
+  ProductCreateSchema,
+  ProductUpdate,
+  ProductUpdateSchema,
+  ProductValidation,
+} from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { useProductStore } from "@/stores/product.store";
 import { useShallow } from "zustand/shallow";
 import { useActionToast } from "@/hooks/use-action-toast";
 import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
 import { usePathname } from "next/navigation";
+import { flattenObject } from "@/lib/utils";
 
 export default function CreateProductPage() {
- const pathName = usePathname();
+  const pathName = usePathname();
   const id = pathName.split("/").pop() || "";
   const t = useTranslations();
 
-  const [lastAction , status , error, getProductById , updateProduct, selectedProduct] = useProductStore(useShallow((state) => [
-    state.lastAction,
-    state.status,
-    state.error,
-    state.getProductById,
-    state.updateProduct,
-    state.selectedProduct,
-  ]));
-
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [
+    lastAction,
+    status,
+    error,
+    getProductById,
+    updateProduct,
+    selectedProduct,
+  ] = useProductStore(
+    useShallow((state) => [
+      state.lastAction,
+      state.status,
+      state.error,
+      state.getProductById,
+      state.updateProduct,
+      state.selectedProduct,
+    ])
+  );
 
   useEffect(() => {
-      getProductById(Number(id));
+    getProductById(Number(id));
   }, []);
 
-
+  useEffect(() => {
+    console.log("selectedProduct", selectedProduct);
+    if (selectedProduct) {
+      form.reset({
+        tags: selectedProduct?.tags || [],
+        categoryIds: selectedProduct?.categories?.map((item) => item.id) || [],
+        name: selectedProduct?.name || "",
+        slug: selectedProduct?.slug || "",
+        originalPrice: selectedProduct?.originalPrice || 0,
+        price: selectedProduct?.price || 0,
+        productDescription: selectedProduct?.productDescription,
+        image: selectedProduct?.image,
+        represent: selectedProduct?.represent || true,
+        groupId: selectedProduct?.groupId || null,
+      });
+    }
+  }, [selectedProduct]);
 
   useActionToast({
-    lastAction, status , errorMessage: error || undefined})
+    lastAction,
+    status,
+    errorMessage: error || undefined,
+  });
 
   const form = useForm<ProductUpdate>({
     defaultValues: {
@@ -63,11 +103,10 @@ export default function CreateProductPage() {
     mode: "onSubmit",
   });
 
-  const fileRef = useRef<HTMLInputElement>(null);
   const handleSubmit = () => {
     form.setValue("id", Number(id));
     form.handleSubmit((data) => {
-      updateProduct(data)
+      updateProduct(flattenObject(data));
     })();
   };
 
@@ -75,7 +114,7 @@ export default function CreateProductPage() {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>{t("create_product")}</h2>
+          <h2>Sản phẩm #{id}</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -84,7 +123,6 @@ export default function CreateProductPage() {
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
-             
             }}
             className=" grid grid-cols-3 space-x-4 gap-6"
           >
@@ -93,7 +131,7 @@ export default function CreateProductPage() {
             <FormField
               control={form.control}
               name="image"
-              render={({field}) => (
+              render={({ field }) => (
                 <CommonInputOutline
                   title={t("product_image")}
                   className="col-span-3"
@@ -103,12 +141,11 @@ export default function CreateProductPage() {
                     fileRef={fileRef}
                     name={t("upload_image")}
                     avatarHint={t("image_hint")}
+                    defaultAvatar={selectedProduct?.imageUrl}
                   />
                 </CommonInputOutline>
               )}
             />
-
-  
 
             <FormField
               control={form.control}
@@ -183,25 +220,23 @@ export default function CreateProductPage() {
             <FormField
               control={form.control}
               name="categoryIds"
-              render={({field}) => (
+              render={({ field }) => (
                 <CommonInputOutline title={t("Categories")}>
-                  <CategoryMultiSelectField field={field}/>
+                  <CategoryMultiSelectField field={field} />
                 </CommonInputOutline>
               )}
             />
 
-
-              {/* Categories Multi-select */}
+            {/* Categories Multi-select */}
             <FormField
               control={form.control}
               name="groupId"
-              render={({field}) => (
+              render={({ field }) => (
                 <CommonInputOutline title={"Nhóm sản phẩm"}>
-                  <ProductGroupComboBox field={field}/>
+                  <ProductGroupComboBox field={field} />
                 </CommonInputOutline>
               )}
             />
-
 
             <div className="col-span-3">
               <ProductDescriptionTab />
@@ -219,8 +254,3 @@ export default function CreateProductPage() {
     </Card>
   );
 }
-
-
-
-
-

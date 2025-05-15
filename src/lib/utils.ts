@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { Role } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -48,4 +49,18 @@ export function flattenObject(obj: Record<string, any>, prefix = ""): Record<str
     }
     return acc;
   }, {} as Record<string, any>);
+}
+
+
+export const getRoleWeight = (role: string) => {
+  switch (role) {
+    case "ADMIN":
+      return Role.ADMIN.weight;
+    case "STAFF":
+      return Role.STAFF.weight;
+    case "CUSTOMER":
+      return Role.CUSTOMER.weight;
+    default:
+      return 0;
+  }
 }
