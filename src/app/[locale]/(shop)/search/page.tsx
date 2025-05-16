@@ -1,11 +1,11 @@
+'use client'
 import ProductItem from "@/components/common/ProductItem";
 import { FilterForm } from "@/components/search/FilterForm";
 
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { IoFilter } from "react-icons/io5";
-import { LuListRestart } from "react-icons/lu";
+
 export default function SearchResultPage() {
   const t = useTranslations();
 

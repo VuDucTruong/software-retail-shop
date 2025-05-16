@@ -1,27 +1,20 @@
 "use client";
 
-import Link from "next/link";
-import React from "react";
+import { CommonSelect } from "@/components/common/CommonSelect";
+import Logo from "@/components/common/Logo";
+import { Separator } from "@/components/ui/separator";
 import {
   currencies,
-  languages,
-  shopName,
-  supportPhone,
+  languages
 } from "@/lib/constants";
-import { FaEye, FaFireAlt, FaPercent } from "react-icons/fa";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { CommonSelect } from "@/components/common/CommonSelect";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { FaEye, FaFireAlt } from "react-icons/fa";
 import { RiDiscountPercentLine } from "react-icons/ri";
 import { AuthDialog } from "../auth/AuthDialog";
-import Logo from "@/components/common/Logo";
-import SearchBar from "./SearchBar";
 import CartButton from "./CartButton";
-import { Separator } from "@/components/ui/separator";
-import { usePathname, useRouter } from "next/navigation";
-
-export default function HomeHeader() {
-  const t = useTranslations();
+import SearchBar from "./SearchBar";
 
   const productLinks = [
     { name: "popular_products", icon: FaFireAlt, href: "/" },
@@ -34,6 +27,9 @@ export default function HomeHeader() {
     { name: "contact_us", href: "/" },
     { name: "FAQS", href: "/faq" },
   ];
+
+export default function HomeHeader() {
+  const t = useTranslations();
 
   const router = useRouter();
   const pathname = usePathname();

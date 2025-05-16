@@ -26,7 +26,7 @@ type CategoryState = {
 };
 
 type CategoryAction = {
-  getCategories: (queryParams: QueryParams) => Promise<void>;
+  getCategories: (queryParams?: QueryParams) => Promise<void>;
   getCategoryById: (id: number) => Promise<void>;
   createCategory: (category: CategoryCreate) => Promise<void>;
   updateCategory: (category: CategoryUpdate) => Promise<void>;

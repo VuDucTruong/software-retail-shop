@@ -41,7 +41,9 @@ export default async function LocaleLayout({
       <body className={`${roboto.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
             <HomeHeader />
-            <main>{children}
+            <main>
+              
+              {children}
             
             </main>
             <ChatButton/>

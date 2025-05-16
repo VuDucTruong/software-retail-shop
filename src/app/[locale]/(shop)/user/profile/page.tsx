@@ -1,57 +1,100 @@
-'use client';
+"use client";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { User, UserProfileUpdate, UserProfileUpdateSchema } from "@/api";
 
 import { useTranslations } from "next-intl";
-import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
+import ChangePassDialog from "@/components/profile/ChangePassDialog";
+import { useUserStore } from "@/stores/user.store";
+import { useAuthStore } from "@/stores/auth.store";
+import LoadingPage from "@/components/special/LoadingPage";
+import { toast } from "sonner";
+import { useProfileToast } from "@/hooks/use-profile-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useClientUserStore } from "@/stores/cilent/client.user.store";
 
-export default function ProfilePage() {
+export default function UserProfilePage() {
   const t = useTranslations();
-    const fileRef = React.useRef<HTMLInputElement>(null);
-    const nameRef = React.useRef<HTMLInputElement>(null);
-    const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        
-        const avatar = fileRef.current?.files?.[0];
-        const name = nameRef.current?.value;
 
-        const data = {
-            avatar,
-            name,
-        }
+  const getProfile = useClientUserStore((state) => state.getUser);
+  const updateProfile = useClientUserStore((state) => state.updateProfile);
+  const lastAction = useClientUserStore((state) => state.lastAction);
+  const error = useClientUserStore((state) => state.error);
+  const status = useClientUserStore((state) => state.status);
+  const user = useClientUserStore((state) => state.user);
+  const fileRef = React.useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    getProfile();
+  }, []);
 
-        console.log(data);
-    }
+  useProfileToast({
+    status,
+    lastAction,
+    errorMessage: error || undefined,
+  });
+
+  const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log("submit" , form.getValues());
+
+    form.handleSubmit(data => {
+      updateProfile(data)
+    })()
+  };
+
+  const form = useForm<UserProfileUpdate>({
+    defaultValues: {
+      fullName: user?.profile.fullName,
+    },
+    resolver: zodResolver(UserProfileUpdateSchema),
+  });
+
+  useEffect(() => {
+    form.reset({
+      fullName: user?.profile.fullName,
+    });
+  } , [user]);
+
   const gridItems = [
     {
       title: t("Email"),
-      value: "haha@gmail.com",
+      value: user?.email,
     },
     {
       title: t("Name"),
-      value: "Nguyen Van A",
+      value: user?.profile.fullName,
     },
     {
-      title: t("customer_group"),
-      value: "Member",
-    },
-    {
-      title: t("accumulated_points"),
-      value: "9.000",
+      title: t("Role"),
+      value: user?.role,
     },
     {
       title: t("participate_date"),
-      value: "2017-08-03 15:14:40",
+      value: user?.createdAt.toString(),
     },
   ];
 
+  if (status !== "success" && lastAction === "getUser") {
+    return LoadingPage();
+  }
+
+
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex items-center justify-between">
         <h3>{t("user_profile")}</h3>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -69,26 +112,52 @@ export default function ProfilePage() {
         </div>
         <Separator />
 
-        {/* Avatar section */}
-        <EditAvatarSection avatarHint={t('image_hint')} name={t('change_avatar')} fileRef={fileRef}/>
-
         {/* Information can be changed in here ! */}
-        <h4 className="py-3">{t('edit_personal_info')}</h4>
-        <form className="flex flex-col gap-4" onSubmit={handleProfileSubmit}>
-          <Input
-            placeholder={t("Name")}
-            className="w-1/3"
-            name="name"
-            type="text"
-            ref={nameRef}
-            pattern="^[A-Za-z]+(?: [A-Za-z]+)*$"
-            required
-          />
+        <h4 className="py-3">{t("edit_personal_info")}</h4>
+        <Form {...form}>
+          <form className="flex flex-col gap-4" onSubmit={handleProfileSubmit}>
+            {/* Avatar section */}
+            <FormField
+              name="image"
+              control={form.control}
+              render={({ field }) => (
+                <EditAvatarSection
+                  fileRef={fileRef}
+                  field={field}
+                  avatarHint={t("image_hint")}
+                  name={t("change_avatar")}
+                  defaultAvatar={user?.profile.imageUrl ?? undefined}
+                />
+              )}
+            />
 
-          <Button variant={"default"} className="w-fit">
-            {t("save_changes")}
-          </Button>
-        </form>
+            <FormField
+              name="fullName"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("Name")}</FormLabel>
+                  <FormControl>
+                    <Input className="w-1/3" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              variant={"default"}
+              className="w-fit"
+              disabled={
+                status === "loading" ||
+                (form.watch("image") === undefined &&
+                form.watch("fullName")?.trim() === user?.profile.fullName)
+              }
+            >
+              {t("save_changes")}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   );

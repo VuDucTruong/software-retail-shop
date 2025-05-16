@@ -2,11 +2,16 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { userProfileOptions } from "@/lib/constants";
+import { useClientUserStore } from "@/stores/cilent/client.user.store";
+import { DialogTitle } from "@radix-ui/react-dialog";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
 import { FaUserAlt } from "react-icons/fa";
 import {
   DropdownMenu,
@@ -14,31 +19,40 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { userProfileOptions } from "@/lib/constants";
-import Link from "next/link";
-import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import LoginTab from "./LoginTab";
 import RegisterTab from "./RegisterTab";
-var isLoggedIn = false; // Replace with actual authentication logic
+import { Skeleton } from "../ui/skeleton";
+
 export function AuthDialog() {
+
   const t = useTranslations();
 
-  if (isLoggedIn) {
+  const getUser = useClientUserStore((state) => state.getUser);
+
+  const user = useClientUserStore((state) => state.user);
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  if (user) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size={"lg"} className="flex items-center p-2 h-full">
+          <Button
+            variant="ghost"
+            size={"lg"}
+            className="flex items-center p-2 h-full"
+          >
             <div className="relative size-10">
               <Image
                 alt="Avatar"
-                src={"https://randomuser.me/api/portraits/men/1.jpg"}
+                src={user.profile.imageUrl}
                 fill
                 className="object-cover rounded-full"
               />
             </div>
-            Username
+            {user.profile.fullName}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" alignOffset={-5}>
@@ -56,6 +70,8 @@ export function AuthDialog() {
         </DropdownMenuContent>
       </DropdownMenu>
     );
+  } else {
+    
   }
 
   return (
@@ -67,7 +83,7 @@ export function AuthDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent >
+      <DialogContent>
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
         </DialogHeader>

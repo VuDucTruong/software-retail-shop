@@ -8,7 +8,10 @@ export const UserProfileSchema = z.object({
         else return "Vô danh"
     } , z.string()),
     createdAt: DateSchema.nullable(),
-    imageUrl: z.string().nullable().default(""),
+    imageUrl: z.preprocess((value) => {
+        if(value) return value
+        else return "/empty_user.png"
+    }, z.string()),
 })
 
 export const UserSchema = z.object({

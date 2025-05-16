@@ -11,7 +11,10 @@ const messages = {
 export const CategorySchema = z.object({
   id: z.number(),
   name: z.string(),
-  imageUrl: z.string().nullable(),
+  imageUrl: z.preprocess((val) => {
+    if(val) return val;
+    return "/empty_img.png"
+  } , z.string()),
   description: z.string(),
 });
 
