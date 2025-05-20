@@ -15,39 +15,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { LoginRequest, LoginRequestSchema } from "@/api";
+import { useAuthStore } from "@/stores/auth.store";
+import { useEffect } from "react";
+import { useLoginToast } from "@/hooks/use-login-toast";
+import { useUserStore } from "@/stores/user.store";
+import { useShallow } from "zustand/shallow";
 
 export function LoginForm() {
   const t = useTranslations();
 
-  const formSchema = z.object({
-    email: z
-      .string()
-      .min(1, {
-        message: t("Input.error_email_empty"),
-      })
-      .email({
-        message: t("Input.error_email_format"),
-      }),
-    password: z
-      .string()
-      .min(1, {
-        message: t("Input.error_password_empty"),
-      })
-      .min(8, {
-        message: t("Input.error_pass_length"),
-      }),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoginRequest>({
+    resolver: zodResolver(LoginRequestSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const [login, status, lastAction, error] = useAuthStore(useShallow((state) => [
+    state.login,
+    state.status,
+    state.lastAction,
+    state.error,
+  ]));
+  
+  function onSubmit(values: LoginRequest) {
+    login(values)
   }
 
   return (

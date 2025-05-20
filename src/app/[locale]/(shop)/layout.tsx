@@ -42,9 +42,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
             <HomeHeader />
             <main>
-              
               {children}
-            
             </main>
             <ChatButton/>
             <Toaster richColors/>

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { z, ZodType } from 'zod';
 import { ApiError, ValidationError } from './base_client';
 type CacheEntry = {
@@ -37,10 +37,7 @@ export class ApiClient {
   private initInterceptors() {
     // Request interceptor
     this.instance.interceptors.request.use((config) => {
-      console.warn('Request:', {
-        url: (config.baseURL ?? "") + config.url,
-        method: config.method,
-        params: config.params,
+      console.warn("Method:",config.method,'Request:',(config.baseURL ?? "") + config.url, config.params, {
         data: config.data,
       });	
       return config;
@@ -49,12 +46,17 @@ export class ApiClient {
     // Response interceptor
     this.instance.interceptors.response.use(
       (response) => {
-        console.warn('Response:', {
-          url: (response.config.baseURL ?? "") + response.config.url,
-          method: response.config.method,
-          status: response.status,
-          data: response.data,
-        });
+
+        if(response.status === 200) {
+          console.warn("\x1b[32m%s\x1b[0m","Response:",(response.config.baseURL ?? "") + response.config.url,response.status, {
+            data: response.data,
+          });
+          
+        } else {
+          console.error("Response:",(response.config.baseURL ?? "") + response.config.url,response.status, {
+            data: response.data,
+          });
+        }
         return response;
       },
       (error) => {

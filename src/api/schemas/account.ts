@@ -63,15 +63,17 @@ export const RegisterRequestSchema = z.object({
         message: messages.max.email,
     }),
     password: PasswordSchema,
+    confirmPassword: PasswordSchema,
     fullName: z.string({
         required_error: messages.required.fullName,
-    }).regex(/^[a-zA-Z0-9]+$/, {
-        message: messages.invalid.fullName,
     }).min(2, {
         message: messages.min.fullName,
     }).max(40, {
         message: messages.max.fullName,
     }),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: messages.notMatch.password,
+    path: ["confirmPassword"],
 })
 
 

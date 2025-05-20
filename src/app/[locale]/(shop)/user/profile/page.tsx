@@ -46,27 +46,24 @@ export default function UserProfilePage() {
     errorMessage: error || undefined,
   });
 
+  
+
   const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("submit" , form.getValues());
+    console.log("submit", form.getValues());
 
-    form.handleSubmit(data => {
-      updateProfile(data)
-    })()
+    form.handleSubmit((data) => {
+      updateProfile(data);
+    })();
   };
 
   const form = useForm<UserProfileUpdate>({
     defaultValues: {
-      fullName: user?.profile.fullName,
+      fullName: user?.profile.fullName ?? "",
     },
     resolver: zodResolver(UserProfileUpdateSchema),
   });
 
-  useEffect(() => {
-    form.reset({
-      fullName: user?.profile.fullName,
-    });
-  } , [user]);
 
   const gridItems = [
     {
@@ -87,10 +84,15 @@ export default function UserProfilePage() {
     },
   ];
 
-  if (status !== "success" && lastAction === "getUser") {
-    return LoadingPage();
-  }
+  useEffect(() => {
+    if (user) {
+      form.setValue("fullName", user.profile.fullName);
+    }
+  }, [user]);
 
+  if (status !== "success" && lastAction === "getUser") {
+    return <LoadingPage />;
+  }
 
   return (
     <Card>
@@ -151,7 +153,7 @@ export default function UserProfilePage() {
               disabled={
                 status === "loading" ||
                 (form.watch("image") === undefined &&
-                form.watch("fullName")?.trim() === user?.profile.fullName)
+                  form.watch("fullName")?.trim() === user?.profile.fullName)
               }
             >
               {t("save_changes")}

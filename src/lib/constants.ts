@@ -8,6 +8,7 @@ import { BiSolidDiscount } from "react-icons/bi";
 import { LuShoppingBag } from "react-icons/lu";
 import { RiFolderUserLine } from "react-icons/ri";
 import { IconType } from "react-icons/lib";
+import { LogOut } from "lucide-react";
 
 export type AdminMenuItem = {
     title: string;
@@ -89,23 +90,6 @@ export const userOptions = [
   },
 ];
 
-export const userProfileOptions = [
-  {
-    icon: FaUserAlt,
-    title: "Account",
-    href: "/user/profile",
-  },
-  {
-    icon: FaHeart,
-    title: "my_favorites",
-    href: "/user/wishlist",
-  },
-  {
-    icon: FaShareAlt,
-    title: "introduce_friends",
-    href: "/user/affiliate",
-  },
-];
 
 export const adminMenu: AdminMenu = {
   userSettings: {

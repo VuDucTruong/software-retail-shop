@@ -4,20 +4,12 @@ import { useTranslations } from "next-intl";
 import { RegisterForm } from "./RegisterForm";
 
 
-export default function RegisterTab({ isReset }: { isReset: boolean }) {
+export default function RegisterTab() {
   const t = useTranslations();
-  const formRef = useRef<HTMLFormElement | null>(null);
-  useEffect(() => {
-    if (isReset) {
-      formRef.current?.reset();
-    }
-  }, [isReset]);
   return (
     <div className="flex flex-row gap-4 max-h-[500px]">
-      <div className="flex flex-col justify-start gap-2 max-w-xl ">
-        <p className="italic text-muted-foreground mb-6">{t("register_description")}</p>
-        <RegisterForm/>
-      </div>
+      
+      <RegisterForm/>
       <Image
 
         alt="Register Poster"

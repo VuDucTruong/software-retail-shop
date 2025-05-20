@@ -5,14 +5,13 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { userProfileOptions } from "@/lib/constants";
 import { useClientUserStore } from "@/stores/cilent/client.user.store";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-import { FaUserAlt } from "react-icons/fa";
+import { FaHeart, FaShareAlt, FaUserAlt } from "react-icons/fa";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,20 +21,60 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import LoginTab from "./LoginTab";
 import RegisterTab from "./RegisterTab";
-import { Skeleton } from "../ui/skeleton";
+import { LogOut } from "lucide-react";
+import { useAuthStore } from "@/stores/auth.store";
+import { useRouter } from "@/i18n/navigation";
+import { useLoginToast } from "@/hooks/use-login-toast";
+import { useShallow } from "zustand/shallow";
+import { stat } from "fs";
 
 export function AuthDialog() {
-
+  const router = useRouter();
+  const logout = useAuthStore((state) => state.logout);
+  const userProfileOptions = [
+    {
+      key: "profile",
+      icon: FaUserAlt,
+      title: "Account",
+      onClick: () => {
+        router.push("/user/profile");
+      },
+    },
+    {
+      key: "favorite",
+      icon: FaHeart,
+      title: "my_favorites",
+      onClick: () => {
+        router.push("/user/wishlist");
+      },
+    },
+    {
+      key: "logout",
+      icon: LogOut,
+      title: "Đăng xuất",
+      onClick: () => {
+        logout();
+      },
+    },
+  ];
   const t = useTranslations();
 
-  const getUser = useClientUserStore((state) => state.getUser);
+  const [getMe , user , isAuthenticated , status , lastAction , error] = useAuthStore(useShallow(state => [
+    state.getMe,
+    state.user,
+    state.isAuthenticated,
+    state.status,
+    state.lastAction,
+    state.error,
+  ]));
 
-  const user = useClientUserStore((state) => state.user);
+  useLoginToast({status, lastAction, errorMessage: error || undefined});
+
   useEffect(() => {
-    getUser();
+    getMe();
   }, []);
 
-  if (user) {
+  if (isAuthenticated && user) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -59,19 +98,17 @@ export function AuthDialog() {
           {userProfileOptions.map((opt) => (
             <DropdownMenuItem
               key={opt.title}
+              onClick={opt.onClick}
               className="group hover:font-medium"
             >
               <opt.icon className="group-hover:text-primary" />{" "}
-              <Link className="group-hover:text-primary" href={opt.href}>
-                {t(opt.title)}
-              </Link>
+              <div className="group-hover:text-primary">{t(opt.title)}</div>
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
     );
   } else {
-    
   }
 
   return (
@@ -83,7 +120,7 @@ export function AuthDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
         </DialogHeader>
@@ -94,10 +131,10 @@ export function AuthDialog() {
             <TabsTrigger value="register">{t("Register")}</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
-            <LoginTab isReset={false} />
+            <LoginTab />
           </TabsContent>
           <TabsContent className="max-h-1/2" value="register">
-            <RegisterTab isReset={false} />
+            <RegisterTab />
           </TabsContent>
         </Tabs>
       </DialogContent>

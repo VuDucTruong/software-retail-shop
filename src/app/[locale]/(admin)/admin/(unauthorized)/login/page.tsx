@@ -36,7 +36,6 @@ export default function LoginPage() {
   });
 
   useEffect(() => {
-    console.log("Reset status");
     useAuthStore.getState().resetStatus();
   }
   , []);
