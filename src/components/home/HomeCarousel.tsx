@@ -14,6 +14,16 @@ import {
 } from "@/components/ui/carousel";
 import Image from "next/image";
 
+const banners = [
+  "/banner/banner-1.png",
+  "/banner/banner-2.png",
+  "/banner/banner-3.png",
+  "/banner/banner-4.png",
+  "/banner/banner-5.png",
+  "/banner/banner-6.png",
+]
+
+
 export function HomeCarousel() {
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
@@ -52,14 +62,15 @@ export function HomeCarousel() {
             onMouseLeave={plugin.current.reset}
           >
             <CarouselContent>
-              {Array.from({ length: 6 }).map((_, index) => (
+              {banners.map((banner, index) => (
                 <CarouselItem key={index} className="md:basis-1/2">
                   <div className="p-1">
                     <Card className="p-0">
                       <CardContent className="h-50 w-full relative">
                         <Image
-                          src="/banner.png"
+                          src={banner}
                           alt="Banner"
+                          sizes="100%"
                           fill
                           className="rounded-md"
                         />

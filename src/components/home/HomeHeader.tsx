@@ -40,7 +40,7 @@ export default function HomeHeader() {
   };
 
   return (
-    <header>
+    <header className="mb-6">
       <div className="flex flex-col justify-center">
         {/* Info Section */}
         <section className="flex justify-center items-center main-container ">

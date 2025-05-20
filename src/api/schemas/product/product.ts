@@ -22,7 +22,10 @@ export const ProductSchema = z.object({
   id: z.number(),
   slug: z.string(),
   name: z.string(),
-  imageUrl: z.string().nullable(),
+  imageUrl: z.preprocess((value) => {
+    if(value) return value;
+    return "/empty_img.png"
+  }, z.string()),
   represent: z.boolean(),
   price: z.number(),
   originalPrice: z.number(),
@@ -35,6 +38,10 @@ export const ProductSchema = z.object({
   productItems: z.array(ProductItemSchema).nullable(),
   groupId: z.number().nullable(),
   image: z.instanceof(File).nullable().optional(),
+  favorite: z.preprocess((value) => {
+    if (value) return value;
+    return false;
+  }, z.boolean()),
 });
 
 // === Schemas ===

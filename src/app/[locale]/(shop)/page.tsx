@@ -6,9 +6,11 @@ import CategoryCard from "@/components/home/CategoryCard";
 import { HomeCarousel } from "@/components/home/HomeCarousel";
 import HomeProductSection from "@/components/home/HomeProductSection";
 import TopItemsList from "@/components/home/TopItemsList";
+import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useTranslations } from "next-intl";
 
-import React from "react";
+import React, { useEffect } from "react";
+import { useShallow } from "zustand/shallow";
 
 export default function HomePage() {
   const t = useTranslations();
@@ -27,7 +29,26 @@ export default function HomePage() {
     "200.000",
     "500.000",
     "1.000.000",
-  ]
+  ];
+
+  const [products, getProducts] = useClientProductStore(
+    useShallow((state) => [state.products, state.getProducts])
+  );
+
+  useEffect(() => {
+    getProducts(
+      {
+        pageRequest: {
+          page: 0,
+          size: 8,
+          sortBy: "createdAt",
+          sortDirection: "desc",
+        },
+      },
+      "lastest"
+    );
+  }, []);
+
   return (
     <div className="flex flex-col gap-4 main-container">
       <div className="flex gap-4">
@@ -40,13 +61,14 @@ export default function HomePage() {
       {/* Main content */}
       <BrandCarousel />
       <HomeProductSection
-        title={t("popular_products")}
+        data={products?.get("lastest")?.data ?? []}
+        isLoading={!products?.get("lastest")}
+        title={"Sản phẩm mới nhất"}
         onMoreClick={() => {}}
       />
-      <TopItemsList title={t('popular_tags')} items={popularTags}/>
+      <TopItemsList title={t("popular_tags")} items={popularTags} />
       <BestSellerSection />
-      <TopItemsList title={t('suitable_prices')} items={suitablePrices}/>
-
+      <TopItemsList title={t("suitable_prices")} items={suitablePrices} />
     </div>
   );
 }

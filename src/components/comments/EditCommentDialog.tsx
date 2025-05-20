@@ -15,6 +15,7 @@ import { Eye, Pen } from "lucide-react";
 import { UserComment } from "@/api";
 import UserCommentSection from "../product/UserCommentSection";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import CommentItem from "../product/CommentItem";
 
 type EditCommentDialogProps = {
   comment: UserComment;
@@ -40,7 +41,7 @@ export default function EditCommentDialog({comment}: EditCommentDialogProps) {
           </DialogDescription>
         </DialogHeader>
         <div>
-          <UserCommentSection comment={comment} />
+          <CommentItem comment={comment} />
         </div>
       </DialogContent>
     </Dialog>
