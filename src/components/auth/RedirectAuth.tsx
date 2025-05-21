@@ -1,29 +1,35 @@
 "use client";
 
 import { useAuthStore } from "@/stores/auth.store";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import { useEffect } from "react";
-import { useShallow } from "zustand/shallow";
 
 export default function RedirectAuth() {
-
   const router = useRouter();
+  const pathName = usePathname();
+  const getMe = useAuthStore((state) => state.getMe);
 
-  const [getMe, isAuthenticated] = useAuthStore(useShallow((state) => [
-    state.getMe,
-    state.isAuthenticated,
-  ]));
   useEffect(() => {
     getMe(true);
-  }, []);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/admin/dashboard");
-    }else {
-      router.push("/admin/login");
-    }
-  }, [isAuthenticated]);
+    const unsubscribe = useAuthStore.subscribe((state) => {
+      const isOnAdminRoot = pathName.split("/").at(-1) === "admin";
+
+      if (state.isAuthenticated && isOnAdminRoot) {
+        console.log("Redirecting to dashboard page");
+        router.push("/admin/dashboard");
+      }
+
+      if (!state.isAuthenticated) {
+        console.log("Redirecting to login page");
+        router.push("/admin/login");
+      }
+    });
+
+    return () => {
+      unsubscribe(); // ✅ clean up
+    };
+  }, [getMe, pathName]);
 
   return null;
 }
