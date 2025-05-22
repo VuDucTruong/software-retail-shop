@@ -30,5 +30,8 @@ export const UserSchema = z.object({
 export const UserProfileUpdateSchema = z.object({
     id: z.number(),
     fullName: z.string().min(2, "Full name must be at least 2 characters long").max(40, "Full name must be at most 40 characters long"),
-    image: z.instanceof(File),
+    image: z
+        .custom<File>((val) => typeof val === "object" && val?.name && val?.size)
+        .optional()
+        .nullable(),
 }).partial();

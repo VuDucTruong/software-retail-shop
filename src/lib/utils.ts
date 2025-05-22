@@ -64,3 +64,15 @@ export const getRoleWeight = (role: string) => {
       return 0;
   }
 }
+
+export function computeIfAbsent<K, V>(
+    map: Map<K, V>,
+    key: K,
+    defaultValue: V | (() => V)
+): V {
+  if (!map.has(key)) {
+    const value = typeof defaultValue === 'function' ? (defaultValue as () => V)() : defaultValue;
+    map.set(key, value);
+  }
+  return map.get(key)!;
+}

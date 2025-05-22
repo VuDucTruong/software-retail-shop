@@ -3,9 +3,12 @@ import { CouponSchema, ProductMetadataSchema } from "@/api";
 
 export const OrderDetailSchema = z.object({
   price: z.number(),
+  productId: z.number().positive(),
   quantity: z.number(),
   product: ProductMetadataSchema,
 });
+
+export const OrderDetailListSchema = z.array(OrderDetailSchema)
 
 export const OrderSchema = z.object({
   id: z.number(),
@@ -16,3 +19,15 @@ export const OrderSchema = z.object({
   orderStatus: z.string(),
   details: z.array(OrderDetailSchema),
 });
+
+export const OrderDetailCreateSchema =z.object({
+  price: z.number(),
+  quantity: z.number(),
+});
+export const OrderDetailCreateListSchema = z.array(OrderDetailSchema);
+
+export const OrderCreateSchema = z.object({
+  couponCode: z.string().optional(),
+  requestInfo: z.record(z.string().nullish(),z.string().min(1)),
+  orderDetails: OrderDetailCreateListSchema
+})

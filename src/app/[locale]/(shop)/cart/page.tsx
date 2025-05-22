@@ -2,7 +2,7 @@
 
 import CartItemsSection from "@/components/cart/CartItemsSection";
 import PaymentSection from "@/components/cart/PaymentSection";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { GiConfirmed } from "react-icons/gi";
 import { IoCartSharp } from "react-icons/io5";
 import { MdOutlinePayments } from "react-icons/md";

@@ -24,7 +24,7 @@ export const QueyParamsSchema = z.object({
 
 }).catchall(z.any()).partial().optional();
 
-  export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) => 
+  export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
   z.object({
     data: dataSchema,
     totalInstances: z.number().optional(),
