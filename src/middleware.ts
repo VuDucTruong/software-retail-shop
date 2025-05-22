@@ -1,26 +1,36 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { decodeJWTPayload } from "./lib/utils";
+import { decodeJWTPayload, getRoleWeight } from "./lib/utils";
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
+import { Role } from "./lib/constants";
 
 const intlMiddleware = createMiddleware(routing);
-
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isAdminRootPage = pathname.endsWith('/admin') || pathname.endsWith('/admin/');
   const isAdminLoginPage = pathname.endsWith('/admin/login');
-  const isProtectedRoute = (pathname.startsWith('/vi/admin') || pathname.startsWith('/en/admin')) && !isAdminLoginPage && !isAdminRootPage;
+  const isProtectedRoute = (pathname.startsWith('/vi/admin') || pathname.startsWith('/en/admin')) && !isAdminLoginPage;
 
-  const token = request.cookies.get('refreshToken')?.value;
+  const refreshToken = request.cookies.get('refreshToken')?.value;
+  const accessToken = request.cookies.get('accessToken')?.value;
 
   if (isProtectedRoute) {
     try {
-      const payload = decodeJWTPayload(token!);
-      const exp = payload.exp;
+      const refreshPayload = decodeJWTPayload(refreshToken!);
+      const accessPayload = decodeJWTPayload(accessToken!);
+      const exp = refreshPayload.exp;
+      const role = accessPayload.role;
       const now = Math.floor(Date.now() / 1000);
       
-      if (exp < now) throw new Error("Token expired");
+      if (exp < now || getRoleWeight(role) < Role.STAFF.weight) throw new Error("Token expired");
+
+      if (isAdminRootPage) {
+        const locale = pathname.split('/')[1] || routing.defaultLocale;
+        const admin = new URL(`/${locale}/admin/dashboard`, request.url);
+        return NextResponse.redirect(admin);
+      }
+
     } catch (err) {
       const locale = pathname.split('/')[1] || routing.defaultLocale;
       const login = new URL(`/${locale}/admin/login`, request.url);

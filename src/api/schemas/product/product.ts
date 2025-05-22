@@ -1,4 +1,4 @@
-import { ApiResponseSchema, CategorySchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
+import { ApiResponseSchema, CategorySchema, ImageSchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
 import { z } from "zod";
 
 
@@ -37,7 +37,7 @@ export const ProductSchema = z.object({
   variants: z.array(ProductMetadataSchema).nullable(),
   productItems: z.array(ProductItemSchema).nullable(),
   groupId: z.number().nullable(),
-  image: z.instanceof(File).nullable().optional(),
+  image: ImageSchema().optional(),
   favorite: z.preprocess((value) => {
     if (value) return value;
     return false;
@@ -49,7 +49,7 @@ export const ProductSchema = z.object({
 export const ProductValidation = z.object({
   slug: z.string(),
   name: z.string().min(3, { message: messages.name }),
-  image: z.instanceof(File, { message: "Image is required" }).nullable(),
+  image: ImageSchema("Product image is required"),
   represent: z.boolean().default(true),
   price: z.number().gte(0, { message: messages.price }),
   originalPrice: z.number().gte(0, { message: messages.originalPrice }),

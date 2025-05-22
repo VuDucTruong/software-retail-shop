@@ -1,7 +1,7 @@
 
 import { z } from "zod";
 import { UserProfileSchema } from "./user";
-import { ApiResponseSchema, DatetimeSchema } from "./common";
+import { ApiResponseSchema, DatetimeSchema, ImageSchema } from "./common";
 
 export const BlogSchema = z.object({
     id: z.number(),
@@ -22,7 +22,7 @@ export const BlogCreateSchema = z.object({
     subtitle: z.string().min(2, "Subtitle must be at least 2 characters long").max(30, "Subtitle must be at most 30 characters long"),
     genreIds: z.array(z.number()).min(1, "At least one genre is required"),
     publishedAt: z.string(),
-    image: z.instanceof(File).nullable(),
+    image: ImageSchema(),
     content: z.string().min(2, "Content must be at least 2 characters long").max(10000, "Content must be at most 10000 characters long"),
 })
 

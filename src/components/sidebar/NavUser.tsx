@@ -23,20 +23,23 @@ import { HiDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/stores/auth.store";
-import { useUserStore } from "@/stores/user.store";
 import { Skeleton } from "../ui/skeleton";
 import { useEffect } from "react";
+import { useShallow } from "zustand/shallow";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
   const t = useTranslations();
-  const logout = useAuthStore((state) => state.logout);
-  const user = useUserStore((state) => state.user);
-  const getUser = useUserStore((state) => state.getUser);
   
 
+  const [logout , user , getMe] = useAuthStore(useShallow(state => [
+    state.logout,
+    state.user,
+    state.getMe,
+  ]))
+
   useEffect(() => {
-    getUser();
+    getMe();
   }, []);
 
   const handleLogout = () => {

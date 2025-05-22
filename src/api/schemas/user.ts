@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DateSchema, DatetimeSchema } from "./common";
+import { ApiResponseSchema, DateSchema, DatetimeSchema, ImageSchema } from "./common";
 
 export const UserProfileSchema = z.object({
     id: z.number(),
@@ -30,5 +30,7 @@ export const UserSchema = z.object({
 export const UserProfileUpdateSchema = z.object({
     id: z.number(),
     fullName: z.string().min(2, "Full name must be at least 2 characters long").max(40, "Full name must be at most 40 characters long"),
-    image: z.instanceof(File),
+    image: ImageSchema(),
 }).partial();
+
+export const UserListSchema = ApiResponseSchema(z.array(UserSchema));

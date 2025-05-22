@@ -42,3 +42,6 @@ export const QueyParamsSchema = z.object({
     const date = new Date(value)
     return date.toLocaleString()
   })
+
+
+  export const ImageSchema = (requiredMessage? : string) => z.instanceof(File , {message: requiredMessage}).nullable();
