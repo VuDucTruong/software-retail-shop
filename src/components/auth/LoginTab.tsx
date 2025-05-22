@@ -1,30 +1,9 @@
 import { useTranslations } from "next-intl";
-import Link from "next/link";
-import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { Button } from "../ui/button";
 import { LoginForm } from "./LoginForm";
-import { Separator } from "@radix-ui/react-select";
 
-export default function LoginTab({ isReset }: { isReset: boolean }) {
+export default function LoginTab() {
   const t = useTranslations();
-  const formRef = useRef<HTMLFormElement | null>(null);
-
-  useEffect(() => {
-    if (isReset) {
-      formRef.current?.reset();
-    }
-  }, [isReset]);
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(formRef.current!);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    // Perform login logic here, e.g., API call
-    console.log("Email:", email, "Password:", password);
-  };
 
   return (
     <div className="flex flex-row gap-4">

@@ -15,14 +15,14 @@ export default function SearchResultPage() {
       <FilterForm />
 
       <div className="grid grid-cols-4 place-items-stretch gap-6 auto-rows-auto">
-        {Array.from({ length: 8 }).map((_, index) => (
+        {/* {Array.from({ length: 8 }).map((_, index) => (
           <ProductItem
             key={index}
             title="Product title"
             originalPrice={100000}
             price={80000}
           />
-        ))}
+        ))} */}
       </div>
 
       <Button variant={"link"}>{t("see_more")}</Button>

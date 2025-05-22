@@ -1,17 +1,16 @@
 import { useEffect } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
-type ActionType = "login" | "register" | "logout" | "changePassword";
 type Status = "idle" | "loading" | "success" | "error";
 
 interface UseActionToastProps {
   status: Status;
-  lastAction: ActionType | null;
+  lastAction: string | null;
   errorMessage?: string;
   reset?: () => void;
 }
 
-const messages: Record<ActionType, Record<Status, string>> = {
+const messages: Record<string, Record<Status, string>> = {
   login: {
     loading: "Đang đăng nhập...",
     success: "Đăng nhập thành công!",
@@ -24,12 +23,12 @@ const messages: Record<ActionType, Record<Status, string>> = {
     error: "Đăng ký thất bại!",
     idle: "",
   },
-    logout: {
-        loading: "Đang đăng xuất...",
-        success: "Đăng xuất thành công!",
-        error: "Đăng xuất thất bại!",
-        idle: "",
-    },
+  logout: {
+    loading: "Đang đăng xuất...",
+    success: "Đăng xuất thành công!",
+    error: "Đăng xuất thất bại!",
+    idle: "",
+  },
   changePassword: {
     loading: "Đang thay đổi mật khẩu...",
     success: "Thay đổi mật khẩu thành công!",
@@ -44,10 +43,24 @@ export function useLoginToast({
   errorMessage,
 }: UseActionToastProps) {
   useEffect(() => {
-    if (!lastAction || status === "idle" || lastAction === "logout" || lastAction === "changePassword") return;
 
-    const message = messages[lastAction][status];
 
+    if (
+      !lastAction ||
+      status === "idle" ||
+      lastAction === "logout" ||
+      lastAction === "changePassword"
+    )
+      return;
+
+    
+    const actionMessages = messages[lastAction];
+    if (!actionMessages) return;
+
+    const message = actionMessages[status];
+   
+    
+    
     if (status === "loading") {
       toast.loading(message);
     } else {
@@ -58,6 +71,5 @@ export function useLoginToast({
         toast.error(`${message}${errorMessage ? ": " + errorMessage : ""}`);
       }
     }
-
   }, [status, lastAction]);
 }

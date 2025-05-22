@@ -150,9 +150,7 @@
   p {
     @apply leading-7 [&:not(:first-child)]:mt-3;
   }
-  main {
-    @apply bg-accent;
-  }
+  
 }
 @layer utilities {
   .main-container {

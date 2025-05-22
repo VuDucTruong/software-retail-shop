@@ -12,45 +12,68 @@ import { FaCartPlus, FaHeart, FaRegCreditCard } from "react-icons/fa6";
 import DiscountItem from "@/components/common/DiscountItem";
 import { Button } from "../ui/button";
 import CommonSwapIcon from "@/components/common/CommonSwapIcon";
+import { Product } from "@/api";
+import { useRouter } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
+import { useClientFavouriteStore } from "@/stores/cilent/client.favourite.store";
 
-export default function ProductInfo() {
+type ProductInfoProps = {
+  product: Product;
+};
+
+export default function ProductInfo({ product }: ProductInfoProps) {
   const t = useTranslations();
-  const format = useFormatter();
-  const discountPercentage = calcDiscountPercentage(80000, 100000);
+  const router = useRouter();
+  const discountPercentage = calcDiscountPercentage(
+    product.price,
+    product.originalPrice
+  );
+  const updateProductFavourite = useClientFavouriteStore(
+    (state) => state.updateProductFavourite);
+
   return (
     <div className="bg-white">
       <div className="main-container flex gap-10">
         <div className="relative w-[450px] aspect-[2/1] h-fit">
           <Image
             alt="Product image"
-            src={"/banner.png"}
-            className="rounded-md object-cover"
+            src={product.imageUrl}
+            className="rounded-md object-contain"
+            sizes="100%"
             fill
           />
         </div>
 
         <div className="flex flex-col gap-4 w-full max-w-1/2">
           <div>{t("Product")}</div>
-          <h3>Product Name</h3>
+          <h3>{product.name}</h3>
 
           {/* Tags */}
           <div className="flex flex-col gap-3">
             <div className="flex gap-2 items-center">
               <BsBoxSeam />
               <div>
-                {t("Status")}{" : "}<span>{t("in_stock")}</span>
+                {t("Status")}
+                {" : "}
+                <span className={cn("font-semibold", product.quantity > 0 ? "text-green-500" : "text-red-500")}>
+                  {product.quantity > 0 ? t("in_stock") : t("out_of_stock")}
+                </span>
               </div>
             </div>
             <div className="flex gap-2 items-center">
               <FaBarcode />
               <div>
-              {t("product_code")}{" : "}<span className="font-semibold">{"windowasd123"}</span>
+                {t("product_code")}
+                {" : "}
+                <span className="font-semibold">{product.slug}</span>
               </div>
             </div>
             <div className="flex gap-2 items-center">
               <CiShoppingTag />
               <div>
-                {t('Tag')}{" : "}<span>{t("in_stock")}</span>
+                {t("Tag")}
+                {" : "}
+                <span className="text-muted-foreground italic">{product.tags.join(",")}</span>
               </div>
             </div>
           </div>
@@ -58,38 +81,66 @@ export default function ProductInfo() {
           {/* Price */}
           <div className="flex flex-col gap-4">
             <div className="flex gap-3 items-center">
-              <h4>{convertPriceToVND(100000)}</h4>
-              <CommonSwapIcon Icon={FaBell} activeColor="text-primary" inactiveColor="text-gray-400" activeMessage={t('notification_on_message')} inactiveMessage={t('notification_off_message')}/>
-              <CommonSwapIcon Icon={FaHeart} activeColor=" text-red-500" inactiveColor="text-gray-400" activeMessage={t('favorite_message')} inactiveMessage={t('unfavorite_message')}/>
+              <h4>{convertPriceToVND(product.price)}</h4>
+              <CommonSwapIcon
+                Icon={FaBell}
+                activeColor="text-primary"
+                inactiveColor="text-gray-400"
+                activeMessage={t("notification_on_message")}
+                inactiveMessage={t("notification_off_message")}
+              />
+              <CommonSwapIcon
+                onStatusChange={(isActive) => updateProductFavourite(product.id , isActive)}
+                defaultValue={product.favorite}
+                Icon={FaHeart}
+                activeColor=" text-red-500"
+                inactiveColor="text-gray-400"
+                activeMessage={t("favorite_message")}
+                inactiveMessage={t("unfavorite_message")}
+              />
             </div>
 
-            <div className="flex gap-4 items-center">
-              <p className="font-medium line-through text-muted-foreground">{convertPriceToVND(80000)}</p>
-              <DiscountItem discountPercentage={discountPercentage} />
-            </div>
+            {discountPercentage > 0 && (
+              <div className="flex gap-4 items-center">
+                <p className="font-medium line-through text-muted-foreground">
+                  {convertPriceToVND(product.originalPrice)}
+                </p>
+                <DiscountItem discountPercentage={discountPercentage} />
+              </div>
+            )}
           </div>
 
           {/* Variant */}
-          <div className="flex flex-col gap-4 py-4 border-y border-border">
-            <p className="font-semibold">{t("similar_products")}</p>
-            <div className="flex gap-2 flex-row flex-wrap">
-              {Array.from({ length: 10 }).map((_, index) => (
-                <Button variant={'outline'} key={index}>
-                    Win 10 pro
-              </Button>
-              ))}
+          {product.variants && product.variants.length > 0 && (
+            <div className="flex flex-col gap-4 py-4 border-y border-border">
+              <p className="font-semibold">{t("similar_products")}</p>
+              <div className="flex gap-2 flex-row flex-wrap">
+                {product.variants?.map((variant, index) => (
+                  <Button
+                    variant={"outline"}
+                    key={index}
+                    onClick={() => {
+                      if (variant.slug === product.slug) return;
+                      router.replace("/product/" + variant.slug);
+                    }}
+                    className={product.slug === variant.slug ? "bg-primary text-white" : ""}
+                  >
+                    {variant.name}
+                  </Button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Buy */}
 
           <div className="flex gap-4">
-            <Button className="w-1/2">
+            <Button className="w-1/2" disabled={product.quantity <= 0}>
               <FaRegCreditCard />
               {t("buy_now")}
             </Button>
 
-            <Button variant={"outline"} className="w-1/2">
+            <Button variant={"outline"} className="w-1/2" disabled={product.quantity <= 0}>
               <FaCartPlus />
               {t("add_to_cart")}
             </Button>

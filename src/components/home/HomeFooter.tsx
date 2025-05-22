@@ -3,6 +3,7 @@ import React from "react";
 import { supportPhone } from "@/lib/constants";
 import Link from "next/link";
 import Logo from "@/components/common/Logo";
+import { Separator } from "../ui/separator";
 
 export default function HomeFooter() {
   const t = useTranslations();
@@ -27,8 +28,9 @@ export default function HomeFooter() {
   ];
 
   return (
-    <footer >
-      <div className="grid grid-cols-3 my-10 main-container">
+    <footer className="mt-6">
+      <Separator />
+      <div className="grid grid-cols-3 my-4 main-container ">
       {
         footerLinks.map((section, index) => (
           <div className="flex flex-col h-full gap-1" key={index}>

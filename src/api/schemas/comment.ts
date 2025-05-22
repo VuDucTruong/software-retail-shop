@@ -14,11 +14,20 @@ export const ReplySchema = z.object({
     author: AuthorSchema,
     createdAt: z.string().transform((val) => new Date(val).toLocaleDateString()),
     deletedAt: z.string().nullable(),
-    content: z.string(), 
+    content: z.string().nullable(), 
 })
 
 export const CommentSchema = ReplySchema.extend({
-    replies: z.array(ReplySchema),
+    replies: z.preprocess((val) => {
+        if(val) return val;
+        return [];
+    }, z.array(ReplySchema)).optional(),
+})
+
+export const CommentCreateSchema = z.object({
+    productId: z.number(),
+    content: z.string().min(1, { message: "Comment content is required" }),
+    parentCommentId: z.number().optional(),
 })
 
 export const CommentListSchema = ApiResponseSchema(z.array(CommentSchema));

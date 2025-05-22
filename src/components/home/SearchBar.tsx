@@ -42,8 +42,8 @@ export default function SearchBar() {
     },
   });
   const getCategories = useClientCategoryState((state) => state.getCategories);
-  const getProducts = useClientProductStore((state) => state.getProducts);
-  const products = useClientProductStore((state) => state.products);
+  const searchProducts = useClientProductStore((state) => state.searchProducts);
+  const search = useClientProductStore((state) => state.search);
   const categories = useClientCategoryState((state) => state.categories);
   React.useEffect(() => {
     setMounted(true);
@@ -56,7 +56,7 @@ export default function SearchBar() {
     () =>
       debounce((data: z.infer<typeof SearchSchema>) => {
         if (data.search !== "") {
-          getProducts({
+          searchProducts({
             pageRequest: {
               page: 0,
               size: 10,
@@ -65,9 +65,9 @@ export default function SearchBar() {
             },
             search: data.search,
             categoryIds: data.category === "-1" ? [] : [Number(data.category)],
-          });
+          });	
         } else {
-          getProducts({
+          searchProducts({
             pageRequest: {
               page: 0,
               size: 10,
@@ -113,10 +113,10 @@ export default function SearchBar() {
 
   return (
     <Popover open={form.watch("search") !== ""}>
-      <PopoverTrigger className="max-w-lg w-full">
+      <PopoverTrigger asChild>
         <Form {...form}>
           <form
-            className="flex items-center border border-primary rounded-md p-2 w-full "
+            className="flex items-center border border-primary rounded-md p-2 w-full max-w-lg"
             onSubmit={handleSubmit}
           >
             <FormField
@@ -173,7 +173,7 @@ export default function SearchBar() {
         }}
       >
         <div className="flex flex-col  gap-3">
-          {products?.data.map((item) => (
+          {search?.data.map((item) => (
             <div
               key={item.id}
               onClick={() => {
@@ -186,7 +186,7 @@ export default function SearchBar() {
             </div>
           ))}
 
-          {products?.data.length === 0 && (
+          {search?.data.length === 0 && (
             <div className="flex items-center justify-center cursor-pointer hover:text-primary hover:opacity-80 gap-2">
               <span className="text-muted-foreground italic">
                 Sản phẩm không tồn tại

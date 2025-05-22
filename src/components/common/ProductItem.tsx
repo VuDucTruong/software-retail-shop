@@ -8,26 +8,26 @@ import {
   convertPriceToVND,
 } from "@/lib/currency_helper";
 import { useRouter } from "@/i18n/navigation";
+import { Product } from "@/api";
 
 type ProductItemProps = {
-  title: string;
-  originalPrice: number;
-  price: number;
+  product: Product;
   className?: string;
 };
 
 export default function ProductItem(props: ProductItemProps) {
-  const convertedPrice = convertPriceToVND(props.price);
+  const {product} = props;
+  const convertedPrice = convertPriceToVND(product.price);
 
-  const convertedOriginalPrice = convertPriceToVND(props.originalPrice);
+  const convertedOriginalPrice = convertPriceToVND(product.originalPrice);
 
   const discountPercentage = calcDiscountPercentage(
-    props.price,
-    props.originalPrice
+    product.price,
+    product.originalPrice
   );
   const router = useRouter();
   const handleClick = () => {
-    router.push("/product/" + props.title);
+    router.push("/product/" + product.slug);
   };
   return (
     <Card
@@ -38,17 +38,18 @@ export default function ProductItem(props: ProductItemProps) {
       )}
     >
       <CardTitle>
-        <figure className="relative h-[136px]">
+        <figure className="relative h-36">
           <Image
-            className="rounded-sm"
+            className="rounded-sm object-fill"
             fill
-            src={"/banner.png"}
+            sizes="100%"
+            src={product.imageUrl}
             alt="Product image"
           />
         </figure>
       </CardTitle>
       <CardContent className="px-2 pb-2">
-        <div>{props.title}</div>
+        <div>{product.name}</div>
         <div className="text-lg font-semibold">{convertedPrice}</div>
         <div className="flex gap-4 items-center">
           <div className="line-through text-gray-400">

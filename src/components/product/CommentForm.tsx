@@ -50,7 +50,6 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
     const comment = data.comment.trim()
     onSubmit?.(comment)
     form.reset()
-    toast.success(t('comment_success_message'))
   }
 
   return (

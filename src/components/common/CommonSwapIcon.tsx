@@ -5,11 +5,13 @@ import { toast } from "sonner";
 
 type CommonSwapIconProps = {
   className?: string;
+  defaultValue?: boolean;
   Icon: IconType;
   activeColor: string;
   inactiveColor: string;
   activeMessage?: string;
   inactiveMessage?: string;
+  onStatusChange?: (isActive: boolean) => void;
 };
 
 export default function CommonSwapIcon(props: CommonSwapIconProps) {
@@ -20,11 +22,15 @@ export default function CommonSwapIcon(props: CommonSwapIconProps) {
     inactiveColor,
     inactiveMessage,
     activeMessage,
+    defaultValue
   } = props;
-
-  const [isActive, setIsActive] = React.useState(false);
+  
+  const [isActive, setIsActive] = React.useState(defaultValue ?? false);
   const handleClick = () => {
-    if (!isActive) {
+
+    const status = !isActive;
+
+    if (status) {
       if (activeMessage) {
         toast.success(activeMessage);
       }
@@ -33,8 +39,9 @@ export default function CommonSwapIcon(props: CommonSwapIconProps) {
         toast.error(inactiveMessage);
       }
     }
+    props.onStatusChange?.(status);
 
-    setIsActive(!isActive);
+    setIsActive(status);
   };
   return (
     <Icon
