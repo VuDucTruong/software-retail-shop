@@ -41,6 +41,8 @@ interface DataTableProps<TData, TValue> {
   onDeleteRows?: (rows: number[]) => void;
   sorting?: SortingState;
   onSortingChange?: (updater: Updater<SortingState>) => void;
+  objectName?: string;
+  selectCol?: React.ReactNode;
 }
 
 export function CommmonDataTable<TData, TValue>({
@@ -55,6 +57,8 @@ export function CommmonDataTable<TData, TValue>({
   totalCount,
   isLoading,
   onSortingChange,
+  objectName,
+  selectCol,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [columnVisibility, setColumnVisibility] =
@@ -223,8 +227,8 @@ export function CommmonDataTable<TData, TValue>({
             <CommonConfirmDialog
               title={`Xóa ${
                 table.getFilteredSelectedRowModel().rows.length
-              } danh mục`}
-              description={`Bạn có chắc chắn muốn xóa các danh mục ${getSelectedIds().join(
+              } ${objectName}`}
+              description={`Bạn có chắc chắn muốn xóa các ${objectName} ${getSelectedIds().join(
                 ","
               )} ?`}
               triggerName={

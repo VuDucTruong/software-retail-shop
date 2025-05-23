@@ -173,6 +173,7 @@ export default function CouponManagementPage() {
       </CardHeader>
       <CardContent>
       <CommmonDataTable
+          objectName={"Mã giảm giá"}
           isLoading={status === "loading" && lastAction === null}
           columns={cols}
           data={coupons?.data ?? []}

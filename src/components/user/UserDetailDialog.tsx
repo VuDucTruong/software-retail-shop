@@ -61,10 +61,10 @@ export default function UserDetailDialog({ user }: UserDetailDialogProps) {
               <label className="text-sm font-medium capitalize">
                 {t("Status")}
               </label>
-              <StatusBadge status={user.disableDate ? "banned" : "active"} />
-              {!user.disableDate ? null : (
+              <StatusBadge status={user.deletedAt ? "banned" : "active"} />
+              {!user.deletedAt ? null : (
                 <span className="italic text-muted-foreground text-xs">
-                  {t("banned_in_x", { x: user.disableDate })}
+                  {t("banned_in_x", { x: user.deletedAt })}
                 </span>
               )}
             </div>

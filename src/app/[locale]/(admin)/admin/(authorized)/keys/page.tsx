@@ -190,6 +190,7 @@ export default function KeyManagementPage() {
       <CardContent>
          
           <CommmonDataTable
+          objectName="khóa sản phẩm"
           isLoading={status === "loading" && lastAction === null}
           columns={cols}
           data={productItems?.data ?? []}

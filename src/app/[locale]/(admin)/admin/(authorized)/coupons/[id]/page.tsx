@@ -1,22 +1,21 @@
 "use client";
+import { CouponUpdate, CouponUpdateSchema } from "@/api";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import ValueTypeInput from "@/components/coupon/ValueTypeInput";
+import LoadingPage from "@/components/special/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { isoToDatetimeLocal } from "@/lib/date_helper";
-import { Coupon, CouponCreate, CouponUpdate, CouponUpdateSchema } from "@/api";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { useCouponStore } from "@/stores/coupon.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
-import { useCouponStore } from "@/stores/coupon.store";
-import { useActionToast } from "@/hooks/use-action-toast";
-import LoadingPage from "@/components/special/LoadingPage";
 
 export default function ConponDetailPage() {
   const t = useTranslations();
@@ -62,8 +61,6 @@ export default function ConponDetailPage() {
     if (selectedCoupon) {
       form.reset({
         ...selectedCoupon,
-        availableFrom: isoToDatetimeLocal(selectedCoupon.availableFrom),
-        availableTo: isoToDatetimeLocal(selectedCoupon.availableTo),
       });
     }
   }, [selectedCoupon]);

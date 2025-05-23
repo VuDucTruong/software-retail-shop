@@ -170,6 +170,7 @@ export default function CategoryManagementPage() {
       <CardContent>
         
           <CommmonDataTable
+          objectName={t("category")}
           isLoading={status === "loading" && lastAction === null}
           columns={cols}
           data={categories?.data ?? []}

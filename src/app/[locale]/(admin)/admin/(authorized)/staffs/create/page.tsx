@@ -4,7 +4,9 @@ import CommonInputOutline from "@/components/common/CommonInputOutline";
 
 import {
   BlogCreate,
-  BlogCreateSchema
+  BlogCreateSchema,
+  UserCreate,
+  UserCreateSchema,
 } from "@/api";
 import GenreDropdown from "@/components/blog/GenreDropdown";
 import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
@@ -26,38 +28,60 @@ import { useBlogStore } from "@/stores/blog.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
+import { useUserStore } from "@/stores/user.store";
+import { useUserToast } from "@/hooks/use-user-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import EditAvatarSection from "@/components/profile/EditAvatarSection";
+import { flattenObject } from "@/lib/utils";
 
-export default function CreateBlogPage() {
+export default function CreateStaffPage() {
   const t = useTranslations();
 
-  const [createBlog, lastAction, status, error] = useBlogStore(
+  const [createUser, lastAction, status, error,resetStatus] = useUserStore(
     useShallow((state) => [
-      state.createBlog,
+      state.createUser,
       state.lastAction,
       state.status,
       state.error,
+      state.resetStatus,
     ])
   );
 
-  useActionToast({
+  useEffect(() => {
+    if (status !== "idle") {
+      resetStatus();
+    }
+  },[])
+
+  useUserToast({
     lastAction,
     status,
     errorMessage: error || undefined,
   });
 
-  const form = useForm<BlogCreate>({
+  const form = useForm<UserCreate>({
     defaultValues: {
-      title: "",
-      subtitle: "",
-      content: "",
-      image: null,
-      genreIds: [],
-      publishedAt: getDateTimeLocal(),
+      email: "",
+      password: "",
+      profile: {
+        avatar: null,
+        fullName: "",
+      },
+      role: "",
+      disableDate: null,
+      enableDate: null,
+      isVerified: true,
     },
-    resolver: zodResolver(BlogCreateSchema),
+    resolver: zodResolver(UserCreateSchema),
     mode: "onSubmit",
   });
 
@@ -65,8 +89,8 @@ export default function CreateBlogPage() {
 
   const handleSubmit = () => {
     form.handleSubmit((data) => {
-        console.log(data)
-    //   createBlog(data);
+      const flatData = flattenObject(data);
+      createUser(flatData as UserCreate)
     })();
   };
 
@@ -74,7 +98,7 @@ export default function CreateBlogPage() {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>{"Tạo bài viết"}</h2>
+          <h2>{"Tạo quản trị viên"}</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -90,44 +114,27 @@ export default function CreateBlogPage() {
 
             <FormField
               control={form.control}
-              name="image"
+              name="profile.avatar"
               render={({ field }) => (
                 <FormItem className="col-span-3">
-                  <FormLabel>Hình ảnh</FormLabel>
-                  <FormControl>
-                    <div>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        ref={fileRef}
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            field.onChange(file);
-                          }
-                        }}
-                      />
-
-                      <div className="relative w-full h-64">
-                        <Image
-                          alt="Image"
-                          fill
-                          src={field.value ? URL.createObjectURL(field.value) : "/empty_img.png"}
-                          className="object-contain"
-                        />
-                      </div>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
+                    <EditAvatarSection
+                  fileRef={fileRef}
+                  field={field}
+                  avatarHint={t("image_hint")}
+                  name={"Đặt avatar"}
+                />
                 </FormItem>
               )}
             />
 
             <FormField
               control={form.control}
-              name="title"
+              name="email"
               render={({ field }) => (
-                <CommonInputOutline required title={"Tiêu đề"} className="col-span-3">
+                <CommonInputOutline
+                  required
+                  title={"Email"}
+                >
                   <Input {...field} />
                 </CommonInputOutline>
               )}
@@ -135,20 +142,23 @@ export default function CreateBlogPage() {
 
             <FormField
               control={form.control}
-              name="subtitle"
+              name="password"
               render={({ field }) => (
-                <CommonInputOutline title="Phụ đề" className="col-span-3" required>
-                  <Textarea {...field} className="resize-none" rows={3} />
+                <CommonInputOutline
+                  title="Mật khẩu"
+                  required
+                >
+                  <Input {...field} />
                 </CommonInputOutline>
               )}
             />
 
             <FormField
               control={form.control}
-              name="publishedAt"
+              name="profile.fullName"
               render={({ field }) => (
-                <CommonInputOutline title={"Ngày xuất bản"} required>
-                  <Input type="datetime-local" {...field} />
+                <CommonInputOutline title={"Tên"} required>
+                  <Input {...field} />
                 </CommonInputOutline>
               )}
             />
@@ -156,24 +166,34 @@ export default function CreateBlogPage() {
             {/* Categories Multi-select */}
             <FormField
               control={form.control}
-              name="genreIds"
+              name="role"
               render={({ field }) => (
-                <CommonInputOutline title={"Thể loại"} required>
-                  <GenreDropdown field={field}/>
+                <CommonInputOutline title={"Vai trò"} required>
+                  <Select
+                    
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Chọn vai trò" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="STAFF">Nhân viên</SelectItem>
+                      <SelectItem value="ADMIN">Quản lý</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </CommonInputOutline>
               )}
             />
 
-            <div className="col-span-3">
-              <ProductDescriptionInput hint="Nội dung bài viết" name="content" />
-            </div>
-
-            <Button
-              className="col-start-3 bg-green-400 hover:bg-green-500"
+            <div className="col-start-3 row-start-4">
+                <Button
+              className="w-full bg-green-400 hover:bg-green-500"
               type="submit"
             >
               {t("Create")}
             </Button>
+            </div>
           </form>
         </Form>
       </CardContent>

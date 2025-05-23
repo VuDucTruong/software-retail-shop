@@ -8,10 +8,11 @@ import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import SortingHeader from "@/components/common/table/SortingHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AdminFilterSheet from "@/components/user/AdminFilterSheet";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
 import UserFilterSheet from "@/components/user/UserFilterSheet";
 import { useUserToast } from "@/hooks/use-user-toast";
-import { Role } from "@/lib/constants";
+
 import { useUserStore } from "@/stores/user.store";
 import {
   ColumnDef,
@@ -20,13 +21,14 @@ import {
 } from "@tanstack/react-table";
 import { UserX2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-export default function CustomerManagementPage() {
+export default function StaffManagementPage() {
   const t = useTranslations();
 
-  const [status, lastAction, error, queryParams, users, getUsers, deleteUsers] =
+  const [status, lastAction, error, queryParams, users, getUsers, deleteUsers,resetStatus] =
     useUserStore(
       useShallow((state) => [
         state.status,
@@ -36,6 +38,7 @@ export default function CustomerManagementPage() {
         state.users,
         state.getUsers,
         state.deleteUsers,
+        state.resetStatus,
       ])
     );
 
@@ -43,6 +46,12 @@ export default function CustomerManagementPage() {
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
   });
+
+  useEffect(() => {
+    if (status !== "idle") {
+      resetStatus();
+    }
+  }, []);
 
   useUserToast({
     status,
@@ -117,35 +126,35 @@ export default function CustomerManagementPage() {
       },
     },
     {
-      accessorKey: "actions",
-      header: "",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-2">
-            <UserDetailDialog user={row.original} />
-
-            {row.original.deletedAt ? null : (
-              <CommonConfirmDialog
-                triggerName={
-                  <Button
-                    variant={"destructive"}
-                    size="icon"
-                    className="w-8 h-8"
-                  >
-                    <UserX2 />
-                  </Button>
-                }
-                title={"Cấm người dùng"}
-                description={
-                  "Bạn có chắc chắn muốn cấm người dùng này này không?"
-                }
-                onConfirm={() => handleDelete(row.original.id)}
-              />
-            )}
-          </div>
-        );
-      },
-    },
+          accessorKey: "actions",
+          header: "",
+          cell: ({ row }) => {
+            return (
+              <div className="flex items-center gap-2">
+                <UserDetailDialog user={row.original} />
+    
+                {row.original.deletedAt ? null : (
+                  <CommonConfirmDialog
+                    triggerName={
+                      <Button
+                        variant={"destructive"}
+                        size="icon"
+                        className="w-8 h-8"
+                      >
+                        <UserX2 />
+                      </Button>
+                    }
+                    title={"Cấm người dùng"}
+                    description={
+                      "Bạn có chắc chắn muốn cấm người dùng này này không?"
+                    }
+                    onConfirm={() => handleDelete(row.original.id)}
+                  />
+                )}
+              </div>
+            );
+          },
+        },
   ];
 
   const handleDelete = (id: number) => {
@@ -156,15 +165,20 @@ export default function CustomerManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{"Quản lý khách hàng"}</h2>
+          <h2>{"Quản lý quản trị viên"}</h2>
           <div className="flex items-center gap-2">
-            <UserFilterSheet />
+            <Link href={"/admin/staffs/create"}>
+                <Button>
+                    Thêm quản trị viên
+                </Button>
+            </Link>
+            <AdminFilterSheet />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <CommmonDataTable
-          objectName={"Khách hàng"}
+            objectName={"nhân viên/quản trị viên"}
           isLoading={status === "loading" && lastAction === "getUsers"}
           columns={cols}
           data={users?.data ?? []}

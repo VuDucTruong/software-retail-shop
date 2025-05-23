@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { isoToDatetimeLocal } from "@/lib/date_helper";
+
 import { CouponCreate, CouponCreateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { useCouponStore } from "@/stores/coupon.store";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { useShallow } from "zustand/shallow";
+import { getDateTimeLocal } from "@/lib/date_helper";
 
 
 export default function CreateCouponPage() {
@@ -33,8 +34,8 @@ export default function CreateCouponPage() {
     defaultValues: {
       code: "",
       type: "PERCENTAGE",
-      availableFrom: isoToDatetimeLocal(new Date().toISOString()),
-      availableTo: isoToDatetimeLocal(new Date().toISOString()),
+      availableFrom: getDateTimeLocal(),
+      availableTo: getDateTimeLocal(),
       value: 0,
       minAmount: 0,
       maxAppliedAmount: 0,

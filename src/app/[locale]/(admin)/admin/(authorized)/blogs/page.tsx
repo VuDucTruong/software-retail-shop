@@ -162,6 +162,7 @@ export default function BlogManagementPage() {
       </CardHeader>
       <CardContent>
         <CommmonDataTable
+          objectName="bài viết"
           isLoading={status === "loading" && lastAction === null}
           columns={cols}
           data={blogs?.data ?? []}

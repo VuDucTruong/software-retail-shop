@@ -9,7 +9,7 @@ type EditAvatarProps = {
   name: string;
   avatarHint: string; // Hint for the avatar
   defaultAvatar?: string | null; // Optional default avatar URL
-  field?: ControllerRenderProps;
+  field?: ControllerRenderProps<any,any>;
 };
 
 export default function EditAvatarSection({

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiResponseSchema } from "./common";
+import { ApiResponseSchema, DatetimeSchema } from "./common";
 
 const messages = {
   required: {
@@ -19,8 +19,8 @@ export const CouponSchema = z.object({
   id: z.number(),
   code: z.string(),
   type: z.string(),
-  availableFrom: z.string(),
-  availableTo: z.string(),
+  availableFrom: DatetimeSchema,
+  availableTo: DatetimeSchema,
   value: z.number(),
   minAmount: z.number(),
   maxAppliedAmount: z.number(),

@@ -188,6 +188,7 @@ export default function ProductManagementPage() {
       </CardHeader>
       <CardContent>
       <CommmonDataTable
+          objectName={t("product")}
           isLoading={status === "loading" && lastAction === null}
           columns={cols}
           data={products?.data ?? []}
