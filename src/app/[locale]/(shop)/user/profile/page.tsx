@@ -1,21 +1,12 @@
 "use client";
+import { UserProfileUpdate, UserProfileUpdateSchema } from "@/api";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { User, UserProfileUpdate, UserProfileUpdateSchema } from "@/api";
 
-import { useTranslations } from "next-intl";
-import React, { useEffect } from "react";
-import ChangePassDialog from "@/components/profile/ChangePassDialog";
-import { useUserStore } from "@/stores/user.store";
-import { useAuthStore } from "@/stores/auth.store";
 import LoadingPage from "@/components/special/LoadingPage";
-import { toast } from "sonner";
-import { useProfileToast } from "@/hooks/use-profile-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -24,7 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useProfileToast } from "@/hooks/use-profile-toast";
 import { useClientUserStore } from "@/stores/cilent/client.user.store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
 
 export default function UserProfilePage() {
   const t = useTranslations();

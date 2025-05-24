@@ -4,13 +4,15 @@ import {
   ProductItemDetail,
   ProductItemDetailList,
   ProductItemDetailListSchema,
-  QueryParams
+  ProductItemSchema,
+  QueryParams,
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
 import { z } from "zod";
 
 import { create } from "zustand";
+import { handleDeleteReloadGeneric } from "./reload.store";
 
 const productApiClient = ApiClient.getInstance();
 
@@ -28,7 +30,7 @@ type ProductItemAction = {
   resetStatus: () => void;
   getProductItems: (query: QueryParams) => Promise<void>;
   deleteProductItems: (ids: number[]) => Promise<void>;
-  createProductItems: (data: ProductItem[]) => Promise<void>;
+  createProductItems: (data: ProductItemDetail[]) => Promise<void>;
 };
 
 type ProductItemStore = ProductItemState & ProductItemAction;
@@ -67,7 +69,7 @@ const getProductItems = async (
   set: SetState<ProductItemStore>,
   query: QueryParams
 ) => {
-  set({ status: "loading", lastAction: null, error: null });
+  set({ error: null });
 
   try {
     const response = await productApiClient.post(
@@ -85,33 +87,6 @@ const getProductItems = async (
   }
 };
 
-const handleDeleteReload= async (
-  set: SetState<ProductItemStore>,
-  ids: number[]
-) => {
-  const newData = useProductItemStore
-    .getState()
-    .productItems?.data?.filter((item) => !ids.includes(item.id));
-
-  if (newData?.length === 0) {
-    getProductItems(set, useProductItemStore.getState().queryParams);
-    return;
-  } else {
-    set((state) => ({
-      ...state,
-      status: "success",
-      productItems: state.productItems
-        ? {
-            ...state.productItems,
-            data: newData || [],
-            totalInstances: (state.productItems.totalInstances ?? ids.length) - ids.length,
-          }
-        : null,
-    }));
-  }
-};
-
-
 const deleteProductItems = async (
   set: SetState<ProductItemStore>,
   ids: number[]
@@ -119,16 +94,23 @@ const deleteProductItems = async (
   set({ status: "loading", lastAction: "delete", error: null });
 
   try {
-    productApiClient.delete(
-      "/products/items",
-      z.number(),
-      {
-        params: {
-          ids: ids.join(","),
-        }
-      }
-    );
-    handleDeleteReload(set, ids);
+    const res = await productApiClient.delete("/products/items", z.number(), {
+      params: {
+        ids: ids.join(","),
+      },
+    });
+
+    if (res <= 0) {
+      throw new ApiError("Xóa khóa sản phẩm thất bại");
+    } else {
+      handleDeleteReloadGeneric(
+        set,
+        ids,
+        "productItems",
+        useProductItemStore.getState,
+        getProductItems
+      );
+    }
   } catch (error) {
     const apiError = error as ApiError;
     set({
@@ -136,25 +118,74 @@ const deleteProductItems = async (
       error: apiError.message,
     });
   }
-}
+};
 
 const createProductitems = async (
   set: SetState<ProductItemStore>,
-  data: ProductItem[]
+  data: ProductItemDetail[]
 ) => {
   set({ status: "loading", lastAction: "create", error: null });
 
   try {
-   
+    const createData = data.map((item) => ({
+      productId: item.productId,
+      productKey: item.productKey,
+      region: item.region,
+    }));
+
     const response = await productApiClient.post(
       "/products/items",
       z.object({
-        accepted: z.array(z.string())
+        productItemDetails: z.array(ProductItemSchema),
       }),
-      data
+      createData
     );
-     
-     
+
+    if (response) {
+      const newData = data.filter((item) => {
+        return response.productItemDetails.some(
+          (newItem) =>
+            newItem.productKey === item.productKey &&
+            newItem.productId === item.productId
+        );
+      });
+
+      const newProductItems = newData.map((item) => {
+        const selectedProduct = response.productItemDetails.find(
+          (product) =>
+            product.productKey === item.productKey &&
+            product.productId === item.productId
+        );
+
+        return {
+          ...item,
+          id: selectedProduct?.id || -1,
+        };
+      });
+
+      set((state) => {
+        return {
+          ...state,
+          productItems: {
+            ...state.productItems,
+            data: [
+              ...newProductItems,
+              ...(state.productItems?.data || []),
+            ].slice(
+              0,
+              useProductItemStore.getState().queryParams?.pageRequest?.size ??
+                10
+            ),
+            totalInstances:
+              (state.productItems?.totalInstances || 0) +
+              newProductItems.length,
+          },
+          status: "success",
+        };
+      });
+    } else {
+      throw new ApiError("Tạo khóa sản phẩm thất bại");
+    }
   } catch (error) {
     const apiError = error as ApiError;
     set({
@@ -162,4 +193,4 @@ const createProductitems = async (
       error: apiError.message,
     });
   }
-}
+};

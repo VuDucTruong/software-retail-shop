@@ -30,32 +30,15 @@ const FormSchema = z
     type: z.enum(["PERCENTAGE", "FIXED", "BOTH"]).optional(),
     availableFrom: z.string().optional(),
     availableTo: z.string().optional(),
-    valueFrom: z.preprocess((val) => Number(val), z.number().optional()),
+    valueFrom: z.preprocess((val) => {
+      if(val) return Number(val);
+      return val
+    }, z.number().optional()),
     valueTo: z.preprocess((val) => {
       if(val) return Number(val);
-      return undefined;
+      return val
     }, z.number().optional()),
   })
-  .superRefine((data, ctx) => {
-    if (data.valueFrom && data.valueTo && data.valueFrom > data.valueTo) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Giá trị từ phải nhỏ hơn hoặc bằng giá trị đến",
-        path: ["valueTo"],
-      });
-    }
-    if (data.availableFrom && data.availableTo) {
-      const fromDate = new Date(data.availableFrom);
-      const toDate = new Date(data.availableTo);
-      if (fromDate > toDate) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Thời gian từ phải nhỏ hơn hoặc bằng thời gian đến",
-          path: ["availableTo"],
-        });
-      }
-    }
-  });
 
 export default function CouponFilterSheet() {
   const t = useTranslations();
@@ -68,15 +51,16 @@ export default function CouponFilterSheet() {
       type: undefined,
       availableFrom: "",
       availableTo: "",
-      valueFrom: 0,
+      valueFrom: undefined,
       valueTo: undefined,
     },
   });
 
   function handleSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data);
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== "" && value !== 0 && value !== "BOTH"
+        ([_, value]) => value !== undefined && value !== ""  && value !== "BOTH"
       )
     );
 
@@ -192,7 +176,7 @@ export default function CouponFilterSheet() {
                   <FormItem>
                     <FormLabel>Đến giá trị</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input type="number" placeholder="Giá trị đến" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

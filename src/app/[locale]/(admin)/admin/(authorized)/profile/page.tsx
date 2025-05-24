@@ -1,21 +1,13 @@
 "use client";
+import { UserProfileUpdate, UserProfileUpdateSchema } from "@/api";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { User, UserProfileUpdate, UserProfileUpdateSchema } from "@/api";
 
-import { useTranslations } from "next-intl";
-import React, { useEffect } from "react";
 import ChangePassDialog from "@/components/profile/ChangePassDialog";
-import { useUserStore } from "@/stores/user.store";
-import { useAuthStore } from "@/stores/auth.store";
 import LoadingPage from "@/components/special/LoadingPage";
-import { toast } from "sonner";
-import { useProfileToast } from "@/hooks/use-profile-toast";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
@@ -24,20 +16,30 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { format } from "node:path/posix";
+import { useProfileToast } from "@/hooks/use-profile-toast";
+import { useAuthStore } from "@/stores/auth.store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useShallow } from "zustand/shallow";
 
 export default function AdminProfilePage() {
   const t = useTranslations();
 
-  const getProfile = useUserStore((state) => state.getUser);
-  const updateProfile = useUserStore((state) => state.updateProfile);
-  const lastAction = useUserStore((state) => state.lastAction);
-  const error = useUserStore((state) => state.error);
-  const status = useUserStore((state) => state.status);
-  const user = useUserStore((state) => state.user);
+  const [status , lastAction , error , user, getMe , updateProfile] = useAuthStore(useShallow(state => [
+    state.status,
+    state.lastAction,
+    state.error,
+    state.user,
+    state.getMe,
+    state.updateProfile,
+  ]))
+
+
   const fileRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
-    getProfile();
+    getMe();
   }, []);
 
   useProfileToast({
@@ -87,7 +89,7 @@ export default function AdminProfilePage() {
     },
   ];
 
-  if (status !== "success" && lastAction === "getUser") {
+  if (status !== "success" && lastAction === "getMe") {
     return LoadingPage();
   }
 

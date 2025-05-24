@@ -12,6 +12,7 @@ import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
 import { z } from "zod";
 import { create } from "zustand";
+import { handleDeleteReloadGeneric } from "./reload.store";
 const categoryClient = ApiClient.getInstance();
 
 type CategoryState = {
@@ -30,7 +31,6 @@ type CategoryAction = {
   getCategoryById: (id: number) => Promise<void>;
   createCategory: (category: CategoryCreate) => Promise<void>;
   updateCategory: (category: CategoryUpdate) => Promise<void>;
-  deleteCategory: (id: number) => Promise<void>;
   deleteCategories: (ids: number[]) => Promise<void>;
   resetStatus: () => void;
 };
@@ -61,7 +61,6 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
   getCategoryById: (id) => getCategoryById(set, id),
   createCategory: (category) => createCategory(set, category),
   updateCategory: (category) => updateCategory(set, category),
-  deleteCategory: (id) => deleteCategory(set, id),
   deleteCategories: (ids) => deleteCategories(set, ids),
   resetStatus: () =>
     set((state) => ({
@@ -73,12 +72,11 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
 }));
 
 
-const currentState = () => useCategoryStore.getState();
 const getCategories = async (
   set: SetState<CategoryStore>,
   queryParams: QueryParams
 ) => {
-  set({ lastAction: null, error: null, queryParams, status: "loading" });
+  set({ error: null, queryParams , categories: null });
 
   try {
     const response = await categoryClient.post(
@@ -94,7 +92,7 @@ const getCategories = async (
 };
 
 const getCategoryById = async (set: SetState<CategoryStore>, id: number) => {
-  set({ lastAction: null, error: null, status: "loading" });
+  set({ error: null });
 
   try {
     const response = await categoryClient.get(
@@ -128,7 +126,11 @@ const createCategory = async (
 
     set((prev) => {
       const existing = prev.categories?.data ?? [];
-      const newData = [response, ...existing.slice(0, -1)]; // thêm vào đầu, bỏ phần tử cuối
+      let newData = [...existing];
+      if (existing.length === prev.queryParams?.pageRequest?.size) {
+        newData.pop();
+      }
+      newData = [response, ...newData];
 
       return {
         selectedCategory: response,
@@ -148,13 +150,11 @@ const createCategory = async (
 
 const updateCategory = async (
   set: SetState<CategoryStore>,
-  category: CategoryUpdate,
+  category: CategoryUpdate
 ) => {
   set({ error: null, lastAction: "update", status: "loading" });
 
   try {
-    
-    
     const response = await categoryClient.put(
       `/categories`,
       CategorySchema,
@@ -181,34 +181,13 @@ const updateCategory = async (
         },
       };
     });
-    
-    
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });
   }
 };
 
-const deleteCategory = async (set: SetState<CategoryStore>, id: number) => {
-  set({ error: null, lastAction: "delete", status: "loading" });
 
-  try {
-    const resposne = await categoryClient.delete(
-      `/categories/${id}`,
-      z.number()
-    );
-    if (resposne > 0) {
-      set({ status: "success", lastAction: "delete" });
-    } else {
-      throw new ApiError("Xóa danh mục thất bại");
-    }
-    categoryClient.clearCache();
-    await getCategories(set, currentState().queryParams);
-  } catch (error) {
-    const appError = error as ApiError;
-    set({ error: appError.message, status: "error" });
-  }
-};
 
 const deleteCategories = async (
   set: SetState<CategoryStore>,
@@ -217,17 +196,15 @@ const deleteCategories = async (
   set({ lastAction: "delete", status: "loading", error: null });
 
   try {
+    
     const res = await categoryClient.delete(`/categories`, z.number(), {
       params: { ids: ids.join(",") },
     });
-    if (res > 0) {
-      set({ status: "success", lastAction: "delete" });
-      
-    } else {
+    if (res < 0) {
       throw new ApiError("Xóa danh mục thất bại");
+    } else {
+      handleDeleteReloadGeneric(set , ids , "categories" , useCategoryStore.getState , getCategories)
     }
-    categoryClient.clearCache();
-    await getCategories(set, currentState().queryParams);
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

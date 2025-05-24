@@ -11,35 +11,39 @@ interface UseActionToastProps {
 }
 
 const messages: Record<string, Record<Status, string>> = {
-  getMe: {
-    loading: "Đang tải thông tin cá nhân...",
-    success: "Tải thông tin cá nhân thành công!",
-    error: "Tải thông tin cá nhân thất bại!",
+  createUser: {
+    loading: "Đang tạo người dùng...",
+    success: "Người dùng đã được tạo thành công!",
+    error: "Tạo người dùng thất bại",
     idle: "",
   },
-  updateProfile: {
-    loading: "Đang cập nhật thông tin cá nhân...",
-    success: "Cập nhật thông tin cá nhân thành công!",
-    error: "Cập nhật thông tin cá nhân thất bại!",
+  deleteUsers: {
+    loading: "Đang cấm người dùng...",
+    success: "Người dùng đã bị cấm thành công!",
+    error: "Cấm người dùng thất bại",
     idle: "",
-  },
+  }
 };
 
-export function useProfileToast({
+export function useUserToast({
   status,
   lastAction,
   errorMessage,
-  reset,
+  reset
 }: UseActionToastProps) {
   useEffect(() => {
     if (!lastAction || status === "idle") return;
 
-    const actionMessages = messages[lastAction];
-    if (!actionMessages) return;
+    const actionMess = messages[lastAction];
 
-    const message = actionMessages[status];
-    
+    if(!actionMess) return;
+
+    const message = actionMess[status];
+
+
     let toastId: string | number | undefined;
+
+
     if (status === "loading") {
       toastId = toast.loading(message);
     } else {
@@ -51,5 +55,8 @@ export function useProfileToast({
       }
       reset?.();
     }
+
+    
+
   }, [status, lastAction]);
 }

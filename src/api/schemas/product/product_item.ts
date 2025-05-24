@@ -1,11 +1,12 @@
-import { create } from "domain";
+
 import { z } from "zod";
 import { ApiResponseSchema } from "../common";
 
 export const ProductItemSchema = z.object({
+    id: z.number(),
     productId: z.number(),
     productKey: z.string(),
-    region: z.string(),
+    region: z.string().optional(),
 })
 
 

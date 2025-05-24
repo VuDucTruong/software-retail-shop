@@ -27,7 +27,7 @@ import Image from "next/image";
 export function ProductComboBox({
   ref,
 }: {
-  ref: React.RefObject<number | null>;
+  ref: React.RefObject<Product | null>;
 }) {
   const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(
     null
@@ -104,7 +104,7 @@ export function ProductComboBox({
                       value={product.id.toString()}
                       onSelect={() => {
                         setSelectedProduct(product);
-                        ref.current = product.id;
+                        ref.current = product;
                         setOpen(false);
                       }}
                     >

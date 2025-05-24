@@ -3,9 +3,9 @@ import {usePathname} from '@/i18n/navigation'
 import React, {useEffect} from 'react'
 import BlogForm, {BlogFormDefaultValues, BlogFormType} from "@/components/blog/BlogForm";
 import {useShallow} from 'zustand/shallow';
-import {isoToDatetimeLocal} from '@/lib/date_helper';
 import {BlogUpdateRequest} from '@/api';
 import {BlogSingle} from "@/stores/blog/blog.store";
+import { getDateTimeLocal } from '@/lib/date_helper';
 
 export default function DetailBlogPage() {
 
@@ -31,7 +31,7 @@ export default function DetailBlogPage() {
             id: blog.author.id,
             fullName: blog.author.fullName
         },
-        publishedAt: isoToDatetimeLocal(new Date().toISOString()),
+        publishedAt: getDateTimeLocal(),
         image: null,
         imageUrl: blog.imageUrl,
         selectedGenres: [],

@@ -21,45 +21,56 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useProductStore } from "@/stores/product.store";
-import { CategoryMultiSelectField } from "./CategoryMultiSelect";
+import { useUserStore } from "@/stores/user.store";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const FormSchema = z.object({
-  search: z.string().optional(),
-  priceFrom: z.string().optional(),
-  priceTo: z.string().optional(),
-  categoryIds: z.number().array().optional(),
+  fullName: z.string().optional(),
+  email: z.string().optional(),
+  createdAtFrom: z.string().optional(),
+  createdAtTo: z.string().optional(),
+  roles: z.string().optional(),
 });
 
-export default function ProductFilterSheet() {
+export default function AdminFilterSheet() {
   const t = useTranslations();
-  const getProducts = useProductStore((state) => state.getProducts);
+  const getUsers = useUserStore((state) => state.getUsers);
   const form = useForm<z.infer<typeof FormSchema>>({
     defaultValues: {
-      search: "",
-      priceFrom: "",
-      priceTo: "",
-      categoryIds: [],
+      fullName: "",
+      email: "",
+      createdAtFrom: "",
+      createdAtTo: "",
+      roles: "ALL",
     },
   });
 
   function handleSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""
+        ([_, value]) => value !== undefined && value !== "" && value !== "ALL"
       )
     );
-    
 
-    getProducts({
+    const params = {
+      ...cleanedData,
+      ...(cleanedData.roles && { roles: [cleanedData.roles] }),
+    };
+
+    getUsers({
       pageRequest: {
         page: 0,
         size: 10,
         sortBy: "createdAt",
         sortDirection: "desc",
       },
-      ...cleanedData,
+      ...params,
     });
   }
 
@@ -67,14 +78,15 @@ export default function ProductFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm sản phẩm
+          <Filter /> Lọc & Tìm kiếm quản trị viên
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm sản phẩm</SheetTitle>
+          <SheetTitle>Lọc & Tìm kiếm quản trị viên</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm sản phẩm, lọc theo khoảng giá trị, danh mục sản phẩm
+            Hỗ trợ tìm kiếm quản trị viên theo tên và email, lọc theo khoảng
+            thời gian tham gia,vai trò
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -82,10 +94,23 @@ export default function ProductFilterSheet() {
             <form className=" w-full px-3 flex flex-col gap-4">
               <FormField
                 control={form.control}
-                name="search"
+                name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>Tìm kiếm theo tên</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tìm kiếm theo email</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -96,14 +121,28 @@ export default function ProductFilterSheet() {
 
               <FormField
                 control={form.control}
-                name="priceFrom"
+                name="createdAtFrom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giá trị từ</FormLabel>
+                    <FormLabel>Từ ngày</FormLabel>
+                    <FormControl>
+                      <Input type="datetime-local" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="createdAtTo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Đến ngày</FormLabel>
                     <FormControl>
                       <Input
-                        type="number"
-                        placeholder="Giá trị từ"
+                        type="datetime-local"
+                        placeholder="Đến ngày"
                         {...field}
                       />
                     </FormControl>
@@ -114,30 +153,24 @@ export default function ProductFilterSheet() {
 
               <FormField
                 control={form.control}
-                name="priceTo"
+                name="roles"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đến giá trị</FormLabel>
+                    <FormLabel>Chọn vai trò</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Giá trị đến"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="categoryIds"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Chọn các danh mục</FormLabel>
-                    <FormControl>
-                      <CategoryMultiSelectField field={field} />
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger className="w-1/2">
+                          <SelectValue placeholder="Chọn vai trò" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ALL">Tất cả</SelectItem>
+                          <SelectItem value="STAFF">Nhân viên</SelectItem>
+                          <SelectItem value="ADMIN">Quản lý</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

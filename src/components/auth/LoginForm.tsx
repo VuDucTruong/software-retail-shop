@@ -1,8 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { LoginRequest, LoginRequestSchema } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,13 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/stores/auth.store";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { LoginRequest, LoginRequestSchema } from "@/api";
-import { useAuthStore } from "@/stores/auth.store";
-import { useEffect } from "react";
-import { useLoginToast } from "@/hooks/use-login-toast";
-import { useUserStore } from "@/stores/user.store";
+import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
 
 export function LoginForm() {

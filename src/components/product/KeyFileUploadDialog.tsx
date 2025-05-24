@@ -3,7 +3,13 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 
-import { ProductItem, ProductItemDetail, ProductItemSchema } from "@/api";
+import {
+  ProductCreateSchema,
+  ProductItem,
+  ProductItemCreateSchema,
+  ProductItemDetail,
+  ProductItemSchema,
+} from "@/api";
 import { Import, RefreshCcw } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -24,8 +30,7 @@ export type ProductItemPreview = {
   productId: number;
   productKey: string;
   region: string;
-}
-
+};
 
 export default function KeyFileUploadDialog() {
   const t = useTranslations();
@@ -35,8 +40,7 @@ export default function KeyFileUploadDialog() {
   const getProducts = useProductStore((state) => state.getProducts);
   const products = useProductStore((state) => state.products);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<ProductItemPreview[]>([]);
-  const dataRef = useRef<ProductItem[]>([]);
+  const [data, setData] = useState<ProductItemDetail[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -60,7 +64,7 @@ export default function KeyFileUploadDialog() {
         }
 
         // ✅ Validate headers
-        const expectedHeaders = Object.keys(ProductItemSchema.shape);
+        const expectedHeaders = Object.keys(ProductItemCreateSchema.shape);
         const fileHeaders = Object.keys(jsonData[0] as Record<string, any>);
 
         const missingHeaders = expectedHeaders.filter(
@@ -72,20 +76,39 @@ export default function KeyFileUploadDialog() {
           return;
         }
 
-        const parsedData = ProductItemSchema.array().parse(jsonData);
-        dataRef.current = parsedData;
-        
+        // contain productId, productKey , region
+        const parsedData = ProductItemCreateSchema.array().parse(jsonData);
+
         // get all existing products
         getProducts({
-          ids: parsedData.map((item) => item.productId),
+          ids: parsedData.map((item) => item.productId ?? -1),
         });
-    
-        
 
-        setData(parsedData.map((item) => ({
-          ...item,
-          productName: products?.data.find((product) => product.id === item.productId)?.name ?? "Không xác định",
-        })));
+        setData(
+          parsedData.map((item) => {
+            const existingProduct = products?.data.find(
+              (product) => product.id === item.productId
+            );
+
+            const productItemDetail: ProductItemDetail = {
+              id: -1,
+              slug: existingProduct?.slug || "",
+              name: existingProduct?.name || "Không tồn tại",
+              imageUrl: existingProduct?.imageUrl || "",
+              represent: existingProduct?.represent || true,
+              price: existingProduct?.price || 0,
+              originalPrice: existingProduct?.originalPrice || 0,
+              productId: item.productId ?? -1,
+              productKey: item.productKey,
+              createdAt: new Date().toISOString(),
+              region: item.region,
+              used: false,
+            };
+
+            return productItemDetail;
+          })
+        );
+
         setError(null);
       } catch (err) {
         console.error(err);
@@ -110,7 +133,7 @@ export default function KeyFileUploadDialog() {
   };
 
   const handleImportKeys = () => {
-    createProductItems(dataRef.current);
+    createProductItems(data);
     handleReset();
   };
 

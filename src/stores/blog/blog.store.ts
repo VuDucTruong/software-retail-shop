@@ -84,7 +84,7 @@ export namespace BlogSingle {
         },
         createBlog: async (request: BlogCreateRequest): Promise<void> => {
             const response = await BlogApis.createBlog(request);
-            const profile = useUserStore.getState().user?.profile;
+            const profile = useUserStore.getState().selectedUser?.profile;
             const domain: BlogDomainType = {
                 ...(get().blog ?? fallbackBlog),
                 author: profile ?? fallbackProfile,

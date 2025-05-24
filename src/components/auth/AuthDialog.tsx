@@ -27,6 +27,7 @@ import { useRouter } from "@/i18n/navigation";
 import { useLoginToast } from "@/hooks/use-login-toast";
 import { useShallow } from "zustand/shallow";
 import { stat } from "fs";
+import { Skeleton } from "../ui/skeleton";
 
 export function AuthDialog() {
   const router = useRouter();
@@ -72,8 +73,10 @@ export function AuthDialog() {
 
   useEffect(() => {
     getMe();
-  }, []);
+  },[]);
 
+
+  
   if (isAuthenticated && user) {
     return (
       <DropdownMenu>
@@ -108,10 +111,10 @@ export function AuthDialog() {
         </DropdownMenuContent>
       </DropdownMenu>
     );
-  } else {
-  }
+  } 
 
-  return (
+  if(status === "success" && !user) {
+    return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost" size={"lg"}>
@@ -140,4 +143,8 @@ export function AuthDialog() {
       </DialogContent>
     </Dialog>
   );
+
+  }
+
+  return <Skeleton className="w-26 h-14" />;
 }
