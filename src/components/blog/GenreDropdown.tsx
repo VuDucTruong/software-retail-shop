@@ -142,10 +142,10 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
                     })}
                 </DropdownMenuContent>
             </DropdownMenu>
-            <div className="text-sm text-muted-foreground">
-                Đã chọn:{" "}
-                <span className="font-medium">{selectedGenres.map(g2 => g2.name).join(", ")}</span>
-            </div>
+            {/*<div className="text-sm text-muted-foreground">*/}
+            {/*    Đã chọn:{" "}*/}
+            {/*    <span className="font-medium">{selectedGenres.map(g2 => g2.name).join(", ")}</span>*/}
+            {/*</div>*/}
         </div>
     );
 }
