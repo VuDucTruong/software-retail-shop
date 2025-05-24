@@ -25,7 +25,7 @@ import { Skeleton } from "../ui/skeleton";
 export function CategoryMultiSelectField({
   field,
 }: {
-  field: ControllerRenderProps;
+  field: ControllerRenderProps<any,any>;
 }) {
   const [open, setOpen] = useState(false);
   const t = useTranslations();

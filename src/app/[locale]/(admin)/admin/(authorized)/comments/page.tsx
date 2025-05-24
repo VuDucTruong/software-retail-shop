@@ -150,6 +150,7 @@ export default function CommentManagementPage() {
       </CardHeader>
       <CardContent>
         <CommmonDataTable
+          objectName={t("comment")}
           isLoading={status === "loading" && lastAction === null}
           columns={cols}
           data={comments?.data ?? []}

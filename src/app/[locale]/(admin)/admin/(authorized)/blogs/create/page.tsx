@@ -15,8 +15,8 @@ import {useActionToast} from "@/hooks/use-action-toast";
 import Image from "next/image";
 import {Textarea} from "@/components/ui/textarea";
 import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
-import {isoToDatetimeLocal} from "@/lib/date_helper";
 import { BlogSingle } from "@/stores/blog/blog.store";
+import { getDateTimeLocal } from "@/lib/date_helper";
 
 export default function CreateBlogPage() {
   const t = useTranslations();
@@ -43,7 +43,7 @@ export default function CreateBlogPage() {
       content: "",
       image: null,
       genreIds: [],
-      publishedAt: isoToDatetimeLocal(new Date().toISOString()),
+      publishedAt: getDateTimeLocal(),
     },
     resolver: zodResolver(BlogCreateSchema),
     mode: "onSubmit",

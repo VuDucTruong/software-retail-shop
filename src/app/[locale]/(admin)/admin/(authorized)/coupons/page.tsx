@@ -15,14 +15,13 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CgAdd } from "react-icons/cg";
-import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 export default function CouponManagementPage() {
   const t = useTranslations();
   const router = useRouter();
 
-  const [queryParams , getCoupons , resetStatus , status , lastAction , error , coupons, deleteCoupon , deleteCouponns] = useCouponStore(
+  const [queryParams , getCoupons , resetStatus , status , lastAction , error , coupons , deleteCouponns] = useCouponStore(
     useShallow((state) => [
       state.queryParams,
       state.getCoupons,
@@ -31,7 +30,6 @@ export default function CouponManagementPage() {
       state.lastAction,
       state.error,
       state.coupons,
-      state.deleteCoupon,
       state.deleteCoupons,
     ])
   )
@@ -144,16 +142,12 @@ export default function CouponManagementPage() {
 
 
   const handleDelete = (id: number) => {
-    deleteCoupon(id)
+    deleteCouponns([id]);
   };
 
   const handleViewDetails = (id: number) => {
     router.push(`coupons/${id}`);
   };
-
-  const deleteCoupons = (ids : number[]) => {
-    deleteCouponns(ids)
-  }
 
 
   return (
@@ -173,7 +167,8 @@ export default function CouponManagementPage() {
       </CardHeader>
       <CardContent>
       <CommmonDataTable
-          isLoading={status === "loading" && lastAction === null}
+          objectName={"Mã giảm giá"}
+          isLoading={coupons === null}
           columns={cols}
           data={coupons?.data ?? []}
           totalCount={coupons?.totalInstances ?? 0}
@@ -186,7 +181,7 @@ export default function CouponManagementPage() {
           }}
           canSelect
           onDeleteRows={(rows) => {
-            deleteCoupons(rows);
+            deleteCouponns(rows);
           }}
           sorting={sorting}
           onSortingChange={(updater) => {

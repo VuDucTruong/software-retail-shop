@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useForm } from "react-hook-form";
-import { ProductItemCreate, ProductItemCreateSchema } from "@/api";
+import { Product, ProductItemCreate, ProductItemCreateSchema, ProductItemDetail } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Select,
@@ -40,7 +40,7 @@ import { useProductItemStore } from "@/stores/product.item.store";
 export default function KeyInsertDialog() {
   const t = useTranslations();
 
-  const productIdRef = React.useRef<number | null>(null);
+  const productRef = React.useRef<Product | null>(null);
     const createProductItems = useProductItemStore(
         (state) => state.createProductItems)
   const form = useForm<ProductItemCreate>({
@@ -55,14 +55,25 @@ export default function KeyInsertDialog() {
 
   const handleSubmit = () => {
     form.handleSubmit((data) => {
-        console.log("data", data);
-        if (productIdRef.current === null) {
+       
+        if (productRef.current === null) {
             toast.error("Vui lòng chọn sản phẩm");
             return;
         }
-        const productItem = {
-            ...data,
-            productId: productIdRef.current,
+        const productItem:ProductItemDetail = {
+            productId: productRef.current.id,
+            productKey: data.productKey,
+            region: data.region,
+            id: -1,
+            createdAt: new Date().toISOString(),
+            imageUrl: productRef.current.imageUrl,
+            name: productRef.current.name,
+            originalPrice: productRef.current.originalPrice,
+            price: productRef.current.price,
+            represent: productRef.current.represent,
+            slug: productRef.current.slug,
+            used: false
+            
         };
         createProductItems([productItem])
         })();
@@ -72,7 +83,7 @@ export default function KeyInsertDialog() {
     <Dialog onOpenChange={(open) => {
         if (!open) {
             form.reset();
-            productIdRef.current = null;
+            productRef.current = null;
         }
     }}>
       <DialogTrigger asChild>
@@ -88,7 +99,7 @@ export default function KeyInsertDialog() {
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
-          <ProductComboBox ref={productIdRef} />
+          <ProductComboBox ref={productRef} />
 
           <Form {...form}>
             <form className="flex gap-4 items-start">

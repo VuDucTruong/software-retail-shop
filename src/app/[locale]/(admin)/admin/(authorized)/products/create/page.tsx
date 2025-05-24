@@ -8,7 +8,13 @@ import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ProductCreate, ProductCreateSchema, ProductValidation } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,18 +30,22 @@ import { z } from "zod";
 import { flattenObject } from "@/lib/utils";
 
 export default function CreateProductPage() {
-
   const t = useTranslations();
 
-  const [createProduct , lastAction , status , error] = useProductStore(useShallow((state) => [
-    state.createProduct,
-    state.lastAction,
-    state.status,
-    state.error,
-  ]));
+  const [createProduct, lastAction, status, error] = useProductStore(
+    useShallow((state) => [
+      state.createProduct,
+      state.lastAction,
+      state.status,
+      state.error,
+    ])
+  );
 
   useActionToast({
-    lastAction, status , errorMessage: error || undefined})
+    lastAction,
+    status,
+    errorMessage: error || undefined,
+  });
 
   const form = useForm<ProductCreate>({
     defaultValues: {
@@ -62,11 +72,9 @@ export default function CreateProductPage() {
 
   const fileRef = useRef<HTMLInputElement>(null);
 
-
   const handleSubmit = () => {
-   
     form.handleSubmit((data) => {
-    createProduct(flattenObject(data))
+      createProduct(flattenObject(data));
     })();
   };
 
@@ -83,7 +91,6 @@ export default function CreateProductPage() {
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
-             
             }}
             className=" grid grid-cols-3 space-x-4 gap-6"
           >
@@ -92,7 +99,7 @@ export default function CreateProductPage() {
             <FormField
               control={form.control}
               name="image"
-              render={({field}) => (
+              render={({ field }) => (
                 <CommonInputOutline
                   title={t("product_image")}
                   className="col-span-3"
@@ -107,8 +114,6 @@ export default function CreateProductPage() {
                 </CommonInputOutline>
               )}
             />
-
-  
 
             <FormField
               control={form.control}
@@ -183,25 +188,23 @@ export default function CreateProductPage() {
             <FormField
               control={form.control}
               name="categoryIds"
-              render={({field}) => (
+              render={({ field }) => (
                 <CommonInputOutline title={t("Categories")} required>
-                  <CategoryMultiSelectField field={field}/>
+                  <CategoryMultiSelectField field={field} />
                 </CommonInputOutline>
               )}
             />
 
-
-              {/* Categories Multi-select */}
+            {/* Categories Multi-select */}
             <FormField
               control={form.control}
               name="groupId"
-              render={({field}) => (
+              render={({ field }) => (
                 <CommonInputOutline title={"Nhóm sản phẩm"}>
-                  <ProductGroupComboBox field={field}/>
+                  <ProductGroupComboBox field={field} />
                 </CommonInputOutline>
               )}
             />
-
 
             <div className="col-span-3">
               <ProductDescriptionTab />

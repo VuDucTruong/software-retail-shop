@@ -1,79 +1,155 @@
-import { ApiClient, User, UserProfileSchema, UserProfileUpdate, UserSchema } from "@/api";
+import {
+  ApiClient,
+  QueryParams,
+  User,
+  UserCreate,
+  UserList,
+  UserListSchema,
+  UserSchema,
+} from "@/api";
+import { ApiError } from "@/api/client/base_client";
+import { Role } from "@/lib/constants";
 import { SetState } from "@/lib/set_state";
-import { ApiError } from "next/dist/server/api-utils";
+import { usePathname } from "next/navigation";
+import { z } from "zod";
 import { create } from "zustand";
-import { useAuthStore } from "./auth.store";
 
-const userClient = ApiClient.getInstance();
+const apiClient = ApiClient.getInstance();
 
 type UserState = {
-  user: User | null;
-  lastAction: "getUser"| "updateProfile" | null;
-  error: string | null;
+  users: UserList | null;
+  selectedUser: User | null;
+  lastAction: string | null;
+  queryParams: QueryParams;
   status: "idle" | "loading" | "error" | "success";
+  error: string | null;
 };
 
-type UserActions = {
-  getUser: () => Promise<void>;
-  updateProfile: (profile: UserProfileUpdate) => Promise<void>;
+type UserAction = {
+  getUsers: (query: QueryParams) => Promise<void>;
+  getUserById: (id: number) => Promise<void>;
+  deleteUsers: (ids: number[]) => Promise<void>;
+  createUser: (user: UserCreate) => Promise<void>;
+  resetStatus: () => void;
 };
 
-type UserStore = UserState & UserActions;
+type UserStore = UserState & UserAction;
 
 const initialState: UserState = {
-  user: null,
+  users: null,
+  selectedUser: null,
   lastAction: null,
-  error: null,
+  queryParams: {
+    pageRequest: {
+      page: 0,
+      size: 10,
+      sortBy: "createdAt",
+      sortDirection: "desc",
+    },
+  },
   status: "idle",
+  error: null,
 };
 
-export const useUserStore = create<UserStore>((set) => ({
-    ...initialState,
-    getUser: () => getProfile(set),
-    updateProfile: (profile: UserProfileUpdate) => updateProfile(set, profile),
-  }));
+export const useUserStore = create<UserStore>()((set) => ({
+  ...initialState,
+  getUsers: (query) => getUsers(set, query),
+  getUserById: (id) => getUserById(set, id),
+  deleteUsers: (ids) => deleteUsers(set, ids),
+  createUser: (user) => createUser(set, user),
+  resetStatus: () => set({ status: "idle", lastAction: null, error: null}),
+}));
 
+const getUsers = async (set: SetState<UserStore>, query: QueryParams) => {
+  set({ status: "loading", lastAction: "getUsers", queryParams: query });
 
-
-const getProfile = async (set: SetState<UserStore>) => {
-  set({ lastAction: "getUser" , status: "loading", error: null });
+  
+  if(window.location.pathname.includes("/staffs")) {
+    query = {
+      roles: [Role.ADMIN.value, Role.STAFF.value],
+      ...query,
+      deleted: true,
+    };
+  } else {
+    query = {
+      ...query,
+      roles: [Role.CUSTOMER.value],
+      deleted: true,
+    };
+  }
 
   try {
-    const response = await userClient.get("/users", UserSchema);
-    const data = UserSchema.parse(response);
-    set({ user: data, status: "success" });
+    const response = await apiClient.post(
+      "/users/searches",
+      UserListSchema,
+      query
+    );
+    set({ users: response, status: "success", error: null });
   } catch (error) {
-    set({ user: null,status: "error", error: (error as ApiError).message });
+    set({ status: "error", error: (error as ApiError).message });
   }
 };
 
-async function updateProfile(
-  set: SetState<UserStore>,
-  profile: UserProfileUpdate
-) {
-  set({ lastAction: "updateProfile",status: "loading", error: null });
-try {
-    const response = await  userClient
-    .patch("/users", UserProfileSchema, profile , {
+const getUserById = async (set: SetState<UserStore>, id: number) => {
+  set({ status: "loading", lastAction: "getUserById" });
+  try {
+    const response = await apiClient.get(`/users`, UserSchema, {
+      params: {
+        id,
+      },
+    });
+    set({ selectedUser: response, status: "success", error: null });
+  } catch (error) {
+    set({ status: "error", error: (error as ApiError).message });
+  }
+};
+
+const deleteUsers = async (set: SetState<UserStore>, ids: number[]) => {
+  set({ status: "loading", lastAction: "deleteUsers" });
+  try {
+    await apiClient.delete("/users", z.number(), {
+      params: {
+        ids: ids.join(","),
+      },
+    });
+    
+    set((prev) => {
+      const existing = prev.users?.data ?? [];
+      const newData = existing.map((user) => {
+        if (ids.includes(user.id)) {
+          return {
+            ...user,
+            deletedAt: new Date().toLocaleString(),
+          }
+        }
+        return user;
+      })
+
+      return {
+        status: "success",
+        users: {
+          ...prev.users,
+          data: newData,
+        },
+      };
+    })
+
+  } catch (error) {
+    set({ status: "error", error: (error as ApiError).message });
+  }
+};
+
+const createUser = async (set: SetState<UserStore>, user: UserCreate) => {
+  set({ status: "loading", lastAction: "createUser" });
+  try {
+    const response = await apiClient.post("/users", z.any(), user , {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     });
-   
-    set((state) => state.user ? ({
-      user: {
-        ...state.user,
-        profile: {
-          ...state.user.profile,
-          fullName: response.fullName,
-          imageUrl: response.imageUrl ?? state.user.profile.imageUrl,
-        },
-      },
-      status: "success",
-    }) : { status: "success" });
 
+    set({status: "success", error: null});
   } catch (error) {
-    set({ user: null,status: "error", error: (error as ApiError).message });
+    set({ status: "error", error: (error as ApiError).message });
   }
-
-}
+};

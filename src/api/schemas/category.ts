@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiResponseSchema } from "./common";
+import { ApiResponseSchema, ImageSchema } from "./common";
 
 const messages = {
   required: {
@@ -20,7 +20,7 @@ export const CategorySchema = z.object({
 
 export const CategoryCreateSchema = z.object({
   name: z.string().nonempty(messages.required.name),
-  image: z.instanceof(File, { message: messages.required.image }),
+  image: ImageSchema(messages.required.image),
   description: z.string(),
 });
 
