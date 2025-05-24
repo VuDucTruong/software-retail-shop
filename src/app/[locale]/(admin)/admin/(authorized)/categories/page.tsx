@@ -36,7 +36,6 @@ export default function CategoryManagementPage() {
     getCategories,
     queryParams,
     deleteCategories,
-    deleteCategory,
   ] = useCategoryStore(
     useShallow((state) => [
       state.status,
@@ -46,7 +45,6 @@ export default function CategoryManagementPage() {
       state.getCategories,
       state.queryParams,
       state.deleteCategories,
-      state.deleteCategory,
     ])
   );
 
@@ -153,7 +151,7 @@ export default function CategoryManagementPage() {
   ];
 
   const handleDelete = (id: number) => {
-    deleteCategory(id)
+    deleteCategories([id]);
   };
 
   return (
@@ -171,7 +169,7 @@ export default function CategoryManagementPage() {
         
           <CommmonDataTable
           objectName={t("category")}
-          isLoading={status === "loading" && lastAction === null}
+          isLoading={categories === null}
           columns={cols}
           data={categories?.data ?? []}
           totalCount={categories?.totalInstances ?? 0}

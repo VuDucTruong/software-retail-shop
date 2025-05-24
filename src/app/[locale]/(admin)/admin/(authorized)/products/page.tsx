@@ -24,7 +24,7 @@ export default function ProductManagementPage() {
   const router = useRouter();
  
 
-  const [getProducts , products , queryParams , lastAction , error , status , resetStatus, deleteProduct , deleteProducts] = useProductStore(useShallow((state) => [
+  const [getProducts , products , queryParams , lastAction , error , status , resetStatus , deleteProducts] = useProductStore(useShallow((state) => [
     state.getProducts,
     state.products,
     state.queryParams,
@@ -32,7 +32,6 @@ export default function ProductManagementPage() {
     state.error,
     state.status,
     state.resetStatus,
-    state.deleteProduct,
     state.deleteProducts,
   ]));
 
@@ -164,7 +163,7 @@ export default function ProductManagementPage() {
 
 
   const handleDelete = (id: number) => {
-    deleteProduct(id)
+    deleteProducts([id]);
   };
 
   const handleViewDetails = (id: number) => {
@@ -189,7 +188,7 @@ export default function ProductManagementPage() {
       <CardContent>
       <CommmonDataTable
           objectName={t("product")}
-          isLoading={status === "loading" && lastAction === null}
+          isLoading={products === null}
           columns={cols}
           data={products?.data ?? []}
           totalCount={products?.totalInstances ?? 0}

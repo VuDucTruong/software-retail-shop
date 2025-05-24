@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { ProductItemDetail } from "@/api";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -10,17 +10,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ProductItem, ProductItemDetail } from "@/api";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import {
-  TableHead,
-  TableBody,
-  TableHeader,
-  Table,
-  TableCell,
-  TableRow,
-} from "../ui/table";
 import {
   ArrowUpDown,
   ChevronLeftIcon,
@@ -29,11 +18,20 @@ import {
   ChevronsRightIcon,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { on } from "events";
-import { ProductItemPreview } from "./KeyFileUploadDialog";
+import React, { useEffect } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 
 type Props = {
-  data: ProductItemPreview[];
+  data: ProductItemDetail[];
   onDelete?: (ids: number[]) => void;
 };
 
@@ -43,13 +41,13 @@ export function KeyDataTable({ data, onDelete }: Props) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
-  const [tableData, setTableData] = React.useState<ProductItemPreview[]>(data);
+  const [tableData, setTableData] = React.useState<ProductItemDetail[]>(data);
 
   useEffect(() => {
     setTableData(data);
   }, [data]);
 
-  const columns: ColumnDef<ProductItemPreview>[] = [
+  const columns: ColumnDef<ProductItemDetail>[] = [
     {
       id: "select",
       header: ({ table }) => (
@@ -82,7 +80,7 @@ export function KeyDataTable({ data, onDelete }: Props) {
       ),
     },
     {
-      accessorKey: "productName",
+      accessorKey: "name",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -169,7 +167,7 @@ export function KeyDataTable({ data, onDelete }: Props) {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} onClick={row.getToggleSelectedHandler()} className={`${row.original.productName === "Không xác định" ? "text-red-400" : ""}`}>
+                <TableRow key={row.id} onClick={row.getToggleSelectedHandler()} className={`${row.original.slug ? "" : "text-red-400"}`}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="text-center">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

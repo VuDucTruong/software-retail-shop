@@ -64,7 +64,6 @@ export default function CreateProductPage() {
 
 
   const handleSubmit = () => {
-   
     form.handleSubmit((data) => {
     createProduct(flattenObject(data))
     })();

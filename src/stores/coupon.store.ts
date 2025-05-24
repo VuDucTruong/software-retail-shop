@@ -15,6 +15,7 @@ import { get } from "http";
 import { z } from "zod";
 
 import { create } from "zustand";
+import { handleDeleteReloadGeneric } from "./reload.store";
 
 const couponApiClient = ApiClient.getInstance();
 
@@ -34,7 +35,6 @@ type CouponAction = {
   createCoupon: (coupon: CouponCreate) => Promise<void>;
   getCouponById: (id: number) => Promise<void>;
   updateCoupon: (coupon: CouponUpdate) => Promise<void>;
-  deleteCoupon: (id: number) => Promise<void>;
   deleteCoupons: (ids: number[]) => Promise<void>;
 };
 
@@ -69,12 +69,11 @@ export const useCouponStore = create<CouponStore>((set) => ({
   createCoupon: (coupon) => createCoupon(set, coupon),
   getCouponById: (id) => getCouponById(set, id),
   updateCoupon: (coupon) => updateCoupon(set, coupon),
-  deleteCoupon: (id) => deleteCoupon(set , id),
   deleteCoupons: (ids) => deleteCoupons(set, ids),
 }));
 
 const getCoupons = async (set: SetState<CouponStore>, query: QueryParams) => {
-  set({ status: "loading", lastAction: null, error: null, queryParams: query });
+  set({ error: null, queryParams: query , coupons: null });
 
   try {
     const response = await couponApiClient.post(
@@ -110,7 +109,7 @@ const createCoupon = async (
 
 
 const getCouponById = async (set: SetState<CouponStore>, id: number) => {
-  set({ status: "loading", lastAction: null, error: null });
+  set({ error: null , selectedCoupon: null });
 
   try {
     const response = await couponApiClient.get(
@@ -148,23 +147,6 @@ const updateCoupon = async (
   }
 }
 
-const deleteCoupon = async (set: SetState<CouponStore>, id: number) => {
-  set({ status: "loading", lastAction: "delete", error: null });
-
-  try {
-    const res = await couponApiClient.delete(`/coupons/${id}`, z.number(), );
-    if(res > 0) {
-      set({status: "success"});
-       await delay(1000);
-    } else {
-      throw new ApiError("Xóa mã giảm giá thất bại");
-    }
-    getCoupons(set, useCouponStore.getState().queryParams);
-  } catch (error) {
-    const appError = error as ApiError;
-    set({ error: appError.message, status: "error" });
-  }
-}
 
 const deleteCoupons = async (set: SetState<CouponStore>, ids: number[]) => {
   set({ status: "loading", lastAction: "delete", error: null });
@@ -172,16 +154,13 @@ const deleteCoupons = async (set: SetState<CouponStore>, ids: number[]) => {
   try {
     const res = await couponApiClient.delete(`/coupons`, z.number(), {
       params: {
-        params: { ids: ids.join(",") },
+         ids: ids.join(",")
       }
     });
-    if(res > 0) {
-      set({status: "success"});
-      await delay(1000);
-    } else {
+    if(res <= 0) {
       throw new ApiError("Xóa mã giảm giá thất bại");
-    }
-     getCoupons(set, useCouponStore.getState().queryParams);
+    } 
+    handleDeleteReloadGeneric(set , ids , "coupons" , useCouponStore.getState , getCoupons)
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

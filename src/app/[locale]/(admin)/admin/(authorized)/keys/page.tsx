@@ -191,7 +191,7 @@ export default function KeyManagementPage() {
          
           <CommmonDataTable
           objectName="khóa sản phẩm"
-          isLoading={status === "loading" && lastAction === null}
+          isLoading={productItems === null}
           columns={cols}
           data={productItems?.data ?? []}
           totalCount={productItems?.totalInstances ?? 0}

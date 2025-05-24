@@ -73,7 +73,9 @@ export default function ConponDetailPage() {
     e.preventDefault();
 
     form.handleSubmit(async (data) => {
-      console.log(data);
+      if(data.type === "FIXED") {
+        data.maxAppliedAmount = data.value;
+      }
       updateCoupon(data);
     })();
   };
@@ -109,7 +111,7 @@ export default function ConponDetailPage() {
               control={form.control}
               render={({ field }) => (
                 <CommonInputOutline title={t("available_from")}>
-                  <Input {...field} type="datetime-local" />
+                  <Input {...field} type="date" />
                 </CommonInputOutline>
               )}
             />
@@ -119,7 +121,7 @@ export default function ConponDetailPage() {
               control={form.control}
               render={({ field }) => (
                 <CommonInputOutline title={t("available_to")}>
-                  <Input {...field} type="datetime-local" />
+                  <Input {...field} type="date" />
                 </CommonInputOutline>
               )}
             />

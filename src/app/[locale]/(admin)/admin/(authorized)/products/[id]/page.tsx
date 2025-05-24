@@ -3,36 +3,30 @@
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { CategoryMultiSelectField } from "@/components/product/CategoryMultiSelect";
 
+import {
+  ProductUpdate,
+  ProductUpdateSchema
+} from "@/api";
 import ProductDescriptionTab from "@/components/product/ProductDescriptionTab";
+import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
 import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
+  FormField
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  ProductCreate,
-  ProductCreateSchema,
-  ProductUpdate,
-  ProductUpdateSchema,
-  ProductValidation,
-} from "@/api";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { flattenObject } from "@/lib/utils";
+import { useProductStore } from "@/stores/product.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { useProductStore } from "@/stores/product.store";
 import { useShallow } from "zustand/shallow";
-import { useActionToast } from "@/hooks/use-action-toast";
-import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
-import { usePathname } from "next/navigation";
-import { flattenObject } from "@/lib/utils";
 
 export default function CreateProductPage() {
   const pathName = usePathname();
@@ -63,7 +57,6 @@ export default function CreateProductPage() {
   }, []);
 
   useEffect(() => {
-    console.log("selectedProduct", selectedProduct);
     if (selectedProduct) {
       form.reset({
         tags: selectedProduct?.tags || [],

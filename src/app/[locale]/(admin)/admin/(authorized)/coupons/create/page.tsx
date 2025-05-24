@@ -1,41 +1,39 @@
-'use client'
+"use client";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import ValueTypeInput from "@/components/coupon/ValueTypeInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormField
-} from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { CouponCreate, CouponCreateSchema } from "@/api";
+import { Coupon, CouponCreate, CouponCreateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { useCouponStore } from "@/stores/coupon.store";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { useShallow } from "zustand/shallow";
-import { getDateTimeLocal } from "@/lib/date_helper";
-
+import { getDateLocal, getDateTimeLocal } from "@/lib/date_helper";
 
 export default function CreateCouponPage() {
   const t = useTranslations();
 
-  const [createCoupon , status , lastAction , error] = useCouponStore(useShallow((state) => [
-    state.createCoupon,
-    state.status,
-    state.lastAction,
-    state.error,
-  ]));
+  const [createCoupon, status, lastAction, error] = useCouponStore(
+    useShallow((state) => [
+      state.createCoupon,
+      state.status,
+      state.lastAction,
+      state.error,
+    ])
+  );
 
   const form = useForm<CouponCreate>({
     defaultValues: {
       code: "",
       type: "PERCENTAGE",
-      availableFrom: getDateTimeLocal(),
-      availableTo: getDateTimeLocal(),
+      availableFrom: getDateLocal(),
+      availableTo: getDateLocal(),
       value: 0,
       minAmount: 0,
       maxAppliedAmount: 0,
@@ -46,12 +44,14 @@ export default function CreateCouponPage() {
     resolver: zodResolver(CouponCreateSchema),
   });
 
-  useActionToast({status, lastAction, errorMessage: error || undefined});
-
+  useActionToast({ status, lastAction, errorMessage: error || undefined });
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     form.handleSubmit((data) => {
+      if(data.type === "FIXED") {
+        data.maxAppliedAmount = data.value;
+      }
       createCoupon(data)
     })();
   };
@@ -64,30 +64,30 @@ export default function CreateCouponPage() {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-y-8 gap-x-10">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-3 gap-y-8 gap-x-10"
+          >
             <FormField
               name="code"
               control={form.control}
               render={({ field }) => (
-                <CommonInputOutline title={t('coupon_code')}>
+                <CommonInputOutline title={t("coupon_code")}>
                   <Input {...field} />
                 </CommonInputOutline>
               )}
             />
 
             <div className="col-span-2">
-            <ValueTypeInput />
+              <ValueTypeInput />
             </div>
 
             <FormField
               name="availableFrom"
               control={form.control}
               render={({ field }) => (
-                <CommonInputOutline title={t("available_from")}>	
-                  <Input
-                    {...field}
-                    type="datetime-local"
-                  />
+                <CommonInputOutline title={t("available_from")}>
+                  <Input {...field} type="date" />
                 </CommonInputOutline>
               )}
             />
@@ -97,10 +97,7 @@ export default function CreateCouponPage() {
               control={form.control}
               render={({ field }) => (
                 <CommonInputOutline title={t("available_to")}>
-                  <Input
-                    {...field}
-                    type="datetime-local"
-                  />
+                  <Input {...field} type="date" />
                 </CommonInputOutline>
               )}
             />
@@ -111,11 +108,8 @@ export default function CreateCouponPage() {
               name="minAmount"
               control={form.control}
               render={({ field }) => (
-                <CommonInputOutline title={t("min_amount")}>	
-                  <Input
-                    {...field}
-                    type="number"
-                  />
+                <CommonInputOutline title={t("min_amount")}>
+                  <Input {...field} type="number" />
                 </CommonInputOutline>
               )}
             />
@@ -124,15 +118,19 @@ export default function CreateCouponPage() {
               name="maxAppliedAmount"
               control={form.control}
               disabled={form.watch("type") === "FIXED"}
-              render={({ field }) => (
-                <CommonInputOutline title={t("max_applied_amount")}>
-                  <Input
-                    {...field}
-                    type="number"
-                    value={form.watch("type") === "FIXED" ? form.watch('value') : field.value}
-                  />
-                </CommonInputOutline>
-              )}
+              render={({ field }) => {
+                const isFixed = form.watch("type") === "FIXED";
+                return (
+                  <CommonInputOutline title={t("max_applied_amount")}>
+                    <Input
+                      
+                      {...field}
+                      type="number"
+                      value={isFixed ? form.watch("value") : field.value}
+                    />
+                  </CommonInputOutline>
+                );
+              }}
             />
 
             <FormField
@@ -140,10 +138,7 @@ export default function CreateCouponPage() {
               control={form.control}
               render={({ field }) => (
                 <CommonInputOutline title={t("max_uses")}>
-                  <Input
-                    {...field}
-                    type="number"
-                  />
+                  <Input {...field} type="number" />
                 </CommonInputOutline>
               )}
             />
@@ -152,7 +147,10 @@ export default function CreateCouponPage() {
               name="description"
               control={form.control}
               render={({ field }) => (
-                <CommonInputOutline title={t("Description")} className="col-span-3">
+                <CommonInputOutline
+                  title={t("Description")}
+                  className="col-span-3"
+                >
                   <Textarea {...field} />
                 </CommonInputOutline>
               )}

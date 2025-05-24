@@ -51,10 +51,14 @@ export default function RichTextEditor({
       Highlight,
       Underline,
       Link.configure({
-        openOnClick: false,
+        openOnClick: true,
         autolink: true,
         defaultProtocol: 'https',
         protocols: ['http', 'https'],
+        linkOnPaste: true,
+        HTMLAttributes: {
+          class: "text-blue-500 underline cursor-pointer hover:text-blue-700",
+        }
       }),
       Table.configure({
         resizable: true,

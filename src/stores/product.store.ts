@@ -21,6 +21,7 @@ import { use } from "react";
 import { z } from "zod";
 
 import { create } from "zustand";
+import { handleDeleteReloadGeneric } from "./reload.store";
 
 const productApiClient = ApiClient.getInstance();
 
@@ -39,7 +40,6 @@ type ProductAction = {
   getProducts: (query: QueryParams) => Promise<void>;
   getProductById: (id: number) => Promise<void>;
   createProduct: (product: ProductCreate) => Promise<void>;
-  deleteProduct: (id: number) => Promise<void>;
   deleteProducts: (ids: number[]) => Promise<void>;
   updateProduct: (product: ProductUpdate) => Promise<void>;
 };
@@ -74,13 +74,12 @@ export const useProductStore = create<ProductStore>((set) => ({
   getProducts: (query) => getProducts(set, query),
   createProduct: (product) => createProduct(set, product),
   getProductById: (id) => getProductById(set, id),
-  deleteProduct: (id) => deleteProduct(set, id),
   deleteProducts: (ids) => deleteProducts(set, ids),
   updateProduct: (product) => updateProduct(set, product),
 }));
 
 const getProducts = async (set: SetState<ProductStore>, query: QueryParams) => {
-  set({ status: "loading", lastAction: null, error: null, queryParams: query });
+  set({ error: null, queryParams: query , products: null });
 
   try {
     const response = await productApiClient.post(
@@ -99,16 +98,11 @@ const getProductById = async (set: SetState<ProductStore>, id: number) => {
   set({ status: "loading", lastAction: null, error: null });
 
   try {
-    const response = await productApiClient.get(
-      `/products`,
-      ProductSchema,
-      {
-        params: { id },
-      }
-    );
+    const response = await productApiClient.get(`/products`, ProductSchema, {
+      params: { id },
+    });
 
-    response.image = await urlToFile(
-      response.imageUrl ?? "")
+    response.image = await urlToFile(response.imageUrl ?? "");
 
     set({ selectedProduct: response, status: "success" });
   } catch (error) {
@@ -141,55 +135,26 @@ const createProduct = async (
   }
 };
 
-const handleDeleteReload= async (
-  set: SetState<ProductStore>,
-  ids: number[]
-) => {
-  const newData = useProductStore
-    .getState()
-    .products?.data?.filter((product) => !ids.includes(product.id));
-
-  if (newData?.length === 0) {
-    getProducts(set, useProductStore.getState().queryParams);
-    return;
-  } else {
-    set((state) => ({
-      ...state,
-      status: "success",
-      products: state.products
-        ? {
-            ...state.products,
-            data: newData || [],
-          }
-        : null,
-    }));
-  }
-};
-
-const deleteProduct = async (set: SetState<ProductStore>, id: number) => {
-  set({ status: "loading", lastAction: "delete", error: null });
-
-  try {
-    handleDeleteReload(set, [id]);
-    await productApiClient.delete(`/products/${id}`, z.number(), {
-      params: { id },
-    });
-  } catch (error) {
-    const appError = error as ApiError;
-    set({ error: appError.message, status: "error" });
-  }
-};
-
 const deleteProducts = async (set: SetState<ProductStore>, ids: number[]) => {
   set({ status: "loading", lastAction: "delete", error: null });
 
   try {
-    handleDeleteReload(set, ids);
-    await productApiClient.delete("/products", z.number(), {
+    const res = await productApiClient.delete("/products", z.number(), {
       params: {
         ids: ids.join(","),
       },
     });
+
+    if (res < 0) {
+      throw new ApiError("Xóa sản phẩm thất bại");
+    }
+    handleDeleteReloadGeneric(
+      set,
+      ids,
+      "products",
+      useProductStore.getState,
+      getProducts
+    );
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

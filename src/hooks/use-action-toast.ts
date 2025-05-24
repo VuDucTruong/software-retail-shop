@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
-type ActionType = "create" | "update" | "delete";
 type Status = "idle" | "loading" | "success" | "error";
-
+type ActionType = "create" | "update" | "delete";
 interface UseActionToastProps {
   status: Status;
   lastAction: ActionType | null;
@@ -40,8 +39,6 @@ export function useActionToast({
 }: UseActionToastProps) {
   useEffect(() => {
     if (!lastAction || status === "idle") return;
-
-    
 
     const message = messages[lastAction][status];
     let toastId: string | number | undefined;

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiResponseSchema, DatetimeSchema } from "./common";
+import { ApiResponseSchema, DateSchema, DatetimeSchema } from "./common";
 
 const messages = {
   required: {
@@ -23,7 +23,13 @@ export const CouponSchema = z.object({
   availableTo: DatetimeSchema,
   value: z.number(),
   minAmount: z.number(),
-  maxAppliedAmount: z.number(),
+  maxAppliedAmount: z.preprocess(
+    (val) => {
+      if(val) return Number(val);
+      return 0;
+    },
+    z.number()
+  ),
   usageLimit: z.number(),
   description: z.string(),
 });
@@ -41,41 +47,46 @@ const applyRefinement = (schema: z.ZodTypeAny) => {
       });
     }
 
-    if(val.type === "PERCENTAGE") {
-      if(val.maxAppliedAmount < 10000) {
+    if (val.type === "PERCENTAGE") {
+      if (val.maxAppliedAmount < 10000) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Max applied amount must be greater than 10000 for percentage coupons",
+          message:
+            "Max applied amount must be greater than 10000 for percentage coupons",
           path: ["maxAppliedAmount"],
-      })
+        });
+      }
     } else {
-      if(val.value > val.minAmount) {
+      if (val.value > val.minAmount) {
+        console.log(val.value, val.minAmount, val.type);
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Value must be less than min amount",
+          path: ["value"],
         });
       }
     }
-  }});
+  });
 };
 
 const CouponValidation = z.object({
-  code: z
-    .string()
-    .min(3, messages.code),
+  code: z.string().min(3, messages.code),
   type: z.string(),
-  availableFrom: z.preprocess((val) => {
-    const date = new Date(val as string);
-    return date.toISOString();
-  }, z.string()),
-  availableTo: z.preprocess((val) => {
-    const date = new Date(val as string);
-    return date.toISOString();
-  }, z.string()),
+  availableFrom: DateSchema,
+  availableTo: DateSchema,
   value: z.preprocess((val) => Number(val), z.number().positive(messages.gt0)),
-  minAmount:z.preprocess((val) => Number(val), z.number().nonnegative(messages.nonnegative)) ,
-  maxAppliedAmount:z.preprocess((val) => Number(val), z.number().nonnegative(messages.nonnegative)) ,
-  usageLimit: z.preprocess((val) => Number(val), z.number().nonnegative(messages.nonnegative)) ,
+  minAmount: z.preprocess(
+    (val) => Number(val),
+    z.number().nonnegative(messages.nonnegative)
+  ),
+  maxAppliedAmount: z.preprocess(
+    (val) => Number(val),
+    z.number().nonnegative(messages.nonnegative)
+  ),
+  usageLimit: z.preprocess(
+    (val) => Number(val),
+    z.number().nonnegative(messages.nonnegative)
+  ),
   description: z.string(),
 });
 
@@ -86,6 +97,5 @@ export const CouponUpdateSchema = applyRefinement(
     id: z.number(),
   }).partial()
 );
-
 
 export const CouponListSchema = ApiResponseSchema(z.array(CouponSchema));
