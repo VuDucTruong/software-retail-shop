@@ -1,6 +1,7 @@
 import { ApiResponseSchema, CategorySchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
 import { z } from "zod";
 
+const hasWindow = typeof window !== "undefined";
 
 
 // === Validation Messages ===
@@ -37,7 +38,7 @@ export const ProductSchema = z.object({
   variants: z.array(ProductMetadataSchema).nullable(),
   productItems: z.array(ProductItemSchema).nullable(),
   groupId: z.number().nullable(),
-  image: z.instanceof(File).nullable().optional(),
+  image:  hasWindow ? z.instanceof(File).nullable().optional(): z.any(),
   favorite: z.preprocess((value) => {
     if (value) return value;
     return false;
@@ -49,7 +50,7 @@ export const ProductSchema = z.object({
 export const ProductValidation = z.object({
   slug: z.string(),
   name: z.string().min(3, { message: messages.name }),
-  image: z.instanceof(File, { message: "Image is required" }).nullable(),
+  image: hasWindow ?  z.instanceof(File, { message: "Image is required" }).nullable(): z.any(),
   represent: z.boolean().default(true),
   price: z.number().gte(0, { message: messages.price }),
   originalPrice: z.number().gte(0, { message: messages.originalPrice }),

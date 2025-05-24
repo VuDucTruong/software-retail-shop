@@ -6,7 +6,6 @@ const IdListSchema = z.array(z.number().positive())
 export type ProductIdsList = z.infer<typeof IdListSchema>
 
 
-
 export namespace Cart {
     const LocalMetaSchema = z.map(z.number(),z.object({
         qty: z.number().positive(),

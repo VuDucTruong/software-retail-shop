@@ -31,6 +31,7 @@ export default function RichTextEditor({
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -70,20 +71,28 @@ export default function RichTextEditor({
       },
     },
     onBlur: ({ editor }) => {
-      if(editor.isEmpty) {{
-        onChange("");
-      }} else {
+      if (editor.isEmpty) {
+        {
+          onChange("");
+        }
+      } else {
         onChange(editor.getHTML());
       }
     },
     immediatelyRender: false,
- 
+
   });
+  React.useEffect(() => {
+    if (editor && content !== editor.getHTML()) {
+      editor.commands.setContent(content, false);
+    }
+  }, [content, editor]);
+
   if (!mounted) {
     return <Skeleton className="h-40 w-full" />;
   }
-  
-  
+
+
   return (
     <div>
       <MenuBar editor={editor} />
