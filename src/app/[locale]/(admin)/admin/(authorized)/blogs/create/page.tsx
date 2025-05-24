@@ -1,39 +1,27 @@
 "use client";
 
 import CommonInputOutline from "@/components/common/CommonInputOutline";
-
-import {
-  BlogCreate,
-  BlogCreateSchema
-} from "@/api";
-import GenreDropdown from "@/components/blog/GenreDropdown";
-import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { getDateTimeLocal } from "@/lib/date_helper";
-import { useBlogStore } from "@/stores/blog.store";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {BlogCreateRequest, BlogCreateSchema,} from "@/api";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useTranslations} from "next-intl";
+import {useRef} from "react";
+import {useForm} from "react-hook-form";
+import {useShallow} from "zustand/shallow";
+import {useActionToast} from "@/hooks/use-action-toast";
 import Image from "next/image";
-import { useRef } from "react";
-import { useForm } from "react-hook-form";
-import { useShallow } from "zustand/shallow";
+import {Textarea} from "@/components/ui/textarea";
+import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
+import { BlogSingle } from "@/stores/blog/blog.store";
+import { getDateTimeLocal } from "@/lib/date_helper";
 
 export default function CreateBlogPage() {
   const t = useTranslations();
 
-  const [createBlog, lastAction, status, error] = useBlogStore(
+  const [createBlog, lastAction, status, error] = BlogSingle.useStore(
     useShallow((state) => [
       state.createBlog,
       state.lastAction,
@@ -48,7 +36,7 @@ export default function CreateBlogPage() {
     errorMessage: error || undefined,
   });
 
-  const form = useForm<BlogCreate>({
+  const form = useForm<BlogCreateRequest>({
     defaultValues: {
       title: "",
       subtitle: "",
@@ -154,15 +142,16 @@ export default function CreateBlogPage() {
             />
 
             {/* Categories Multi-select */}
-            <FormField
-              control={form.control}
-              name="genreIds"
-              render={({ field }) => (
-                <CommonInputOutline title={"Thể loại"} required>
-                  <GenreDropdown field={field}/>
-                </CommonInputOutline>
-              )}
-            />
+
+            {/*<FormField*/}
+            {/*  control={form.control}*/}
+            {/*  name="genreIds"*/}
+            {/*  render={({ field }) => (*/}
+            {/*    <CommonInputOutline title={"Thể loại"} required>*/}
+            {/*      <GenreDropdown field={field}/>*/}
+            {/*    </CommonInputOutline>*/}
+            {/*  )}*/}
+            {/*/>*/}
 
             <div className="col-span-3">
               <ProductDescriptionInput hint="Nội dung bài viết" name="content" />

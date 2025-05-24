@@ -1,116 +1,152 @@
 import React, { useEffect } from "react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-  DropdownMenuGroup,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuCheckboxItem,
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuPortal,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import { useBlogStore } from "@/stores/blog.store";
 import { useShallow } from "zustand/shallow";
-import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
 import { ControllerRenderProps } from "react-hook-form";
+import { z } from "zod";
+import { GenreDomain } from "@/stores/blog/genre.store";
+import { HashSet, } from "@/lib/utils";
+import { BlogFormType } from "@/components/blog/BlogForm";
 
 type Props = {
-  field?: ControllerRenderProps<any, any>; // or explicitly: ControllerRenderProps<FormValues, "genres">
+    field?: ControllerRenderProps<GenreDropDownUI.RegisteredType, 'selectedGenres'>; // or explicitly: ControllerRenderProps<FormValues, "genres">
+    onGenre2Selected: (checked: boolean, genre2: GenreDropDownUI.Genre2Child[]) => void,
 };
 
-export default function GenreDropdown({ field }: Props) {
-  const [genres, getGenres] = useBlogStore(
-    useShallow((state) => [state.genres, state.getGenres])
-  );
+export namespace GenreDropDownUI {
+    export namespace Genre {
+        const SchemaBase = z.object({
+            id: z.number(), name: z.string()
+        })
+        export const SchemaChild = SchemaBase.extend({
+            parentGenre: SchemaBase // the parent guaranteed
+        })
+        export const SchemaParent = SchemaBase.extend({
+            genres: z.array(SchemaChild)
+        })
 
-  useEffect(() => {
-    getGenres();
-  }, []);
+    }
 
-  if (genres === null) {
-    return <Skeleton className="max-w-[200px]" />;
-  }
+    export type RegisteredType = BlogFormType
+    export const RequiredSchema = z.object({
+        selectedGenres: z.array(Genre.SchemaChild)
+    })
+    export type Genre1Parent = z.infer<typeof Genre.SchemaParent>
+    export type Genre2Child = z.infer<typeof Genre.SchemaChild>
+}
 
-  const selectedGenres: string[] = field?.value ?? [];
+export default function GenreDropdown({ field, onGenre2Selected }: Props) {
+    const [proxyLoading, genre1s, getGenre1s] = GenreDomain.useStore(useShallow(s => [
+        s.proxyLoading, s.genre1s, s.getGenre1s
+    ]))
 
-  const isChecked = (genre: string) => selectedGenres.includes(genre);
+    useEffect(() => {
+        proxyLoading(getGenre1s,)
+    }, [getGenre1s, proxyLoading]);
 
-  const handleCheckboxChange = (checked: boolean, genre: string) => {
-    if (!field) return;
 
-    const newValue = checked
-      ? [...selectedGenres, genre]
-      : selectedGenres.filter((g) => g !== genre);
+    /// THIS TO RENDER
+    const genres: GenreDropDownUI.Genre1Parent[] = genre1s.map(g1 => ({
+        ...g1,
+        genres: g1.genre2s.map(g2 => ({ ...g2, parentGenre: { id: g1.id, name: g1.name } }))
+    }))
 
-    field.onChange(newValue);
-  };
+    /// THIS GONNA BE BOUND TO FIELD
 
-  return (
-    <div className="flex flex-col gap-2">
-      <DropdownMenu>
-        <DropdownMenuTrigger className="max-w-[200px]" asChild>
-          <Button variant="outline" className="w-full justify-between">
-            {selectedGenres.length > 0 ? "Đã chọn" : "Chọn thể loại"}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-[200px]">
-          {genres.map((genre) => {
-            if (!genre.genres || genre.genres.length === 0) {
-              return (
-                <DropdownMenuCheckboxItem
-                  key={genre.id}
-                  checked={isChecked(genre.name)}
-                  onCheckedChange={(checked) =>
-                    handleCheckboxChange(checked, genre.name)
-                  }
-                >
-                  {genre.name}
-                </DropdownMenuCheckboxItem>
-              );
+    if (!field) return null;
+    const selectedGenres = field.value || [];
+
+    const isChecked = (coming: GenreDropDownUI.Genre2Child[]) => {
+        return coming.every(c => selectedGenres.some(s => s.id === c.id));
+    }
+
+    const handleCheckboxChange = (
+        checked: boolean,
+        genre: GenreDropDownUI.Genre2Child | GenreDropDownUI.Genre1Parent
+    ) => {
+        if (!field) return;
+
+        let newSelected: typeof selectedGenres;
+
+        if ('genres' in genre) {
+            if (checked) {
+                newSelected = HashSet.addAllReturnNew(selectedGenres, genre.genres, v => v.id);
             } else {
-              return (
-                <DropdownMenuGroup key={genre.id}>
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      <DropdownMenuCheckboxItem
-                        checked={isChecked(genre.name)}
-                        onCheckedChange={(checked) =>
-                          handleCheckboxChange(checked, genre.name)
-                        }
-                      >
-                        {genre.name}
-                      </DropdownMenuCheckboxItem>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent>
-                        {genre.genres.map((subGenre) => (
-                          <DropdownMenuCheckboxItem
-                            key={subGenre.id}
-                            checked={isChecked(subGenre.name)}
-                            onCheckedChange={(checked) =>
-                              handleCheckboxChange(checked, subGenre.name)
-                            }
-                          >
-                            {subGenre.name}
-                          </DropdownMenuCheckboxItem>
-                        ))}
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
-                </DropdownMenuGroup>
-              );
+                const idsToRemove = new Set(genre.genres.map(g => g.id));
+                newSelected = selectedGenres.filter(g => !idsToRemove.has(g.id));
             }
-          })}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <div className="text-sm text-muted-foreground">
-        Đã chọn:{" "}
-        <span className="font-medium">{selectedGenres.join(", ")}</span>
-      </div>
-    </div>
-  );
+            onGenre2Selected(checked, genre.genres)
+        } else {
+            if (checked) {
+                newSelected = HashSet.add(selectedGenres, genre, g => g.id);
+            } else {
+                newSelected = selectedGenres.filter(g => g.id !== genre.id);
+            }
+            onGenre2Selected(checked, [genre])
+
+        }
+        console.log('indropdown:', field.value)
+
+        field.onChange(newSelected);
+    };
+
+    return (
+        <div className="flex flex-col gap-2">
+            <DropdownMenu>
+                <DropdownMenuTrigger className="max-w-[200px]" asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                        {selectedGenres.length > 0 ? "Đã chọn" : "Chọn thể loại"}
+
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[200px]">
+                    {genres.map((genre1) => {
+                        return (
+                            <DropdownMenuGroup key={genre1.id}>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>
+                                        <DropdownMenuCheckboxItem
+                                            checked={isChecked(genre1.genres)}
+                                            onCheckedChange={(checked) =>
+                                                handleCheckboxChange(checked, genre1)
+                                            }>
+                                            {genre1.name}
+                                        </DropdownMenuCheckboxItem>
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            {genre1.genres.map((genre2) => (
+                                                <DropdownMenuCheckboxItem
+                                                    key={genre2.id}
+                                                    checked={isChecked([genre2])}
+                                                    onCheckedChange={(checked) =>
+                                                        handleCheckboxChange(checked, genre2)
+                                                    }>
+                                                    {`${genre2.name}`}
+                                                </DropdownMenuCheckboxItem>
+                                            ))}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                            </DropdownMenuGroup>
+                        );
+                    })}
+                </DropdownMenuContent>
+            </DropdownMenu>
+            <div className="text-sm text-muted-foreground">
+                Đã chọn:{" "}
+                <span className="font-medium">{selectedGenres.map(g2 => g2.name).join(", ")}</span>
+            </div>
+        </div>
+    );
 }

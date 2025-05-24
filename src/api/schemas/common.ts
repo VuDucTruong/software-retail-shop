@@ -1,4 +1,5 @@
-import { z } from "zod";
+import {z} from "zod";
+
 const passwordRegex = /^[a-zA-Z0-9]+$/; // At least 6 characters, at least one letter and one number
 export const PasswordSchema = z
   .string()
@@ -11,6 +12,7 @@ export const PasswordSchema = z
   .regex(passwordRegex, {
     message: "Input.error_password_format",
   });
+
 
 export const QueyParamsSchema = z
   .object({

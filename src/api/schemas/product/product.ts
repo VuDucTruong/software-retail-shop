@@ -1,6 +1,7 @@
 import { ApiResponseSchema, CategorySchema, ImageSchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
 import { z } from "zod";
 
+const hasWindow = typeof window !== "undefined";
 
 
 // === Validation Messages ===

@@ -1,33 +1,18 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Filter } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Button } from "../ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "../ui/sheet";
-import { useBlogStore } from "@/stores/blog.store";
-import { get } from "lodash";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Filter} from "lucide-react";
+import {useTranslations} from "next-intl";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {Button} from "../ui/button";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "../ui/form";
+import {Input} from "../ui/input";
+import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger,} from "../ui/sheet";
+import {BlogMany} from "@/stores/blog/blog.store";
 import { getDateTimeLocal } from "@/lib/date_helper";
 
 export default function BlogFilterSheet() {
   const t = useTranslations();
-  const getBlogs = useBlogStore((state) => state.getBlogs);
+  const getBlogs = BlogMany.useStore((state) => state.getBlogs);
   const FormSchema = z.object({
     search: z.string().optional(),
     genres: z.array(z.string()).optional(),

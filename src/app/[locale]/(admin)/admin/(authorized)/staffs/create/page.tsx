@@ -3,7 +3,6 @@
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 
 import {
-  BlogCreate,
   BlogCreateSchema,
   UserCreate,
   UserCreateSchema,
@@ -24,7 +23,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { getDateTimeLocal } from "@/lib/date_helper";
-import { useBlogStore } from "@/stores/blog.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
