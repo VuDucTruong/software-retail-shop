@@ -19,8 +19,8 @@ export const CouponSchema = z.object({
   id: z.number(),
   code: z.string(),
   type: z.string(),
-  availableFrom: DatetimeSchema,
-  availableTo: DatetimeSchema,
+  availableFrom: DateSchema,
+  availableTo: DateSchema,
   value: z.number(),
   minAmount: z.number(),
   maxAppliedAmount: z.preprocess(

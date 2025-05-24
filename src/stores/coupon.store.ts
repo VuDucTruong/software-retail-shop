@@ -121,6 +121,7 @@ const getCouponById = async (set: SetState<CouponStore>, id: number) => {
         }
       }
     );
+    
     set({ selectedCoupon: response, status: "success" });
   } catch (error) {
     const appError = error as ApiError;

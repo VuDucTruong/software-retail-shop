@@ -39,13 +39,12 @@ export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
 export const DateSchema = z
   .preprocess((val) => {
     if (typeof val === "string" || val instanceof String) {
-      return new Date(val as string).toLocaleDateString();
+      return new Date(val as string);
     }
     return val;
-  }, z.string())
-  .transform((value) => {
-    const date = new Date(value);
-    return date.toISOString();
+  }, z.date())
+  .transform((date) => {
+    return date.toISOString().split("T")[0]; // YYYY-MM-DD
   });
 
 export const DatetimeSchema = z.string().transform((value) => {

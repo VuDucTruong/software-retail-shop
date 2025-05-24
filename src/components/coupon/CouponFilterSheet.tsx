@@ -27,7 +27,7 @@ import { useCouponStore } from "@/stores/coupon.store";
 const FormSchema = z
   .object({
     search: z.string().optional(),
-    type: z.enum(["PERCENTAGE", "FIXED", "BOTH"]).optional(),
+    type: z.enum(["PERCENTAGE", "FIXED", "ALL"]).optional(),
     availableFrom: z.string().optional(),
     availableTo: z.string().optional(),
     valueFrom: z.preprocess((val) => {
@@ -60,7 +60,7 @@ export default function CouponFilterSheet() {
     console.log(data);
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""  && value !== "BOTH"
+        ([_, value]) => value !== undefined && value !== ""  && value !== "ALL"
       )
     );
 

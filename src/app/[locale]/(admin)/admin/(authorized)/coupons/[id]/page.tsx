@@ -1,7 +1,7 @@
 "use client";
 import { CouponUpdate, CouponUpdateSchema } from "@/api";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
-import ValueTypeInput from "@/components/coupon/ValueTypeInput";
+import CouponTypeSelect from "@/components/coupon/CouponTypeSelect";
 import LoadingPage from "@/components/special/LoadingPage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionToast } from "@/hooks/use-action-toast";
+import { getDateLocal } from "@/lib/date_helper";
 import { useCouponStore } from "@/stores/coupon.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -54,6 +55,17 @@ export default function ConponDetailPage() {
 
   const form = useForm<CouponUpdate>({
     mode: "onSubmit",
+    defaultValues: {
+      code: "",
+      type: "PERCENTAGE",
+      availableFrom: getDateLocal(),
+      availableTo:  getDateLocal(),
+      value: 0,
+      minAmount: 0,
+      maxAppliedAmount: 0,
+      usageLimit: 0,
+      description: "",
+    },
     resolver: zodResolver(CouponUpdateSchema),
   });
 
@@ -73,7 +85,7 @@ export default function ConponDetailPage() {
     e.preventDefault();
 
     form.handleSubmit(async (data) => {
-      if(data.type === "FIXED") {
+      if (data.type === "FIXED") {
         data.maxAppliedAmount = data.value;
       }
       updateCoupon(data);
@@ -102,10 +114,6 @@ export default function ConponDetailPage() {
               )}
             />
 
-            <div className="col-span-2">
-              <ValueTypeInput />
-            </div>
-
             <FormField
               name="availableFrom"
               control={form.control}
@@ -122,6 +130,33 @@ export default function ConponDetailPage() {
               render={({ field }) => (
                 <CommonInputOutline title={t("available_to")}>
                   <Input {...field} type="date" />
+                </CommonInputOutline>
+              )}
+            />
+
+
+            <FormField
+              name="value"
+              control={form.control}
+              render={({ field }) => (
+                <CommonInputOutline title={t("discount_value")}>
+                  <Input
+                    {...field}
+                    type="number"
+                    max={form.watch("type") === "PERCENTAGE" ? 100 : undefined}
+                  />
+                </CommonInputOutline>
+              )}
+            />
+            <FormField
+              name="type"
+              control={form.control}
+              render={({ field }) => (
+                <CommonInputOutline
+                  title={t("discount_type")}
+                  className="border-l-0"
+                >
+                  <CouponTypeSelect {...field} value={field.value} onValueChange={field.onChange} hasAllOption={false} />
                 </CommonInputOutline>
               )}
             />
