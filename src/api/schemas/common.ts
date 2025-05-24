@@ -51,5 +51,15 @@ export const DatetimeSchema = z.string().transform((value) => {
   return date.toLocaleString();
 });
 
-export const ImageSchema = (requiredMessage?: string) =>
-  z.instanceof(File, { message: requiredMessage }).nullable();
+export const ImageSchema = (requiredMessage?: string) => {
+  if (requiredMessage) {
+    return z
+      .instanceof(File)
+      .nullable()
+      .refine((val) => val instanceof File, {
+        message: requiredMessage,
+      });
+  }
+
+  return z.instanceof(File).nullable();
+};

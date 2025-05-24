@@ -37,19 +37,6 @@ export function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function flattenObject(obj: Record<string, any>, prefix = ""): Record<string, any> {
-  return Object.keys(obj).reduce((acc, k) => {
-    const pre = prefix.length ? `${prefix}.` : "";
-    const value = obj[k];
-    
-    if (value !== null && typeof value === "object" && !Array.isArray(value) && !(value instanceof File)) {
-      Object.assign(acc, flattenObject(value, `${pre}${k}`));
-    } else {
-      acc[`${pre}${k}`] = value;
-    }
-    return acc;
-  }, {} as Record<string, any>);
-}
 
 
 export const getRoleWeight = (role: string) => {
@@ -63,4 +50,28 @@ export const getRoleWeight = (role: string) => {
     default:
       return 0;
   }
+}
+
+export function flattenObject(data: any): Record<string, any> {
+  const record: Record<string, any> = {};
+
+  const flatten = (value: any, keyPath?: string) => {
+    if (value instanceof File || value instanceof Blob) {
+      record[keyPath!] = value;
+    } else if (Array.isArray(value)) {
+      value.forEach((item, index) => {
+        flatten(item, `${keyPath}[${index}]`);
+      });
+    } else if (value !== null && typeof value === 'object') {
+      Object.entries(value).forEach(([subKey, subValue]) => {
+        const newKey = keyPath ? `${keyPath}.${subKey}` : subKey;
+        flatten(subValue, newKey);
+      });
+    } else if (value !== undefined && value !== null) {
+      record[keyPath!] = value;
+    }
+  };
+
+  flatten(data);
+  return record;
 }

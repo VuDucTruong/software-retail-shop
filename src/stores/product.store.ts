@@ -170,7 +170,7 @@ const updateProduct = async (
   try {
     const response = await productApiClient.put(
       `/products`,
-      ProductSchema,
+      z.any(),
       product,
       {
         headers: {
@@ -178,9 +178,14 @@ const updateProduct = async (
         },
       }
     );
-    set({ selectedProduct: response, status: "success" });
+
+    set({ status: "success" });
   } catch (error) {
     const appError = error as ApiError;
-    set({ error: appError.message, status: "error" });
+    set((prev) => ({
+      ...prev,
+      error: appError.message,
+      status: "error",
+    }))
   }
 };

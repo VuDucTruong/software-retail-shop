@@ -20,7 +20,10 @@ const messages = {
 };
 export const ProductSchema = z.object({
   id: z.number(),
-  slug: z.string(),
+  slug: z.preprocess((value) => {
+    if (value) return value;
+    return "Empty Slug";
+    }, z.string()),
   name: z.string(),
   imageUrl: z.preprocess((value) => {
     if(value) return value;
@@ -49,7 +52,7 @@ export const ProductSchema = z.object({
 export const ProductValidation = z.object({
   slug: z.string(),
   name: z.string().min(3, { message: messages.name }),
-  image: ImageSchema("Product image is required"),
+  image: ImageSchema("Hãy thêm ảnh cho sản phẩm của bạn"),
   represent: z.boolean().default(true),
   price: z.number().gte(0, { message: messages.price }),
   originalPrice: z.number().gte(0, { message: messages.originalPrice }),

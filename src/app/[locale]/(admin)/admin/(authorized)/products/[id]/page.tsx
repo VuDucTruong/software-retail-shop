@@ -3,20 +3,14 @@
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { CategoryMultiSelectField } from "@/components/product/CategoryMultiSelect";
 
-import {
-  ProductUpdate,
-  ProductUpdateSchema
-} from "@/api";
+import { ProductUpdate, ProductUpdateSchema } from "@/api";
 import ProductDescriptionTab from "@/components/product/ProductDescriptionTab";
 import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
 import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Form,
-  FormField
-} from "@/components/ui/form";
+import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { flattenObject } from "@/lib/utils";
@@ -99,6 +93,7 @@ export default function CreateProductPage() {
   const handleSubmit = () => {
     form.setValue("id", Number(id));
     form.handleSubmit((data) => {
+      
       updateProduct(flattenObject(data));
     })();
   };
