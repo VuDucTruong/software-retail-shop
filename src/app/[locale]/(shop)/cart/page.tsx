@@ -42,7 +42,20 @@ export default function Page() {
       </div>
 
       {
-        stepIndex == 0 || stepIndex == 1 ? <CartItemsSection cartItems={[]} stepIndex={stepIndex} handleNextStep={()=>{
+        stepIndex == 0 || stepIndex == 1 ? <CartItemsSection cartItems={[{
+          id: 1,
+          quantity: 10,
+          product: {
+            id: 1,
+            imageUrl: '/empty_img.png',
+            name:"myprod",
+            favorite: false,
+            quantity: 10,
+            originalPrice: 10_000,
+            price: 10_000,
+            tags: ["abc", 'def']
+          }
+        }]} stepIndex={stepIndex} handleNextStep={()=>{
           setStepIndex(stepIndex + 1)
         }} handlePrevStep={()=>setStepIndex(stepIndex - 1)}/> : <PaymentSection/>
       }

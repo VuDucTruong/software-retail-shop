@@ -1,11 +1,9 @@
-import { useTranslations } from 'next-intl'
-import React, { useRef } from 'react'
-import CartItem from './CartItem';
-import { Cart } from '@/api';
+import {useTranslations} from 'next-intl'
+import React from 'react'
+import CartItem, {CartItemDataType} from './CartItem';
 
 
-
-export default function CartItemList({data}: {data: Cart[]}) {
+export default function CartItemList({data}: {data: CartItemDataType[]}) {
     const t = useTranslations();
     
   return (

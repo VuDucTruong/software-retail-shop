@@ -34,7 +34,6 @@ export namespace GenreDropDownUI {
         export const SchemaParent = SchemaBase.extend({
             genres: z.array(SchemaChild)
         })
-
     }
 
     export type RegisteredType = BlogFormType

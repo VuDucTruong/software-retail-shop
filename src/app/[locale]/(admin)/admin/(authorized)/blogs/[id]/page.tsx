@@ -36,6 +36,7 @@ export default function DetailBlogPage() {
         imageUrl: blog.imageUrl,
         selectedGenres: [],
     };
+
     const onSubmitUpdate = (f: BlogFormType): void => {
         const requestUpdate: BlogUpdateRequest = {
             id: idnum,
@@ -57,6 +58,11 @@ export default function DetailBlogPage() {
     //     )
     // }
     return (
-        <BlogForm initialValues={blogValue} onFormSubmit={onSubmitUpdate} mode={'update'}/>
+        <BlogForm initialValues={blogValue} onFormSubmit={onSubmitUpdate} mode={'update'}
+            uiTitles={{
+                formTitle: "Cập nhật bài viết",
+                buttonTitle: "Cập nhật"
+            }}
+        />
     )
 }

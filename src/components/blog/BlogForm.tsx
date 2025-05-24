@@ -21,6 +21,7 @@ namespace UI {
         id: z.number(),
         fullName: z.string()
     })
+    export type Modes = 'update' | 'create'
 
     export const BlogFormSchema = GenreDropDownUI.RequiredSchema.extend({
         title: z.string().min(1).max(40),
@@ -33,6 +34,7 @@ namespace UI {
         imageUrl: z.string().optional(),
         publishedAt: z.string(),
     });
+    
 }
 export type BlogFormType = z.infer<typeof UI.BlogFormSchema>
 export const BlogFormDefaultValues: BlogFormType = {
@@ -47,11 +49,13 @@ export const BlogFormDefaultValues: BlogFormType = {
     selectedGenres: [],
 }
 
-export default function BlogForm({ initialValues, mode, onFormSubmit }: {
+export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles  }: {
     initialValues: BlogFormType,
-    mode: 'update' | 'create',
-    onFormSubmit: (f: BlogFormType) => void
-
+    mode: UI.Modes ,
+    onFormSubmit: (f: BlogFormType) => void,
+    uiTitles: {
+        formTitle: string, buttonTitle: string
+    }
 }) {
 
     const t = useTranslations();
@@ -121,7 +125,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
         <Card>
             <CardHeader>
                 <CardTitle>
-                    <h2>{"Tạo bài viết"}</h2>
+                    <h2>{uiTitles.formTitle}</h2>
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -223,7 +227,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
                             className="col-start-3 bg-green-400 hover:bg-green-500"
                             type="submit"
                         >
-                            {t("Create")}
+                            {t(uiTitles.buttonTitle)}
                         </Button>
                     </form>
                 </Form>

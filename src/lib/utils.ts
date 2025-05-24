@@ -133,3 +133,45 @@ export class HashSet {
   }
 }
 export type Primitives = | string | number | boolean | null | undefined | symbol | bigint;
+export namespace Calculations {
+    type OrderDetailMetas = { price: number, quantity: number }[]
+    type CouponMeta = {
+        type: string,
+        value: number,
+        maxAppliedAmount: number,
+        minAmount: number,
+        usageLimit: number
+    } | null | undefined
+
+    export function calculateGross(ods: OrderDetailMetas) {
+        let gross = 0;
+        ods.forEach(c => {
+            gross += c.price * c.quantity
+        });
+        return gross;
+    }
+
+    export function calculateApplied(gross: number, coupon: CouponMeta) {
+        if (coupon === null || typeof  coupon === 'undefined')
+            return 0
+        if(coupon.usageLimit<=0 || gross < coupon.minAmount || coupon.value < 0)
+            return 0;
+
+        if (coupon.usageLimit > 0) {
+            if (coupon.type === 'PERCENTAGE') {
+                return Math.min(coupon.maxAppliedAmount, gross * coupon.value);
+            } else if (coupon.type === 'FIXED') {
+                return gross - Math.min(coupon.maxAppliedAmount, coupon.value);
+            }
+        }
+        return 0;
+    }
+    export function calculateAmounts(cartDetails: OrderDetailMetas, coupon: CouponMeta) {
+        if (cartDetails.length === 0)
+            return {gross: 0, applied: 0, net: 0};
+        const gross = Calculations.calculateGross(cartDetails)
+        const applied = Calculations.calculateApplied(gross, coupon);
+        const net = gross - applied;
+        return {gross, applied, net};
+    };
+}
