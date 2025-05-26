@@ -21,62 +21,69 @@ import { useEffect, useState } from "react";
 import { useCommentStore } from "@/stores/comment.store";
 import { useShallow } from "zustand/shallow";
 import { useActionToast } from "@/hooks/use-action-toast";
+import { useCommentDialogStore } from "@/stores/dialog.store";
+import CommentFilterSheet from "@/components/comments/CommentFilterSheet";
 export default function CommentManagementPage() {
   const t = useTranslations();
-  
-  const [
-      status,
-      lastAction,
-      error,
-      getComments,
-      resetStatus,
-      queryParams,
-      comments
-    ] = useCommentStore(
-      useShallow((state) => [
-        state.status,
-        state.lastAction,
-        state.error,
-        state.getComments,
-        state.resetStatus,
-        state.queryParams,
-        state.comments,
-      ])
-    );
-  
-    useEffect(() => {
-      resetStatus();
-    },[]); 
-  
-    const [pagination, setPagination] = useState<PaginationState>({
-      pageIndex: queryParams?.pageRequest?.page ?? 0,
-      pageSize: queryParams?.pageRequest?.size ?? 10,
-    });
-  
-    useActionToast({
-      status,
-      lastAction,
-      errorMessage: error || undefined,
-    });
-  
-    const [sorting, setSorting] = useState<SortingState>([
-      {
-        id: queryParams?.pageRequest?.sortBy ?? "createdAt",
-        desc: queryParams?.pageRequest?.sortDirection === "desc",
-      },
-    ]);
-  
-    useEffect(() => {
-      getComments({
-        pageRequest: {
-          page: pagination.pageIndex,
-          size: pagination.pageSize,
-          sortBy: sorting[0]?.id,
-          sortDirection: sorting[0]?.desc ? "desc" : "asc",
-        },
-      });
-    }, [sorting, pagination]);
 
+  const [
+    status,
+    lastAction,
+    error,
+    getComments,
+    resetStatus,
+    queryParams,
+    comments,
+    deleteManyComments,
+  ] = useCommentStore(
+    useShallow((state) => [
+      state.status,
+      state.lastAction,
+      state.error,
+      state.getComments,
+      state.resetStatus,
+      state.queryParams,
+      state.comments,
+      state.deleteManyComments,
+    ])
+  );
+
+  const openDialog = useCommentDialogStore(
+    (state) => state.openDialog
+  );
+
+  useEffect(() => {
+    resetStatus();
+  }, []);
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: queryParams?.pageRequest?.page ?? 0,
+    pageSize: queryParams?.pageRequest?.size ?? 10,
+  });
+
+  useActionToast({
+    status,
+    lastAction,
+    errorMessage: error || undefined,
+  });
+
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+      desc: queryParams?.pageRequest?.sortDirection === "desc",
+    },
+  ]);
+
+  useEffect(() => {
+    getComments({
+      pageRequest: {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+      },
+    });
+  }, [sorting, pagination]);
 
   const cols: ColumnDef<UserComment>[] = [
     {
@@ -90,17 +97,15 @@ export default function CommentManagementPage() {
     {
       accessorKey: "User",
       header: t("User"),
-      cell: ({ row }) => {
-        return <div className="font-bold">{row.original.author.fullName}</div>;
-      },
+      cell: ({ row }) => row.original.author.fullName,
     },
     {
       accessorKey: "product",
       header: t("Product"),
       cell: ({ row }) => {
         return (
-          <Link href={"/"}>
-            <Button variant={"link"}>{"Not impletemed"}</Button>
+          <Link href={`/admin/products/${row.original.product?.id}`}>
+            <Button variant={"link"}>{row.original.product?.name}</Button>
           </Link>
         );
       },
@@ -109,15 +114,24 @@ export default function CommentManagementPage() {
       accessorKey: "comment",
       header: t("Comment"),
       cell: ({ row }) => {
+
+        if (row.original.deletedAt) {
+          return (
+            <div className="text-red-500">
+              {row.original.content} <br />
+              <span className="text-xs">Bị xóa vào {row.original.deletedAt}</span>
+            </div>
+          );
+        }
+
         return row.original.content;
       },
     },
     {
-      accessorKey: "time",
+      accessorKey: "createdAt",
       header: t("Time"),
       cell: ({ row }) => {
-        const date = new Date(row.original.createdAt);
-        return date.toLocaleDateString();
+        return row.original.createdAt;
       },
     },
     {
@@ -126,8 +140,19 @@ export default function CommentManagementPage() {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2 w-fit">
-            <EditCommentDialog comment={row.original}/>
-            <Link href={"/asdf"}>
+            <Button
+              variant="outline"
+              className="hover:text-yellow-500 hover:border-yellow-500"
+              onClick={() => {
+                openDialog(row.original);
+              }}
+            >
+              <Eye />
+            </Button>
+            <Link
+              href={`/product/${row.original.product?.slug}`}
+              target="_blank"
+            >
               <Button>
                 <ExternalLink />
               </Button>
@@ -140,11 +165,12 @@ export default function CommentManagementPage() {
 
   return (
     <Card>
+      <EditCommentDialog />
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <h2>{t("comment_management")}</h2>
           <div className="flex items-center gap-2">
-            <ProductFilterSheet />
+            <CommentFilterSheet />
           </div>
         </CardTitle>
       </CardHeader>
@@ -157,14 +183,14 @@ export default function CommentManagementPage() {
           totalCount={comments?.totalInstances ?? 0}
           pageCount={comments?.totalPages ?? 0}
           pagination={pagination}
+          canSelect
+          onDeleteRows={(selectedRows) => {
+            deleteManyComments(selectedRows);
+          }}
           onPaginationChange={(updater) => {
             setPagination((old) =>
               typeof updater === "function" ? updater(old) : updater
             );
-          }}
-          canSelect
-          onDeleteRows={(rows) => {
-            
           }}
           sorting={sorting}
           onSortingChange={(updater) => {

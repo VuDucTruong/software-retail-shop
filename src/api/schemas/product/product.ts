@@ -39,7 +39,6 @@ export const ProductSchema = z.object({
   quantity: z.number(),
   status: z.string(),
   variants: z.array(ProductMetadataSchema).nullable(),
-  productItems: z.array(ProductItemSchema).nullable(),
   groupId: z.number().nullable(),
   image: ImageSchema().optional(),
   favorite: z.preprocess((value) => {

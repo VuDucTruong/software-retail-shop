@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -9,26 +9,26 @@ import { useAuthStore } from "@/stores/auth.store";
 import { Role } from "@/lib/constants";
 import { getRoleWeight } from "@/lib/utils";
 import { useClientCommentStore } from "@/stores/cilent/client.comment.store";
+import { useCommentStore } from "@/stores/comment.store";
+import { spawn } from "child_process";
 
 type Props = {
   comment: UserComment;
   productId?: number;
-  parentId?: number;
+  parentId?: number | null;
 };
 
-export default function CommentItem({ comment, productId, parentId }: Props) {
+export default function AdminCommentItem({
+  comment,
+  productId,
+  parentId,
+}: Props) {
   const t = useTranslations();
   const [showReplyInput, setShowReplyInput] = useState(false);
   const replyRef = useRef<HTMLTextAreaElement>(null);
-  const user = useAuthStore((state) => state.user);
-  const enableDelete =
-    user?.id === comment.author.id ||
-    getRoleWeight(user?.role ?? "") >= Role.STAFF.weight;
 
-  const createComment = useClientCommentStore((state) => state.createComment);
-  const deleteMyComment = useClientCommentStore(
-    (state) => state.deleteMyComment
-  );
+  const createComment = useCommentStore((state) => state.createComment);
+  const deleteComment = useCommentStore((state) => state.deleteComment);
   const handleReplySubmit = () => {
     if (!replyRef.current?.value.trim()) return;
     const replyContent = replyRef.current.value.trim();
@@ -44,34 +44,25 @@ export default function CommentItem({ comment, productId, parentId }: Props) {
   };
 
   const handleDelete = (id: number) => {
-    deleteMyComment(id, parentId);
+    deleteComment(id, parentId ?? undefined);
   };
-
-  if (comment.deletedAt) {
-    return;
-  }
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-row gap-4 items-center w-full">
-        <div className="relative ring-primary size-20 rounded-full ring ring-offset-2">
-          <Image
-            alt="Avatar"
-            fill
-            className="rounded-full object-cover"
-            src={comment.author.imageUrl || "/empty_user.png"}
-          />
-        </div>
         <div className="flex flex-col items-start">
           <div className="font-semibold">
-            {comment.author.fullName}{" "}
-            <span className="italic font-normal text-sm">
-              {new Date(comment.createdAt).toLocaleDateString()}
-            </span>
+            {comment.author.fullName}
+            {" : "}
+            {comment.deletedAt ? (
+              <span className="text-muted-foreground italic font-normal">
+                "Đã bị xóa vào {comment.deletedAt}"
+              </span>
+            ) : (
+              <span className="font-normal break-all">{comment.content}</span>
+            )}
           </div>
-          <p>{comment.content}</p>
-          {/* Actions */}
-          <div className="flex gap-6">
+          <div className="flex gap-6 items-center">
             <Button
               variant={"link"}
               onClick={() => setShowReplyInput(!showReplyInput)}
@@ -79,22 +70,22 @@ export default function CommentItem({ comment, productId, parentId }: Props) {
             >
               {t("Respond")}
             </Button>
-            {enableDelete && (
-              <Button
-                variant={"link"}
-                onClick={() => handleDelete(comment.id)}
-                className=" text-red-500 p-0"
-              >
-                {t("Delete")}
-              </Button>
-            )}
+            <Button
+              variant={"link"}
+              onClick={() => handleDelete(comment.id)}
+              className=" text-red-500 p-0"
+              disabled={comment.deletedAt !== null}
+            >
+              {t("Delete")}
+            </Button>
+            <div className="text-muted-foreground">{comment.createdAt}</div>
           </div>
         </div>
       </div>
 
       {/* Input phản hồi */}
       {showReplyInput && (
-        <div className="ml-24 mt-2 flex flex-col gap-2">
+        <div className={`mt-2 flex flex-col gap-2 ${comment.parentCommentId ? "" : "ml-24"}`}>
           <Textarea
             className="textarea rounded-md focus:outline-none w-full"
             placeholder={t("Input.write_reply_placeholder")}
@@ -116,7 +107,7 @@ export default function CommentItem({ comment, productId, parentId }: Props) {
       {/* Hiển thị danh sách phản hồi */}
       <div className="ml-12 border-l-2 pl-4 border-border">
         {(comment.replies ?? []).map((reply: UserComment, index: number) => (
-          <CommentItem
+          <AdminCommentItem
             key={index}
             comment={reply}
             parentId={comment.id}

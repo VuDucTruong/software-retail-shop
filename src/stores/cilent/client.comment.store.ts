@@ -9,6 +9,7 @@ import {
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
+import { sortBy } from "lodash";
 import { z } from "zod";
 import { create } from "zustand";
 const commentApiClient = ApiClient.getInstance();
@@ -79,8 +80,10 @@ export const getCommentsByProductId = async (
       {
         params: {
           productId,
-          deleted: true,
-          sort: "createdAt,desc"
+          page: 0,
+          size: 100,
+          sortBy: "createdAt",
+          sortDirection: "desc",
         },
       }
     );

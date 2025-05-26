@@ -12,7 +12,10 @@ export const ProductItemSchema = z.object({
 
 export const ProductItemDetailSchema = z.object({
     id: z.number(),
-    slug: z.string(),
+    slug: z.preprocess((val) => {
+        if (val) return val;
+        return ""
+    }, z.string()),
     name: z.string(),
     imageUrl: z.string().nullable(),
     represent: z.boolean(),
