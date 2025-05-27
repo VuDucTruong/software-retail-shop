@@ -5,7 +5,7 @@ import {SetState} from "@/lib/set_state";
 import {ApiError} from "@/api/client/base_client";
 
 export type QueryParams = z.infer<typeof QueyParamsSchema>;
-export type LastActions = "create" | "update" | "delete" | null;
+export type LastActions = "get" |"create" | "update" | "delete" | null;
 export type BaseState = {
     lastAction: LastActions;
     status: "idle" | "loading" | "error" | "success";
