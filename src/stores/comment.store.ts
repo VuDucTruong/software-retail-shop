@@ -185,6 +185,8 @@ const deleteComment = async (
         comments: {
           ...state.comments,
           data: updatedComments,
+          totalInstances: state.comments?.totalInstances
+            ? state.comments.totalInstances - 1 : 0,
         },
         selectedComment: updatedSelectedComment,
         status: "success",
@@ -253,6 +255,8 @@ const deleteManyComments = async (
         comments: {
           ...state.comments,
           data: updatedComments,
+          totalInstances: state.comments?.totalInstances
+            ? state.comments.totalInstances - commentIds.length : 0,
         },
         status: "success",
       };

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiResponseSchema, DateSchema, DatetimeSchema } from "./common";
+import { ApiDatetimeSchema, ApiResponseSchema, DateSchema, DatetimeSchema } from "./common";
 
 const messages = {
   required: {
@@ -72,8 +72,8 @@ const applyRefinement = (schema: z.ZodTypeAny) => {
 const CouponValidation = z.object({
   code: z.string().min(3, messages.code),
   type: z.string(),
-  availableFrom: DateSchema,
-  availableTo: DateSchema,
+  availableFrom: ApiDatetimeSchema,
+  availableTo: ApiDatetimeSchema,
   value: z.preprocess((val) => Number(val), z.number().positive(messages.gt0)),
   minAmount: z.preprocess(
     (val) => Number(val),

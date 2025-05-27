@@ -79,6 +79,26 @@ export default function CreateCouponPage() {
             />
 
             <FormField
+              name="availableFrom"
+              control={form.control}
+              render={({ field }) => (
+                <CommonInputOutline title={t("available_from")}>
+                  <Input {...field} type="date" />
+                </CommonInputOutline>
+              )}
+            />
+
+            <FormField
+              name="availableTo"
+              control={form.control}
+              render={({ field }) => (
+                <CommonInputOutline title={t("available_to")}>
+                  <Input {...field} type="date" />
+                </CommonInputOutline>
+              )}
+            />
+
+            <FormField
               name="value"
               control={form.control}
               render={({ field }) => (
@@ -147,6 +167,8 @@ export default function CreateCouponPage() {
               )}
             />
 
+            
+
             <FormField
               name="description"
               control={form.control}
@@ -160,7 +182,7 @@ export default function CreateCouponPage() {
               )}
             />
 
-            <Button className="col-start-3">{t("create_coupon")}</Button>
+            <Button type="submit" className="col-start-3">{t("create_coupon")}</Button>
           </form>
         </Form>
       </CardContent>

@@ -32,20 +32,15 @@ import ProductItemFilterSheet from "@/components/product/ProductItemFilterSheet"
 export default function KeyManagementPage() {
   const t = useTranslations();
 
-  const [getProductItems , queryParams , lastAction , error , status ,resetStatus , productItems , deleteProductItems] = useProductItemStore(useShallow((state) => [
+  const [getProductItems , queryParams , lastAction , error , status , productItems , deleteProductItems] = useProductItemStore(useShallow((state) => [
     state.getProductItems,
     state.queryParams,
     state.lastAction,
     state.error,
     state.status,
-    state.resetStatus,
     state.productItems,
     state.deleteProductItems,
   ]));
-
-  useEffect(() => {
-    resetStatus();
-  },[]); 
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,

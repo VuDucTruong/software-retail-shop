@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
 type Status = "idle" | "loading" | "success" | "error";
-type ActionType = "create" | "update" | "delete";
+type ActionType = "create" | "update" | "delete" | "get";
 interface UseActionToastProps {
   status: Status;
   lastAction: ActionType | null;
@@ -29,6 +29,12 @@ const messages: Record<ActionType, Record<Status, string>> = {
     error: "Xóa thất bại!",
     idle: "",
   },
+  get: {
+    loading: "Đang tải dữ liệu...",
+    success: "Tải dữ liệu thành công!",
+    error: "Tải dữ liệu thất bại!",
+    idle: "",
+  }
 };
 
 export function useActionToast({
@@ -37,15 +43,29 @@ export function useActionToast({
   errorMessage,
   reset
 }: UseActionToastProps) {
-  useEffect(() => {
-    if (!lastAction || status === "idle") return;
 
+  const didMount = useRef(false);
+  const toastIdRef = useRef<string | number | undefined>(undefined);
+  useEffect(() => {
+
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
+
+    console.log("action" , lastAction, "status", status, "errorMessage", errorMessage);
+    if (!lastAction || status === "idle" || lastAction === "get") return;
+   
     const message = messages[lastAction][status];
-    let toastId: string | number | undefined;
+
+
+
     if (status === "loading") {
-      toastId = toast.loading(message);
+      toastIdRef.current = toast.loading(message);
     } else {
-      toast.dismiss(toastId);
+      if (toastIdRef.current) {
+        toast.dismiss(toastIdRef.current);
+      }
       if (status === "success") {
         toast.success(message);
       } else if (status === "error") {
@@ -53,7 +73,6 @@ export function useActionToast({
       }
       reset?.();
     }
-
     
 
   }, [status, lastAction]);

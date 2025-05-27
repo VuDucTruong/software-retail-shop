@@ -52,6 +52,11 @@ export const DatetimeSchema = z.string().transform((value) => {
   return date.toLocaleString();
 });
 
+export const ApiDatetimeSchema = z.string().transform((value) => {
+  const date = new Date(value);
+  return date.toISOString();
+})
+
 export const ImageSchema = (requiredMessage?: string) => {
   if (requiredMessage) {
     return z

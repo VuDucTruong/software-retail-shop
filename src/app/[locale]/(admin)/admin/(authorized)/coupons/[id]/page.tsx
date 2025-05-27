@@ -144,6 +144,7 @@ export default function ConponDetailPage() {
                     {...field}
                     type="number"
                     max={form.watch("type") === "PERCENTAGE" ? 100 : undefined}
+                    value={field.value}
                   />
                 </CommonInputOutline>
               )}

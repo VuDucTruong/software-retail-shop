@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 
 import {
-  ProductCreateSchema,
-  ProductItem,
+  ProductItemCreate,
   ProductItemCreateSchema,
-  ProductItemDetail,
-  ProductItemSchema,
+  ProductItemDetail
 } from "@/api";
+import { useProductItemStore } from "@/stores/product.item.store";
+import { useProductStore } from "@/stores/product.store";
 import { Import, RefreshCcw } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -20,10 +20,6 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { KeyDataTable } from "./KeyDataTable";
-import { useProductItemStore } from "@/stores/product.item.store";
-import { create } from "domain";
-import { useProductStore } from "@/stores/product.store";
-import { get } from "http";
 
 export type ProductItemPreview = {
   productName: string;
@@ -42,6 +38,7 @@ export default function KeyFileUploadDialog() {
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<ProductItemDetail[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
+  const parseDataRef = useRef<ProductItemCreate[]>([]);
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -49,7 +46,7 @@ export default function KeyFileUploadDialog() {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
         const data = new Uint8Array(e.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: "array" });
@@ -78,14 +75,27 @@ export default function KeyFileUploadDialog() {
 
         // contain productId, productKey , region
         const parsedData = ProductItemCreateSchema.array().parse(jsonData);
-
+        parseDataRef.current = parsedData;
         // get all existing products
-        getProducts({
+        await getProducts({
           ids: parsedData.map((item) => item.productId ?? -1),
         });
 
-        setData(
-          parsedData.map((item) => {
+        setError(null);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to parse file.");
+      }
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
+
+
+  useEffect(() => {
+    if(products) {
+      setData(
+          parseDataRef.current.map((item) => {
             const existingProduct = products?.data.find(
               (product) => product.id === item.productId
             );
@@ -108,16 +118,8 @@ export default function KeyFileUploadDialog() {
             return productItemDetail;
           })
         );
-
-        setError(null);
-      } catch (err) {
-        console.error(err);
-        setError("Failed to parse file.");
-      }
-    };
-
-    reader.readAsArrayBuffer(file);
-  };
+    }
+  }, [products]);
 
   const handleDelete = (ids: number[]) => {
     const newData = data.filter((item) => !ids.includes(item.productId));

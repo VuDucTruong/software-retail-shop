@@ -15,6 +15,7 @@ import { ApiError } from "next/dist/server/api-utils";
 import { z } from "zod";
 import { Role } from "@/lib/constants";
 import { getRoleWeight } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
 const authClient = ApiClient.getInstance();
 
@@ -83,6 +84,13 @@ export const useAuthStore = create<AuthStore>()(
     }
   )
 );
+
+const reloadAdminPage = () => {
+  if (window.location.pathname.includes("/admin")) {
+    window.location.reload();
+  }
+}
+
 const login = async (set: SetState<AuthStore>, request: LoginRequest) => {
   set({ lastAction: "login", error: null });
 
@@ -94,6 +102,10 @@ const login = async (set: SetState<AuthStore>, request: LoginRequest) => {
     );
 
     set({ user: response.user, status: "success", isAuthenticated: true });
+
+
+    reloadAdminPage();
+
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });
@@ -124,8 +136,11 @@ const logout = async (set: SetState<AuthStore>) => {
 
   try {
     await authClient.delete("/accounts/logout", z.any());
-
     set({ user: null, status: "success", isAuthenticated: false });
+
+
+    reloadAdminPage();
+
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

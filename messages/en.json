@@ -340,5 +340,9 @@
     "ERR_NETWORK": "Network error",
     "ERR_ETIMEDOUT": "Request timed out",
     "UNKNOWN": "Unknown error"
-  }
+  },
+  "delete_product_x": "Delete product #{x}",
+  "Code": "Code",
+  "Value": "Value",
+  "usage_limit": "Usage limit"
 }

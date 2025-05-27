@@ -2,15 +2,14 @@
 
 import { Coupon } from "@/api";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import TableOptionMenu from "@/components/common/TableOptionMenu";
 import CouponFilterSheet from "@/components/coupon/CouponFilterSheet";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "@/i18n/navigation";
 import { useCouponStore } from "@/stores/coupon.store";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -21,11 +20,10 @@ export default function CouponManagementPage() {
   const t = useTranslations();
   const router = useRouter();
 
-  const [queryParams , getCoupons , resetStatus , status , lastAction , error , coupons , deleteCouponns] = useCouponStore(
+  const [queryParams , getCoupons , status , lastAction , error , coupons , deleteCouponns] = useCouponStore(
     useShallow((state) => [
       state.queryParams,
       state.getCoupons,
-      state.resetStatus,
       state.status,
       state.lastAction,
       state.error,
@@ -33,10 +31,6 @@ export default function CouponManagementPage() {
       state.deleteCoupons,
     ])
   )
-
-  useEffect(() => {
-    resetStatus();
-  },[])
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
@@ -78,14 +72,14 @@ export default function CouponManagementPage() {
     },
     {
       accessorKey: "availableFrom",
-      header: t("Available From"),
+      header: t("available_from"),
       cell: ({ row }) => {
         return new Date(row.original.availableFrom!).toLocaleDateString();
       },
     },
     {
       accessorKey: "availableTo",
-      header: t("Available To"),
+      header: t("available_to"),
       cell: ({ row }) => {
         return new Date(row.original.availableTo!).toLocaleDateString();
       },
@@ -120,30 +114,18 @@ export default function CouponManagementPage() {
       header: "",
       cell: ({ row }) => {
         return (
-          <TableOptionMenu actions={[
-            {
-              label: t("Detail"),
-              onClick: () => handleViewDetails(row.original.id!),
-            },
-            {
-              label: t("Delete"),
-              onClick: () => handleDelete(row.original.id!),
-              confirm: {
-                title: t("delete_coupon_x", { x: row.original.id! }),
-                description: t("delete_coupon_warning"),
-              },
-            },
-           ]}/>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleViewDetails(row.original.id)}
+            >
+              <Eye />
+            </Button>
+          </div>
         );
       },
     }
   ];
-
-
-
-  const handleDelete = (id: number) => {
-    deleteCouponns([id]);
-  };
 
   const handleViewDetails = (id: number) => {
     router.push(`coupons/${id}`);

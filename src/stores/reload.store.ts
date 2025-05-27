@@ -12,7 +12,7 @@ export const handleDeleteReloadGeneric = <T>(
   ids: number[],
   field: keyof T,
   getState: () => T,
-  reloadFn: ReloadFn<T>
+  reloadFn: ReloadFn<T>,
 ) => {
   const storeData = getState()[field] as StoreData | null;
 

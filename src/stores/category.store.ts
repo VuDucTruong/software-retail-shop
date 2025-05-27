@@ -74,15 +74,18 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
 
 const getCategories = async (
   set: SetState<CategoryStore>,
-  queryParams: QueryParams
+  query: QueryParams
 ) => {
-  set({ error: null, queryParams , categories: null });
+  set(state => ({ error: null, queryParams: {
+    ...state.queryParams,
+    query
+  } , categories: null }));
 
   try {
     const response = await categoryClient.post(
       "/categories/searches",
       CategoryListSchema,
-      queryParams
+      query
     );
     set((prev) => ({ categories: response, status: "success" }));
   } catch (error) {

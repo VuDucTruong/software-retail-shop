@@ -79,7 +79,10 @@ export const useProductStore = create<ProductStore>((set) => ({
 }));
 
 const getProducts = async (set: SetState<ProductStore>, query: QueryParams) => {
-  set({ error: null, queryParams: query , products: null });
+  set(state => ({ error: null, queryParams: {
+    ...state.queryParams,
+    ...query,
+  } , products: null }));
 
   try {
     const response = await productApiClient.post(
