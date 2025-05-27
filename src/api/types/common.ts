@@ -14,9 +14,12 @@ export type BaseState = {
 export type BaseAction = {
     proxyLoading: (run: () => void | Promise<void>, lastAction?: LastActions) => void
 }
-export const defaultAsyncState = {
+export type DisposeAction = {
+    clean(): void,
+}
+export const defaultAsyncState: BaseState = {
     lastAction: null,
-    status: "idle" as const,
+    status: "loading" as const,
     error: null,
 }
 
@@ -33,18 +36,18 @@ export function setLoadAndDo<T extends BaseState>(
         if (result instanceof Promise) {
             result
                 .then(() => {
-                    set(state => ({ ...state, status: "success", error: null }));
+                    set(state => ({ ...state, status: "success", error: null, lastAction }));
                 })
                 .catch((e: unknown) => {
                     const err = e as Error;
-                    set(state => ({ ...state, status: "error", error: err.message, lastAction: null }));
+                    set(state => ({ ...state, status: "error", error: err.message, lastAction }));
                 });
         } else {
-            set(state => ({ ...state, status: "success", error: null }));
+            set(state => ({ ...state, status: "success", error: null, lastAction }));
         }
     } catch (e: unknown) {
         const err = e as Error;
-        set(state => ({ ...state, status: "error", error: err.message, lastAction: null }));
+        set(state => ({ ...state, status: "error", error: err.message, lastAction }));
     }
 }
 
@@ -52,4 +55,5 @@ export type Pageable = {
     queryParams: QueryParams,
     totalInstances: number,
     totalPages: number,
+    currentPage: number,
 }

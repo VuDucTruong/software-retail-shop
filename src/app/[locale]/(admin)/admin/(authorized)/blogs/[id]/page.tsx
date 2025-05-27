@@ -1,11 +1,13 @@
 'use client'
 import {usePathname} from '@/i18n/navigation'
 import React, {useEffect} from 'react'
-import BlogForm, {BlogFormDefaultValues, BlogFormType} from "@/components/blog/BlogForm";
+import BlogForm, {blogFormDefaultValues, BlogFormType} from "@/components/blog/BlogForm";
 import {useShallow} from 'zustand/shallow';
 import {BlogUpdateRequest} from '@/api';
 import {BlogSingle} from "@/stores/blog/blog.store";
-import { getDateTimeLocal } from '@/lib/date_helper';
+import {getDateTimeLocal} from '@/lib/date_helper';
+import {useActionToast} from "@/hooks/use-action-toast";
+import {Toaster} from 'sonner';
 
 export default function DetailBlogPage() {
 
@@ -13,8 +15,8 @@ export default function DetailBlogPage() {
     const id = pathname.split("/").at(-1);
 
     const idnum = Number(id);
-    const [proxyLoading, status, error, blog, getById, updateBlog] = BlogSingle.useStore(useShallow(s => [
-        s.proxyLoading, s.status, s.error, s.blog, s.getById, s.updateBlog
+    const [proxyLoading, lastAction, status, error, blog, getById, updateBlog] = BlogSingle.useStore(useShallow(s => [
+        s.proxyLoading, s.lastAction, s.status, s.error, s.blog, s.getById, s.updateBlog
     ]))
 
     useEffect(() => {
@@ -23,10 +25,12 @@ export default function DetailBlogPage() {
         })
     }, [getById, idnum, proxyLoading])
 
-    const blogValue: BlogFormType = (blog === null) ? BlogFormDefaultValues : {
+
+    const blogValue: BlogFormType = (blog === null) ? blogFormDefaultValues : {
         title: blog.title,
         subtitle: blog.subtitle,
         content: blog.content,
+        selectedGenre2Ids: new Set(blog.genre2Ids),
         author: {
             id: blog.author.id,
             fullName: blog.author.fullName
@@ -34,7 +38,6 @@ export default function DetailBlogPage() {
         publishedAt: getDateTimeLocal(),
         image: null,
         imageUrl: blog.imageUrl,
-        selectedGenres: [],
     };
 
     const onSubmitUpdate = (f: BlogFormType): void => {
@@ -45,24 +48,26 @@ export default function DetailBlogPage() {
             subtitle: f.subtitle,
             publishedAt: new Date(f.publishedAt).toISOString() ?? new Date().toISOString(),
             image: f.image,
-            genreIds: f.selectedGenres.map(g2 => g2.id)
+            genreIds: [...f.selectedGenre2Ids]
         }
-        console.log(requestUpdate)
-        proxyLoading(() => updateBlog(requestUpdate))
+        proxyLoading(() => updateBlog(requestUpdate),'update')
     }
 
 
-    // if (!StringUtils.hasLength(id)) {
-    //     return (
-    //         <div>This page jasdlkfjaklsdjlf</div>
-    //     )
-    // }
+    useActionToast({
+        lastAction,
+        status,
+        errorMessage: error || undefined,
+    });
     return (
-        <BlogForm initialValues={blogValue} onFormSubmit={onSubmitUpdate} mode={'update'}
-            uiTitles={{
-                formTitle: "Cập nhật bài viết",
-                buttonTitle: "Cập nhật"
-            }}
-        />
+        <div>
+            {/* <Toaster richColors theme='dark' /> */}
+            <BlogForm initialValues={blogValue} onFormSubmit={onSubmitUpdate} mode={'update'}
+                      uiTitles={{
+                          formTitle: "update_blog",
+                          buttonTitle: "update_blog"
+                      }}
+            />
+        </div>
     )
 }

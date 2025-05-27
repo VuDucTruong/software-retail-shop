@@ -39,8 +39,14 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${roboto.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
+          <Toaster
+            richColors
+            position="top-right" // or "bottom-left", etc.
+            duration={10000} // default duration in ms
+            theme="light" // or "dark", "system"
+
+          />
           {children}
-          <Toaster richColors />
         </NextIntlClientProvider>
       </body>
     </html>
