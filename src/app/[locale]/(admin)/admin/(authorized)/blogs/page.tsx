@@ -59,7 +59,7 @@ export default function BlogManagementPage() {
                 sortDirection: sorting[0]?.desc ? "desc" : "asc",
             },
         });
-    }, [sorting, pagination]);
+    }, [sorting, pagination, getBlogs]);
 
     const cols: ColumnDef<BlogDomainType>[] = [
         {
@@ -150,12 +150,15 @@ export default function BlogManagementPage() {
             </CardHeader>
             <CardContent>
                 <CommmonDataTable
-                    isLoading={status === "loading" && lastAction === null}
+                    objectName={t('blog')}
+                    // isLoading={status === "loading" && lastAction === null}
+                    isLoading={blogs===null}
                     columns={cols}
                     data={blogs ?? []}
                     totalCount={totalInstances ?? 0}
                     pageCount={totalPages ?? 0}
                     pagination={pagination}
+                    
                     onPaginationChange={(updater) => {
                         setPagination((old) =>
                             typeof updater === "function" ? updater(old) : updater

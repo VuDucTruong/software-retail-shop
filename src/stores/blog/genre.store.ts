@@ -25,9 +25,11 @@ export namespace Api{
 
 
 export namespace GenreDomain {
-    export const Genre2Schema = GenreBaseSchema
+    export const Genre2Schema = GenreBaseSchema.extend({
+        genre1: GenreBaseSchema
+    })
     const Genre1Schema = GenreBaseSchema.extend({
-        genre2s: z.array(Genre2Schema),
+        genre2s: z.array(GenreBaseSchema),
     })
     export type Genre2Type = z.infer<typeof Genre2Schema>
     export type Genre1Type = z.infer<typeof Genre1Schema>
@@ -58,7 +60,7 @@ export namespace GenreDomain {
                     id: s.id,name: s.name,
                     genre2s: s.genres.map(g2 => ({ ...g2 }))
                 }));
-                const genre2s = genre1s.flatMap(s=>s.genre2s)
+                const genre2s: Genre2Type[] = genre1s.flatMap(s=>s.genre2s.map(g2=>({id: g2.id, name: g2.name, genre1: {id: s.id, name: s.name}})))
                 set({ genre1s: genre1s, genre2s: genre2s, status: 'success', error: null });
             }
         }

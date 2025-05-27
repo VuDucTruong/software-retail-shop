@@ -1,57 +1,93 @@
 'use client'
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import GenreDropdown, { RequiredSchema } from "@/components/blog/GenreDropdown";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
+import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { Textarea } from "@/components/ui/textarea";
-import GenreDropdown, { GenreDropDownUI } from "@/components/blog/GenreDropdown";
-import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useForm, UseFormReturn, useWatch } from "react-hook-form";
+import { z } from "zod";
 
-import { useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
 import { FloatingCardList, FloatingCart_ListDisplay_Type } from "@/components/blog/display_container/FloatingCartList";
+import { StringUtils } from "@/lib/utils";
+import { GenreDomain } from "@/stores/blog/genre.store";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {getDateTimeLocal} from "@/lib/date_helper";
 
-namespace UI {
-    const displayProfile = z.object({
+export const BlogFormSchema = RequiredSchema.extend({
+    title: z.string().min(1).max(40),
+    subtitle: z.string().min(1).max(50),
+    content: z.string().min(1).max(1000),
+    author: z.object({
         id: z.number(),
         fullName: z.string()
-    })
-
-    export const BlogFormSchema = GenreDropDownUI.RequiredSchema.extend({
-        title: z.string().min(1).max(40),
-        subtitle: z.string().min(1).max(50),
-        content: z.string().min(1).max(1000),
-        author: displayProfile,
-        image: typeof window !== "undefined"
-            ? z.instanceof(File).nullish()
-            : z.any(),
-        imageUrl: z.string().optional(),
-        publishedAt: z.string(),
-    });
-}
-export type BlogFormType = z.infer<typeof UI.BlogFormSchema>
-export const BlogFormDefaultValues: BlogFormType = {
+    }),
+    selectedGenre2Ids: z.set(z.number()),
+    image: typeof window !== "undefined"
+        ? z.instanceof(File).nullish()
+        : z.any(),
+    imageUrl: z.string().nullish(),
+    publishedAt: z.string(),
+});
+export type BlogFormType = z.infer<typeof BlogFormSchema>
+export const blogFormDefaultValues: BlogFormType = {
     title: "",
     subtitle: "",
     content: "",
-    publishedAt: new Date().toDateString(),
+    selectedGenre2Ids: new Set<number>(),
+    publishedAt: getDateTimeLocal(),
     author: {
         id: 1,
         fullName: 'anonymous'
     },
-    selectedGenres: [],
+}
+export type Modes = 'update' | 'create'
+
+function ImagePreview({ form }: { form: UseFormReturn<BlogFormType, any, BlogFormType> }) {
+    const watchedImage = useWatch({
+        control: form.control,
+        name: "image",
+    });
+    // console.log(form.getValues())
+    const watchedImageUrl = useWatch({
+        control: form.control,
+        name: "imageUrl",
+    });
+
+    const imagePreview = useMemo(() => {
+        const fallback = StringUtils.hasLength(watchedImageUrl)
+            ? watchedImageUrl!
+            : "/empty_img.png";
+
+        const src = watchedImage ? URL.createObjectURL(watchedImage) : fallback;
+
+        return (
+            <div className="relative w-full h-64">
+                <Image
+                    alt="Image"
+                    fill
+                    src={src}
+                    className="object-contain"
+                />
+            </div>
+        );
+    }, [watchedImage, watchedImageUrl]);
+    return imagePreview;
 }
 
-export default function BlogForm({ initialValues, mode, onFormSubmit }: {
-    initialValues: BlogFormType,
-    mode: 'update' | 'create',
-    onFormSubmit: (f: BlogFormType) => void
 
+export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }: {
+    initialValues: BlogFormType,
+    mode: Modes,
+    onFormSubmit: (f: BlogFormType) => void,
+    uiTitles: {
+        formTitle: string, buttonTitle: string
+    }
 }) {
 
     const t = useTranslations();
@@ -59,7 +95,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
 
     const form = useForm<BlogFormType>({
         defaultValues: initialValues,
-        resolver: zodResolver(UI.BlogFormSchema),
+        resolver: zodResolver(BlogFormSchema),
         mode: "onSubmit",
     });
     const handleSubmit = () => {
@@ -71,49 +107,41 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
         form.reset(initialValues);
     }, [initialValues, form]);
 
+    // const imagePreview = ImagePreview(form);
+
+
     // const [currentDisplayGenre1Id,setCurrentDisplayGenre1Id] = useState()
     const [selectedGenresDisplay, setSelectedGenreDisplay] = useState<FloatingCart_ListDisplay_Type>([]);
+    // console.log(form.getValues('selectedGenre2Ids'))
 
-    function onG2Selected(checked: boolean, genre2s: GenreDropDownUI.Genre2Child[]): void {
-        setSelectedGenreDisplay(current => {
-            if (genre2s.length === 0)
-                return current;
+    function onG2Selected(genre2Ids: Set<number>): void {
+        const map = new Map<number, {
+            id: number,
+            name: string,
+            childItems: { name: string }[]
+        }>();
 
-            const genre1Parent = genre2s[0].parentGenre
-            const existGenre1 = current
-                .find(g1 => g1.id === genre1Parent.id)
+        const { genre1s, genre2s } = GenreDomain.useStore.getState();
 
-            if (checked) {
-                if (existGenre1)
-                    return current.map(g1 => {
-                        if (g1.id === genre1Parent.id)
-                            return {
-                                ...g1,
-                                childItems: genre2s.map(g2 => ({ name: g2.name }))
-                            }
-                        return g1;
-                    });
-                return [...current, { ...genre1Parent, childItems: genre2s.map(g2 => ({ name: g2.name })) }]
-            } else {
-                if (!existGenre1) return current;
-                const filteredChildItems = existGenre1.childItems.filter(
-                    ci => !genre2s.some(g2 => g2.name === ci.name)
-                );
+        for (const genre2Id of genre2Ids) {
+            const genre2 = genre2s.find(g2 => g2.id === genre2Id);
+            if (!genre2) continue;
 
-                if (filteredChildItems.length === 0) {
-                    // Remove the whole parent
-                    return current.filter(g1 => g1.id !== genre1Parent.id);
-                } else {
-                    // Update parent's childItems
-                    return current.map(g1 => {
-                        if (g1.id === genre1Parent.id) {
-                            return { ...g1, childItems: filteredChildItems };
-                        }
-                        return g1;
-                    });
-                }
+            const genre1 = genre2.genre1;
+
+            if (!map.has(genre1.id)) {
+                map.set(genre1.id, {
+                    id: genre1.id,
+                    name: genre1.name,
+                    childItems: []
+                });
             }
-        })
+
+            map.get(genre1.id)!.childItems.push({ name: genre2.name });
+        }
+
+        const newValue = Array.from(map.values());
+        setSelectedGenreDisplay(newValue);
     }
 
 
@@ -121,7 +149,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
         <Card>
             <CardHeader>
                 <CardTitle>
-                    <h2>{"Tạo bài viết"}</h2>
+                    <h2>{uiTitles.formTitle}</h2>
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -156,12 +184,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
                                             />
 
                                             <div className="relative w-full h-64">
-                                                <Image
-                                                    alt="Image"
-                                                    fill
-                                                    src={field.value ? URL.createObjectURL(field.value) : "/empty_img.png"}
-                                                    className="object-contain"
-                                                />
+                                                <ImagePreview form={form} />
                                             </div>
                                         </div>
                                     </FormControl>
@@ -204,10 +227,10 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
                         {/* Categories Multi-select */}
                         <FormField
                             control={form.control}
-                            name="selectedGenres"
+                            name="selectedGenre2Ids"
                             render={({ field }) => (
                                 <CommonInputOutline title={"Thể loại"} required>
-                                    <GenreDropdown field={field} onGenre2Selected={onG2Selected} />
+                                    <GenreDropdown selectedGenre2Ids={initialValues.selectedGenre2Ids} field={field} onGenre2Selected={onG2Selected} />
                                 </CommonInputOutline>
                             )}
                         />
@@ -223,7 +246,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit }: {
                             className="col-start-3 bg-green-400 hover:bg-green-500"
                             type="submit"
                         >
-                            {t("Create")}
+                            {t(uiTitles.buttonTitle)}
                         </Button>
                     </form>
                 </Form>

@@ -7,13 +7,26 @@ import QuantityCounter from "./QuantityCounter";
 import { BsBox2 } from "react-icons/bs";
 import { useTranslations } from "next-intl";
 import CommonPriceItem from "@/components/common/CommonPriceItem";
-import { Cart } from "@/api";
+import { CartMetaData } from "@/api";
 
 
+export type CartItemDataType = {
+  id: number,
+  product: {
+    id: number,
+    name: string,
+    imageUrl: string,
+    quantity: number,
+    price: number,
+    originalPrice: number,
+    favorite: boolean,
+    tags: string[],
+    /// WILL BE DESCRIPTION LINKS as well
+  },
+  quantity: number,
+}
 
-
-
-export default function CartItem(data: Cart) {
+export default function CartItem(data: CartItemDataType) {
   const {id , product , quantity} = data;
 
   const quantityRef = React.useRef(quantity);

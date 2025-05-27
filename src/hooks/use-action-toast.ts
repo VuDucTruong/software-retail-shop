@@ -4,10 +4,10 @@ import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 type Status = "idle" | "loading" | "success" | "error";
 type ActionType = "create" | "update" | "delete" | "get";
 interface UseActionToastProps {
-  status: Status;
-  lastAction: ActionType | null;
-  errorMessage?: string;
-  reset?: () => void;
+    status: Status;
+    lastAction: ActionType | null;
+    errorMessage?: string;
+    reset?: () => void;
 }
 
 const messages: Record<ActionType, Record<Status, string>> = {
@@ -75,5 +75,5 @@ export function useActionToast({
     }
     
 
-  }, [status, lastAction]);
+    }, [status, lastAction]);
 }

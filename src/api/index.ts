@@ -17,7 +17,7 @@ export * from "./types/comment";
 export * from "./types/coupon";
 export * from "./types/payment";
 export * from "./types/order_group/order";
-export * from "./types/order_group/cart";
+export * from "./types/order_group/cartMetaData";
 export * from "./types/blog.types";
 export * from "./types/product";
 export * from "./types/common";

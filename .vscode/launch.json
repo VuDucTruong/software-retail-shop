@@ -17,7 +17,8 @@
             "type": "msedge",
             "request": "launch",
             "name": "Launch Edge against localhost",
-            "url": "http://localhost:3000/mock?role=ADMIN",
+            // "url": "http://localhost:3000/mock?role=ADMIN",
+            "url": "http://localhost:3000/en/admin/blogs/6",
             "webRoot": "${workspaceFolder}"
         }
     ]

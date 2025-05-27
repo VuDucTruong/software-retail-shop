@@ -46,6 +46,7 @@ export const BlogResponseSchema = z.object({
 })
 export const BlogResponseSchemaList = z.array(BlogResponseSchema)
 export const BlogPaginationResponseSchema = ApiResponseSchema(BlogResponseSchemaList)
+export const BlogPaginationSchema = ApiResponseSchema(BlogListSchema);
 
 
 export const BlogCreateSchema = z.object({

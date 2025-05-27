@@ -32,6 +32,9 @@
   "login_with": "Or login with",
 
   "Name": "Name",
+  
+  "create_blog": "Create a new blog",
+  "update_blog": "update a new blog",
 
   "create_account": "Create an account",
   "search_products": "Search products",

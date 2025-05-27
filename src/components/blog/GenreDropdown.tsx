@@ -19,11 +19,12 @@ import { HashSet, } from "@/lib/utils";
 import { BlogFormType } from "@/components/blog/BlogForm";
 
 type Props = {
-    field?: ControllerRenderProps<GenreDropDownUI.RegisteredType, 'selectedGenres'>; // or explicitly: ControllerRenderProps<FormValues, "genres">
-    onGenre2Selected: (checked: boolean, genre2: GenreDropDownUI.Genre2Child[]) => void,
+    field?: ControllerRenderProps<Internal.RegisteredType, 'selectedGenre2Ids'>; // or explicitly: ControllerRenderProps<FormValues, "genres">
+    onGenre2Selected: (genre2: Set<number>) => void,
+    selectedGenre2Ids: Set<number>
 };
 
-export namespace GenreDropDownUI {
+export namespace Internal {
     export namespace Genre {
         const SchemaBase = z.object({
             id: z.number(), name: z.string()
@@ -34,16 +35,17 @@ export namespace GenreDropDownUI {
         export const SchemaParent = SchemaBase.extend({
             genres: z.array(SchemaChild)
         })
-
     }
 
     export type RegisteredType = BlogFormType
-    export const RequiredSchema = z.object({
-        selectedGenres: z.array(Genre.SchemaChild)
-    })
+
     export type Genre1Parent = z.infer<typeof Genre.SchemaParent>
     export type Genre2Child = z.infer<typeof Genre.SchemaChild>
 }
+export type GenreDropDownUIItemType = Internal.Genre2Child;
+export const RequiredSchema = z.object({
+    selectedGenre2Ids: z.set(z.number())
+})
 
 export default function GenreDropdown({ field, onGenre2Selected }: Props) {
     const [proxyLoading, genre1s, getGenre1s] = GenreDomain.useStore(useShallow(s => [
@@ -56,8 +58,8 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
 
 
     /// THIS TO RENDER
-    const genres: GenreDropDownUI.Genre1Parent[] = genre1s.map(g1 => ({
-        ...g1,
+    const genres: Internal.Genre1Parent[] = genre1s.map(g1 => ({
+        id: g1.id, name: g1.name,
         genres: g1.genre2s.map(g2 => ({ ...g2, parentGenre: { id: g1.id, name: g1.name } }))
     }))
 
@@ -66,13 +68,18 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
     if (!field) return null;
     const selectedGenres = field.value || [];
 
-    const isChecked = (coming: GenreDropDownUI.Genre2Child[]) => {
-        return coming.every(c => selectedGenres.some(s => s.id === c.id));
+    useEffect(()=>{
+        onGenre2Selected(selectedGenres)
+    },[selectedGenres])
+
+
+    const isChecked = (coming: Internal.Genre2Child[]) => {
+        return coming.every(c => selectedGenres.has(c.id));
     }
 
     const handleCheckboxChange = (
         checked: boolean,
-        genre: GenreDropDownUI.Genre2Child | GenreDropDownUI.Genre1Parent
+        genre: Internal.Genre2Child | Internal.Genre1Parent
     ) => {
         if (!field) return;
 
@@ -80,22 +87,19 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
 
         if ('genres' in genre) {
             if (checked) {
-                newSelected = HashSet.addAllReturnNew(selectedGenres, genre.genres, v => v.id);
+                newSelected = new Set<number>([...selectedGenres, ...genre.genres.map(g2 => g2.id)])
             } else {
                 const idsToRemove = new Set(genre.genres.map(g => g.id));
-                newSelected = selectedGenres.filter(g => !idsToRemove.has(g.id));
+                newSelected = new Set<number>([...selectedGenres].filter(g2Id => idsToRemove.has(g2Id)));
             }
-            onGenre2Selected(checked, genre.genres)
         } else {
             if (checked) {
-                newSelected = HashSet.add(selectedGenres, genre, g => g.id);
+                newSelected = selectedGenres.add(genre.id)
             } else {
-                newSelected = selectedGenres.filter(g => g.id !== genre.id);
+                selectedGenres.delete(genre.id)
+                newSelected = new Set(selectedGenres);
             }
-            onGenre2Selected(checked, [genre])
-
         }
-        console.log('indropdown:', field.value)
 
         field.onChange(newSelected);
     };
@@ -105,7 +109,7 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
             <DropdownMenu>
                 <DropdownMenuTrigger className="max-w-[200px]" asChild>
                     <Button variant="outline" className="w-full justify-between">
-                        {selectedGenres.length > 0 ? "Đã chọn" : "Chọn thể loại"}
+                        {selectedGenres.size > 0 ? "Đã chọn" : "Chọn thể loại"}
 
                     </Button>
                 </DropdownMenuTrigger>
@@ -145,7 +149,7 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
             </DropdownMenu>
             <div className="text-sm text-muted-foreground">
                 Đã chọn:{" "}
-                <span className="font-medium">{selectedGenres.map(g2 => g2.name).join(", ")}</span>
+                <span className="font-medium">{[...selectedGenres].join(", ")}</span>
             </div>
         </div>
     );

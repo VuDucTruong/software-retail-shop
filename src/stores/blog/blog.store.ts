@@ -9,18 +9,19 @@ import {
     BlogResponseSchema,
     BlogResponseType,
     BlogUpdateRequest,
-    defaultAsyncState,
+    defaultAsyncState, DisposeAction,
     Pageable,
     QueryParams,
     setLoadAndDo
 } from "@/api"
-import {z} from "zod";
+import { z } from "zod";
 
 
-import {create} from "zustand";
-import {GenreDomain} from "./genre.store";
-import {useUserStore} from "@/stores/user.store";
-import {fallbackProfile} from "@/lib/fallback_values";
+import { create } from "zustand";
+import { GenreDomain } from "./genre.store";
+import { useUserStore } from "@/stores/user.store";
+import { fallbackProfile } from "@/lib/fallback_values";
+import { flattenObject } from "@/lib/utils";
 
 // namespace BlogAPI{
 //
@@ -45,13 +46,12 @@ const mapFromResponseToDomain = (response: BlogResponseType): BlogDomainType => 
         title: response.title ?? 'ok',
         subtitle: response.subtitle ?? 'anonymouse',
         content: response.content ?? '',
-        author: response.author ?? {id: 1, fullName: 'anonymous', createdAt: '', imageUrl: ''},
+        author: response.author ?? { id: 1, fullName: 'anonymous', createdAt: '', imageUrl: '' },
         genre2Ids: response.genre2Ids || [],
-        imageUrl: '',
+        imageUrl: response.imageUrl,
         publishedAt: new Date().toISOString()
     }
 }
-
 
 export namespace BlogSingle {
     export type State = BaseState & {
@@ -59,7 +59,7 @@ export namespace BlogSingle {
         blog: BlogDomainType | null,
     }
 
-    export type Action = BaseAction & {
+    export type Action = BaseAction & DisposeAction & {
         getById: (id: number, includeDeleted?: boolean) => Promise<void>
         createBlog: (data: BlogCreateRequest) => Promise<void>;
         updateBlog: (data: BlogUpdateRequest) => Promise<void>;
@@ -80,7 +80,7 @@ export namespace BlogSingle {
         getById: async (id, includeDeleted: boolean = false) => {
             const response = await BlogApis.geBlogtById(id, includeDeleted)
             const domain: BlogDomainType = mapFromResponseToDomain(response);
-            set({blog: domain})
+            set({ blog: domain })
         },
         createBlog: async (request: BlogCreateRequest): Promise<void> => {
             const response = await BlogApis.createBlog(request);
@@ -90,40 +90,54 @@ export namespace BlogSingle {
                 author: profile ?? fallbackProfile,
                 imageUrl: response.imageUrl,
             }
-            set({blog: domain})
+            set({ blog: domain })
         },
         updateBlog: async (request: BlogUpdateRequest) => {
             const response = await BlogApis.updateBlogById(request);
-            const domain: BlogDomainType = {
-                ...(get().blog ?? fallbackBlog),
-                imageUrl: response.imageUrl,
-            }
-            set({blog: domain})
-        },
 
+            let imageUrl : string;
+            if(request.image)
+                imageUrl = response?.imageUrl ?? "/empty_image.png"
+            else
+                imageUrl = get().blog?.imageUrl ?? "/empty_image.png"
+
+            const domain: BlogDomainType = {
+                author: get()?.blog?.author || fallbackProfile,
+                title: request.title,
+                content: request.content,
+                genre2Ids: request.genreIds,
+                id: request.id,
+                publishedAt: request.publishedAt,
+                subtitle: request.subtitle,
+                imageUrl
+            }
+            set({ blog: domain })
+        },
+        clean() {
+            set({ ...initialState })
+        }
     }));
 }
 
 export namespace BlogMany {
     type State = BaseState & Pageable & {
-        blogs: BlogDomainList | null;
-
-
+        blogs: BlogDomainList;
         genres: GenreDomain.Genre2Type[] | null;
     }
 
-    type Action = {
+    type Action = BaseAction & DisposeAction & {
         getBlogs: (query: QueryParams) => Promise<void>;
         deleteBlogs: (ids: number[]) => Promise<void>;
         getById: (id: number, includeDeleted: boolean) => Promise<void>
-
     }
+
     type BlogStore = State & Action;
 
     const initialState: State = {
-        blogs: null,
+        blogs: [],
         totalInstances: 0,
         totalPages: 0,
+        currentPage: 0,
         genres: null,
         ...defaultAsyncState,
         queryParams: {
@@ -136,23 +150,39 @@ export namespace BlogMany {
         }
     }
 
-    export const useStore = create<BlogStore>((set) => ({
+    export const useStore = create<BlogStore>((set, get) => ({
         ...initialState,
+        proxyLoading(run, lastAction) {
+            setLoadAndDo(set, run, lastAction)
+        },
         getBlogs: async (query) => {
             const response = await BlogApis.getBlogs(query);
-            const domains = response.data.map(b => mapFromResponseToDomain(b));
-            set({blogs: domains})
+            const domains: BlogDomainType[] = response.data.map(b => mapFromResponseToDomain(b));
+            set({
+                blogs: domains,
+                totalInstances: response.totalInstances,
+                totalPages: response.totalPages,
+                currentPage: response.currentPage
+            })
         },
         deleteBlogs: async (ids) => {
-            const response = await BlogApis.deleteBlogs(ids)
-            set({blogs: []})
+            await BlogApis.deleteBlogs(ids)
+            const { blogs, totalInstances, totalPages, currentPage } = get();
+            set({
+                blogs: blogs.filter(d => ids.some(id => id === d.id)),
+                totalInstances, totalPages, currentPage,
+            })
         },
         getById: async (id, includeDeleted: boolean = false) => {
             console.log(' NOT DOING ANYTHING NOW')
-            const response = await BlogApis.geBlogtById(id, includeDeleted)
-            const domain: BlogDomainType = mapFromResponseToDomain(response);
+            // const response = await BlogApis.geBlogtById(id, includeDeleted)
+            // const domain: BlogDomainType = mapFromResponseToDomain(response);
             // set({blog: domain})
         },
+        clean() {
+            set({ ...initialState })
+            console.log("clearing in blog many", get().blogs)
+        }
     }));
 
 }
@@ -162,7 +192,7 @@ export namespace BlogApis {
 
     // set({status: "loading", lastAction: null});
     export const geBlogtById = async (id: number, deleted: boolean): Promise<BlogResponseType> => {
-        return apiClient.get(`/blogs/${id}`, BlogResponseSchema, {params: {deleted}})
+        return apiClient.get(`/blogs/${id}`, BlogResponseSchema, { params: { deleted } })
 
     }
     // set({status: "loading", lastAction: null,queryParams: query});
@@ -185,14 +215,14 @@ export namespace BlogApis {
 
     // set({ status: "loading", lastAction: "create" });
     export const createBlog = async (data: BlogCreateRequest): Promise<BlogResponseType> => {
-        return apiClient.post("/blogs", BlogResponseSchema, data, {
+        return apiClient.post("/blogs", BlogResponseSchema, flattenObject(data), {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
         });
     }
     export const updateBlogById = async (data: BlogUpdateRequest): Promise<BlogResponseType> => {
-        return apiClient.put("/blogs", BlogResponseSchema, data, {
+        return apiClient.put("/blogs", BlogResponseSchema, flattenObject(data), {
             headers: {
                 "Content-Type": "multipart/form-data",
             },

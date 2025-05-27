@@ -1,25 +1,20 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { useTranslations } from "next-intl";
+import {Card, CardContent, CardHeader, CardTitle} from "../ui/card";
+import {useTranslations} from "next-intl";
 import CartItemList from "./CartItemList";
-import { Button } from "../ui/button";
-import { MdPayment, MdQrCodeScanner } from "react-icons/md";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
-import { Input } from "../ui/input";
+import {Button} from "../ui/button";
+import {MdPayment, MdQrCodeScanner} from "react-icons/md";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "../ui/accordion";
+import {Input} from "../ui/input";
 import EmptyList from "./EmptyList";
-import { IoIosArrowBack } from "react-icons/io";
-import { Cart } from "@/api";
+import {IoIosArrowBack} from "react-icons/io";
+import {CartItemDataType} from "@/components/cart/CartItem";
 
 type CardItemsProps = {
   stepIndex: number;
   handleNextStep: () => void;
   handlePrevStep: () => void;
-  cartItems: Cart[];
+  cartItems: CartItemDataType[];
 };
 
 export default function CartItemsSection(props: CardItemsProps) {
