@@ -66,7 +66,7 @@ export function HomeCarousel() {
                 <CarouselItem key={index} className="md:basis-1/2">
                   <div className="p-1">
                     <Card className="p-0">
-                      <CardContent className="h-50 w-full relative">
+                      <CardContent className="h-60 w-full relative">
                         <Image
                           src={banner}
                           alt="Banner"

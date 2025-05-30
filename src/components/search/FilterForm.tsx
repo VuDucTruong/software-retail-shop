@@ -1,8 +1,5 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,63 +9,141 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { CommonCombobox } from "./CommonCombobox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { QueryParams } from "@/api";
+import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useTranslations } from "next-intl";
-import { Input } from "../ui/input";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IoFilter } from "react-icons/io5";
 import { LuListRestart } from "react-icons/lu";
+import { useShallow } from "zustand/shallow";
+import { Input } from "../ui/input";
+import CategorySelect from "./CategorySelect";
+import TagSelect from "./TagSelect";
 
 const FormSchema = z.object({
-  category: z.string().optional(),
-  tag: z.string().optional(),
-  minPrice: z.string().optional(),
-  maxPrice: z.string().optional(),
+  priceFrom: z.string().optional(),
+  priceTo: z.string().optional(),
+  categoryId: z.number().array().optional(),
+  tag: z.string().array().optional(),
   sort: z.string().optional(),
 });
 
+const sortOptions = [
+  {
+    value: "id,asc",
+    label: "Default",
+  },
+  {
+    value: "createdAt,desc",
+    label: "Newest",
+  },
+  {
+    value: "price,asc",
+    label: "Price: Low to High",
+  },
+  {
+    value: "price,desc",
+    label: "Price: High to Low",
+  },
+  {
+    value: "name,asc",
+    label: "Name: A to Z",
+  },
+  {
+    value: "name,desc",
+    label: "Name: Z to A",
+  },
+];
+
 export function FilterForm() {
+  const t = useTranslations();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId") || "-1";
+  const tag = searchParams.get("tag") || "all";
+  const priceFrom = searchParams.get("priceFrom") || "";
+  const priceTo = searchParams.get("priceTo") || "";
+  const sort = searchParams.get("sort") || "createdAt,desc";
+  const search = searchParams.get("search") || "";
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-        category: "",
-        tag: "",
-        minPrice: "0",
-        maxPrice: "",
-        sort: "",
-        },
+      priceFrom: priceFrom,
+      priceTo: priceTo,
+      categoryId: [Number(categoryId)],
+      tag: [tag],
+      sort: sort !== "" ? sort : sortOptions[0].value,
+    },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(JSON.stringify(data, null, 2));
+
+
+    const cleanedData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([key, value]) => value !== undefined && value !== "" && key !== "sort"
+      )
+    );
+
+    const urlParams = new URLSearchParams();
+    urlParams.set("page", "0");
+    urlParams.set("sort", data.sort || "id,asc");
+    urlParams.set("search", search);
+
+    Object.entries(cleanedData).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((v) => urlParams.append(key, v.toString()));
+      } else {
+        urlParams.set(key, value.toString());
+      }
+    });
+
+    router.push(`/search?${searchParams.toString()}`);
+
   }
   const onClearFilter = () => {
-    form.reset();
+    form.reset({
+      priceFrom: "",
+      priceTo: "",
+      categoryId: [-1],
+      tag: ["all"],
+      sort: sortOptions[0].value,
+    })
   };
-
-  const tempData = ["item1", "item2", "item3", "item4"];
-  const t = useTranslations();
 
   return (
     <div className="flex flex-col gap-4">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className=" flex flex-row items-end justify-between"
+          className=" flex flex-row items-end justify-between gap-4"
         >
           {/* Category */}
           <FormField
             control={form.control}
-            name="category"
+            name="categoryId"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
+              <FormItem>
                 <FormLabel>{t("Category")}</FormLabel>
-                <CommonCombobox
-                  data={tempData}
-                  field={field}
-                  form={form}
-                  name="category"
-                  title={t("Category")}
-                />
+                <FormControl>
+                  <CategorySelect
+                    value={field.value?.[0]}
+                    onChange={(val) => field.onChange([val])}
+                  />
+                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -77,55 +152,47 @@ export function FilterForm() {
             control={form.control}
             name="tag"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>{t("Tag")}</FormLabel>
-                <CommonCombobox
-                  data={tempData}
-                  field={field}
-                  form={form}
-                  name="tag"
-                  title={t("Tag")}
-                />
+              <FormItem>
+                <FormLabel>{t("Tags")}</FormLabel>
+                <FormControl>
+                  <TagSelect
+                    value={field.value?.[0]}
+                    onChange={(val) => field.onChange([val])}
+                  />
+                </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
           {/* Price */}
           <FormField
             control={form.control}
-            name="minPrice"
+            name="priceFrom"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>{t("price_from")}</FormLabel>
+              <FormItem className="flex-1">
+                <FormLabel>Giá trị từ</FormLabel>
                 <FormControl>
-                  <Input
-                    className="bg-background"
-                    step={1000}
-                    type="number"
-                    min={0}
-                    {...field}
-                  />
+                  <Input type="number" placeholder="Giá trị từ" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="maxPrice"
+            name="priceTo"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>{t("price_to")}</FormLabel>
+              <FormItem className="flex-1">
+                <FormLabel>Đến giá trị</FormLabel>
                 <FormControl>
-                  <Input
-                    className="bg-background"
-                    step={1000}
-                    type="number"
-                    min={0}
-                    {...field}
-                  />
+                  <Input type="number" placeholder="Giá trị đến" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
+
           {/* Sort */}
           <FormField
             control={form.control}
@@ -133,13 +200,18 @@ export function FilterForm() {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>{t("Sort")}</FormLabel>
-                <CommonCombobox
-                  data={tempData}
-                  field={field}
-                  form={form}
-                  name="sort"
-                  title={t("Sort")}
-                />
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Sort" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sortOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {(option.label)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormItem>
             )}
           />
@@ -148,11 +220,16 @@ export function FilterForm() {
             <IoFilter />
             {t("Filter")}
           </Button>
+
+          <Button
+            variant={"destructive"}
+            onClick={onClearFilter}
+            className="w-fit"
+          >
+            <LuListRestart /> {t("reset_filter")}
+          </Button>
         </form>
       </Form>
-      <Button variant={"destructive"} onClick={onClearFilter} className="w-fit">
-        <LuListRestart /> {t("reset_filter")}
-      </Button>
     </div>
   );
 }

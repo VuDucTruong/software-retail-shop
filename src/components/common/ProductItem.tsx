@@ -16,7 +16,7 @@ type ProductItemProps = {
 };
 
 export default function ProductItem(props: ProductItemProps) {
-  const {product} = props;
+  const { product } = props;
   const convertedPrice = convertPriceToVND(product.price);
 
   const convertedOriginalPrice = convertPriceToVND(product.originalPrice);
@@ -31,16 +31,20 @@ export default function ProductItem(props: ProductItemProps) {
   };
   return (
     <Card
-    onClick={handleClick}
+      onClick={handleClick}
       className={cn(
         "p-0 gap-2 bg-transparent hover:opacity-80 cursor-pointer",
         props.className
       )}
     >
       <CardTitle>
-        <figure className="relative h-36">
+        <figure className="relative aspect-video">
           <Image
-            className="rounded-sm object-fill"
+            className={
+              product.imageUrl == "/empty_img.png"
+                ? "object-contain"
+                : "object-conver"
+            }
             fill
             sizes="100%"
             src={product.imageUrl}
@@ -48,15 +52,17 @@ export default function ProductItem(props: ProductItemProps) {
           />
         </figure>
       </CardTitle>
-      <CardContent className="px-2 pb-2">
+      <CardContent className="px-2 pb-2 flex h-full flex-col">
         <div>{product.name}</div>
-        <div className="text-lg font-semibold">{convertedPrice}</div>
-        <div className="flex gap-4 items-center">
-          <div className="line-through text-gray-400">
-            {convertedOriginalPrice}
+        <div className="text-lg font-semibold flex-1 flex flex-col justify-center">{convertedPrice}</div>
+        {discountPercentage > 0 && (
+          <div className="flex gap-4 items-center">
+            <div className="line-through text-gray-400">
+              {convertedOriginalPrice}
+            </div>
+            <DiscountItem discountPercentage={discountPercentage} />
           </div>
-          <DiscountItem discountPercentage={discountPercentage} />
-        </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -20,7 +20,7 @@ export const QueyParamsSchema = z
       page: z.number(),
       size: z.number(),
       sortBy: z.string(),
-      sortDirection: z.enum(["asc", "desc"]),
+      sortDirection: z.string(),
     }),
     ids: z.array(z.number()).optional(),
   })

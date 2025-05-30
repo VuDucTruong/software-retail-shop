@@ -16,7 +16,7 @@ import { create } from "zustand";
 const productApiClient = ApiClient.getInstance();
 
 type ProductState = {
-  products: Map<string, ProductList> | null;
+  products: Map<string, ProductList>;
   search: ProductList | null;
   selectedProduct: Product | null;
   queryParams: QueryParams;
@@ -28,7 +28,7 @@ type ProductState = {
 
 type ProductAction = {
   resetStatus: () => void;
-  getProducts: (query: QueryParams, name: string) => Promise<void>;
+  getProducts: (query: QueryParams, name: string) => Promise<void>; // name is used to differentiate between different product lists
   getProductBySlug: (slug: string) => Promise<void>;
   searchProducts: (query: QueryParams) => Promise<void>;
 };
@@ -36,13 +36,13 @@ type ProductAction = {
 type ProductStore = ProductState & ProductAction;
 
 const initialState: ProductState = {
-  products: null,
+  products: new Map<string, ProductList>(),
   search: null,
   selectedProduct: null,
   queryParams: {
     pageRequest: {
       page: 0,
-      size: 10,
+      size: 8,
       sortBy: "createdAt",
       sortDirection: "desc",
     },
@@ -71,7 +71,12 @@ const getProducts = async (
   query: QueryParams,
   name: string
 ) => {
-  set({ status: "loading", lastAction: null, error: null, queryParams: query });
+  set((state) => ({
+     status: "loading", error: null , queryParams: {
+    ...state.queryParams,
+    ...query,
+     }
+  }));
 
   try {
     const response = await productApiClient.post(

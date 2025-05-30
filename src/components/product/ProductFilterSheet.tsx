@@ -23,12 +23,15 @@ import {
 } from "../ui/sheet";
 import { useProductStore } from "@/stores/product.store";
 import { CategoryMultiSelectField } from "./CategoryMultiSelect";
+import { TagsInput } from "./TagInput";
+import { TagMultiSelectField } from "./TagMultiSelect";
 
 const FormSchema = z.object({
   search: z.string().optional(),
   priceFrom: z.string().optional(),
   priceTo: z.string().optional(),
   categoryIds: z.number().array().optional(),
+  tags: z.string().array().optional(),
 });
 
 export default function ProductFilterSheet() {
@@ -40,6 +43,7 @@ export default function ProductFilterSheet() {
       priceFrom: "",
       priceTo: "",
       categoryIds: [],
+      tags: [],
     },
   });
 
@@ -143,6 +147,22 @@ export default function ProductFilterSheet() {
                   </FormItem>
                 )}
               />
+
+                <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Chọn các thẻ sản phẩm</FormLabel>
+                    <FormControl>
+                      <TagMultiSelectField field={field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              
             </form>
           </Form>
           <div className="absolute right-0 left-0 bottom-2 flex gap-2 mx-3 bg-white pt-2">
