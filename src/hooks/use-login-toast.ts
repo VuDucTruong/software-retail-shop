@@ -40,7 +40,13 @@ const messages: Record<string, Record<Status, string>> = {
     success: "Xác minh email thành công!",
     error: "Xác minh email thất bại!",
     idle: "",
-  }
+  },
+  updateProfile: {
+    loading: "Đang cập nhật thông tin cá nhân...",
+    success: "Cập nhật thông tin cá nhân thành công!",
+    error: "Cập nhật thông tin cá nhân thất bại!",
+    idle: "",
+  },
 };
 
 export function useLoginToast({

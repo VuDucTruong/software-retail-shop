@@ -42,7 +42,7 @@ type AuthAction = {
   logout: () => Promise<void>;
   changePassword: (request: {
     email: string;
-    otp: string;
+    otp?: string;
     password: string;
   }) => Promise<void>;
   getMe: (isAdmin?: boolean) => Promise<void>;
@@ -149,7 +149,7 @@ const logout = async (set: SetState<AuthStore>) => {
 
 const changePassword = async (
   set: SetState<AuthStore>,
-  request: { email: string; otp:string; password: string }
+  request: { email: string; otp?:string; password: string }
 ) => {
   set({ lastAction: "changePassword", status: "loading", error: null });
 

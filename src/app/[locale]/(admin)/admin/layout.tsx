@@ -41,10 +41,6 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <Toaster
             richColors
-            position="top-right" // or "bottom-left", etc.
-            duration={10000} // default duration in ms
-            theme="light" // or "dark", "system"
-
           />
           {children}
         </NextIntlClientProvider>
