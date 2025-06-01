@@ -9,7 +9,6 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "sonner";
 import ChatButton from "@/components/chatbot/ChatButton";
-import CheckAuthDialog from "@/components/auth/CheckAuthDialog";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -41,14 +40,10 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${roboto.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-            <HomeHeader />
-            <CheckAuthDialog />
             <main>
               {children}
             </main>
-            <ChatButton/>
             <Toaster richColors/>
-            <HomeFooter />
         </NextIntlClientProvider>
       </body>
     </html>

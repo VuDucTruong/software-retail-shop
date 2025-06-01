@@ -78,9 +78,11 @@ export const RegisterRequestSchema = z.object({
 
 
 export const ChangePasswordSchema = z.object({
-  newPassword: PasswordSchema,
-  confirmPassword: PasswordSchema,
-}).refine((data) => data.newPassword === data.confirmPassword, {
+  email: z.string().email("Email không hợp lệ").optional(),
+  otp: z.string().length(6 , "Vui lòng nhập mã OTP của bạn").optional(),
+  password: PasswordSchema.optional(),
+  confirmPassword: PasswordSchema.optional(),
+}).refine((data) => data.password === data.confirmPassword, {
   message: messages.notMatch.password,
   path: ["confirmPassword"],
 })

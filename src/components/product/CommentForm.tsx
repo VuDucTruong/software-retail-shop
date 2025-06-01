@@ -17,7 +17,8 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useTranslations } from "next-intl"
 import { MdOutlineSend } from "react-icons/md"
-import { toast } from "sonner"
+import { useAuthStore } from "@/stores/auth.store"
+import { useAuthDialogStore } from "@/stores/auth.dialog.store"
 
 type CommentFormProps = {
   onSubmit?: (data: string) => void
@@ -46,7 +47,20 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
     },
   })
 
+    const isAuthenticated = useAuthStore(
+      (state) => state.isAuthenticated
+    );
+    const onOpenChange = useAuthDialogStore
+      ((state) => state.onOpenChange);
+
+
   function handleSubmit(data: z.infer<typeof FormSchema>) {
+
+    if (!isAuthenticated) {
+      onOpenChange(true);
+      return;
+    }
+
     const comment = data.comment.trim()
     onSubmit?.(comment)
     form.reset()

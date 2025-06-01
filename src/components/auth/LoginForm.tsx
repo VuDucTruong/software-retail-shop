@@ -11,14 +11,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuthStore } from "@/stores/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { useShallow } from "zustand/shallow";
 
-export function LoginForm() {
+type Props = {
+  onSubmit?: (values: LoginRequest) => void;
+};
+
+export function LoginForm({ onSubmit }: Props) {
   const t = useTranslations();
 
   const form = useForm<LoginRequest>({
@@ -29,23 +31,16 @@ export function LoginForm() {
     },
   });
 
-  const [login, status, lastAction, error] = useAuthStore(useShallow((state) => [
-    state.login,
-    state.status,
-    state.lastAction,
-    state.error,
-  ]));
-  
-  function onSubmit(values: LoginRequest) {
-    login(values)
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    form.handleSubmit((data) => {
+      onSubmit?.(data);
+    })();
   }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 flex flex-col"
-      >
+      <form onSubmit={handleSubmit} className="space-y-6 flex flex-col">
         {/* Email */}
         <FormField
           control={form.control}
@@ -83,7 +78,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Link href={"/"} className="hover:underline text-blue-500">
+        <Link href={"/forgot-pass"} className="hover:underline text-blue-500">
           {t("forgot_password")}
         </Link>
         <Button type="submit">{t("Login")}</Button>

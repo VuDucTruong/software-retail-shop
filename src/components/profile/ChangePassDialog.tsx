@@ -27,7 +27,7 @@ export default function ChangePassDialog() {
   
   const form = useForm<ChangePassword>({
     defaultValues: {
-        newPassword: "",
+        password: "",
         confirmPassword: "",
     },
     resolver: zodResolver(ChangePasswordSchema),
@@ -61,7 +61,7 @@ export default function ChangePassDialog() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6 max-w-1/2 mt-8">
               <FormField
-                name="newPassword"
+                name="password"
                 control={form.control}
                 render={({ field }) => (
                   <CommonInputOutline title={t("new_password")}>

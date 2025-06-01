@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
 type Status = "idle" | "loading" | "success" | "error";
@@ -35,6 +35,12 @@ const messages: Record<string, Record<Status, string>> = {
     error: "Thay đổi mật khẩu thất bại!",
     idle: "",
   },
+  verifyEmail: {
+    loading: "Đang xác minh email...",
+    success: "Xác minh email thành công!",
+    error: "Xác minh email thất bại!",
+    idle: "",
+  }
 };
 
 export function useLoginToast({
@@ -42,14 +48,27 @@ export function useLoginToast({
   lastAction,
   errorMessage,
 }: UseActionToastProps) {
+
+   const didMount = useRef(false);
+    const toastIdRef = useRef<string | number | undefined>(undefined);
+
   useEffect(() => {
 
+    
+    if (!didMount.current) {
+      didMount.current = true;
+      return;
+    }
 
+    console.log("useLoginToast", {
+      status,
+      lastAction,
+      errorMessage,
+    });
     if (
       !lastAction ||
       status === "idle" ||
-      lastAction === "logout" ||
-      lastAction === "changePassword"
+      lastAction === "logout"
     )
       return;
 
@@ -62,9 +81,11 @@ export function useLoginToast({
     
     
     if (status === "loading") {
-      toast.loading(message);
+      toastIdRef.current = toast.loading(message);
     } else {
-      toast.dismiss();
+      if (toastIdRef.current) {
+        toast.dismiss(toastIdRef.current);
+      }
       if (status === "success") {
         toast.success(message);
       } else if (status === "error") {

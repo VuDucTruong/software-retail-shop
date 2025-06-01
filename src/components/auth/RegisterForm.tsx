@@ -1,7 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { RegisterRequest, RegisterRequestSchema } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,23 +12,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useTranslations } from "next-intl";
-import { RegisterRequest, RegisterRequestSchema } from "@/api";
+import { useLoginToast } from "@/hooks/use-login-toast";
 import { useAuthStore } from "@/stores/auth.store";
-import { useEffect, useRef, useState } from "react";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
-import Image from "next/image";
-import { BiArrowBack } from "react-icons/bi";
-import ResendOTPBtn from "./ResendOTPBtn";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useShallow } from "zustand/shallow";
+
+
 
 export function RegisterForm() {
   const t = useTranslations();
-  const [isOTP, setIsOTP] = useState(false);
+  const router = useRouter();
   const form = useForm<RegisterRequest>({
     resolver: zodResolver(RegisterRequestSchema),
     defaultValues: {
@@ -39,82 +35,50 @@ export function RegisterForm() {
       fullName: "",
     },
   });
-  const otpRef = useRef<HTMLInputElement>(null);
 
-  const register = useAuthStore((state) => state.register);
-  const sendOTP = useAuthStore((state) => state.sendOTP);
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  
+
+  const [register, lastAction, status, error,sendOTP] = useAuthStore(
+    useShallow((state) => [
+      state.register,
+      state.lastAction,
+      state.status,
+      state.error,
+      state.sendOTP,
+    ])
+  );
+
+  useLoginToast({
+    status,
+    lastAction,
+    errorMessage: error || undefined,
+  });
+
+  const handleRegister = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     form.handleSubmit((data) => {
-      //setIsOTP(true);
-
-      register(data)
+      register(data);
     })();
-  }
+  };
 
-  if (isOTP) {
-
-    useEffect(() => {
-      sendOTP(form.getValues("email"))
-    },[]);
-
-    return (
-      <div className="flex flex-col gap-4 justify-center">
-        <div className="flex items-center justify-start">
-          <Button className="flex items-center" variant={"ghost"} onClick={()=>setIsOTP(false)}><BiArrowBack /> Quay lại</Button>
-        </div>
-        <figure className="relative h-52">
-          <Image alt="OTP" src={"/otp.jpg"} fill sizes="100%" className="object-contain rounded-md"/>
-        </figure>
-        <div className="text-muted-foreground flex flex-col items-center justify-center">
-          Nhập mã OTP đã được gửi đến email
-          <span className="text-black font-medium">{form.getValues("email")}</span>
-        </div>
-        <div className="flex items-center justify-center">
-          <InputOTP
-            maxLength={6}
-            required
-            ref={otpRef}
-            inputMode="numeric"
-            pattern="[0-9]*"
-          >
-            <InputOTPGroup>
-              <InputOTPSlot className="size-15 text-4xl" index={0} />
-              <InputOTPSlot className="size-15 text-4xl" index={1} />
-              <InputOTPSlot className="size-15 text-4xl" index={2} />
-            </InputOTPGroup>
-            <InputOTPSeparator />
-            <InputOTPGroup>
-              <InputOTPSlot className="size-15 text-4xl" index={3} />
-              <InputOTPSlot className="size-15 text-4xl" index={4} />
-              <InputOTPSlot className="size-15 text-4xl" index={5} />
-            </InputOTPGroup>
-          </InputOTP>
-        </div>
-        <Button
-          onClick={() => {
-            
-          }}
-        >
-          Xác nhận
-        </Button>
-          <div className="flex items-center justify-center">
-            <ResendOTPBtn onResend={()=>sendOTP(form.getValues('email'))} initialCountdown={30}/>
-          </div>
-
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (lastAction === "register" && status === "success") {
+      const urlParams = new URLSearchParams();
+      urlParams.set("email", form.getValues("email"));
+      sendOTP(form.getValues("email"));
+      router.push(`/register/verify?${urlParams.toString()}`);
+    }
+  }, [lastAction, status]);
 
   return (
     <div className="flex flex-col justify-start gap-2 max-w-xl ">
-      <p className="italic text-muted-foreground mb-6">
+      <p className="italic text-sm text-muted-foreground mb-2">
         {t("register_description")}
       </p>
       <Form {...form}>
         <form
-          onSubmit={onSubmit}
-          className="space-y-6 flex flex-col overflow-y-scroll px-1"
+          onSubmit={handleRegister}
+          className="space-y-6 flex flex-col px-1"
         >
           {/* Username */}
           <FormField

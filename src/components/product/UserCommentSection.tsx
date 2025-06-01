@@ -14,6 +14,7 @@ export default function UserCommentSection({ productId }: Props) {
     useShallow((state) => [state.comments, state.getCommentsByProductId , state.status , state.lastAction , state.error, state.createComment])
   );
 
+
   useEffect(() => {
     getCommentsByProductId(productId);
   }, []);
