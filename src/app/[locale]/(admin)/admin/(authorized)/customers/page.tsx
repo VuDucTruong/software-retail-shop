@@ -95,14 +95,14 @@ export default function CustomerManagementPage() {
     },
     {
       accessorKey: "role",
-      header: "Vai trò",
+      header: t("Role"),
       cell: ({ row }) => {
         return row.original.role;
       },
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("Status"),
       cell: ({ row }) => {
         return (
           <StatusBadge status={row.original.deletedAt ? "banned" : "active"} />
@@ -111,7 +111,7 @@ export default function CustomerManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: "Ngày tạo",
+      header: t("created_at"),
       cell: ({ row }) => {
         return row.original.createdAt;
       },
@@ -156,7 +156,7 @@ export default function CustomerManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{"Quản lý khách hàng"}</h2>
+          <h2>{t('customer_management')}</h2>
           <div className="flex items-center gap-2">
             <UserFilterSheet />
           </div>

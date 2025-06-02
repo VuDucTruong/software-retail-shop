@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { Product } from "@/api";
 import debounce from "lodash/debounce";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export function ProductComboBox({
   ref,
@@ -36,7 +37,7 @@ export function ProductComboBox({
   const getProducts = useProductStore((state) => state.getProducts);
   const status = useProductStore((state) => state.status);
   const products = useProductStore((state) => state.products);
-
+  const t = useTranslations();
   const handleSearch = (value: string) => {
     getProducts({
       pageRequest: {
@@ -78,14 +79,14 @@ export function ProductComboBox({
             role="combobox"
             aria-expanded={open}
           >
-            Chọn sản phẩm...
+            {t('select_product')}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0 w-[300px]" align="start">
           <Command>
             <CommandInput
-              placeholder="Tìm kiếm sản phẩm"
+              placeholder={t('search_products')}
               onValueChange={debouncedSearch}
               className="h-9"
             />

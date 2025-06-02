@@ -56,14 +56,14 @@ export default function CategoryFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm danh mục
+          <Filter /> {t("search_and_filter" , {x: t("category")})}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm danh mục</SheetTitle>
+          <SheetTitle>{t("search_and_filter" , {x: t("category")})}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm danh mục dựa trên tên và mô tả
+            {t("search_and_filter_description", { x: t("category") })}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -74,7 +74,7 @@ export default function CategoryFilterSheet() {
                 name="search"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t("Search")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -89,7 +89,7 @@ export default function CategoryFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t("Apply")}
             </Button>
           </div>
         </div>

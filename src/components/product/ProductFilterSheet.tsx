@@ -71,14 +71,14 @@ export default function ProductFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm sản phẩm
+          <Filter /> {t('filter_and_search_products')}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm sản phẩm</SheetTitle>
+          <SheetTitle>{t('filter_and_search_products')}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm sản phẩm, lọc theo khoảng giá trị, danh mục sản phẩm
+            {t('filter_and_search_products_description')}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -89,7 +89,7 @@ export default function ProductFilterSheet() {
                 name="search"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t('Search')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -103,11 +103,11 @@ export default function ProductFilterSheet() {
                 name="priceFrom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giá trị từ</FormLabel>
+                    <FormLabel>{t('Input.price_from_placeholder')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Giá trị từ"
+                        placeholder={t('Input.price_from_placeholder')}
                         {...field}
                       />
                     </FormControl>
@@ -121,11 +121,11 @@ export default function ProductFilterSheet() {
                 name="priceTo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đến giá trị</FormLabel>
+                    <FormLabel>{t('Input.price_to_placeholder')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Giá trị đến"
+                        placeholder={t('Input.price_to_placeholder')}
                         {...field}
                       />
                     </FormControl>
@@ -139,7 +139,7 @@ export default function ProductFilterSheet() {
                 name="categoryIds"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Chọn các danh mục</FormLabel>
+                    <FormLabel>{t('Categories')}</FormLabel>
                     <FormControl>
                       <CategoryMultiSelectField field={field} />
                     </FormControl>
@@ -153,7 +153,7 @@ export default function ProductFilterSheet() {
                 name="tags"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Chọn các thẻ sản phẩm</FormLabel>
+                    <FormLabel>{t("Tags")}</FormLabel>
                     <FormControl>
                       <TagMultiSelectField field={field} />
                     </FormControl>
@@ -170,7 +170,7 @@ export default function ProductFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t('apply_filters')}
             </Button>
 
             <Button
@@ -180,7 +180,7 @@ export default function ProductFilterSheet() {
                 form.reset();
               }}
             >
-              Đặt lại
+              {t('reset_filters')}
             </Button>
           </div>
         </div>

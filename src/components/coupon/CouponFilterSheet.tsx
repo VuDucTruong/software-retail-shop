@@ -79,15 +79,14 @@ export default function CouponFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm mã giảm giá
+          <Filter /> {t("search_and_filter", { x: t("coupon") })}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm mã giảm giá</SheetTitle>
+          <SheetTitle>{t("search_and_filter", { x: t("coupon") })}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm mã giảm giá, lọc theo khoảng giá trị, thời gian và
-            loại mã giảm giá
+            {t("search_and_filter_description", { x: t("coupon") })}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -98,7 +97,7 @@ export default function CouponFilterSheet() {
                 name="search"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t("Search")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -111,7 +110,7 @@ export default function CouponFilterSheet() {
                 name="type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Loại mã giảm giá</FormLabel>
+                    <FormLabel>{t("coupon_type")}</FormLabel>
                     <FormControl>
                       <CouponTypeSelect
                         defaultValue={field.value}
@@ -128,7 +127,7 @@ export default function CouponFilterSheet() {
                 name="availableFrom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Từ ngày</FormLabel>
+                    <FormLabel>{t('available_from')}</FormLabel>
                     <FormControl>
                       <Input type="date"  {...field} />
                     </FormControl>
@@ -142,9 +141,9 @@ export default function CouponFilterSheet() {
                 name="availableTo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đến ngày</FormLabel>
+                    <FormLabel>{t('available_to')}</FormLabel>
                     <FormControl>
-                      <Input type="date" placeholder="Đến ngày" {...field} />
+                      <Input type="date" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -156,11 +155,10 @@ export default function CouponFilterSheet() {
                 name="valueFrom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giá trị từ</FormLabel>
+                    <FormLabel>{t('value_from')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Giá trị từ"
                         {...field}
                       />
                     </FormControl>
@@ -174,9 +172,9 @@ export default function CouponFilterSheet() {
                 name="valueTo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đến giá trị</FormLabel>
+                    <FormLabel>{t('value_to')}</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Giá trị đến" {...field} />
+                      <Input type="number" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -189,7 +187,7 @@ export default function CouponFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t('apply_filters')}
             </Button>
 
             <Button
@@ -199,7 +197,7 @@ export default function CouponFilterSheet() {
                 form.reset();
               }}
             >
-              Đặt lại
+              {t('reset_filters')}
             </Button>
           </div>
         </div>

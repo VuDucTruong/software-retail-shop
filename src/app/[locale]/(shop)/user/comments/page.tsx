@@ -9,19 +9,6 @@ import React from "react";
 export default function CommentsPage() {
   const t = useTranslations();
 
-
-  
-  const cols = [
-    { header: t("Time"), accessorKey: "time" },
-    { header: t("Description"), accessorKey: "description" },
-  ];
-
-  const sampleData = Array.from({ length: 20 }, (_, i) => ({
-    id: i + 1,
-    time: new Date().toLocaleDateString(),
-    description: `Gói gia hạn Zoom Pro ${i + 1}`,
-  }));
-
   return (
     <Card>
       <CardHeader>
@@ -35,7 +22,7 @@ export default function CommentsPage() {
           <div className="divider"></div>
           <CommentsFilterForm />
 
-          <CommmonDataTable columns={cols} data={sampleData} />
+          {/* <CommmonDataTable  /> */}
         </div>
       </CardContent>
     </Card>

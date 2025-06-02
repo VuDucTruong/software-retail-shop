@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { PasswordSchema, UserSchema } from "..";
+import { PasswordSchema, UserSchema } from "@/api";
 
 
 
@@ -7,7 +7,8 @@ export const messages = {
     required: {
       email: "Input.error_email_empty",
       password: "Input.error_password_empty",
-        fullName: "Input.error_fullname_empty",
+      fullName: "Input.error_fullname_empty",
+      otp: "Input.error_otp_empty",
     },
     invalid: {
       email: "Input.error_email_format",
@@ -78,8 +79,8 @@ export const RegisterRequestSchema = z.object({
 
 
 export const ChangePasswordSchema = z.object({
-  email: z.string().email("Email không hợp lệ"),
-  otp: z.string().length(6 , "Vui lòng nhập mã OTP của bạn"),
+  email: z.string().email(messages.invalid.email),
+  otp: z.string().length(6 , messages.required.otp),
   password: PasswordSchema,
   confirmPassword: PasswordSchema,
 }).partial().refine((data) => data.password === data.confirmPassword, {

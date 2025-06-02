@@ -102,7 +102,7 @@ export default function CreateProductPage() {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>Sản phẩm #{id}</h2>
+          <h2>{t("Product")} #{id}</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -220,7 +220,7 @@ export default function CreateProductPage() {
               control={form.control}
               name="groupId"
               render={({ field }) => (
-                <CommonInputOutline title={"Nhóm sản phẩm"}>
+                <CommonInputOutline title={t("product_group")}>
                   <ProductGroupComboBox field={field} />
                 </CommonInputOutline>
               )}

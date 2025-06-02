@@ -22,6 +22,7 @@ import { useForm } from "react-hook-form";
 import { object, z } from "zod";
 import { Form, FormField } from "../ui/form";
 import { Skeleton } from "../ui/skeleton";
+import { useTranslations } from "next-intl";
 
 const SearchSchema = z
   .object({
@@ -46,6 +47,7 @@ export default function SearchBar() {
   }, []);
 
   const router = useRouter();
+  const t = useTranslations();
 
   const debouncedSearch = React.useMemo(
     () =>
@@ -132,7 +134,7 @@ export default function SearchBar() {
                       <SelectValue placeholder="Danh mục" />
                     </SelectTrigger>
                     <SelectContent className="top-1">
-                      <SelectItem value="all">Tất cả danh mục</SelectItem>
+                      <SelectItem value="all">{t('all_categories')}</SelectItem>
                       {categories?.data.map((category) => (
                         <SelectItem
                           key={category.id}
@@ -153,7 +155,7 @@ export default function SearchBar() {
               render={({ field }) => {
                 return (
                   <Input
-                    placeholder="Tìm kiếm sản phẩm..."
+                    placeholder={t('search_hint')}
                     className="flex-1 border-none focus-visible:ring-0 shadow-none"
                     {...field}
                   />

@@ -140,8 +140,8 @@ export default function CategoryManagementPage() {
                   <Trash2Icon />
                 </Button>
               }
-              title={"Xóa danh mục"}
-              description={"Bạn có chắc chắn muốn xóa danh mục này không?"}
+              title={t("delete_category")}
+              description={t("delete_category_description")}
               onConfirm={() => handleDelete(row.original.id)}
             />
           </div>

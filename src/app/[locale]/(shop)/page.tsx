@@ -63,7 +63,7 @@ export default function HomePage() {
       <HomeProductSection
         data={products?.get("lastest")?.data ?? []}
         isLoading={!products?.get("lastest")}
-        title={"Sản phẩm mới nhất"}
+        title={t("latest_products")}
         onMoreClick={() => {}}
       />
       <TopItemsList title={t("popular_tags")} items={popularTags} />

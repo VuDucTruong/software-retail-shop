@@ -3,16 +3,17 @@ import { ApiDatetimeSchema, ApiResponseSchema, DateSchema, DatetimeSchema } from
 
 const messages = {
   required: {
-    code: "Code is required",
-    availableFrom: "Available from is required",
-    availableTo: "Available to is required",
+    code: "Input.error_coupon_code_required",
+    availableFrom: "Input.error_available_from_required",
+    availableTo: "Input.error_available_to_required",
   },
-  gt0: "This field must be greater than 0",
-  code: "Code must be at least 3 characters long",
-  nonnegative: "This field must be a non-negative number",
-  futureDate: "This field must be a future date",
-  fromtoConstraint: "from date must be before to date",
-  alphaNumberic: "Code must be alphanumeric",
+  gt0: "Input.error_value_gt0",
+  code: "Input.error_coupon_code_invalid",
+  nonnegative: "Input.error_nonnegative",
+  futureDate: "Input.error_future_date",
+  fromtoConstraint: "Input.error_from_to_constraint",
+  alphaNumberic: "Input.error_coupon_code_alphanumeric",
+  valueConstraint: "Input.error_value_constraint",
 };
 
 export const CouponSchema = z.object({
@@ -47,21 +48,11 @@ const applyRefinement = (schema: z.ZodTypeAny) => {
       });
     }
 
-    if (val.type === "PERCENTAGE") {
-      if (val.maxAppliedAmount < 10000) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            "Max applied amount must be greater than 10000 for percentage coupons",
-          path: ["maxAppliedAmount"],
-        });
-      }
-    } else {
+    if (val.type === "FIXED") {
       if (val.value > val.minAmount) {
-        console.log(val.value, val.minAmount, val.type);
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Value must be less than min amount",
+          message: messages.valueConstraint,
           path: ["value"],
         });
       }

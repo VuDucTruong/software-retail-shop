@@ -4,6 +4,7 @@ import { useShallow } from "zustand/shallow";
 import { CommentForm } from "./CommentForm";
 import CommentItem from "./CommentItem";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 type Props = {
   productId: number;
@@ -13,7 +14,7 @@ export default function UserCommentSection({ productId }: Props) {
   const [comments, getCommentsByProductId , status , lastAction , error, createComment] = useClientCommentStore(
     useShallow((state) => [state.comments, state.getCommentsByProductId , state.status , state.lastAction , state.error, state.createComment])
   );
-
+  const t = useTranslations();
 
   useEffect(() => {
     getCommentsByProductId(productId);
@@ -27,7 +28,7 @@ export default function UserCommentSection({ productId }: Props) {
   };
 
   if(status === "error" && lastAction === "create") {
-    toast.error("Có lỗi xảy ra trong quá trình tạo bình luận: " + error);
+    toast.error(t('create_comment_error', { error: error || t('unknown_error') }));
   }
 
   return (
@@ -43,8 +44,8 @@ export default function UserCommentSection({ productId }: Props) {
 
       {(comments?.data.length === 0 || !comments) && (
         <div className="flex flex-col items-center justify-center w-full h-32">
-          <p className="text-lg font-semibold text-gray-500">Chưa có bình luận nào cả...</p>
-          <div className="text-sm italic text-gray-400">Hãy trở thành người đầu tiên!</div>
+          <p className="text-lg font-semibold text-gray-500">{t('no_comments_here')}</p>
+          <div className="text-sm italic text-gray-400">{t('become_the_first_commenter')}</div>
         </div>
       )}
     </div>

@@ -61,14 +61,14 @@ export default function ProductItemFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm khóa sản phẩm
+          <Filter /> {t("search_and_filter", { x: t("product_key") })}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm khóa sán phẩm</SheetTitle>
+          <SheetTitle>{t("search_and_filter", { x: t("product_key") })}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ lọc theo tên sản phẩm, mã khóa và trạng thái
+            {t("search_and_filter_description", { x: t("product_key") })}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -79,7 +79,7 @@ export default function ProductItemFilterSheet() {
                 name="productName"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Tên sản phẩm</FormLabel>
+                    <FormLabel>{t("Product")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -93,7 +93,7 @@ export default function ProductItemFilterSheet() {
                 name="productKey"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Mã khóa</FormLabel>
+                    <FormLabel>{t('product_key')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -107,7 +107,7 @@ export default function ProductItemFilterSheet() {
                 name="used"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Trạng thái</FormLabel>
+                    <FormLabel>{t("Status")}</FormLabel>
                     <FormControl>
                       <div className="flex items-center space-x-2">
                         <Switch
@@ -115,7 +115,7 @@ export default function ProductItemFilterSheet() {
                           onCheckedChange={field.onChange}
                           id="status"
                         />
-                        <Label htmlFor="status">{form.watch('used') ? "Đã sử dụng" : "Chưa sử dụng"}</Label>
+                        <Label htmlFor="status">{form.watch('used') ? t('Used') : t('Unused')}</Label>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -129,7 +129,7 @@ export default function ProductItemFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t('apply_filters')}
             </Button>
           </div>
         </div>

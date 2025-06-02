@@ -19,7 +19,7 @@ import {
   SortingState,
   Updater,
   useReactTable,
-  VisibilityState
+  VisibilityState,
 } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import * as React from "react";
@@ -64,7 +64,7 @@ export function CommmonDataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const t = useTranslations();
-  const [mounted , setMounted] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -142,7 +142,7 @@ export function CommmonDataTable<TData, TValue>({
         if (row.original != undefined) {
           return (row.original as any).id;
         } else {
-          toast.error("Không thể lấy id của item đã chọn");
+          toast.error(t("error_no_id_in_row"));
           return [];
         }
       });
@@ -173,13 +173,13 @@ export function CommmonDataTable<TData, TValue>({
           {isLoading || !mounted ? (
             <TableBody>
               <TableRow>
-                  <TableCell
-                    colSpan={tableColumns.length}
-                    className="h-24 text-center"
-                  >
-                    <Skeleton className="size-full"/>
-                  </TableCell>
-                </TableRow>
+                <TableCell
+                  colSpan={tableColumns.length}
+                  className="h-24 text-center"
+                >
+                  <Skeleton className="size-full" />
+                </TableCell>
+              </TableRow>
             </TableBody>
           ) : (
             <TableBody>
@@ -225,12 +225,12 @@ export function CommmonDataTable<TData, TValue>({
         {canSelect && (
           <div className="hidden flex-1 lg:flex">
             <CommonConfirmDialog
-              title={`Xóa ${
+              title={`${t("Delete")} ${
                 table.getFilteredSelectedRowModel().rows.length
               } ${objectName}`}
-              description={`Bạn có chắc chắn muốn xóa các ${objectName} ${getSelectedIds().join(
-                ","
-              )} ?`}
+              description={t("table_delete_warning", {
+                x: `${objectName} ${getSelectedIds().join(", ")}`,
+              })}
               triggerName={
                 <Button
                   variant={"destructive"}

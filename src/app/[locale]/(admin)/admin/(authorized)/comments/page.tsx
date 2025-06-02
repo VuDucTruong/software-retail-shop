@@ -119,7 +119,7 @@ export default function CommentManagementPage() {
           return (
             <div className="text-red-500">
               {row.original.content} <br />
-              <span className="text-xs">Bị xóa vào {row.original.deletedAt}</span>
+              <span className="text-xs">{t('deleted_at_x', {x: row.original.deletedAt})}</span>
             </div>
           );
         }

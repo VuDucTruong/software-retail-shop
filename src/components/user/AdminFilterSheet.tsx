@@ -78,15 +78,14 @@ export default function AdminFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm quản trị viên
+          <Filter /> {t('search_and_filter', { x: t("admin") })}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm quản trị viên</SheetTitle>
+          <SheetTitle>{t('search_and_filter', { x: t("admin") })}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm quản trị viên theo tên và email, lọc theo khoảng
-            thời gian tham gia,vai trò
+            {t('search_and_filter_description', { x: t("admin") })}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -97,7 +96,7 @@ export default function AdminFilterSheet() {
                 name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm theo tên</FormLabel>
+                    <FormLabel>{t('search_by', {x: t('name')})}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -110,7 +109,7 @@ export default function AdminFilterSheet() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm theo email</FormLabel>
+                    <FormLabel>{t('search_by', {x: "email"})}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -124,7 +123,7 @@ export default function AdminFilterSheet() {
                 name="createdAtFrom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Từ ngày</FormLabel>
+                    <FormLabel>{t('from_date')}</FormLabel>
                     <FormControl>
                       <Input type="datetime-local" {...field} />
                     </FormControl>
@@ -138,11 +137,10 @@ export default function AdminFilterSheet() {
                 name="createdAtTo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đến ngày</FormLabel>
+                    <FormLabel>{t('to_date')}</FormLabel>
                     <FormControl>
                       <Input
                         type="datetime-local"
-                        placeholder="Đến ngày"
                         {...field}
                       />
                     </FormControl>
@@ -156,19 +154,19 @@ export default function AdminFilterSheet() {
                 name="roles"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Chọn vai trò</FormLabel>
+                    <FormLabel>{t("Role")}</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <SelectTrigger className="w-1/2">
-                          <SelectValue placeholder="Chọn vai trò" />
+                          <SelectValue placeholder={t('select_role')} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="ALL">Tất cả</SelectItem>
-                          <SelectItem value="STAFF">Nhân viên</SelectItem>
-                          <SelectItem value="ADMIN">Quản lý</SelectItem>
+                          <SelectItem value="ALL">{t('All')}</SelectItem>
+                          <SelectItem value="STAFF">{t('Staff')}</SelectItem>
+                          <SelectItem value="ADMIN">{t("Manager")}</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -183,7 +181,7 @@ export default function AdminFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t('apply_filters')}
             </Button>
 
             <Button
@@ -193,7 +191,7 @@ export default function AdminFilterSheet() {
                 form.reset();
               }}
             >
-              Đặt lại
+               {t('reset_filters')}
             </Button>
           </div>
         </div>

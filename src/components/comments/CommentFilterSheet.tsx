@@ -67,14 +67,14 @@ export default function CommentFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm bình luận
+          <Filter /> {t('search_and_filter' , { x: t("comment") })}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm bình luận</SheetTitle>
+          <SheetTitle>{t('search_and_filter' , { x: t("comment") })}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm bình luận theo tên và theo tên sản phẩm, cũng như lọc theo trạng thái đã xóa.
+            {t('search_and_filter_description' , { x: t("comment") })}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -85,7 +85,7 @@ export default function CommentFilterSheet() {
                 name="search"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t("Search")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -99,7 +99,7 @@ export default function CommentFilterSheet() {
                 name="productName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên sản phẩm</FormLabel>
+                    <FormLabel>{t("Product")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -113,7 +113,7 @@ export default function CommentFilterSheet() {
                 name="deleted"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Trạng thái</FormLabel>
+                    <FormLabel>{t('Status')}</FormLabel>
                     <FormControl>
                       <div className="flex items-center space-x-2">
                         <Switch
@@ -121,7 +121,7 @@ export default function CommentFilterSheet() {
                           onCheckedChange={field.onChange}
                           id="deleted"
                         />
-                        <Label htmlFor="deleted">{form.watch('deleted') ? "Đã xóa" : "Chưa xóa"}</Label>
+                        <Label htmlFor="deleted">{form.watch('deleted') ? t('Deleted') : t('not_deleted')}</Label>
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -135,7 +135,7 @@ export default function CommentFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t("apply_filters")}
             </Button>
 
             <Button
@@ -145,7 +145,7 @@ export default function CommentFilterSheet() {
                 form.reset();
               }}
             >
-              Đặt lại
+              {t("reset_filters")}
             </Button>
           </div>
         </div>

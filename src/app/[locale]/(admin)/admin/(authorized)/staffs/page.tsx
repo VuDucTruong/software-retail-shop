@@ -104,14 +104,14 @@ export default function StaffManagementPage() {
     },
     {
       accessorKey: "role",
-      header: "Vai trò",
+      header: t("Role"),
       cell: ({ row }) => {
         return row.original.role;
       },
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("Status"),
       cell: ({ row }) => {
         return (
           <StatusBadge status={row.original.deletedAt ? "banned" : "active"} />
@@ -120,7 +120,7 @@ export default function StaffManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: "Ngày tạo",
+      header: t("created_at"),
       cell: ({ row }) => {
         return row.original.createdAt;
       },
@@ -144,9 +144,11 @@ export default function StaffManagementPage() {
                         <UserX2 />
                       </Button>
                     }
-                    title={"Cấm người dùng"}
+                    title={t("ban_user")}
                     description={
-                      "Bạn có chắc chắn muốn cấm người dùng này này không?"
+                      t("ban_user_description", {
+                        user: row.original.profile.fullName,
+                      })
                     }
                     onConfirm={() => handleDelete(row.original.id)}
                   />
@@ -165,11 +167,11 @@ export default function StaffManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{"Quản lý quản trị viên"}</h2>
+          <h2>{t("admin_management")}</h2>
           <div className="flex items-center gap-2">
             <Link href={"/admin/staffs/create"}>
                 <Button>
-                    Thêm quản trị viên
+                    {t('create_admin')}
                 </Button>
             </Link>
             <AdminFilterSheet />
@@ -178,7 +180,7 @@ export default function StaffManagementPage() {
       </CardHeader>
       <CardContent>
         <CommmonDataTable
-            objectName={"nhân viên/quản trị viên"}
+            objectName={t("admin")}
           isLoading={status === "loading" && lastAction === "getUsers"}
           columns={cols}
           data={users?.data ?? []}

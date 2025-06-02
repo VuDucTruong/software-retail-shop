@@ -97,7 +97,7 @@ export default function CouponManagementPage() {
     },
     {
       accessorKey: "usageLimit",
-      header: t("Usage Limit"),
+      header: t("usage_limit"),
       cell: ({ row }) => {
         return row.original.usageLimit;
       },
@@ -149,7 +149,7 @@ export default function CouponManagementPage() {
       </CardHeader>
       <CardContent>
       <CommmonDataTable
-          objectName={"Mã giảm giá"}
+          objectName={t("coupon")}
           isLoading={coupons === null}
           columns={cols}
           data={coupons?.data ?? []}

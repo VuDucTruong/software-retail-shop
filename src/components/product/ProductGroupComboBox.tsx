@@ -12,6 +12,7 @@ import { useProductGroupStore } from "@/stores/product.group.store";
 import { Skeleton } from "../ui/skeleton";
 import AddGroupDialog from "./AddGroupDialog";
 import { ProductGroup } from "@/api";
+import { useTranslations } from "next-intl";
 
 export default function ProductGroupComboBox({
   field,
@@ -38,6 +39,8 @@ export default function ProductGroupComboBox({
 
   };
 
+  const t = useTranslations();
+
   return (
     <div className="flex flex-row-reverse gap-2">
       <AddGroupDialog />
@@ -56,7 +59,7 @@ export default function ProductGroupComboBox({
 
       <PopoverContent className="flex px-0" align="start">
         <Command>
-          <CommandInput placeholder="Tìm kiếm nhóm sản phẩm" />
+          <CommandInput placeholder={t('Search', {x: t('product_group')})} />
           <CommandGroup>
             {
               options.length > 0 ? (
@@ -72,7 +75,7 @@ export default function ProductGroupComboBox({
                   </CommandItem>
                 ))
               ) : (
-                <div className="p-2 flex items-center justify-center italic text-sm">Không có nhóm sản phẩm nào cả</div>
+                <div className="p-2 flex items-center justify-center italic text-sm">{t('no_products_found')}</div>
               )
             }
           </CommandGroup>

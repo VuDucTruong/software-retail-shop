@@ -50,7 +50,7 @@ export function AuthDialog() {
     {
       key: "logout",
       icon: LogOut,
-      title: "Đăng xuất",
+      title: "Logout",
       onClick: () => {
         logout();
       },

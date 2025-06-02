@@ -15,13 +15,6 @@ import { notFound } from "next/navigation";
 import { RichTextViewer } from "@/components/rich_text/RichTextViewer";
 
 
-const desciptionMap = new Map<string , string>([
-  ["tutorial", "Lưu ý"],
-  ["description", "Chi tiết sản phẩm"],
-  ["info", "Câu hỏi thường gặp"],
-  ["platform", "Cấu hình"],
-  ["policy", "Chính sách bảo hành"],
-])
 
 
 export default function DetailProductPage() {
@@ -74,7 +67,7 @@ export default function DetailProductPage() {
           const value = get(selectedProduct.productDescription, key);
           return (
             <div className="grid grid-cols-3 gap-4 main-container border-b border-border pb-4" key={key}>
-              <h3>{desciptionMap.get(key)}</h3>
+              <h3>{t(key)}</h3>
               <div className="col-span-2">
                 <RichTextViewer content={value} />
               </div>

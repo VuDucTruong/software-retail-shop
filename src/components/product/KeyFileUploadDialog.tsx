@@ -177,7 +177,7 @@ export default function KeyFileUploadDialog() {
               onClick={handleReset}
             >
               <RefreshCcw />
-              {"Đặt lại"}
+              {t("Reset")}
             </Button>
           </div>
         </div>

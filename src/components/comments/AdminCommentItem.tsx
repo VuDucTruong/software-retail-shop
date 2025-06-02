@@ -56,7 +56,7 @@ export default function AdminCommentItem({
             {" : "}
             {comment.deletedAt ? (
               <span className="text-muted-foreground italic font-normal">
-                "Đã bị xóa vào {comment.deletedAt}"
+                {t("deleted_at_x", { x: comment.deletedAt })}
               </span>
             ) : (
               <span className="font-normal break-all">{comment.content}</span>
