@@ -143,11 +143,12 @@ export default function CreateProductPage() {
                   <Input
                     type="number"
                     step={100}
+                    min={0}
                     placeholder={t("original_price")}
                     {...field}
                     onChange={(e) =>
                       field.onChange(
-                        e.target.value === "" ? "" : Number(e.target.value)
+                        e.target.value === "" ? 0 : Number(e.target.value)
                       )
                     }
                   />
@@ -163,10 +164,11 @@ export default function CreateProductPage() {
                     step={100}
                     placeholder={t("Price")}
                     type="number"
+                    min={0}
                     {...field}
                     onChange={(e) =>
                       field.onChange(
-                        e.target.value === "" ? "" : Number(e.target.value)
+                        e.target.value === "" ? 0 : Number(e.target.value)
                       )
                     }
                   />

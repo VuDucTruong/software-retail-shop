@@ -64,15 +64,15 @@ export function TagMultiSelectField({
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-between">
                 {selectedTags.length > 0
-                  ? `Selected: ${selectedTags.length}`
-                  : "Select Tags"}
+                  ? `${t('Selected')}: ${selectedTags.length}`
+                  : t("select_tags")}
               </Button>
             </PopoverTrigger>
           )
         }
         <PopoverContent className="flex px-0" align="start">
           <Command>
-            <CommandInput placeholder="Search tag..." />
+            <CommandInput placeholder={t('search_tags')} />
             <CommandGroup>
               {options.map((item) => (
                 <CommandItem
@@ -91,7 +91,7 @@ export function TagMultiSelectField({
       <div className="flex flex-wrap gap-2">
         {selectedTags.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            {t("no_categories_selected")}
+            {t("no_tags_selected")}
           </p>
         )}
         {selectedTags.map((id: string) => {

@@ -7,17 +7,17 @@ const hasWindow = typeof window !== "undefined";
 // === Validation Messages ===
 const messages = {
   required: {
-    title: "Title is required",
-    content: "Content is required",
-    slug: "Product code is required",
-    tags: "Tags are required",
-    categories: "At least one category is required",
+    title: "Input.error_title_required",
+    content: "Input.error_content_required",
+    slug: "Input.error_slug_required",
+    tags: "Input.error_tags_required",
+    categories: "Input.error_categories_required", 
+    image: "Input.error_image_required",
   },
-  name: "Must be at least 3 characters",
-  price: "Price must be greater than or equal to 0",
-  originalPrice: "Original Price must be greater than or equal to 0",
-  priceComparison: "Price must be less than or equal to original price",
-  quantity: "quantity must be greater than 0",
+  name: "Input.error_name_required_min_3",
+  price: "Input.error_price_required_gt0",
+  originalPrice: "Input.error_original_price_required_gt0",
+  priceComparison: "Input.error_price_comparison",
 };
 export const ProductSchema = z.object({
   id: z.number(),
@@ -52,7 +52,7 @@ export const ProductSchema = z.object({
 export const ProductValidation = z.object({
   slug: z.string(),
   name: z.string().min(3, { message: messages.name }),
-  image: ImageSchema("Hãy thêm ảnh cho sản phẩm của bạn"),
+  image: ImageSchema(messages.required.image),
   represent: z.boolean().default(true),
   price: z.number().gte(0, { message: messages.price }),
   originalPrice: z.number().gte(0, { message: messages.originalPrice }),

@@ -13,6 +13,7 @@ import { SetState } from "@/lib/set_state";
 import { z } from "zod";
 import { create } from "zustand";
 import { handleDeleteReloadGeneric } from "./reload.store";
+import { urlToFile } from "@/lib/utils";
 const categoryClient = ApiClient.getInstance();
 
 type CategoryState = {
@@ -87,6 +88,7 @@ const getCategories = async (
       CategoryListSchema,
       query
     );
+
     set((prev) => ({ categories: response, status: "success" }));
   } catch (error) {
     const appError = error as ApiError;

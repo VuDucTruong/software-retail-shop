@@ -1,9 +1,5 @@
 "use client";
-import {
-  Category,
-  CategoryUpdate,
-  CategoryUpdateSchema,
-} from "@/api";
+import { Category, CategoryUpdate, CategoryUpdateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -41,34 +37,33 @@ type EditCategoryDialogProps = {
 export default function EditCategoryDialog(props: EditCategoryDialogProps) {
   const { selectedCategory } = props;
   const t = useTranslations();
-  const updateCategory = useCategoryStore(
-    (state) => state.updateCategory
-  );
+  const updateCategory = useCategoryStore((state) => state.updateCategory);
 
   const form = useForm<CategoryUpdate>({
     defaultValues: {
       name: selectedCategory.name,
-      image: undefined,
+      image: null,
       description: selectedCategory.description,
     },
     resolver: zodResolver(CategoryUpdateSchema),
   });
 
-  
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     form.setValue("id", selectedCategory.id);
-    form.handleSubmit(async (data) => {
-      if(!data.image) {
-        data.image = await urlToFile(selectedCategory.imageUrl ?? "/empty_img.png");
-      }
+    if (!form.getValues("image")) {
+      const image = await urlToFile(
+        selectedCategory.imageUrl
+      );
+      form.setValue("image", image);
+    }
+    form.handleSubmit((data) => {
       updateCategory(data);
     })();
   };
 
-
   return (
-    <Dialog>
+    <Dialog onOpenChange={(open) => open && form.reset()}>
       <DialogTrigger asChild>
         <Button className="size-8 bg-yellow-400 hover:bg-yellow-500">
           <PenLine />

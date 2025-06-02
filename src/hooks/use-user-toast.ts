@@ -12,15 +12,15 @@ interface UseActionToastProps {
 
 const messages: Record<string, Record<Status, string>> = {
   createUser: {
-    loading: "Đang tạo người dùng...",
-    success: "Người dùng đã được tạo thành công!",
-    error: "Tạo người dùng thất bại",
+    loading: "Action.createUser.loading",
+    success: "Action.createUser.success",
+    error: "Action.createUser.error",
     idle: "",
   },
   deleteUsers: {
-    loading: "Đang cấm người dùng...",
-    success: "Người dùng đã bị cấm thành công!",
-    error: "Cấm người dùng thất bại",
+    loading: "Action.deleteUsers.loading",
+    success: "Action.deleteUsers.success",
+    error: "Action.deleteUsers.error",
     idle: "",
   }
 };

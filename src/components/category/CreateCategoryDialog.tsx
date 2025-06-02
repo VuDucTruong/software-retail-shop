@@ -32,7 +32,7 @@ export default function CreateCategoryDialog() {
   const form = useForm<CategoryCreate>({
     defaultValues: {
       name: "",
-      image: undefined,
+      image: null,
       description: "",
     },
     resolver: zodResolver(CategoryCreateSchema),

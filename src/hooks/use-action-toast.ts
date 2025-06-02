@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
@@ -12,27 +13,27 @@ interface UseActionToastProps {
 
 const messages: Record<ActionType, Record<Status, string>> = {
   create: {
-    loading: "Đang tạo...",
-    success: "Tạo thành công!",
-    error: "Tạo thất bại!",
+    loading: "Action.create.loading",
+    success: "Action.create.success",
+    error: "Action.create.error",
     idle: "",
   },
   update: {
-    loading: "Đang cập nhật...",
-    success: "Cập nhật thành công!",
-    error: "Cập nhật thất bại!",
+    loading: "Action.update.loading",
+    success: "Action.update.success",
+    error: "Action.update.error",
     idle: "",
   },
   delete: {
-    loading: "Đang xóa...",
-    success: "Xóa thành công!",
-    error: "Xóa thất bại!",
+    loading: "Action.delete.loading",
+    success: "Action.delete.success",
+    error: "Action.delete.error",
     idle: "",
   },
   get: {
-    loading: "Đang tải dữ liệu...",
-    success: "Tải dữ liệu thành công!",
-    error: "Tải dữ liệu thất bại!",
+    loading: "Action.get.loading",
+    success: "Action.get.success",
+    error: "Action.get.error",
     idle: "",
   }
 };
@@ -43,7 +44,7 @@ export function useActionToast({
   errorMessage,
   reset
 }: UseActionToastProps) {
-
+  const t = useTranslations();
   const didMount = useRef(false);
   const toastIdRef = useRef<string | number | undefined>(undefined);
   useEffect(() => {
@@ -56,7 +57,7 @@ export function useActionToast({
     console.log("action" , lastAction, "status", status, "errorMessage", errorMessage);
     if (!lastAction || status === "idle" || lastAction === "get") return;
    
-    const message = messages[lastAction][status];
+    const message = t(messages[lastAction][status]) || "";
 
 
 

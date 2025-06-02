@@ -37,7 +37,7 @@ export const CommentSchema = CommentSchemaWithoutReplies.extend({
 
 export const CommentCreateSchema = z.object({
     productId: z.number(),
-    content: z.string().min(1, { message: "Comment content is required" }),
+    content: z.string().min(1, { message: "Input.error_content_required" }),
     parentCommentId: z.number().optional(),
 })
 

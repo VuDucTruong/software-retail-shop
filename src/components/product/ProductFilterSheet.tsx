@@ -71,14 +71,14 @@ export default function ProductFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> {t('filter_and_search_products')}
+          <Filter /> {t('search_and_filter' , {x: t('products')})}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>{t('filter_and_search_products')}</SheetTitle>
+          <SheetTitle>{t('search_and_filter' , {x: t('products')})}</SheetTitle>
           <SheetDescription>
-            {t('filter_and_search_products_description')}
+            {t('search_and_filter_description' , {x: t('products')})}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">

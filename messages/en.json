@@ -32,7 +32,7 @@
   "login_with": "Or login with",
 
   "Name": "Name",
-  
+
   "create_blog": "Create a new blog",
   "update_blog": "update a new blog",
 
@@ -182,7 +182,35 @@
     "error_pass_not_match": "Password does not match",
 
     "error_pass_wrong": "Password is incorrect",
-    "error_email_wrong": "Email is incorrect"
+    "error_email_wrong": "Email is incorrect",
+
+    "error_title_required": "Title is required.",
+    "error_content_required": "Content is required.",
+    "error_slug_required": "Slug is required.",
+    "error_tags_required": "At least one tag is required.",
+    "error_categories_required": "At least one category is required.",
+    "error_image_required": "Image is required.",
+    "error_name_required_min_3": "Name is required and must be at least 3 characters.",
+    "error_price_required_gt0": "Price is required and must be greater than 0.",
+    "error_original_price_required_gt0": "Original price is required and must be greater than 0.",
+    "error_price_comparison": "Original price must be greater than current price.",
+    "error_coupon_code_required": "Coupon code is required.",
+    "error_available_from_required": "Available from date is required.",
+    "error_available_to_required": "Available to date is required.",
+    "error_value_gt0": "Value must be greater than 0.",
+    "error_coupon_code_invalid": "Coupon code is invalid.",
+    "error_nonnegative": "Value must be non-negative.",
+    "error_future_date": "Date must be in the future.",
+    "error_from_to_constraint": "The 'available from' date must be before the 'available to' date.",
+    "error_coupon_code_alphanumeric": "Coupon code must be alphanumeric.",
+    "error_value_constraint": "The value must be greater than the minimum order value.",
+    "error_password_min": "Password must be at least 6 characters long.",
+    "error_password_max": "Password must not exceed 40 characters.",
+    "error_password_format": "Password must be alphanumberic",
+    "error_role_required": "Role is required.",
+    "error_full_name_min": "Full name must be at least 6 characters long.",
+    "error_full_name_max": "Full name must not exceed 40 characters.",
+    "error_product_group_name_min": "Product group name must be at least 3 characters long."
   },
   "ORDER_STATUS": {
     "Pending": "Pending",
@@ -365,11 +393,11 @@
   "product_group": "Product group",
   "Search_x": "Search {x}",
   "Search": "Search",
-  "category": "Category",
+  "category": "category",
   "delete_category": "Delete category",
   "delete_category_description": "Are you sure you want to delete this category? This action cannot be undone.",
   "table_delete_warning": "Are you sure you want to delete the item(s): {x} ? This action cannot be undone.",
-  "coupon": "Coupon",
+  "coupon": "coupon",
   "search_and_filter": "Search and filter {x}",
   "search_and_filter_description": "Use the search bar and filters to find {x} that suit your needs",
   "no_products_found": "No products found matching your search criteria",
@@ -402,7 +430,71 @@
   "select_product": "Select product",
   "select_region": "Select region",
   "Region": "Region",
-  "please_select_product": "Please select a product"
-
-
+  "please_select_product": "Please select a product",
+  "products": "products",
+  "Selected": "Selected",
+  "search_tags": "Search tags",
+  "select_tags": "Select tags",
+  "Action": {
+    "create": {
+      "loading": "Creating...",
+      "success": "Created successfully.",
+      "error": "Failed to create."
+    },
+    "update": {
+      "loading": "Updating...",
+      "success": "Updated successfully.",
+      "error": "Failed to update."
+    },
+    "delete": {
+      "loading": "Deleting...",
+      "success": "Deleted successfully.",
+      "error": "Failed to delete."
+    },
+    "get": {
+      "loading": "Loading...",
+      "success": "Loaded successfully.",
+      "error": "Failed to load."
+    },
+    "login": {
+      "loading": "Logging in...",
+      "success": "Logged in successfully.",
+      "error": "Login failed."
+    },
+    "register": {
+      "loading": "Registering...",
+      "success": "Registered successfully.",
+      "error": "Registration failed."
+    },
+    "logout": {
+      "loading": "Logging out...",
+      "success": "Logged out successfully.",
+      "error": "Logout failed."
+    },
+    "changePassword": {
+      "loading": "Changing password...",
+      "success": "Password changed successfully.",
+      "error": "Password change failed."
+    },
+    "verifyEmail": {
+      "loading": "Verifying email...",
+      "success": "Email verified successfully.",
+      "error": "Email verification failed."
+    },
+    "updateProfile": {
+      "loading": "Updating profile...",
+      "success": "Profile updated successfully.",
+      "error": "Profile update failed."
+    },
+    "createUser": {
+      "loading": "Creating user...",
+      "success": "User created successfully.",
+      "error": "Failed to create user."
+    },
+    "deleteUsers": {
+      "loading": "Deleting users...",
+      "success": "Users deleted successfully.",
+      "error": "Failed to delete users."
+    }
+  }
 }
