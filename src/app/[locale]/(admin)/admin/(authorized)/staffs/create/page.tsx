@@ -96,7 +96,7 @@ export default function CreateStaffPage() {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>{"Tạo quản trị viên"}</h2>
+          <h2>{t('create_admin')}</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -119,7 +119,7 @@ export default function CreateStaffPage() {
                   fileRef={fileRef}
                   field={field}
                   avatarHint={t("image_hint")}
-                  name={"Đặt avatar"}
+                  name={t('upload_image')}
                 />
                 </FormItem>
               )}
@@ -143,7 +143,7 @@ export default function CreateStaffPage() {
               name="password"
               render={({ field }) => (
                 <CommonInputOutline
-                  title="Mật khẩu"
+                  title={t("Password")}
                   required
                 >
                   <Input {...field} />
@@ -155,7 +155,7 @@ export default function CreateStaffPage() {
               control={form.control}
               name="profile.fullName"
               render={({ field }) => (
-                <CommonInputOutline title={"Tên"} required>
+                <CommonInputOutline title={t('Name')} required>
                   <Input {...field} />
                 </CommonInputOutline>
               )}
@@ -166,18 +166,18 @@ export default function CreateStaffPage() {
               control={form.control}
               name="role"
               render={({ field }) => (
-                <CommonInputOutline title={"Vai trò"} required>
+                <CommonInputOutline title={t('Role')} required>
                   <Select
                     
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Chọn vai trò" />
+                      <SelectValue placeholder={t('select_role')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="STAFF">Nhân viên</SelectItem>
-                      <SelectItem value="ADMIN">Quản lý</SelectItem>
+                      <SelectItem value="STAFF">{t('Staff')}</SelectItem>
+                      <SelectItem value="ADMIN">{t('Manager')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </CommonInputOutline>

@@ -70,7 +70,10 @@ const getProductItems = async (
   set: SetState<ProductItemStore>,
   query: QueryParams,
 ) => {
-  set({ error: null });
+  set(state => ({error: null , queryParams: {
+    ...state.queryParams?.pageRequest,
+    ...query,
+  }}))
 
   try {
     const response = await productApiClient.post(

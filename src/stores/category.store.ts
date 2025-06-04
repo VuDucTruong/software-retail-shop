@@ -78,8 +78,8 @@ const getCategories = async (
   query: QueryParams
 ) => {
   set(state => ({ error: null, queryParams: {
-    ...state.queryParams,
-    query
+    ...state.queryParams?.pageRequest,
+    ...query
   } , categories: null }));
 
   try {

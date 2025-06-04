@@ -147,7 +147,7 @@ export default function KeyFileUploadDialog() {
           {t("import_key")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-1/2 overflow-y-auto">
+      <DialogContent className="w-1/2 overflow-y-auto" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-2xl">{t("import_key")}</DialogTitle>
         </DialogHeader>

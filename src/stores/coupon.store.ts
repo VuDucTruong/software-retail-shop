@@ -73,7 +73,10 @@ export const useCouponStore = create<CouponStore>((set) => ({
 }));
 
 const getCoupons = async (set: SetState<CouponStore>, query: QueryParams) => {
-  set({ error: null, queryParams: query , coupons: null });
+  set(state => ({ error: null, queryParams: {
+    ...state.queryParams?.pageRequest,
+    ...query,
+  } , coupons: null }))
 
   try {
     const response = await couponApiClient.post(

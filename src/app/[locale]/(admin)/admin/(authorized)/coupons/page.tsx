@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "@/i18n/navigation";
+import { convertPriceToVND } from "@/lib/currency_helper";
 import { useCouponStore } from "@/stores/coupon.store";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { Eye } from "lucide-react";
@@ -89,7 +90,11 @@ export default function CouponManagementPage() {
       header: t("Value"),
       cell: ({ row }) => {
         return <div className="flex flex-col gap-1">
-          <div>{row.original.value} {row.original.type === "PERCENTAGE" ? <span>%</span> : ""}</div>
+          {
+          row.original.type === "PERCENTAGE" ? 
+            <div>{row.original.value} %</div> : 
+            <div>{convertPriceToVND(row.original.value)}</div>
+          }
           <div className="text-muted-foreground">{t("for_min_order_value_x", {x: row.original.minAmount ?? 0})}</div>
           <div className="text-muted-foreground">{t("max_reduction_x", {x: row.original.maxAppliedAmount ?? "∞"})}</div>
         </div>;

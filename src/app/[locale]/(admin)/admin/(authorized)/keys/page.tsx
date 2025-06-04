@@ -101,7 +101,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "productName",
-      header: "Tên sản phẩm",
+      header: t('Product_name'),
       cell: ({ row }) => {
         return row.original.name;
       },
@@ -109,7 +109,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "productKey",
-      header: "Mã sản phẩm",
+      header: t("Product_key"),
       cell: ({ row }) => {
         return row.original.productKey;
       },
@@ -117,7 +117,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "region",
-      header: "Khu vực",
+      header: t("Region"),
       cell: ({ row }) => {
         return row.original.region;
       },
@@ -125,7 +125,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: "Ngày thêm",
+      header: t('created_at'),
       cell: ({ row }) => {
         const date = new Date(row.original.createdAt);
         return date.toLocaleDateString();
@@ -134,35 +134,11 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("Status"),
       cell: ({ row }) => {
         return <StatusBadge status={row.original.used ? "used" : "unused"} />;
       },
      
-    },
-    {
-      accessorKey: "actions",
-      header: "",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-2">
-
-            <CommonConfirmDialog
-              triggerName={
-                <Button variant={"destructive"} size="icon" className="w-8 h-8">
-                  <Trash2Icon />
-                </Button>
-              }
-              title={"Xóa khóa sản phẩm"}
-              description={<p>
-                Bạn có chắc chắn muốn xóa khóa sản phẩm này không? <br />
-                <span className="font-semibold">{row.original.name}: {row.original.productKey}</span>
-              </p>}
-              onConfirm={() => handleDelete(row.original.id)}
-            />
-          </div>
-        );
-      },
     },
   ];
 
@@ -174,7 +150,7 @@ export default function KeyManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2 className="capitalize">{"Quản lý khóa sản phẩm"}</h2>
+          <h2 className="capitalize">{t('product_key_management')}</h2>
           <div className="flex items-center gap-2">
             <KeyFileUploadDialog />
             <KeyInsertDialog />
@@ -185,7 +161,7 @@ export default function KeyManagementPage() {
       <CardContent>
          
           <CommmonDataTable
-          objectName="khóa sản phẩm"
+          objectName={t("product_key")}
           isLoading={productItems === null}
           columns={cols}
           data={productItems?.data ?? []}

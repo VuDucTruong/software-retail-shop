@@ -81,8 +81,9 @@ export const useCommentStore = create<CommentStore>((set) => ({
 
 async function getComments(set: SetState<CommentStore>, query?: QueryParams) {
 
+  
   set(state => ({ error: null, queryParams: {
-    ...state.queryParams,
+    ...state.queryParams?.pageRequest,
     ...query,
   } }));
 

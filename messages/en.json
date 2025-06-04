@@ -419,7 +419,7 @@
   "ban_user_description": "Are you sure you want to ban this user? This action cannot be undone.",
   "select_role": "Select role",
   "Manager": "Manager",
-  "product_key": "Product key",
+  "product_key": "product key",
   "Unused": "Unused",
   "Used": "Used",
   "Reset": "Reset",
@@ -435,6 +435,11 @@
   "Selected": "Selected",
   "search_tags": "Search tags",
   "select_tags": "Select tags",
+  "value_from": "Value from",
+  "value_to": "Value to",
+  "deleted_at_x": "Deleted at {x}",
+  "Product_name": "Product name",
+  "Product_key": "Product key",
   "Action": {
     "create": {
       "loading": "Creating...",

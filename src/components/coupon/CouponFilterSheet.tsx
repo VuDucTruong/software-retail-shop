@@ -26,19 +26,19 @@ import { useCouponStore } from "@/stores/coupon.store";
 
 const FormSchema = z
   .object({
-    search: z.string().optional(),
-    type: z.enum(["PERCENTAGE", "FIXED", "ALL"]).optional(),
-    availableFrom: z.string().optional(),
-    availableTo: z.string().optional(),
+    search: z.string(),
+    type: z.enum(["PERCENTAGE", "FIXED", "ALL"]),
+    availableFrom: z.string(),
+    availableTo: z.string(),
     valueFrom: z.preprocess((val) => {
-      if(val) return Number(val);
+      if(val) return val;
       return val
-    }, z.number().optional()),
+    }, z.string()),
     valueTo: z.preprocess((val) => {
-      if(val) return Number(val);
+      if(val) return val;
       return val
-    }, z.number().optional()),
-  })
+    }, z.string()),
+  }).partial()
 
 export default function CouponFilterSheet() {
   const t = useTranslations();
@@ -48,11 +48,11 @@ export default function CouponFilterSheet() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       search: "",
-      type: undefined,
+      type: "ALL",
       availableFrom: "",
       availableTo: "",
-      valueFrom: undefined,
-      valueTo: undefined,
+      valueFrom: "",
+      valueTo: "",
     },
   });
 

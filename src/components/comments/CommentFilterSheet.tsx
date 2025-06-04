@@ -44,13 +44,14 @@ export default function CommentFilterSheet() {
   });
 
   function handleSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
+
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
         ([_, value]) => value !== undefined && value !== ""
       )
     );
     
+    console.log(cleanedData);
 
     getComments({
       pageRequest: {

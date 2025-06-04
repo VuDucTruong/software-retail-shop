@@ -73,7 +73,7 @@ const getProducts = async (
 ) => {
   set((state) => ({
      status: "loading", error: null , queryParams: {
-    ...state.queryParams,
+    ...state.queryParams?.pageRequest,
     ...query,
      }
   }));

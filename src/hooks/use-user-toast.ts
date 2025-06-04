@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
@@ -31,6 +32,7 @@ export function useUserToast({
   errorMessage,
   reset
 }: UseActionToastProps) {
+  const t = useTranslations();
   useEffect(() => {
     if (!lastAction || status === "idle") return;
 
@@ -38,7 +40,7 @@ export function useUserToast({
 
     if(!actionMess) return;
 
-    const message = actionMess[status];
+    const message = t(actionMess[status]);
 
 
     let toastId: string | number | undefined;

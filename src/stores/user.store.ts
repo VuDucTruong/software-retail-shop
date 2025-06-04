@@ -61,8 +61,10 @@ export const useUserStore = create<UserStore>()((set) => ({
 }));
 
 const getUsers = async (set: SetState<UserStore>, query: QueryParams) => {
-  set({ status: "loading", lastAction: "getUsers", queryParams: query });
-
+  set((prev) => ({status: "loading", lastAction: "getUsers", queryParams: {
+    ...prev.queryParams?.pageRequest,
+    ...query,
+  }}));
   
   if(window.location.pathname.includes("/staffs")) {
     query = {

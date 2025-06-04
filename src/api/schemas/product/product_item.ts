@@ -17,7 +17,10 @@ export const ProductItemDetailSchema = z.object({
         return ""
     }, z.string()),
     name: z.string(),
-    imageUrl: z.string().nullable(),
+    imageUrl: z.preprocess((val) => {
+        if (val || val === "") return val;
+        return "/empty_img.png"
+        }, z.string()),
     represent: z.boolean(),
     price: z.number(),
     originalPrice: z.number(),
