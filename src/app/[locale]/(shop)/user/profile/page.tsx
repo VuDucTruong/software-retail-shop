@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 
 export default function UserProfilePage() {
   const t = useTranslations();
@@ -36,7 +36,7 @@ export default function UserProfilePage() {
     getProfile();
   }, []);
 
-  useLoginToast({
+  useAuthToast({
     status,
     lastAction,
     errorMessage: error || undefined,

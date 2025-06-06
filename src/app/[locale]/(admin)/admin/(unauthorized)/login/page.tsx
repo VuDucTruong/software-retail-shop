@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useAuthStore } from "@/stores/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -46,7 +46,7 @@ export default function LoginPage() {
 
 
 
-  useLoginToast({
+  useAuthToast({
     status: useAuthStore((state) => state.status),
     lastAction: useAuthStore((state) => state.lastAction),
     errorMessage: useAuthStore((state) => state.error) || undefined,

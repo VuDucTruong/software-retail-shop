@@ -440,6 +440,8 @@
   "deleted_at_x": "Deleted at {x}",
   "Product_name": "Product name",
   "Product_key": "Product key",
+  "product_removed_from_wishlist": "Product removed from wishlist",
+  "": "",
   "Action": {
     "create": {
       "loading": "Creating...",
@@ -500,6 +502,14 @@
       "loading": "Deleting users...",
       "success": "Users deleted successfully.",
       "error": "Failed to delete users."
+    },
+    "likeProduct": {
+      "success": "The product was added to your wishlist successfully.",
+      "error": "Failed to add product to wishlist."
+    },
+    "unlikeProduct": {
+      "success": "The product was removed from your wishlist successfully.",
+      "error": "Failed to remove product from wishlist."
     }
   }
 }

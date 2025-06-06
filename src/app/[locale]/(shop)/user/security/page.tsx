@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useAuthStore } from "@/stores/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft } from "lucide-react";
@@ -43,7 +43,7 @@ export default function SecurityPage() {
       ])
     );
 
-  useLoginToast({
+  useAuthToast({
     lastAction,
     status,
     errorMessage: error || undefined,

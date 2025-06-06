@@ -49,7 +49,7 @@ const messages: Record<string, Record<Status, string>> = {
   },
 };
 
-export function useLoginToast({
+export function useAuthToast({
   status,
   lastAction,
   errorMessage,

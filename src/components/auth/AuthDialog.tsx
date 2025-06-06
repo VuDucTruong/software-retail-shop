@@ -22,7 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { LogOut } from "lucide-react";
 import { useAuthStore } from "@/stores/auth.store";
 import { useRouter } from "@/i18n/navigation";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useShallow } from "zustand/shallow";
 import { stat } from "fs";
 import { Skeleton } from "../ui/skeleton";
@@ -70,7 +70,7 @@ export function AuthDialog() {
       ])
     );
 
-  useLoginToast({ status, lastAction, errorMessage: error || undefined });
+  useAuthToast({ status, lastAction, errorMessage: error || undefined });
 
   useEffect(() => {
     getMe();

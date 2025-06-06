@@ -2,7 +2,7 @@
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import VerificationForm from "@/components/auth/VerificationForm";
 import { Button } from "@/components/ui/button";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useAuthStore } from "@/stores/auth.store";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -31,7 +31,7 @@ export default function VerificationPage() {
     ])
   );
 
-  useLoginToast({
+  useAuthToast({
     status,
     lastAction,
     errorMessage: error || undefined,

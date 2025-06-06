@@ -22,7 +22,7 @@ import { useTranslations } from "next-intl";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 
 
 export default function AdminProfilePage() {
@@ -43,7 +43,7 @@ export default function AdminProfilePage() {
     getMe();
   }, []);
 
-  useLoginToast({
+  useAuthToast({
     status,
     lastAction,
     errorMessage: error || undefined,

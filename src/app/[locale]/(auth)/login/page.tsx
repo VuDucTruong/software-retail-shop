@@ -1,7 +1,7 @@
 "use client";
 import { LoginRequest } from "@/api";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useAuthStore } from "@/stores/auth.store";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
@@ -25,7 +25,7 @@ export default function LoginPage() {
   const router = useRouter();
 
 
-  useLoginToast({
+  useAuthToast({
     status,
     lastAction,
     errorMessage: error || undefined,

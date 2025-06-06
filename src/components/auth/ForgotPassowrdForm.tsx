@@ -31,7 +31,7 @@ import CongratulationSection from "../forgot-pass/CongratulationSection";
 import PasswordSection from "../forgot-pass/PasswordSection";
 import { useAuthStore } from "@/stores/auth.store";
 import { useShallow } from "zustand/shallow";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { set } from "lodash";
 
 export function ForgotPassowrdForm() {
@@ -47,7 +47,7 @@ export function ForgotPassowrdForm() {
     ])
   );
 
-  useLoginToast({
+  useAuthToast({
     status,
     lastAction,
     errorMessage: error || undefined,
