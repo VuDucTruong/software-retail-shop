@@ -13,6 +13,7 @@ import LoadingPage from "@/components/special/LoadingPage";
 import SearchPagination from "@/components/search/SearchPagination";
 import Link from "next/link";
 import Image from "next/image";
+import SearchNotFound from "@/components/common/SearchNotFound";
 
 export default function SearchResultPage() {
   const t = useTranslations();
@@ -80,18 +81,7 @@ export default function SearchResultPage() {
             ))}
           </>
         ) : (
-          <div className="col-span-4 flex flex-col items-center gap-2">
-            <h3>Không có sản phẩm phù hợp với tìm kiếm!</h3>
-            <p>Bạn có thể thử từ khóa đơn giản hơn hoặc liên hệ với hỗ trợ.</p>
-            <div className="relative w-full h-60">
-              <Image
-                alt="not found search"
-                src={"/search-not-found.svg"}
-                fill
-                sizes="100%"
-              />
-            </div>
-          </div>
+          <SearchNotFound className="col-span-4"/>
         )}
       </div>
 

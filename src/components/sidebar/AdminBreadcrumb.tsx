@@ -12,7 +12,6 @@ import {
 } from "../ui/breadcrumb";
 import { Separator } from "../ui/separator";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import SearchCommandDialog from "@/components/common/SearchCommandDialog";
 import { CommonSelect } from "../common/CommonSelect";
 import { languages } from "@/lib/constants";
 

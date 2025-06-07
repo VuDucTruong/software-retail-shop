@@ -13,7 +13,8 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import SearchCommandDialog from "@/components/common/SearchCommandDialog";
+import BlogSearchBar from "./BlogSearchBar";
+
 type Genre = {
   title: string;
   description?: string;
@@ -76,7 +77,7 @@ export default function BlogNavMenu() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <SearchCommandDialog />
+      <BlogSearchBar />
     </div>
   );
 }

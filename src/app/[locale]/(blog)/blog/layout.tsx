@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import { Toaster } from "sonner";
 import BlogNavMenu from "@/components/blog/BlogNavMenu";
 import Image from "next/image";
+import Link from "next/link";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -40,7 +41,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <header className="shadow-md">
             <div className="main-container">
-              <Image src={"/logo.png"} alt="LOGO" width={150} height={150} />
+              <Link href="/"><Image src={"/logo.png"} alt="LOGO" width={150} height={150} /></Link>
               <BlogNavMenu />
             </div>
           </header>

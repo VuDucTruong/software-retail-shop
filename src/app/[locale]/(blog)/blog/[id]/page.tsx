@@ -1,3 +1,4 @@
+'use client'
 import BlogGenreSection from "@/components/blog/BlogGenreSection";
 import NavPostLink from "@/components/blog/NavPostLink";
 import HorizontalPostListItem from "@/components/blog/HorizontalPostListItem";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { ArrowLeftCircle } from "lucide-react";
 import React from "react";
 import VerticalPostListItem from "@/components/blog/VerticalPostListItem";
+import { RichTextViewer } from "@/components/rich_text/RichTextViewer";
 
 export default function DetailBlogPage() {
   return (
@@ -53,7 +55,9 @@ export default function DetailBlogPage() {
           </div>
         </CardHeader>
 
-        <CardContent>Cotnent</CardContent>
+        <CardContent className="min-h-[400px]">
+          <RichTextViewer content="Content in here"/>
+        </CardContent>
 
         <CardFooter className="flex flex-col gap-4 items-start">
           <div className="flex gap-2 border-y border-border w-full py-4">

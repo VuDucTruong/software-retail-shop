@@ -441,6 +441,9 @@
   "Product_name": "Product name",
   "Product_key": "Product key",
   "product_removed_from_wishlist": "Product removed from wishlist",
+  "no_matching_x": "No {x} matched your search!",
+  "suggestion_for_search": "You can try simpler keywords or contact support.",
+  "blogs": "blogs",
   "": "",
   "Action": {
     "create": {
