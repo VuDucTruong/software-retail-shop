@@ -1,23 +1,20 @@
 import { useTranslations } from "next-intl";
 
-import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogDescription,
 } from "../ui/dialog";
 
-import { UserComment } from "@/api";
-import { Eye } from "lucide-react";
-import AdminCommentItem from "./AdminCommentItem";
 import { useCommentStore } from "@/stores/comment.store";
-import { useEffect, useState } from "react";
-import { Skeleton } from "../ui/skeleton";
 import { useCommentDialogStore } from "@/stores/dialog.store";
+import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
+import { Skeleton } from "../ui/skeleton";
+import AdminCommentItem from "./AdminCommentItem";
 
 
 export default function EditCommentDialog() {
@@ -51,18 +48,18 @@ export default function EditCommentDialog() {
       >
         <DialogHeader>
           <DialogTitle asChild className="text-2xl">
-            <h2>{"Chi tiết bình luận"}</h2>
+            <h2>{t('comment_detail')}</h2>
           </DialogTitle>
           <DialogDescription className="text-muted-foreground italic">
-            Chi tiết bình luận của{" "}
+            {t('comment_detail_of')}{" "}
             <span className="text-black font-medium">
               "{selectedComment?.author.fullName}"
             </span>{" "}
-            trên sản phẩm{" "}
+            {t('on_product')}{" "}
             <span className="text-black font-medium">
               {selectedComment?.product?.name}
             </span>{" "}
-            vào ngày {selectedComment?.createdAt}.
+            {t('on_date')} {selectedComment?.createdAt}.
           </DialogDescription>
         </DialogHeader>
         <div>

@@ -93,9 +93,11 @@ export function ForgotPassowrdForm() {
     );
   }
 
-  if (tabValue === "congratulation") {
-    return <CongratulationSection />;
-  }
+  // if (tabValue === "congratulation") {
+  //   return <CongratulationSection />;
+  // }
 
-  return <EmailSection form={form} onSubmit={() => setTabValue("password")} />;
+  // return <EmailSection form={form} onSubmit={() => setTabValue("password")} />;
+
+  return <CongratulationSection />;
 }

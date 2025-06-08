@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
@@ -54,7 +55,7 @@ export function useAuthToast({
   lastAction,
   errorMessage,
 }: UseActionToastProps) {
-
+  const t = useTranslations();
    const didMount = useRef(false);
     const toastIdRef = useRef<string | number | undefined>(undefined);
 
@@ -82,9 +83,9 @@ export function useAuthToast({
     const actionMessages = messages[lastAction];
     if (!actionMessages) return;
 
-    const message = actionMessages[status];
+    const message = t(actionMessages[status]) || "";
    
-    
+    if(!message) return;
     
     if (status === "loading") {
       toastIdRef.current = toast.loading(message);

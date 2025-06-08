@@ -102,10 +102,6 @@ const [data, setData] = useState<any[]>([]);
               typeof updater === "function" ? updater(old) : updater
             );
           }}
-          canSelect
-          onDeleteRows={(rows) => {
-            console.log(rows);
-          }}
           sorting={sorting}
           onSortingChange={(updater) => {
             setSorting((prev) =>

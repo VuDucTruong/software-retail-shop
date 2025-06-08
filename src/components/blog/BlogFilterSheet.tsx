@@ -46,14 +46,14 @@ export default function BlogFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm bài viết
+          <Filter /> {t('search_and_filter', {x: t('blog')})}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm bài viếtc</SheetTitle>
+          <SheetTitle>{t('search_and_filter', {x: t('blog')})}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm bài viết dựa trên tiêu đề , lọc theo thể loại, ngày phát hành
+            {t('search_and_filter_description', {x: t('blog')})}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -64,7 +64,7 @@ export default function BlogFilterSheet() {
                 name="search"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t("Search")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -79,7 +79,7 @@ export default function BlogFilterSheet() {
                 name="genres"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t("Genre")}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -93,7 +93,7 @@ export default function BlogFilterSheet() {
                 name="publishedFrom"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t("from_date")}</FormLabel>
                     <FormControl>
                       <Input type="datetime-local"  {...field} />
                     </FormControl>
@@ -107,7 +107,7 @@ export default function BlogFilterSheet() {
                 name="publishedTo"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t('to_date')}</FormLabel>
                     <FormControl>
                       <Input type="datetime-local" min={form.watch('publishedFrom')} {...field} />
                     </FormControl>
@@ -122,7 +122,7 @@ export default function BlogFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t('apply_filters')}
             </Button>
 
             <Button
@@ -132,7 +132,7 @@ export default function BlogFilterSheet() {
                 form.reset();
               }}
             >
-              Đặt lại
+              {t('reset_filters')}
             </Button>
           </div>
         </div>

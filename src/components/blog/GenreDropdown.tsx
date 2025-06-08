@@ -17,6 +17,7 @@ import { z } from "zod";
 import { GenreDomain } from "@/stores/blog/genre.store";
 import { HashSet, } from "@/lib/utils";
 import { BlogFormType } from "@/components/blog/BlogForm";
+import { useTranslations } from "next-intl";
 
 type Props = {
     field?: ControllerRenderProps<Internal.RegisteredType, 'selectedGenre2Ids'>; // or explicitly: ControllerRenderProps<FormValues, "genres">
@@ -51,6 +52,7 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
     const [proxyLoading, genre1s, getGenre1s] = GenreDomain.useStore(useShallow(s => [
         s.proxyLoading, s.genre1s, s.getGenre1s
     ]))
+    const t = useTranslations();
 
     useEffect(() => {
         proxyLoading(getGenre1s,)
@@ -109,7 +111,7 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
             <DropdownMenu>
                 <DropdownMenuTrigger className="max-w-[200px]" asChild>
                     <Button variant="outline" className="w-full justify-between">
-                        {selectedGenres.size > 0 ? "Đã chọn" : "Chọn thể loại"}
+                        {t('select_genre')}
 
                     </Button>
                 </DropdownMenuTrigger>
@@ -148,7 +150,7 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
                 </DropdownMenuContent>
             </DropdownMenu>
             <div className="text-sm text-muted-foreground">
-                Đã chọn:{" "}
+                {t('Selected')}:{" "}
                 <span className="font-medium">{[...selectedGenres].join(", ")}</span>
             </div>
         </div>

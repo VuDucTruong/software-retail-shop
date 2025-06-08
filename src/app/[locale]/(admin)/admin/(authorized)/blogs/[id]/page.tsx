@@ -8,9 +8,10 @@ import {BlogSingle} from "@/stores/blog/blog.store";
 import {getDateTimeLocal} from '@/lib/date_helper';
 import {useActionToast} from "@/hooks/use-action-toast";
 import {Toaster} from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export default function DetailBlogPage() {
-
+    const t = useTranslations();
     const pathname = usePathname();
     const id = pathname.split("/").at(-1);
 
@@ -64,8 +65,8 @@ export default function DetailBlogPage() {
             {/* <Toaster richColors theme='dark' /> */}
             <BlogForm initialValues={blogValue} onFormSubmit={onSubmitUpdate} mode={'update'}
                       uiTitles={{
-                          formTitle: "update_blog",
-                          buttonTitle: "update_blog"
+                          formTitle: t('update_blog'),
+                          buttonTitle: t('Update')
                       }}
             />
         </div>

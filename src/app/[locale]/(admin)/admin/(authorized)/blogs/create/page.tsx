@@ -47,8 +47,8 @@ export default function CreateBlogPage() {
         <>
             <BlogForm initialValues={formValues} onFormSubmit={onSubmitUpdate} mode={'create'}
                       uiTitles={{
-                          formTitle: t("Tạo bài viết"),
-                          buttonTitle: t("Tạo")
+                          formTitle: t("create_blog"),
+                          buttonTitle: t("Create")
                       }}
             />
         </>

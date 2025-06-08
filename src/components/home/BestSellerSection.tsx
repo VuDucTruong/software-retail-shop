@@ -5,6 +5,9 @@ import { IoMdTrendingUp } from "react-icons/io";
 import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import ProductItem from "@/components/common/ProductItem";
+import { Product } from "@/api";
+
+
 export default function BestSellerSection() {
   const t = useTranslations();
   return (
@@ -30,11 +33,8 @@ export default function BestSellerSection() {
         <div className="grid grid-cols-4 place-items-stretch gap-6 auto-rows-auto">
           {/* {Array.from({ length: 8 }).map((_, index) => (
             <ProductItem
-            className=" text-white border-slate-400 border-t-0"
-              key={index}
-              title="Product title"
-              originalPrice={100000}
-              price={80000}
+            key={index}
+            product=
             />
           ))} */}
         </div>

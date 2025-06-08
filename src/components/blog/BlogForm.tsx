@@ -149,7 +149,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
         <Card>
             <CardHeader>
                 <CardTitle>
-                    <h2>{uiTitles.formTitle}</h2>
+                    <h2 className="capitalize">{uiTitles.formTitle}</h2>
                 </CardTitle>
             </CardHeader>
             <CardContent>
@@ -168,7 +168,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                             name="image"
                             render={({ field }) => (
                                 <FormItem className="col-span-3">
-                                    <FormLabel>Hình ảnh</FormLabel>
+                                    <FormLabel>{t('Image')}</FormLabel>
                                     <FormControl>
                                         <div>
                                             <Input
@@ -197,7 +197,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                             control={form.control}
                             name="title"
                             render={({ field }) => (
-                                <CommonInputOutline required title={"Tiêu đề"} className="col-span-3">
+                                <CommonInputOutline required title={t('Title')} className="col-span-3">
                                     <Input {...field} />
                                 </CommonInputOutline>
                             )}
@@ -207,7 +207,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                             control={form.control}
                             name="subtitle"
                             render={({ field }) => (
-                                <CommonInputOutline title="Phụ đề" className="col-span-3" required>
+                                <CommonInputOutline title={t("Subtitle")} className="col-span-3" required>
                                     <Textarea {...field} className="resize-none" rows={3} />
                                 </CommonInputOutline>
                             )}
@@ -218,7 +218,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                             control={form.control}
                             name="publishedAt"
                             render={({ field }) => (
-                                <CommonInputOutline title={"Ngày xuất bản"} required>
+                                <CommonInputOutline title={t("publish_date")} required>
                                     <Input type="datetime-local" {...field} />
                                 </CommonInputOutline>
                             )}
@@ -229,17 +229,17 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                             control={form.control}
                             name="selectedGenre2Ids"
                             render={({ field }) => (
-                                <CommonInputOutline title={"Thể loại"} required>
+                                <CommonInputOutline title={t('Genres')} required>
                                     <GenreDropdown selectedGenre2Ids={initialValues.selectedGenre2Ids} field={field} onGenre2Selected={onG2Selected} />
                                 </CommonInputOutline>
                             )}
                         />
-                        <CommonInputOutline title="Selected Genres">
+                        <CommonInputOutline title={t("selected_genres")}>
                             <FloatingCardList items={selectedGenresDisplay} />
                         </CommonInputOutline>
 
                         <div className="col-span-3">
-                            <ProductDescriptionInput hint="Nội dung bài viết" name="content" />
+                            <ProductDescriptionInput hint={t('blog_content')} name="content" />
                         </div>
 
                         <Button
