@@ -1,8 +1,6 @@
-import {z} from "zod";
-import {QueyParamsSchema} from "@/api";
-import type {StateCreator} from "zustand/vanilla";
-import {SetState} from "@/lib/set_state";
-import {ApiError} from "@/api/client/base_client";
+import { QueyParamsSchema } from "@/api";
+import { SetState } from "@/lib/set_state";
+import { z } from "zod";
 
 export type QueryParams = z.infer<typeof QueyParamsSchema>;
 export type LastActions = "get" |"create" | "update" | "delete" | null;

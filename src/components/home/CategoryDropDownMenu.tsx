@@ -1,14 +1,11 @@
-import React from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
 import { CgDetailsMore } from "react-icons/cg";
+import { Button } from "../ui/button";
 
 export default function CategoryDropDownMenu() {
   return (

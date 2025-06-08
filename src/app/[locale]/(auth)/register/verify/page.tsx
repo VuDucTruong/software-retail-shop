@@ -1,5 +1,4 @@
 "use client";
-import { RegisterForm } from "@/components/auth/RegisterForm";
 import VerificationForm from "@/components/auth/VerificationForm";
 import { Button } from "@/components/ui/button";
 import { useAuthToast } from "@/hooks/use-auth-toast";
@@ -7,7 +6,7 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { notFound, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { useShallow } from "zustand/shallow";
 
@@ -37,16 +36,18 @@ export default function VerificationPage() {
     errorMessage: error || undefined,
   });
 
-  if (!email) {
-    return notFound();
-  }
+
 
   useEffect(() => {
     if (status === "success" && lastAction === "verifyEmail") {
       router.push("/login");
     }
-  }, [status, lastAction]);
+  }, [status, lastAction, router]);
 
+
+    if (!email) {
+    return notFound();
+  }
 
   return (
     <div className="flex flex-col justify-center min-h-screen items-center">
@@ -57,7 +58,7 @@ export default function VerificationPage() {
           onClick={handleBackToLogin}
         >
           <BiArrowBack />
-          Quay lại trang đăng nhập
+          {t("back_to_login")}
         </Button>
       </div>
 

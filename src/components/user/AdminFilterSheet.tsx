@@ -1,4 +1,11 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useUserStore } from "@/stores/user.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
@@ -21,14 +28,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useUserStore } from "@/stores/user.store";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const FormSchema = z.object({
   fullName: z.string().optional(),

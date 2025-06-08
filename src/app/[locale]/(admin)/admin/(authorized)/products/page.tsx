@@ -3,6 +3,7 @@
 import { Product } from "@/api";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import SortingHeader from "@/components/common/table/SortingHeader";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,6 @@ export default function ProductManagementPage() {
     lastAction,
     error,
     status,
-    resetStatus,
     deleteProducts,
   ] = useProductStore(
     useShallow((state) => [
@@ -43,14 +43,9 @@ export default function ProductManagementPage() {
       state.lastAction,
       state.error,
       state.status,
-      state.resetStatus,
       state.deleteProducts,
     ])
   );
-
-  useEffect(() => {
-    resetStatus();
-  }, []);
 
   useActionToast({ lastAction, status, errorMessage: error || undefined });
 
@@ -75,7 +70,7 @@ export default function ProductManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
+  }, [sorting, pagination, getProducts]);
 
   const cols: ColumnDef<Product>[] = [
     {
@@ -107,7 +102,9 @@ export default function ProductManagementPage() {
     },
     {
       accessorKey: "name",
-      header: t("Name"),
+      header: ({ column }) => (
+              <SortingHeader column={column} title={t("Name")} />
+            ),
       cell: ({ row }) => {
         return row.original.name;
       },
@@ -175,7 +172,7 @@ export default function ProductManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{t("product_management")}</h2>
+          <h2 className="capitalize">{t("product_management")}</h2>
           <div className="flex items-center gap-2">
             <Link href={"products/create"}>
               <Button variant="outline" className="bg-primary text-white">

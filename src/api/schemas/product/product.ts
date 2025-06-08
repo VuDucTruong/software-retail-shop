@@ -1,7 +1,11 @@
-import { ApiResponseSchema, CategorySchema, ImageSchema, ProductDescriptionSchema, ProductItemSchema, ProductMetadataSchema } from "@/api";
-import { z } from "zod";
 
-const hasWindow = typeof window !== "undefined";
+import { z } from "zod";
+import { CategorySchema } from "../category";
+import { ProductDescriptionSchema } from "./product_description";
+import { ProductMetadataSchema } from "./product_metadata";
+import { ApiResponseSchema, ImageSchema } from "../common";
+
+// const hasWindow = typeof window !== "undefined";
 
 
 // === Validation Messages ===
@@ -50,6 +54,7 @@ export const ProductSchema = z.object({
 // === Schemas ===
 
 export const ProductValidation = z.object({
+  id: z.number().optional(),
   slug: z.string(),
   name: z.string().min(3, { message: messages.name }),
   image: ImageSchema(messages.required.image),
@@ -63,7 +68,7 @@ export const ProductValidation = z.object({
 });
 
 
-const applyRefinement = (schema: z.ZodObject<any>) => {
+const applyRefinement = (schema: typeof ProductValidation) => {
   return schema.superRefine((data, ctx) => {
     if (data.price > data.originalPrice) {
       ctx.addIssue({
@@ -73,16 +78,15 @@ const applyRefinement = (schema: z.ZodObject<any>) => {
       });
     }
   });
-}
+};
+
 
 // Create
 export const ProductCreateSchema = applyRefinement(ProductValidation)
 
 
 // Update
-export const ProductUpdateSchema = applyRefinement(ProductValidation.extend({
-    id: z.number(),
-  }))
+export const ProductUpdateSchema = applyRefinement(ProductValidation)
   
 
 export const ProductListSchema = ApiResponseSchema(z.array(ProductSchema));

@@ -1,18 +1,16 @@
 "use client";
 
-import React, { use } from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "@/components/ui/dialog";
 import { useAuthDialogStore } from "@/stores/auth.dialog.store";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 export default function CheckAuthDialog() {
   const onOpenChange = useAuthDialogStore((state) => state.onOpenChange);

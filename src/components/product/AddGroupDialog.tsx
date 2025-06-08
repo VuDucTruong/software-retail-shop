@@ -1,3 +1,4 @@
+import { ProductGroupCreate, ProductGroupCreateSchema } from "@/api";
 import {
   Dialog,
   DialogContent,
@@ -6,16 +7,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { ProductGroupCreate, ProductGroupCreateSchema } from "@/api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "../ui/input";
-import { FormEventHandler, useEffect } from "react";
-import { useProductGroupStore } from "@/stores/product.group.store";
-import { toast } from "sonner";
 import { useActionToast } from "@/hooks/use-action-toast";
+import { useProductGroupStore } from "@/stores/product.group.store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import { Input } from "../ui/input";
 
 export default function AddGroupDialog() {
   const createProductGroup = useProductGroupStore(

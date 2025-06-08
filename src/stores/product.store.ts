@@ -164,7 +164,7 @@ const updateProduct = async (
   set({ status: "loading", lastAction: "update", error: null });
 
   try {
-    const response = await productApiClient.put(
+    await productApiClient.put(
       `/products`,
       z.any(),
       product,

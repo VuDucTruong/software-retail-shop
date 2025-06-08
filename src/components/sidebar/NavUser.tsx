@@ -40,7 +40,7 @@ export function NavUser() {
 
   useEffect(() => {
     getMe();
-  }, []);
+  }, [getMe]);
 
   const handleLogout = () => {
     logout();

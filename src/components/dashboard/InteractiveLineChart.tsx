@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, XAxis } from "recharts";
 
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Card,
   CardContent,
@@ -17,14 +16,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslations } from "next-intl";
 import { Skeleton } from "../ui/skeleton";
 const chartData = Array.from({ length: 60 }, (_, index) => {

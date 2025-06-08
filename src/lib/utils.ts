@@ -72,15 +72,15 @@ export class StringUtils {
     return typeof str === 'string' && str.trim().length > 0;
   }
 }
-export function resolveStore<T, U>(
-  useStore: UseBoundStore<StoreApi<T>>,
-  selector: (store: T) => U
-): [SetState<T>, GetState<T>, U] {
-  const selected = useStore(selector);
-  const setState = useStore.setState;
-  const getState = useStore.getState;
-  return [setState, getState, selected];
-}
+// export function resolveStore<T, U>(
+//   useStore: UseBoundStore<StoreApi<T>>,
+//   selector: (store: T) => U
+// ): [SetState<T>, GetState<T>, U] {
+//   const selected = useStore(selector);
+//   const setState = useStore.setState;
+//   const getState = useStore.getState;
+//   return [setState, getState, selected];
+// }
 export class HashSet {
   public static add<T>(
     current: readonly T[],

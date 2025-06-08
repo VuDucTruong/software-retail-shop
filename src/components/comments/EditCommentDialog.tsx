@@ -16,13 +16,11 @@ import { useShallow } from "zustand/shallow";
 import { Skeleton } from "../ui/skeleton";
 import AdminCommentItem from "./AdminCommentItem";
 
-
 export default function EditCommentDialog() {
   const t = useTranslations();
-  const [open , comment] = useCommentDialogStore(useShallow((state) => [
-    state.open,
-    state.data,
-  ]));
+  const [open, comment] = useCommentDialogStore(
+    useShallow((state) => [state.open, state.data])
+  );
   const getCommentById = useCommentStore((state) => state.getCommentById);
   const selectedComment = useCommentStore((state) => state.selectedComment);
   useEffect(() => {
@@ -43,23 +41,21 @@ export default function EditCommentDialog() {
       <DialogTrigger asChild>
         <div className="hidden"></div>
       </DialogTrigger>
-      <DialogContent
-        className="w-1/2 overflow-auto"
-      >
+      <DialogContent className="w-1/2 overflow-auto">
         <DialogHeader>
           <DialogTitle asChild className="text-2xl">
-            <h2>{t('comment_detail')}</h2>
+            <h2>{t("comment_detail")}</h2>
           </DialogTitle>
           <DialogDescription className="text-muted-foreground italic">
-            {t('comment_detail_of')}{" "}
+            {t("comment_detail_of")}{" "}
             <span className="text-black font-medium">
-              "{selectedComment?.author.fullName}"
+              {`"${selectedComment?.author.fullName}"`}
             </span>{" "}
-            {t('on_product')}{" "}
+            {t("on_product")}{" "}
             <span className="text-black font-medium">
-              {selectedComment?.product?.name}
+              {`"${selectedComment?.product?.name}"`}
             </span>{" "}
-            {t('on_date')} {selectedComment?.createdAt}.
+            {t("on_date")} {selectedComment?.createdAt}.
           </DialogDescription>
         </DialogHeader>
         <div>

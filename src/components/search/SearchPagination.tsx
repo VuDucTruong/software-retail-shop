@@ -1,16 +1,11 @@
-import React from 'react'
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationEnd,
   PaginationItem,
   PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationStart,
-} from "@/components/ui/pagination"
-import { useSearchParams } from 'next/navigation'
+  PaginationStart
+} from "@/components/ui/pagination";
 
 type Props = {
     totalPages: number;

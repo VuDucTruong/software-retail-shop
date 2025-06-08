@@ -12,9 +12,10 @@ import { useActionToast } from "@/hooks/use-action-toast";
 import { getDateLocal } from "@/lib/date_helper";
 import { useCouponStore } from "@/stores/coupon.store";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { get } from "lodash";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
 
@@ -51,7 +52,7 @@ export default function ConponDetailPage() {
     if (couponId) {
       getCouponById(Number(couponId));
     }
-  }, []);
+  }, [getCouponById, couponId]);
 
   const form = useForm<CouponUpdate>({
     mode: "onSubmit",
@@ -75,13 +76,13 @@ export default function ConponDetailPage() {
         ...selectedCoupon,
       });
     }
-  }, [selectedCoupon]);
+  }, [selectedCoupon,form]);
 
   if (!selectedCoupon) {
     return LoadingPage();
   }
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     form.handleSubmit(async (data) => {

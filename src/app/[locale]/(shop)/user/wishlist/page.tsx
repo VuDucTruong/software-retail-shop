@@ -35,14 +35,14 @@ export default function WishlistPage() {
         sortDirection: "desc",
       },
     });
-  }, []);
+  }, [getFavouriteProducts]);
 
   const handleDelete = (id: number) => {
     updateProductFavourite(id, false);
   };
 
   const handleAddToCart = (id: number) => {
-    toast.success(t("Need to be implemented"));
+    toast.success("Need to be implemented" + " - " + id);
   };
 
   useFavouriteToast({

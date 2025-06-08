@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { UserProfileSchema } from "@/api";
+import { UserProfileSchema } from "./user";
+
 
 
 

@@ -1,4 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useCommentStore } from "@/stores/comment.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Sheet,
   SheetContent,
@@ -21,10 +22,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useProductStore } from "@/stores/product.store";
-import { useCommentStore } from "@/stores/comment.store";
 import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
 
 const FormSchema = z.object({
   search: z.string().optional(),
@@ -47,7 +45,7 @@ export default function CommentFilterSheet() {
 
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""
+        ([, value]) => value !== undefined && value !== ""
       )
     );
     

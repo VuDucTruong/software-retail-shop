@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -6,9 +5,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useTagStore } from "@/stores/product.tag.store";
-import { useClientCommentStore } from "@/stores/cilent/client.comment.store";
 import { useClientCategoryState } from "@/stores/cilent/client.category.store";
+import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 import { Skeleton } from "../ui/skeleton";
 

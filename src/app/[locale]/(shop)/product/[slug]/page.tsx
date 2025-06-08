@@ -1,18 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { CommentForm } from "@/components/product/CommentForm";
 import ProductInfo from "@/components/product/ProductInfo";
 import RelatedProductSection from "@/components/product/RelatedProductSection";
 import UserCommentSection from "@/components/product/UserCommentSection";
-import { usePathname } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
-import { useClientProductStore } from "@/stores/cilent/client.product.store";
-import { get, last } from "lodash";
-import LoadingPage from "@/components/special/LoadingPage";
-import ReactMarkdown from "react-markdown";
-import { notFound } from "next/navigation";
 import { RichTextViewer } from "@/components/rich_text/RichTextViewer";
+import LoadingPage from "@/components/special/LoadingPage";
+import { usePathname } from "@/i18n/navigation";
+import { useClientProductStore } from "@/stores/cilent/client.product.store";
+import { get } from "lodash";
+import { useTranslations } from "next-intl";
+import { notFound } from "next/navigation";
 
 
 
@@ -34,7 +32,7 @@ export default function DetailProductPage() {
 
   useEffect(() => {
     getProductBySlug(slug);
-  }, []);
+  }, [getProductBySlug, slug]);
 
 
   if(error && lastAction === null) {

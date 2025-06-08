@@ -1,10 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { z, ZodType } from 'zod';
 import { ApiError, ValidationError } from './base_client';
-type CacheEntry = {
-  data: any;
-  timestamp: number;
-};
+// type CacheEntry = {
+//   data: any;
+//   timestamp: number;
+// };
 type ApiClientOptions = {
   useCache?: boolean;
   cacheTTL?: number; // in milliseconds
@@ -12,7 +12,7 @@ type ApiClientOptions = {
 export class ApiClient {
   private static instances: Record<string, ApiClient> = {};
   private instance: AxiosInstance;
-  private cache = new Map<string, CacheEntry>();
+  //private cache = new Map<string, CacheEntry>();
   private constructor(basePath: string = '') {
     this.instance = axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_API_URL}${basePath}`,
@@ -96,20 +96,20 @@ export class ApiClient {
     
     const useCache = false; // default false
     console.log("useCache", useCache);
-    const cacheTTL = options?.cacheTTL ?? 5 * 60 * 1000; // default 5 minutes
+    // const cacheTTL = options?.cacheTTL ?? 5 * 60 * 1000; // default 5 minutes
 
-    const cacheKey = this.generateCacheKey(config);
+    // const cacheKey = this.generateCacheKey(config);
 
-    if (useCache && this.cache.has(cacheKey)) {
-      const entry = this.cache.get(cacheKey)!;
-      const isExpired = Date.now() - entry.timestamp > cacheTTL;
+    // if (useCache && this.cache.has(cacheKey)) {
+    //   const entry = this.cache.get(cacheKey)!;
+    //   const isExpired = Date.now() - entry.timestamp > cacheTTL;
 
-      if (!isExpired) {
-        return entry.data;
-      } else {
-        this.cache.delete(cacheKey);
-      }
-    }
+    //   if (!isExpired) {
+    //     return entry.data;
+    //   } else {
+    //     this.cache.delete(cacheKey);
+    //   }
+    // }
 
     try {
       const response = await this.instance(config);
@@ -121,12 +121,12 @@ export class ApiClient {
 
       const result = parsed.data;
 
-      if (useCache) {
-        this.cache.set(cacheKey, {
-          data: result,
-          timestamp: Date.now(),
-        });
-      }
+      // if (useCache) {
+      //   this.cache.set(cacheKey, {
+      //     data: result,
+      //     timestamp: Date.now(),
+      //   });
+      // }
 
       return result;
     } catch (error) {
@@ -144,7 +144,7 @@ export class ApiClient {
   }
 
   public clearCache() {
-    this.cache.clear();
+    //this.cache.clear();
   }
 
   public async get<T extends ZodType>(

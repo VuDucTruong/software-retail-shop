@@ -1,4 +1,13 @@
+import { Product, ProductItemCreate, ProductItemCreateSchema, ProductItemDetail } from "@/api";
+import { regions } from "@/lib/constants";
+import { useProductItemStore } from "@/stores/product.item.store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Key } from "lucide-react";
+import { useTranslations } from "next-intl";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,35 +16,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { ProductComboBox } from "./ProductComboBox";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { Product, ProductItemCreate, ProductItemCreateSchema, ProductItemDetail } from "@/api";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "../ui/input";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "../ui/select";
-import { Key, Link } from "lucide-react";
-import { regions } from "@/lib/constants";
-import { Input } from "../ui/input";
-import { toast } from "sonner";
-import { create } from "domain";
-import { useProductItemStore } from "@/stores/product.item.store";
+import { ProductComboBox } from "./ProductComboBox";
 
 export default function KeyInsertDialog() {
   const t = useTranslations();

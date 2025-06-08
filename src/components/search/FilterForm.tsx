@@ -20,13 +20,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { QueryParams } from "@/api";
-import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { IoFilter } from "react-icons/io5";
 import { LuListRestart } from "react-icons/lu";
-import { useShallow } from "zustand/shallow";
 import { Input } from "../ui/input";
 import CategorySelect from "./CategorySelect";
 import TagSelect from "./TagSelect";

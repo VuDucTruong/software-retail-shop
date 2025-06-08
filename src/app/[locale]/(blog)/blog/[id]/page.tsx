@@ -1,8 +1,9 @@
 'use client'
 import BlogGenreSection from "@/components/blog/BlogGenreSection";
-import NavPostLink from "@/components/blog/NavPostLink";
 import HorizontalPostListItem from "@/components/blog/HorizontalPostListItem";
-import ThreeDButton from "@/components/common/ThreeDButton";
+import NavPostLink from "@/components/blog/NavPostLink";
+import VerticalPostListItem from "@/components/blog/VerticalPostListItem";
+import { RichTextViewer } from "@/components/rich_text/RichTextViewer";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
@@ -11,10 +12,6 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowLeftCircle } from "lucide-react";
-import React from "react";
-import VerticalPostListItem from "@/components/blog/VerticalPostListItem";
-import { RichTextViewer } from "@/components/rich_text/RichTextViewer";
 
 export default function DetailBlogPage() {
   return (

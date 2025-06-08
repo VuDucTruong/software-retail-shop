@@ -1,10 +1,8 @@
-import { Control } from "react-hook-form";
 import {
+  FormControl,
   FormItem,
   FormLabel,
-  FormControl,
-  FormMessage,
-  FormField,
+  FormMessage
 } from "@/components/ui/form";
 
 export default function CommonInputOutline({

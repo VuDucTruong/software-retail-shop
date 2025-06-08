@@ -1,5 +1,4 @@
 "use client";
-import { LoginRequest } from "@/api";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useAuthStore } from "@/stores/auth.store";
@@ -7,7 +6,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 
 export default function LoginPage() {
@@ -35,7 +34,7 @@ export default function LoginPage() {
     if (status === "success" && lastAction === "login") {
       router.push("/");
     }
-  }, [status, lastAction]);
+  }, [status, lastAction , router]);
 
   return (
     <div className="flex flex-row gap-16 min-h-screen justify-center  p-8">

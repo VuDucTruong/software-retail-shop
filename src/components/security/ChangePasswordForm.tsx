@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangePassword, ChangePasswordSchema } from "@/api";
+import { ChangePassword } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -31,7 +31,7 @@ export function ChangePasswordForm(props: Props) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            form.handleSubmit((data) => {
+            form.handleSubmit(() => {
               props.onSubmit?.();
             })();
           }}

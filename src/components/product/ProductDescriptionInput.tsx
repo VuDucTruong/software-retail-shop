@@ -1,17 +1,15 @@
 "use client";
 
-import { UseFieldArrayReturn, useFormContext } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useFormContext } from "react-hook-form";
 import RichTextEditor from "../rich_text/RichTextEditor";
 import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
+  FormMessage
 } from "../ui/form";
 
 

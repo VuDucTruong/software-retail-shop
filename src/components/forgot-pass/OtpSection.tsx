@@ -1,13 +1,8 @@
-import React from "react";
-import { useForm, useFormContext } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { ChangePassword } from "@/api";
+import { useForm } from "react-hook-form";
+import ResendOTPBtn from "../auth/ResendOTPBtn";
+import CommonOTPInput from "../common/CommonOTPInput";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -16,11 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { ChangePassword } from "@/api";
-import CommonOTPInput from "../common/CommonOTPInput";
-import ResendOTPBtn from "../auth/ResendOTPBtn";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage
+} from "../ui/form";
 
 type Props = {
     form: ReturnType<typeof useForm<ChangePassword>>;

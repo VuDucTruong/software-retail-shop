@@ -1,16 +1,10 @@
 import { useTranslations } from "next-intl";
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
-import Image from "next/image";
+import { UserComment } from "@/api";
+import { useCommentStore } from "@/stores/comment.store";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
-import { UserComment } from "@/api";
-import { useAuthStore } from "@/stores/auth.store";
-import { Role } from "@/lib/constants";
-import { getRoleWeight } from "@/lib/utils";
-import { useClientCommentStore } from "@/stores/cilent/client.comment.store";
-import { useCommentStore } from "@/stores/comment.store";
-import { spawn } from "child_process";
 
 type Props = {
   comment: UserComment;

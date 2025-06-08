@@ -1,5 +1,5 @@
-import {OrderDetailList, Product} from "@/api";
-import {z} from "zod";
+import { OrderDetailList } from "@/api";
+import { z } from "zod";
 
 // fetch product by id first to ask for confirmation
 

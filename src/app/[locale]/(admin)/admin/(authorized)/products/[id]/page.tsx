@@ -46,33 +46,6 @@ export default function CreateProductPage() {
     ])
   );
 
-  useEffect(() => {
-    getProductById(Number(id));
-  }, []);
-
-  useEffect(() => {
-    if (selectedProduct) {
-      form.reset({
-        tags: selectedProduct?.tags || [],
-        categoryIds: selectedProduct?.categories?.map((item) => item.id) || [],
-        name: selectedProduct?.name || "",
-        slug: selectedProduct?.slug || "",
-        originalPrice: selectedProduct?.originalPrice || 0,
-        price: selectedProduct?.price || 0,
-        productDescription: selectedProduct?.productDescription,
-        image: selectedProduct?.image,
-        represent: selectedProduct?.represent || true,
-        groupId: selectedProduct?.groupId || null,
-      });
-    }
-  }, [selectedProduct]);
-
-  useActionToast({
-    lastAction,
-    status,
-    errorMessage: error || undefined,
-  });
-
   const form = useForm<ProductUpdate>({
     defaultValues: {
       tags: selectedProduct?.tags || [],
@@ -90,11 +63,39 @@ export default function CreateProductPage() {
     mode: "onSubmit",
   });
 
+  useEffect(() => {
+    getProductById(Number(id));
+  }, [getProductById, id]);
+
+  useEffect(() => {
+    if (selectedProduct) {
+      form.reset({
+        tags: selectedProduct?.tags || [],
+        categoryIds: selectedProduct?.categories?.map((item) => item.id) || [],
+        name: selectedProduct?.name || "",
+        slug: selectedProduct?.slug || "",
+        originalPrice: selectedProduct?.originalPrice || 0,
+        price: selectedProduct?.price || 0,
+        productDescription: selectedProduct?.productDescription,
+        image: selectedProduct?.image,
+        represent: selectedProduct?.represent || true,
+        groupId: selectedProduct?.groupId || null,
+      });
+    }
+  }, [selectedProduct,form]);
+
+  useActionToast({
+    lastAction,
+    status,
+    errorMessage: error || undefined,
+  });
+
+  
+
   const handleSubmit = () => {
     form.setValue("id", Number(id));
     form.handleSubmit((data) => {
-      
-      updateProduct(flattenObject(data));
+      updateProduct(flattenObject(data) as ProductUpdate);
     })();
   };
 

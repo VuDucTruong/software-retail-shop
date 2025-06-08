@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { PasswordSchema, UserSchema } from "@/api";
+import { UserSchema } from "./user";
+import { PasswordSchema } from "./common";
 
 
 

@@ -60,7 +60,7 @@ export default function CouponFilterSheet() {
     console.log(data);
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""  && value !== "ALL"
+        ([, value]) => value !== undefined && value !== ""  && value !== "ALL"
       )
     );
 

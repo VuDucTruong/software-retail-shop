@@ -1,13 +1,6 @@
-import React from "react";
-import { useForm, useFormContext } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { ChangePassword } from "@/api";
+import { useForm } from "react-hook-form";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -16,9 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { Button } from "../ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
-import { ChangePassword } from "@/api";
 
 type Props = {
     form: ReturnType<typeof useForm<ChangePassword>>;

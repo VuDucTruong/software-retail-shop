@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { ProductGroup } from "@/api";
+import { useProductGroupStore } from "@/stores/product.group.store";
+import { useTranslations } from "next-intl";
+import React, { useEffect } from "react";
+import { ControllerRenderProps } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
   Command,
@@ -7,17 +10,14 @@ import {
   CommandInput,
   CommandItem,
 } from "../ui/command";
-import { ControllerRenderProps } from "react-hook-form";
-import { useProductGroupStore } from "@/stores/product.group.store";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Skeleton } from "../ui/skeleton";
 import AddGroupDialog from "./AddGroupDialog";
-import { ProductGroup } from "@/api";
-import { useTranslations } from "next-intl";
 
 export default function ProductGroupComboBox({
   field,
 }: {
-  field: ControllerRenderProps;
+  field: ControllerRenderProps<any, string>;
 }) {
   const getProductGroups = useProductGroupStore(
     (state) => state.getProductGroups

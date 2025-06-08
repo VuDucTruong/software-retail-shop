@@ -1,9 +1,9 @@
 "use client";
 
+import { ChevronsUpDown } from "lucide-react";
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn, delay } from "@/lib/utils";
+import { Product } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -19,11 +19,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useProductStore } from "@/stores/product.store";
-import { useEffect } from "react";
-import { Product } from "@/api";
 import debounce from "lodash/debounce";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { useEffect } from "react";
 
 export function ProductComboBox({
   ref,

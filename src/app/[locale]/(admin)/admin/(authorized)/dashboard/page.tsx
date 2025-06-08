@@ -3,36 +3,40 @@
 import CardSection from "@/components/dashboard/CardSection";
 import { InteractiveLineChart } from "@/components/dashboard/InteractiveLineChart";
 
-import React from "react";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import { ColumnDef } from "@tanstack/react-table";
-import TableCellViewer from "@/components/dashboard/TableCellViewer";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { z } from "zod";
-import { convertPriceToVND } from "@/lib/currency_helper";
-import { useTranslations } from "next-intl";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { convertPriceToVND } from "@/lib/currency_helper";
+import { ColumnDef } from "@tanstack/react-table";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { z } from "zod";
 
-
-
+const scheme = z.object({
+  id: z.number(),
+  purchaser: z.string(),
+  status: z.string(),
+  total: z.number().transform((val) => convertPriceToVND(val)),
+  recipent: z.string(),
+  createdAt: z.string(),
+});
 
 export default function DashboardPage() {
   const t = useTranslations();
-  const scheme = z.object({
-    id: z.number(),
-    purchaser: z.string(),
-    status: z.string(),
-    total: z.number().transform((val) => convertPriceToVND(val)),
-    recipent: z.string(),
-    createdAt: z.string(),
-  });
+
   const cols: ColumnDef<z.infer<typeof scheme>>[] = [
     {
       accessorKey: "id",
       header: "Order ID",
       cell: ({ row }) => {
-        return <Link className="hover:underline font-medium" href={`orders/${row.original.id}`}>{row.original.id}</Link>;
+        return (
+          <Link
+            className="hover:underline font-medium"
+            href={`orders/${row.original.id}`}
+          >
+            {row.original.id}
+          </Link>
+        );
       },
       enableHiding: false,
     },
@@ -71,14 +75,11 @@ export default function DashboardPage() {
       <Card>
         <CardHeader>
           <CardTitle>
-            <h3>{t('lastest_orders')}</h3>
+            <h3>{t("lastest_orders")}</h3>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <CommmonDataTable
-            columns={cols}
-            data={[]}
-          />
+          <CommmonDataTable columns={cols} data={[]} />
         </CardContent>
       </Card>
     </div>

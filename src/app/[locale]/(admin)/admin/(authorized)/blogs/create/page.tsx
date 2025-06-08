@@ -38,7 +38,7 @@ export default function CreateBlogPage() {
             // imageUrl: f.imageUrl,
             genreIds: [...f.selectedGenre2Ids]
         }
-        proxyLoading(() => createBlog(requestUpdate).then(v=>{
+        proxyLoading(() => createBlog(requestUpdate).then(()=>{
             setFormValues(blogFormDefaultValues)
         }), 'create')
     }

@@ -1,10 +1,7 @@
 "use client";
 import { ForgotPassowrdForm } from "@/components/auth/ForgotPassowrdForm";
-import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
-  const t = useTranslations();
-
 
   return (
 

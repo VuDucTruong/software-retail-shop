@@ -2,8 +2,6 @@ import {
   calcDiscountPercentage,
   convertPriceToVND,
 } from "@/lib/currency_helper";
-import { useFormatter } from "next-intl";
-import React from "react";
 import DiscountItem from "./DiscountItem";
 
 type Props = {

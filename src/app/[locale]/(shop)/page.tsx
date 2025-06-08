@@ -1,5 +1,4 @@
 "use client";
-import ChatButton from "@/components/chatbot/ChatButton";
 import BestSellerSection from "@/components/home/BestSellerSection";
 import BrandCarousel from "@/components/home/BrandCarousel";
 import CategoryCard from "@/components/home/CategoryCard";
@@ -9,7 +8,7 @@ import TopItemsList from "@/components/home/TopItemsList";
 import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useTranslations } from "next-intl";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 
 export default function HomePage() {
@@ -47,7 +46,7 @@ export default function HomePage() {
       },
       "lastest"
     );
-  }, []);
+  }, [getProducts]);
 
   return (
     <div className="flex flex-col gap-4 main-container">

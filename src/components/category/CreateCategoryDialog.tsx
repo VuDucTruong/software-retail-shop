@@ -1,11 +1,11 @@
 import { CategoryCreate, CategoryCreateSchema } from "@/api";
+import { useCategoryStore } from "@/stores/category.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CgAdd } from "react-icons/cg";
-import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -25,7 +25,6 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { useCategoryStore } from "@/stores/category.store";
 
 export default function CreateCategoryDialog() {
   const t = useTranslations();

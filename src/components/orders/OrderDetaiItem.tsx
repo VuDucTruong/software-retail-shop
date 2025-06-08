@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { useFormatter, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { convertPriceToVND } from "@/lib/currency_helper";
 import { FaRegCopy } from "react-icons/fa6";
 import {
@@ -13,7 +13,6 @@ import { Input } from "../ui/input";
 
 export default function OrderDetaiItem() {
   const t = useTranslations();
-  const format = useFormatter();
   return (
     <div className="flex gap-4 items-start w-full">
       <div className="relative w-[200px] aspect-[2/1]">

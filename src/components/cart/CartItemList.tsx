@@ -1,10 +1,8 @@
-import {useTranslations} from 'next-intl'
-import React from 'react'
-import CartItem, {CartItemDataType} from './CartItem';
+import CartItem, { CartItemDataType } from './CartItem';
 
 
 export default function CartItemList({data}: {data: CartItemDataType[]}) {
-    const t = useTranslations();
+    //const t = useTranslations();
     
   return (
     <div className='flex flex-col gap-3'>

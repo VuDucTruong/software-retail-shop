@@ -1,11 +1,7 @@
-import Image from "next/image";
-import React from "react";
-import { Card, CardContent } from "../ui/card";
-import { IoMdTrendingUp } from "react-icons/io";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { IoMdTrendingUp } from "react-icons/io";
 import { Button } from "../ui/button";
-import ProductItem from "@/components/common/ProductItem";
-import { Product } from "@/api";
 
 
 export default function BestSellerSection() {

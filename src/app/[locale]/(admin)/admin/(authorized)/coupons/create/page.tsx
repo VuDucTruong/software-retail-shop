@@ -6,15 +6,16 @@ import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { Coupon, CouponCreate, CouponCreateSchema } from "@/api";
+import { CouponCreate, CouponCreateSchema } from "@/api";
+import CouponTypeSelect from "@/components/coupon/CouponTypeSelect";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { getDateLocal } from "@/lib/date_helper";
+import { useCouponStore } from "@/stores/coupon.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import { useCouponStore } from "@/stores/coupon.store";
-import { useActionToast } from "@/hooks/use-action-toast";
 import { useShallow } from "zustand/shallow";
-import { getDateLocal, getDateTimeLocal } from "@/lib/date_helper";
-import CouponTypeSelect from "@/components/coupon/CouponTypeSelect";
 
 export default function CreateCouponPage() {
   const t = useTranslations();
@@ -46,7 +47,7 @@ export default function CreateCouponPage() {
 
   useActionToast({ status, lastAction, errorMessage: error || undefined });
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     form.handleSubmit((data) => {
       if (data.type === "FIXED") {

@@ -1,20 +1,19 @@
 "use client";
 
-import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
-import SortingHeader from "@/components/common/table/SortingHeader";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {BlogDomainType} from "@/api";
-import {ColumnDef, PaginationState, SortingState,} from "@tanstack/react-table";
-import {Eye, Trash2Icon} from "lucide-react";
-import {useTranslations} from "next-intl";
-import {useEffect, useState} from "react";
-import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import {useActionToast} from "@/hooks/use-action-toast";
-import {useShallow} from "zustand/shallow";
-import {BlogMany} from "@/stores/blog/blog.store";
-import Link from "next/link";
+import { BlogDomainType } from "@/api";
 import BlogFilterSheet from "@/components/blog/BlogFilterSheet";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import SortingHeader from "@/components/common/table/SortingHeader";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { BlogMany } from "@/stores/blog/blog.store";
+import { ColumnDef, PaginationState, SortingState, } from "@tanstack/react-table";
+import { Eye } from "lucide-react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 export default function BlogManagementPage() {
     const t = useTranslations();

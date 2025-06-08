@@ -1,3 +1,4 @@
+import { useCategoryStore } from "@/stores/category.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -21,8 +22,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { Textarea } from "../ui/textarea";
-import { useCategoryStore } from "@/stores/category.store";
 
 export default function CategoryFilterSheet() {
   const t = useTranslations();

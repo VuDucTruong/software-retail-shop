@@ -15,7 +15,7 @@ import {
     setLoadAndDo
 } from "@/api";
 import {create} from "zustand/index";
-import {Calculations} from "@/lib/utils";
+//import {Calculations} from "@/lib/utils";
 import {z} from "zod";
 
 
@@ -63,7 +63,7 @@ namespace OrderSingle {
                 }
             }))
 
-            set({previewOrderDetails: domains, ...Calculations.calculateAmounts(get().previewOrderDetails, get().coupon)})
+            //set({previewOrderDetails: domains, ...Calculations.calculateAmounts(get().previewOrderDetails, get().coupon)})
         },
         proxyLoading(run, lastAction = null) {
             setLoadAndDo(set, run, lastAction);

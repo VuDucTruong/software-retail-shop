@@ -1,38 +1,15 @@
-import { AppWindowIcon, CodeIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ChangePasswordSchema } from "@/api";
+import { useAuthToast } from "@/hooks/use-auth-toast";
+import { useAuthStore } from "@/stores/auth.store";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { ChangePasswordSchema, PasswordSchema } from "@/api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import EmailSection from "../forgot-pass/EmailSection";
-import OtpSection from "../forgot-pass/OtpSection";
-import CongratulationSection from "../forgot-pass/CongratulationSection";
-import PasswordSection from "../forgot-pass/PasswordSection";
-import { useAuthStore } from "@/stores/auth.store";
 import { useShallow } from "zustand/shallow";
-import { useAuthToast } from "@/hooks/use-auth-toast";
-import { set } from "lodash";
+import CongratulationSection from "../forgot-pass/CongratulationSection";
+import OtpSection from "../forgot-pass/OtpSection";
+import PasswordSection from "../forgot-pass/PasswordSection";
+import EmailSection from "../forgot-pass/EmailSection";
 
 export function ForgotPassowrdForm() {
   const [tabValue, setTabValue] = useState("email");
@@ -93,11 +70,11 @@ export function ForgotPassowrdForm() {
     );
   }
 
-  // if (tabValue === "congratulation") {
-  //   return <CongratulationSection />;
-  // }
+  if (tabValue === "congratulation") {
+    return <CongratulationSection />;
+  }
 
-  // return <EmailSection form={form} onSubmit={() => setTabValue("password")} />;
+  return <EmailSection form={form} onSubmit={() => setTabValue("password")} />;
 
-  return <CongratulationSection />;
+ 
 }

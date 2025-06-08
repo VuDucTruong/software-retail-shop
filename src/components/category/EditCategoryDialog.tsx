@@ -3,9 +3,12 @@ import { Category, CategoryUpdate, CategoryUpdateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { use, useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 
+import { urlToFile } from "@/lib/utils";
+import { useCategoryStore } from "@/stores/category.store";
+import { PenLine } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -25,10 +28,6 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { PenLine } from "lucide-react";
-import { toast } from "sonner";
-import { useCategoryStore } from "@/stores/category.store";
-import { urlToFile } from "@/lib/utils";
 
 type EditCategoryDialogProps = {
   selectedCategory: Category;

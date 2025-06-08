@@ -3,34 +3,18 @@
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 
 import {
-  BlogCreateSchema,
   UserCreate,
-  UserCreateSchema,
+  UserCreateSchema
 } from "@/api";
-import GenreDropdown from "@/components/blog/GenreDropdown";
-import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
+import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
-  FormControl,
   FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+  FormItem
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { getDateTimeLocal } from "@/lib/date_helper";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { useShallow } from "zustand/shallow";
-import { useUserStore } from "@/stores/user.store";
-import { useUserToast } from "@/hooks/use-user-toast";
 import {
   Select,
   SelectContent,
@@ -38,27 +22,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import EditAvatarSection from "@/components/profile/EditAvatarSection";
+import { useUserToast } from "@/hooks/use-user-toast";
 import { flattenObject } from "@/lib/utils";
+import { useUserStore } from "@/stores/user.store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { useShallow } from "zustand/shallow";
 
 export default function CreateStaffPage() {
   const t = useTranslations();
 
-  const [createUser, lastAction, status, error,resetStatus] = useUserStore(
+  const [createUser, lastAction, status, error] = useUserStore(
     useShallow((state) => [
       state.createUser,
       state.lastAction,
       state.status,
       state.error,
-      state.resetStatus,
     ])
   );
-
-  useEffect(() => {
-    if (status !== "idle") {
-      resetStatus();
-    }
-  },[])
 
   useUserToast({
     lastAction,

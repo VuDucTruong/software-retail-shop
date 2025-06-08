@@ -2,13 +2,10 @@
 import VerticalPostListItem from "@/components/blog/VerticalPostListItem";
 import SearchNotFound from "@/components/common/SearchNotFound";
 import SearchPagination from "@/components/search/SearchPagination";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
 
-import React from "react";
 
 export default function BlogSearchPage() {
-  const t = useTranslations();
+  //const t = useTranslations();
 
   return (
     <div className="main-container flex flex-col gap-4 !pt-10">
@@ -27,7 +24,7 @@ export default function BlogSearchPage() {
 
         <SearchNotFound className="col-span-4" />
       </div>
-      
+
       <SearchPagination currentPage={0} totalPages={1} />
     </div>
   );

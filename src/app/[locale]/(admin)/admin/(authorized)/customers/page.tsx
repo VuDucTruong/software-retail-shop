@@ -1,7 +1,6 @@
 "use client";
 
 import { User } from "@/api";
-import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
@@ -11,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
 import UserFilterSheet from "@/components/user/UserFilterSheet";
 import { useUserToast } from "@/hooks/use-user-toast";
-import { Role } from "@/lib/constants";
 import { useUserStore } from "@/stores/user.store";
 import {
   ColumnDef,
@@ -65,7 +63,7 @@ export default function CustomerManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
+  }, [sorting, pagination,getUsers]);
 
   const cols: ColumnDef<User>[] = [
     {

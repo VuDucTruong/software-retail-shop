@@ -1,18 +1,14 @@
 "use client";
 
+import { Payment } from "@/api";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { StatusBadge } from "@/components/common/StatusBadge";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRouter } from "@/i18n/navigation";
-import { Payment ,Category} from "@/api";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 const sampleData: Payment[] = Array.from({ length: 20 }, (_, i) => ({
   id: i,
   status: "SUCCESS",
@@ -70,7 +66,7 @@ const [data, setData] = useState<Payment[]>([]);
       {
         accessorKey: "User",
         header: t("User"),
-        cell: ({ row }) => {
+        cell: ({ }) => {
           return <div className="font-bold">{"Email"}</div>;
         },
       },
@@ -91,7 +87,7 @@ const [data, setData] = useState<Payment[]>([]);
       {
         accessorKey: "Status",
         header: t("Status"),
-        cell: ({ row }) => {
+        cell: ({  }) => {
           return <StatusBadge status={"completed"} />;
         },
       },

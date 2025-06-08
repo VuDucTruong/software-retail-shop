@@ -5,24 +5,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useClientCategoryState } from "@/stores/cilent/client.category.store";
-import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import debounce from "lodash/debounce";
-import { PackageSearch, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { object, z } from "zod";
-import { Form, FormField } from "../ui/form";
-import { Skeleton } from "../ui/skeleton";
+import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Form, FormField } from "../ui/form";
 
 const SearchSchema = z
   .object({
@@ -36,7 +26,6 @@ export default function BlogSearchBar() {
       search: "",
     },
   });
-
 
   const router = useRouter();
   const t = useTranslations();
@@ -52,7 +41,7 @@ export default function BlogSearchBar() {
         //       sortDirection: "desc",
         //     },
         //     search: data.search,
-        //   });	
+        //   });
       }, 400),
     []
   );
@@ -71,9 +60,10 @@ export default function BlogSearchBar() {
     e.preventDefault();
 
     form.handleSubmit((data) => {
-
       const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== "" && value !== "all")
+        Object.entries(data).filter(
+          ([_, value]) => value !== "" && value !== "all"
+        )
       );
 
       const searchParams = new URLSearchParams();
@@ -82,7 +72,6 @@ export default function BlogSearchBar() {
       searchParams.set("page", "0");
 
       router.push(`/blog/search?${searchParams.toString()}`);
-      
     })();
   };
 
@@ -94,21 +83,24 @@ export default function BlogSearchBar() {
             className="flex items-center w-full max-w-md border-b rounded-md border-border shadow-sm"
             onSubmit={handleSubmit}
           >
-
             <FormField
               name="search"
               control={form.control}
               render={({ field }) => {
                 return (
                   <Input
-                    placeholder={t('search_hint')}
+                    placeholder={t("search_hint")}
                     className="flex-1 border-none focus-visible:ring-0 shadow-none"
                     {...field}
                   />
                 );
               }}
             />
-            <Button variant="ghost" className="p-2 hover:bg-accent/80  text-gray-500 cursor-pointer" type="submit">
+            <Button
+              variant="ghost"
+              className="p-2 hover:bg-accent/80  text-gray-500 cursor-pointer"
+              type="submit"
+            >
               <Search className="w-5 h-5 " />
             </Button>
           </form>

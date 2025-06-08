@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { CouponSchema, ProductMetadataSchema } from "@/api";
+import { CouponSchema } from "./coupon";
+import { ProductMetadataSchema } from "./product";
 
 export const OrderDetailSchema = z.object({
   price: z.number(),

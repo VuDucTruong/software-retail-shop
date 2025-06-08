@@ -1,8 +1,8 @@
-import React, { RefObject, use } from "react";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
+import React, { RefObject } from "react";
+import { ControllerRenderProps } from "react-hook-form";
 import { Button } from "../ui/button";
-import { ControllerRenderProps, useFormContext } from "react-hook-form";
 
 type EditAvatarProps = {
   fileRef: RefObject<HTMLInputElement | null>;

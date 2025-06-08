@@ -1,12 +1,8 @@
-import { routing } from "@/i18n/routing";
-import { getMessages } from "next-intl/server";
-import { notFound } from "next/navigation";
-import { Inter, Roboto } from "next/font/google";
+import { Locale, routing } from "@/i18n/routing";
 import { NextIntlClientProvider } from "next-intl";
-import HomeHeader from "@/components/home/HomeHeader";
-import ChatButton from "@/components/chatbot/ChatButton";
-import { Toaster } from "sonner";
-import HomeFooter from "@/components/home/HomeFooter";
+import { getMessages } from "next-intl/server";
+import { Roboto } from "next/font/google";
+import { notFound } from "next/navigation";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -22,7 +18,7 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as Locale)) {
     notFound();
   }
 

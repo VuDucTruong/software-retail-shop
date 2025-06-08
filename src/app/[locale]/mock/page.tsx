@@ -9,7 +9,7 @@ const roleQSchema = z.object({
 })
 type roleQParams = z.infer<typeof roleQSchema>;
 
-export default function data() {
+export default function MockPage() {
   const router = useRouter();
   const axiosInstance = ApiClient.getInstance();
   const queryParams = useSearchParams();
@@ -26,7 +26,7 @@ export default function data() {
         router.push('admin/login');
       }
     });
-  }, []);
+  }, [axiosInstance, queryParams, router]);
 
   return (
     <div className="container">

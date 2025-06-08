@@ -16,13 +16,13 @@ import { useClientCategoryState } from "@/stores/cilent/client.category.store";
 import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import debounce from "lodash/debounce";
 import { PackageSearch, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { object, z } from "zod";
+import { z } from "zod";
 import { Form, FormField } from "../ui/form";
 import { Skeleton } from "../ui/skeleton";
-import { useTranslations } from "next-intl";
 
 const SearchSchema = z
   .object({
@@ -94,7 +94,7 @@ export default function SearchBar() {
     form.handleSubmit((data) => {
 
       const cleanData = Object.fromEntries(
-        Object.entries(data).filter(([_, value]) => value !== "" && value !== "all")
+        Object.entries(data).filter(([, value]) => value !== "" && value !== "all")
       );
 
       const searchParams = new URLSearchParams();

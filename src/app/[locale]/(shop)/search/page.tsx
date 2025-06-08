@@ -2,18 +2,15 @@
 import ProductItem from "@/components/common/ProductItem";
 import { FilterForm } from "@/components/search/FilterForm";
 
-import { Button } from "@/components/ui/button";
 import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useTranslations } from "next-intl";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { useSearchParams } from "next/navigation";
-import LoadingPage from "@/components/special/LoadingPage";
-import SearchPagination from "@/components/search/SearchPagination";
-import Link from "next/link";
-import Image from "next/image";
 import SearchNotFound from "@/components/common/SearchNotFound";
+import SearchPagination from "@/components/search/SearchPagination";
+import LoadingPage from "@/components/special/LoadingPage";
+import { useSearchParams } from "next/navigation";
 
 export default function SearchResultPage() {
   const t = useTranslations();
@@ -47,11 +44,12 @@ export default function SearchResultPage() {
 
     const cleanedPayload = Object.fromEntries(
       Object.entries(requestPayload).filter(
-        ([_, v]) => v !== undefined && v !== ""
+        ([, v]) => v !== undefined && v !== ""
       )
     );
 
     getProducts(cleanedPayload, "search");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
   const productList = products.get("search");
 
@@ -62,7 +60,7 @@ export default function SearchResultPage() {
   }
 
   const searchTitle =
-    search.length > 0 ? `Search results for "${search}"` : "Search results";
+    search.length > 0 ? t('search_results_for_x' , {x: search}) : t('search_results');
 
   return (
     <div className="flex flex-col gap-12 main-container">

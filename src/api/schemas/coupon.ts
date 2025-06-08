@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiDatetimeSchema, ApiResponseSchema, DateSchema, DatetimeSchema } from "./common";
+import { ApiDatetimeSchema, ApiResponseSchema, DateSchema } from "./common";
 
 const messages = {
   required: {

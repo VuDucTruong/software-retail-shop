@@ -1,4 +1,4 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useProductStore } from "@/stores/product.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
@@ -21,9 +21,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useProductStore } from "@/stores/product.store";
 import { CategoryMultiSelectField } from "./CategoryMultiSelect";
-import { TagsInput } from "./TagInput";
 import { TagMultiSelectField } from "./TagMultiSelect";
 
 const FormSchema = z.object({

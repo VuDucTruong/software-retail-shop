@@ -41,7 +41,7 @@ export default function AdminProfilePage() {
   const fileRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     getMe();
-  }, []);
+  }, [getMe]);
 
   useAuthToast({
     status,
@@ -75,7 +75,7 @@ export default function AdminProfilePage() {
     form.reset({
       fullName: user?.profile.fullName,
     });
-  } , [user]);
+  } , [user, form]);
 
   const gridItems = [
     {

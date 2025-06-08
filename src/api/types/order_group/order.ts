@@ -1,12 +1,10 @@
-import {z} from "zod";
 import {
     OrderCreateSchema,
-    OrderDetailCreateListSchema,
-    OrderDetailCreateSchema,
     OrderDetailListSchema,
     OrderDetailSchema, OrderResponseSchema,
     OrderSchema
 } from "@/api";
+import { z } from "zod";
 
 export type Order = z.infer<typeof OrderSchema>;
 export type OrderDetail = z.infer<typeof OrderDetailSchema>;

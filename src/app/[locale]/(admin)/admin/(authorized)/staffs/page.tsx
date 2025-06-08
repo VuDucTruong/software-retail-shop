@@ -1,7 +1,6 @@
 "use client";
 
 import { User } from "@/api";
-import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
@@ -10,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminFilterSheet from "@/components/user/AdminFilterSheet";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
-import UserFilterSheet from "@/components/user/UserFilterSheet";
 import { useUserToast } from "@/hooks/use-user-toast";
 
 import { useUserStore } from "@/stores/user.store";
@@ -28,7 +26,7 @@ import { useShallow } from "zustand/shallow";
 export default function StaffManagementPage() {
   const t = useTranslations();
 
-  const [status, lastAction, error, queryParams, users, getUsers, deleteUsers,resetStatus] =
+  const [status, lastAction, error, queryParams, users, getUsers, deleteUsers] =
     useUserStore(
       useShallow((state) => [
         state.status,
@@ -38,7 +36,6 @@ export default function StaffManagementPage() {
         state.users,
         state.getUsers,
         state.deleteUsers,
-        state.resetStatus,
       ])
     );
 
@@ -47,11 +44,6 @@ export default function StaffManagementPage() {
     pageSize: queryParams?.pageRequest?.size ?? 10,
   });
 
-  useEffect(() => {
-    if (status !== "idle") {
-      resetStatus();
-    }
-  }, []);
 
   useUserToast({
     status,
@@ -74,7 +66,7 @@ export default function StaffManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
+  }, [sorting, pagination, getUsers]);
 
   const cols: ColumnDef<User>[] = [
     {

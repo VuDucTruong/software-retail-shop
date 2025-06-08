@@ -60,7 +60,7 @@ export default function CouponManagementPage() {
           sortDirection: sorting[0]?.desc ? "desc" : "asc",
         },
       });
-    }, [sorting, pagination]);
+    }, [sorting, pagination,getCoupons]);
 
   const cols: ColumnDef<Coupon>[] = [
     {

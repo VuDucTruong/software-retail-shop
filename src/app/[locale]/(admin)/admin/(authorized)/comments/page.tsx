@@ -1,14 +1,14 @@
 "use client";
 
+import { UserComment } from "@/api";
+import CommentFilterSheet from "@/components/comments/CommentFilterSheet";
 import EditCommentDialog from "@/components/comments/EditCommentDialog";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRouter } from "@/i18n/navigation";
-import { UserComment, Payment } from "@/api";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { useCommentStore } from "@/stores/comment.store";
+import { useCommentDialogStore } from "@/stores/dialog.store";
 import {
   ColumnDef,
   PaginationState,
@@ -18,11 +18,7 @@ import { ExternalLink, Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useCommentStore } from "@/stores/comment.store";
 import { useShallow } from "zustand/shallow";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { useCommentDialogStore } from "@/stores/dialog.store";
-import CommentFilterSheet from "@/components/comments/CommentFilterSheet";
 export default function CommentManagementPage() {
   const t = useTranslations();
 
@@ -31,7 +27,6 @@ export default function CommentManagementPage() {
     lastAction,
     error,
     getComments,
-    resetStatus,
     queryParams,
     comments,
     deleteManyComments,
@@ -41,7 +36,6 @@ export default function CommentManagementPage() {
       state.lastAction,
       state.error,
       state.getComments,
-      state.resetStatus,
       state.queryParams,
       state.comments,
       state.deleteManyComments,
@@ -51,10 +45,6 @@ export default function CommentManagementPage() {
   const openDialog = useCommentDialogStore(
     (state) => state.openDialog
   );
-
-  useEffect(() => {
-    resetStatus();
-  }, []);
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
@@ -83,7 +73,7 @@ export default function CommentManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
+  }, [sorting, pagination,getComments]);
 
   const cols: ColumnDef<UserComment>[] = [
     {

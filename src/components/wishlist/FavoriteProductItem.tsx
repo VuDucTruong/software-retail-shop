@@ -1,17 +1,11 @@
+import { Product } from "@/api";
+import CommonPriceItem from "@/components/common/CommonPriceItem";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React from "react";
-import { FaCartArrowDown, FaCartPlus } from "react-icons/fa";
-import { IoHeartDislike } from "react-icons/io5";
-import { MdDeleteForever } from "react-icons/md";
-import { RiDeleteBin6Fill } from "react-icons/ri";
-import { GoHeartFill } from "react-icons/go";
-import { Button } from "../ui/button";
-import CommonPriceItem from "@/components/common/CommonPriceItem";
 import { useRouter } from "next/navigation";
-import { Product, ProductSchema } from "@/api";
-import { Delete } from "lucide-react";
 import { BsCartXFill } from "react-icons/bs";
+import { FaCartPlus } from "react-icons/fa";
+import { Button } from "../ui/button";
 
 type FavoriteProductItemProps = {
   product: Product;

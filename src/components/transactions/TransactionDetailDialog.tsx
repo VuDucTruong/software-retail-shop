@@ -1,11 +1,6 @@
-import { CategoryCreate, CategoryCreateSchema,Payment } from "@/api";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Payment } from "@/api";
+import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { CgAdd } from "react-icons/cg";
-import { toast } from "sonner";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -14,18 +9,6 @@ import {
   DialogTitle,
   DialogTrigger
 } from "../ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Eye } from "lucide-react";
 
 type TransactionDetailDialogProps = {
     payment: Payment

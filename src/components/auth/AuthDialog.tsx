@@ -1,30 +1,20 @@
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { useClientUserStore } from "@/stores/cilent/client.user.store";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import { useAuthToast } from "@/hooks/use-auth-toast";
+import { useRouter } from "@/i18n/navigation";
+import { useAuthStore } from "@/stores/auth.store";
+import { LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
-import { FaHeart, FaShareAlt, FaUserAlt } from "react-icons/fa";
+import { FaHeart, FaUserAlt } from "react-icons/fa";
+import { useShallow } from "zustand/shallow";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { LogOut } from "lucide-react";
-import { useAuthStore } from "@/stores/auth.store";
-import { useRouter } from "@/i18n/navigation";
-import { useAuthToast } from "@/hooks/use-auth-toast";
-import { useShallow } from "zustand/shallow";
-import { stat } from "fs";
 import { Skeleton } from "../ui/skeleton";
 
 export function AuthDialog() {
@@ -74,7 +64,7 @@ export function AuthDialog() {
 
   useEffect(() => {
     getMe();
-  }, []);
+  }, [getMe]);
 
   if (isAuthenticated && user) {
     return (

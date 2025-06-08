@@ -1,13 +1,12 @@
+import CommonPriceItem from "@/components/common/CommonPriceItem";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
-import { Button } from "../ui/button";
+import { BsBox2 } from "react-icons/bs";
 import { MdDelete } from "react-icons/md";
+import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import QuantityCounter from "./QuantityCounter";
-import { BsBox2 } from "react-icons/bs";
-import { useTranslations } from "next-intl";
-import CommonPriceItem from "@/components/common/CommonPriceItem";
-import { CartMetaData } from "@/api";
 
 
 export type CartItemDataType = {

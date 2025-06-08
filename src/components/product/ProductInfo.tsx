@@ -1,21 +1,20 @@
-import { useFormatter, useTranslations } from "next-intl";
-import Image from "next/image";
-import React from "react";
-import { BsBoxSeam } from "react-icons/bs";
-import { FaBarcode, FaBell } from "react-icons/fa";
-import { CiShoppingTag } from "react-icons/ci";
+import { Product } from "@/api";
+import CommonSwapIcon from "@/components/common/CommonSwapIcon";
+import DiscountItem from "@/components/common/DiscountItem";
+import { useRouter } from "@/i18n/navigation";
 import {
   calcDiscountPercentage,
   convertPriceToVND,
 } from "@/lib/currency_helper";
-import { FaCartPlus, FaHeart, FaRegCreditCard } from "react-icons/fa6";
-import DiscountItem from "@/components/common/DiscountItem";
-import { Button } from "../ui/button";
-import CommonSwapIcon from "@/components/common/CommonSwapIcon";
-import { Product } from "@/api";
-import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useClientFavouriteStore } from "@/stores/cilent/client.favourite.store";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { BsBoxSeam } from "react-icons/bs";
+import { CiShoppingTag } from "react-icons/ci";
+import { FaBarcode, FaBell } from "react-icons/fa";
+import { FaCartPlus, FaHeart, FaRegCreditCard } from "react-icons/fa6";
+import { Button } from "../ui/button";
 
 type ProductInfoProps = {
   product: Product;

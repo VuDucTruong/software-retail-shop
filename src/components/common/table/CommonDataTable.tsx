@@ -58,7 +58,6 @@ export function CommmonDataTable<TData, TValue>({
   isLoading,
   onSortingChange,
   objectName,
-  selectCol,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
   const [columnVisibility, setColumnVisibility] =

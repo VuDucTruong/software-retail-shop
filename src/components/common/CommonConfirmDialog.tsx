@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 
 type CommonConfirmDialogProps = {
-  triggerName: any;
+  triggerName: string | ReactElement;
   title: string;
   description: string | ReactElement;
   onConfirm?: () => void;

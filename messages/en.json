@@ -459,6 +459,12 @@
   "blog": "blog",
   "Author": "Author",
   "Genre": "Genre",
+  "page_not_found": "404 - Page Not Found",
+  "page_not_found_description": "Sorry, the page you are looking for does not exist.",
+  "go_back": "Go back to the previous page",
+  "back_to_login": "Back to login",
+  "search_results": "Search results",
+  "search_results_for_x": "Search results for '{x}'",
   "": "",
   "Action": {
     "create": {

@@ -1,6 +1,4 @@
 import { useTranslations } from "next-intl";
-import React from "react";
-import ProductItem from "@/components/common/ProductItem";
 
 
 

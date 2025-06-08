@@ -48,6 +48,7 @@ export const blogFormDefaultValues: BlogFormType = {
 }
 export type Modes = 'update' | 'create'
 
+
 function ImagePreview({ form }: { form: UseFormReturn<BlogFormType, any, BlogFormType> }) {
     const watchedImage = useWatch({
         control: form.control,

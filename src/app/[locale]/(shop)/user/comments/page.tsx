@@ -1,10 +1,8 @@
 "use client";
 
 import { CommentsFilterForm } from "@/components/comments/CommentsFilterForm";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-import React from "react";
 
 export default function CommentsPage() {
   const t = useTranslations();

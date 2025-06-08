@@ -1,11 +1,10 @@
 import {
   ApiClient,
-  ProductItem,
   ProductItemDetail,
   ProductItemDetailList,
   ProductItemDetailListSchema,
   ProductItemSchema,
-  QueryParams,
+  QueryParams
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
@@ -13,6 +12,7 @@ import { z } from "zod";
 
 import { create } from "zustand";
 import { handleDeleteReloadGeneric } from "./reload.store";
+import { delay } from "@/lib/utils";
 
 const productApiClient = ApiClient.getInstance();
 
@@ -70,8 +70,11 @@ const getProductItems = async (
   set: SetState<ProductItemStore>,
   query: QueryParams,
 ) => {
+
+  console.log("getProductItems", query);
+
   set(state => ({error: null , queryParams: {
-    ...state.queryParams?.pageRequest,
+    ...state.queryParams,
     ...query,
   }}))
 
@@ -79,7 +82,7 @@ const getProductItems = async (
     const response = await productApiClient.post(
       "/products/items/searches",
       ProductItemDetailListSchema,
-      query
+      useProductItemStore.getState().queryParams
     );
     set({ status: "success", productItems: response , lastAction: "get" });
   } catch (error) {

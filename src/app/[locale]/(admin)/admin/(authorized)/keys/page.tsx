@@ -1,34 +1,23 @@
 "use client";
 
-import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
-import EditCategoryDialog from "@/components/category/EditCategoryDialog";
+import { ProductItemDetail } from "@/api";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import SortingHeader from "@/components/common/table/SortingHeader";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { Button } from "@/components/ui/button";
+import KeyFileUploadDialog from "@/components/product/KeyFileUploadDialog";
+import KeyInsertDialog from "@/components/product/KeyInsertDialog";
+import ProductItemFilterSheet from "@/components/product/ProductItemFilterSheet";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Category, CategoryCreate, ProductItemDetail } from "@/api";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { useProductItemStore } from "@/stores/product.item.store";
 import {
   ColumnDef,
   PaginationState,
   SortingState,
 } from "@tanstack/react-table";
-import { Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useCategoryStore } from "@/stores/category.store";
-import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { shallow, useShallow } from "zustand/shallow";
-import { useProductItemStore } from "@/stores/product.item.store";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import KeyFileUploadDialog from "@/components/product/KeyFileUploadDialog";
-import KeyInsertDialog from "@/components/product/KeyInsertDialog";
-import { ProductComboBox } from "@/components/product/ProductComboBox";
-import ProductItemFilterSheet from "@/components/product/ProductItemFilterSheet";
+import { useEffect } from "react";
+import { useShallow } from "zustand/shallow";
 export default function KeyManagementPage() {
   const t = useTranslations();
 
@@ -42,10 +31,19 @@ export default function KeyManagementPage() {
     state.deleteProductItems,
   ]));
 
-  const [pagination, setPagination] = useState<PaginationState>({
+
+  let pagination:PaginationState = {
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
-  });
+  };
+
+  let sorting:SortingState = [
+    {
+      id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+      desc: queryParams?.pageRequest?.sortDirection === "desc",
+    },
+  ];
+
 
   useActionToast({
     status,
@@ -53,23 +51,17 @@ export default function KeyManagementPage() {
     errorMessage: error || undefined,
   });
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: queryParams?.pageRequest?.sortBy ?? "createdAt",
-      desc: queryParams?.pageRequest?.sortDirection === "desc",
-    },
-  ]);
 
   useEffect(() => {
     getProductItems({
       pageRequest: {
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
-        sortBy: sorting[0]?.id,
-        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+        page: 0,
+        size: 10,
+        sortBy: "createdAt",
+        sortDirection: "desc",	
       },
     });
-  }, [sorting, pagination]);
+  }, [getProductItems]);
 
   const cols: ColumnDef<ProductItemDetail>[] = [
     {
@@ -142,10 +134,6 @@ export default function KeyManagementPage() {
     },
   ];
 
-  const handleDelete = (id: number) => {
-    deleteProductItems([id]);
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -169,9 +157,15 @@ export default function KeyManagementPage() {
           pageCount={productItems?.totalPages ?? 0}
           pagination={pagination}
           onPaginationChange={(updater) => {
-            setPagination((old) =>
-              typeof updater === "function" ? updater(old) : updater
-            );
+            pagination = typeof updater === "function" ? updater(pagination) : updater;
+            getProductItems({
+              pageRequest: {
+                page: pagination.pageIndex,
+                size: pagination.pageSize,
+                sortBy: sorting[0]?.id,
+                sortDirection: sorting[0]?.desc ? "desc" : "asc",
+              },
+            });
           }}
           canSelect
           onDeleteRows={(rows) => {
@@ -179,9 +173,15 @@ export default function KeyManagementPage() {
           }}
           sorting={sorting}
           onSortingChange={(updater) => {
-            setSorting((prev) =>
-              typeof updater === "function" ? updater(prev) : updater
-            );
+            sorting = typeof updater === "function" ? updater(sorting) : updater;
+            getProductItems({
+              pageRequest: {
+                page: pagination.pageIndex,
+                size: pagination.pageSize,
+                sortBy: sorting[0]?.id,
+                sortDirection: sorting[0]?.desc ? "desc" : "asc",
+              },
+            });
           }}
         />
         

@@ -1,3 +1,4 @@
+import { useProductItemStore } from "@/stores/product.item.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -13,6 +14,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Sheet,
   SheetContent,
@@ -21,11 +23,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { Textarea } from "../ui/textarea";
-import { useCategoryStore } from "@/stores/category.store";
-import { useProductItemStore } from "@/stores/product.item.store";
 import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
 
 export default function ProductItemFilterSheet() {
   const t = useTranslations();
@@ -93,7 +91,7 @@ export default function ProductItemFilterSheet() {
                 name="productKey"
                 render={({ field }) => (
                   <FormItem className="flex-1">
-                    <FormLabel>{t('product_key')}</FormLabel>
+                    <FormLabel>{t('Product_key')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>

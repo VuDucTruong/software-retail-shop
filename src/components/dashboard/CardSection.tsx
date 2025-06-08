@@ -1,4 +1,3 @@
-import { Package, TrendingDownIcon, TrendingUpIcon, User2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -7,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Package, TrendingUpIcon, User2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function CardSection() {

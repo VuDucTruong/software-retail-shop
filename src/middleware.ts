@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(admin);
       }
 
-    } catch (err) {
+    } catch (_) {
       if (isAdminLoginPage) {
         return NextResponse.next();
       }

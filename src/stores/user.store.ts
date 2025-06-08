@@ -10,7 +10,6 @@ import {
 import { ApiError } from "@/api/client/base_client";
 import { Role } from "@/lib/constants";
 import { SetState } from "@/lib/set_state";
-import { usePathname } from "next/navigation";
 import { z } from "zod";
 import { create } from "zustand";
 
@@ -144,7 +143,7 @@ const deleteUsers = async (set: SetState<UserStore>, ids: number[]) => {
 const createUser = async (set: SetState<UserStore>, user: UserCreate) => {
   set({ status: "loading", lastAction: "createUser" });
   try {
-    const response = await apiClient.post("/users", z.any(), user , {
+    await apiClient.post("/users", z.any(), user , {
       headers: {
         "Content-Type": "multipart/form-data",
       },

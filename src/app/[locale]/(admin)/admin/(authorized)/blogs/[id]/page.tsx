@@ -1,14 +1,13 @@
 'use client'
-import {usePathname} from '@/i18n/navigation'
-import React, {useEffect} from 'react'
-import BlogForm, {blogFormDefaultValues, BlogFormType} from "@/components/blog/BlogForm";
-import {useShallow} from 'zustand/shallow';
-import {BlogUpdateRequest} from '@/api';
-import {BlogSingle} from "@/stores/blog/blog.store";
-import {getDateTimeLocal} from '@/lib/date_helper';
-import {useActionToast} from "@/hooks/use-action-toast";
-import {Toaster} from 'sonner';
+import { BlogUpdateRequest } from '@/api';
+import BlogForm, { blogFormDefaultValues, BlogFormType } from "@/components/blog/BlogForm";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { usePathname } from '@/i18n/navigation';
+import { getDateTimeLocal } from '@/lib/date_helper';
+import { BlogSingle } from "@/stores/blog/blog.store";
 import { useTranslations } from 'next-intl';
+import { useEffect } from 'react';
+import { useShallow } from 'zustand/shallow';
 
 export default function DetailBlogPage() {
     const t = useTranslations();

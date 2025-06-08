@@ -1,8 +1,9 @@
-import { useLocale } from "next-intl";
+import { Locale } from "next-intl";
 
 
-export const getCurrentMY = () => {
-    const locale = useLocale();
+
+export const getCurrentMY = (locale: Locale) => {
+
     const date = new Date();
     return new Intl.DateTimeFormat(locale, {
         month: 'long',

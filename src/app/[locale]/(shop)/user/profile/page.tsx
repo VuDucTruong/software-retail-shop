@@ -34,7 +34,7 @@ export default function UserProfilePage() {
   const fileRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     getProfile();
-  }, []);
+  }, [getProfile]);
 
   useAuthToast({
     status,
@@ -84,7 +84,7 @@ export default function UserProfilePage() {
     if (user) {
       form.setValue("fullName", user.profile.fullName);
     }
-  }, [user]);
+  }, [user, form]);
 
   if (status !== "success" && lastAction === "getUser") {
     return <LoadingPage />;

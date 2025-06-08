@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 
 type TopItemsListProps = {
@@ -25,7 +24,6 @@ export default function TopItemsList({ title, items }: TopItemsListProps) {
     setShuffledGradients([...gradients].sort(() => Math.random() - 0.5));
   }, []);
 
-  const t = useTranslations();
 
   return (
     <div className="flex flex-col gap-4">
