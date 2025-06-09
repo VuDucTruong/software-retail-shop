@@ -12,6 +12,6 @@ export class ApiError extends Error {
 
 export class ValidationError extends ApiError {
   constructor(public zodError: ZodError) {
-    super('Validation failed', 422);
+    super('Validation failed', 666);
   }
 }
