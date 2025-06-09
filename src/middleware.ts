@@ -32,7 +32,8 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(admin);
       }
 
-    } catch (_) {
+    } catch (error) {
+      console.error("Middleware error:", error);
       if (isAdminLoginPage) {
         return NextResponse.next();
       }

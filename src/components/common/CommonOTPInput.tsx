@@ -21,6 +21,8 @@ export default function CommonOTPInput(props: CommonOTPInputProps) {
       onChange={onChange}
       value={value}
       pattern="[0-9]*"
+      required
+      autoComplete="one-time-code"
     >
       <InputOTPGroup>
         <InputOTPSlot className={itemClassName} index={0} />

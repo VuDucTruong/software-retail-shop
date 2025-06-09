@@ -25,7 +25,7 @@ export default function RegisterPage() {
             onClick={handleBackToLogin}
           >
             <BiArrowBack />
-            Quay lại trang đăng nhập
+            {t("back_to_login")}
           </Button>
         </div>
 

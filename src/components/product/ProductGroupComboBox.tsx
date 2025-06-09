@@ -1,4 +1,3 @@
-import { ProductGroup } from "@/api";
 import { useProductGroupStore } from "@/stores/product.group.store";
 import { useTranslations } from "next-intl";
 import React, { useEffect } from "react";
@@ -19,6 +18,7 @@ export default function ProductGroupComboBox({
 }: {
   field: ControllerRenderProps<any, string>;
 }) {
+  const t = useTranslations();
   const getProductGroups = useProductGroupStore(
     (state) => state.getProductGroups
   );
@@ -26,20 +26,14 @@ export default function ProductGroupComboBox({
   const status = useProductGroupStore((state) => state.status);
   useEffect(() => {
     getProductGroups();
-  }, []);
+  }, [getProductGroups]);
 
   const [open, setOpen] = React.useState(false);
 
   const options = productGroups ?? [];
 
-  const selectedGroup = options.find((group) => group.id === field.value)?.name || "Chọn nhóm sản phẩm";
+  const selectedGroup = options.find((group) => group.id === field.value)?.name || t('select_product_group');
 
-  const handleSelect = (group : ProductGroup) => {
-    setOpen(false);
-
-  };
-
-  const t = useTranslations();
 
   return (
     <div className="flex flex-row-reverse gap-2">
@@ -68,7 +62,7 @@ export default function ProductGroupComboBox({
                     key={group.id}
                     onSelect={() => {
                       field.onChange(group.id);
-                      handleSelect(group);
+                      setOpen(false);
                     }}
                   >
                     {group.name}

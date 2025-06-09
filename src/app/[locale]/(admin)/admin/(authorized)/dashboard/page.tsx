@@ -54,7 +54,7 @@ export default function DashboardPage() {
     {
       accessorKey: "status",
       header: "Status",
-      cell: ({ row }) => <StatusBadge status="canceled" />,
+      cell: ({  }) => <StatusBadge status="canceled" />,
     },
     {
       accessorKey: "total",

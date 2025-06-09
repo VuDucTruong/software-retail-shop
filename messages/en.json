@@ -168,6 +168,7 @@
     "password_hint": "Must be 8 characters or longer\nShould contain at least 1 number or 1 special character",
     "name_hint": "Must be 3 characters or longer",
     "email_hint": "Must be a valid email address",
+    "fullName_hint": "Must be 6 - 40 characters long",
 
     "error_email_empty": "Email cannot be empty",
     "error_password_empty": "Password cannot be empty",
@@ -179,7 +180,7 @@
     "error_comment_min_length": "Comment must be at least 10 characters",
     "error_comment_max_length": "Comment must be less than 500 characters",
 
-    "error_pass_not_match": "Password does not match",
+    "error_pass_not_match": "The new password and confirmation do not match",
 
     "error_pass_wrong": "Password is incorrect",
     "error_email_wrong": "Email is incorrect",
@@ -210,7 +211,8 @@
     "error_role_required": "Role is required.",
     "error_full_name_min": "Full name must be at least 6 characters long.",
     "error_full_name_max": "Full name must not exceed 40 characters.",
-    "error_product_group_name_min": "Product group name must be at least 3 characters long."
+    "error_product_group_name_min": "Product group name must be at least 3 characters long.",
+    "error_otp_empty": "OTP must contain 6 digits."
   },
   "ORDER_STATUS": {
     "Pending": "Pending",
@@ -462,9 +464,18 @@
   "page_not_found": "404 - Page Not Found",
   "page_not_found_description": "Sorry, the page you are looking for does not exist.",
   "go_back": "Go back to the previous page",
-  "back_to_login": "Back to login",
+  "back_to_login": "Back to login page",
   "search_results": "Search results",
   "search_results_for_x": "Search results for '{x}'",
+  "Forgot_password": "Forgot password?",
+  "forgot_password_email_description": "Please enter your email address for the verification process, we will send you a verification code to reset your password.",
+  "Continue": "Continue",
+  "Reset_password": "Reset password",
+  "Verification": "Verification",
+  "forgot_password_otp_description": "Please enter the verification code sent to your email address. If you do not receive the code, please check your spam folder or request a new code.",
+  "Verify": "Verify",
+  "email_otp_description": "Please enter the valid email address you used to register. We will send you a verification code to verify your account.",
+  "select_product_group": "Select product group",
   "": "",
   "Action": {
     "create": {

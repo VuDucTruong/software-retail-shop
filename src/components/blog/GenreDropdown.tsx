@@ -61,7 +61,7 @@ export default function GenreDropdown({ field, onGenre2Selected }: Props) {
   useEffect(() => {
     if (!field) return;
     onGenre2Selected(field.value || new Set<number>());
-  },[field]);
+  },[field,onGenre2Selected]);
 
 
   /// THIS TO RENDER

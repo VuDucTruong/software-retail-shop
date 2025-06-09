@@ -9,7 +9,6 @@ import {
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
 import { urlToFile } from "@/lib/utils";
-import { z } from "zod";
 
 import { create } from "zustand";
 
@@ -73,7 +72,7 @@ const getProducts = async (
 ) => {
   set((state) => ({
      status: "loading", error: null , queryParams: {
-    ...state.queryParams?.pageRequest,
+    ...state.queryParams,
     ...query,
      }
   }));

@@ -75,6 +75,6 @@ export function useActionToast({
       reset?.();
     }
     
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, lastAction]);
 }

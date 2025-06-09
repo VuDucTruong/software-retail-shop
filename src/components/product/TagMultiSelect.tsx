@@ -11,16 +11,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useCategoryStore } from "@/stores/category.store";
+import { useTagStore } from "@/stores/product.tag.store";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import {
   ControllerRenderProps
 } from "react-hook-form";
-import { Skeleton } from "../ui/skeleton";
-import { useTagStore } from "@/stores/product.tag.store";
 import { useShallow } from "zustand/shallow";
+import { Skeleton } from "../ui/skeleton";
 
 
 
@@ -36,7 +35,7 @@ export function TagMultiSelectField({
 
   useEffect(() => {
    getTags()
-  },[])
+  },[getTags])
 
   const options = tags ?? [];
 

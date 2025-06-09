@@ -20,38 +20,37 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Form, FormField } from "../ui/form";
 import { Skeleton } from "../ui/skeleton";
 
-const SearchSchema = z
-  .object({
-    categoryId: z.string(),
-    search: z.string(),
-  })
-  .partial();
+
+type SearchForm = {
+  categoryId?: string;
+  search?: string;
+}
 
 export default function SearchBar() {
-  const form = useForm<z.infer<typeof SearchSchema>>({
+  const form = useForm<SearchForm>({
     defaultValues: {
       categoryId: "all",
       search: "",
     },
   });
   const getCategories = useClientCategoryState((state) => state.getCategories);
+  const categories = useClientCategoryState((state) => state.categories);
   const searchProducts = useClientProductStore((state) => state.searchProducts);
   const search = useClientProductStore((state) => state.search);
-  const categories = useClientCategoryState((state) => state.categories);
+  
   React.useEffect(() => {
     getCategories({});
-  }, []);
+  }, [getCategories]);
 
   const router = useRouter();
   const t = useTranslations();
 
   const debouncedSearch = React.useMemo(
     () =>
-      debounce((data: z.infer<typeof SearchSchema>) => {
+      debounce((data: SearchForm) => {
         if (data.search !== "") {
           searchProducts({
             pageRequest: {
@@ -75,7 +74,7 @@ export default function SearchBar() {
           });
         }
       }, 400),
-    []
+    [searchProducts]
   );
 
   useEffect(() => {
@@ -86,7 +85,7 @@ export default function SearchBar() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [form, debouncedSearch]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

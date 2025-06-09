@@ -25,7 +25,7 @@ export default function TagSelect(props: TagSelectProps) {
 
   useEffect(() => {
     getTags();
-  }, []);
+  }, [getTags]);
 
 
   if(tags === null) {

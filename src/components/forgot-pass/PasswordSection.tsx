@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { useTranslations } from "next-intl";
 
 type Props = {
     form: ReturnType<typeof useForm<ChangePassword>>;
@@ -26,18 +27,18 @@ type Props = {
 
 export default function PasswordSection(props: Props) {
   const { form } = props;
-  
+  const t = useTranslations();
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => {
+      <form onSubmit={form.handleSubmit(() => {
         props.onSubmit?.();
       })}>
         <Card>
           <CardHeader>
-            <CardTitle>Đổi mật khẩu</CardTitle>
-            <CardDescription>
-              Nhập mật khẩu mới của bạn. Mật khẩu phải có từ 6-40 kí tự
+            <CardTitle>{t('Reset_password')}</CardTitle>
+            <CardDescription className="whitespace-pre-line">
+              {t("Input.change_password_hint")}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
@@ -47,9 +48,9 @@ export default function PasswordSection(props: Props) {
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>New password</FormLabel>
+                    <FormLabel>{t("new_password")}</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" {...field} value={field.value ?? ""} required />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -63,9 +64,9 @@ export default function PasswordSection(props: Props) {
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>Confirm password</FormLabel>
+                    <FormLabel>{t('confirm_password')}</FormLabel>
                     <FormControl>
-                      <Input type="password" {...field} />
+                      <Input type="password" {...field} value={field.value ?? ""} required />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -74,7 +75,7 @@ export default function PasswordSection(props: Props) {
             />
           </CardContent>
           <CardFooter>
-            <Button className="w-full h-10" type="submit">Save password</Button>
+            <Button className="w-full h-10" type="submit">{t('Continue')}</Button>
           </CardFooter>
         </Card>
       </form>

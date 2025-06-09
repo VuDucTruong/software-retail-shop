@@ -11,17 +11,14 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Form, FormField } from "../ui/form";
 
-const SearchSchema = z
-  .object({
-    search: z.string(),
-  })
-  .partial();
+type SearchParam = {
+  search: string;
+}
 
 export default function BlogSearchBar() {
-  const form = useForm<z.infer<typeof SearchSchema>>({
+  const form = useForm<SearchParam>({
     defaultValues: {
       search: "",
     },
@@ -32,7 +29,7 @@ export default function BlogSearchBar() {
 
   const debouncedSearch = React.useMemo(
     () =>
-      debounce((data: z.infer<typeof SearchSchema>) => {
+      debounce((data: SearchParam) => {
         //   searchProducts({
         //     pageRequest: {
         //       page: 0,
@@ -48,13 +45,13 @@ export default function BlogSearchBar() {
 
   useEffect(() => {
     const subscription = form.watch((data) => {
-      debouncedSearch(data);
+      debouncedSearch(data.search ? { search: data.search } : { search: "" });
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [form, debouncedSearch]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,7 +59,7 @@ export default function BlogSearchBar() {
     form.handleSubmit((data) => {
       const cleanData = Object.fromEntries(
         Object.entries(data).filter(
-          ([_, value]) => value !== "" && value !== "all"
+          ([, value]) => value !== "" && value !== "all"
         )
       );
 

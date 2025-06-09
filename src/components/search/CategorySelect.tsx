@@ -32,7 +32,7 @@ export default function CategorySelect(props: TagSelectProps) {
             sortDirection: "desc",
         },
     });
-  }, []);
+  }, [getCategories]);
 
   if(categories === null) {
     return <Skeleton className="w-[180px] h-9" />;

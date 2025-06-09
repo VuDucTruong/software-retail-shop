@@ -32,6 +32,7 @@ export function ForgotPassowrdForm() {
 
   const form = useForm({
     resolver: zodResolver(ChangePasswordSchema),
+    mode: "onSubmit",
   });
 
   useEffect(() => {
@@ -46,7 +47,7 @@ export function ForgotPassowrdForm() {
     if (email && email.length > 0) {
       sendOTP(email);
     }
-  }, [tabValue]);
+  }, [tabValue , form , sendOTP]);
 
   if (tabValue === "otp") {
     return <OtpSection form={form} onSubmit={() => {
@@ -56,6 +57,11 @@ export function ForgotPassowrdForm() {
             password: form.getValues("password")?.trim() || "",
           });
       
+    }} onResend={()=>{
+      const email = form.getValues("email")?.trim();
+      if (email && email.length > 0) {
+        sendOTP(email);
+      }
     }} />;
   }
 

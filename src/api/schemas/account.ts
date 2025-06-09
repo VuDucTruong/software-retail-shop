@@ -27,7 +27,7 @@ export const messages = {
         fullName: "Input.error_fullname_max",
     },
     notMatch: {
-      password: "Input.error_password_not_match",
+      password: "Input.error_pass_not_match",
     },
   };
 

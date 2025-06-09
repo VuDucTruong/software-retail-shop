@@ -1,10 +1,10 @@
 import { useClientCommentStore } from "@/stores/cilent/client.comment.store";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 import { CommentForm } from "./CommentForm";
 import CommentItem from "./CommentItem";
-import { toast } from "sonner";
-import { useTranslations } from "next-intl";
 
 type Props = {
   productId: number;
@@ -18,7 +18,7 @@ export default function UserCommentSection({ productId }: Props) {
 
   useEffect(() => {
     getCommentsByProductId(productId);
-  }, []);
+  }, [getCommentsByProductId, productId]);
 
   const handleSubmitComment = (data: string) => {
     createComment({

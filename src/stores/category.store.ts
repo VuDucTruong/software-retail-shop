@@ -1,19 +1,18 @@
 import {
   ApiClient,
+  Category,
   CategoryCreate,
   CategoryList,
   CategoryListSchema,
   CategorySchema,
   CategoryUpdate,
+  QueryParams,
 } from "@/api";
-import { Category } from "@/api";
-import { QueryParams } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
 import { z } from "zod";
 import { create } from "zustand";
 import { handleDeleteReloadGeneric } from "./reload.store";
-import { urlToFile } from "@/lib/utils";
 const categoryClient = ApiClient.getInstance();
 
 type CategoryState = {
@@ -78,7 +77,7 @@ const getCategories = async (
   query: QueryParams
 ) => {
   set(state => ({ error: null, queryParams: {
-    ...state.queryParams?.pageRequest,
+    ...state.queryParams,
     ...query
   } , categories: null }));
 
@@ -89,7 +88,7 @@ const getCategories = async (
       query
     );
 
-    set((prev) => ({ categories: response, status: "success" }));
+    set((prev) => ({...prev, categories: response, status: "success" }));
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

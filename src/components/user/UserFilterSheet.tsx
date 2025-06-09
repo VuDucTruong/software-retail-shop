@@ -2,7 +2,6 @@ import { useUserStore } from "@/stores/user.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -23,20 +22,18 @@ import {
 } from "../ui/sheet";
 
 
-
-
-const FormSchema = z.object({
-    fullName: z.string().optional(),
-    email: z.string().optional(),
-    createdAtFrom: z.string().optional(),
-    createdAtTo: z.string().optional(),
-})
+type UserFilterForm = {
+  fullName?: string;
+  email?: string;
+  createdAtFrom?: string;
+  createdAtTo?: string;
+}
 
 export default function UserFilterSheet() {
   const t = useTranslations();
   const getUsers = useUserStore(
     (state) => state.getUsers );
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<UserFilterForm>({
     defaultValues: {
       fullName: "",
       email: "",
@@ -46,10 +43,10 @@ export default function UserFilterSheet() {
   });
 
 
-  function handleSubmit(data: z.infer<typeof FormSchema>) {
+  function handleSubmit(data: UserFilterForm) {
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""
+        ([, value]) => value !== undefined && value !== ""
       )
     );
 

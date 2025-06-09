@@ -24,10 +24,10 @@ export default function EditCommentDialog() {
   const getCommentById = useCommentStore((state) => state.getCommentById);
   const selectedComment = useCommentStore((state) => state.selectedComment);
   useEffect(() => {
-    if (open) {
+    if (open && comment) {
       getCommentById(comment!.parentCommentId ?? comment!.id);
     }
-  }, [open]);
+  }, [open, getCommentById, comment]);
 
   return (
     <Dialog

@@ -2,7 +2,6 @@ import { useCommentStore } from "@/stores/comment.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -24,16 +23,17 @@ import {
 } from "../ui/sheet";
 import { Switch } from "../ui/switch";
 
-const FormSchema = z.object({
-  search: z.string().optional(),
-  productName: z.string().optional(),
-  deleted: z.boolean().optional(),
-});
+
+type CommentFilterForm = {
+  search?: string;
+  productName?: string;
+  deleted?: boolean;
+}
 
 export default function CommentFilterSheet() {
   const t = useTranslations();
   const getComments = useCommentStore((state) => state.getComments);
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<CommentFilterForm>({
     defaultValues: {
       search: "",
         productName: "",
@@ -41,7 +41,7 @@ export default function CommentFilterSheet() {
     },
   });
 
-  function handleSubmit(data: z.infer<typeof FormSchema>) {
+  function handleSubmit(data: CommentFilterForm) {
 
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(

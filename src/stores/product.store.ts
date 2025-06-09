@@ -73,7 +73,7 @@ export const useProductStore = create<ProductStore>((set) => ({
 
 const getProducts = async (set: SetState<ProductStore>, query: QueryParams) => {
   set(state => ({ error: null, queryParams: {
-    ...state.queryParams?.pageRequest,
+    ...state.queryParams,
     ...query,
   } , products: null }));
 

@@ -1,18 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { z, ZodType } from 'zod';
 import { ApiError, ValidationError } from './base_client';
-// type CacheEntry = {
-//   data: any;
-//   timestamp: number;
-// };
-type ApiClientOptions = {
-  useCache?: boolean;
-  cacheTTL?: number; // in milliseconds
-};
+
 export class ApiClient {
   private static instances: Record<string, ApiClient> = {};
   private instance: AxiosInstance;
-  //private cache = new Map<string, CacheEntry>();
   private constructor(basePath: string = '') {
     this.instance = axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_API_URL}${basePath}`,
@@ -83,33 +75,10 @@ export class ApiClient {
     );
   }
 
-   private generateCacheKey(config: AxiosRequestConfig): string {
-    const { url, method, params, data } = config;
-    return JSON.stringify({ url, method, params, data });
-  }
-
    public async request<T extends ZodType>(
     config: AxiosRequestConfig,
     schema: T,
-    options?: ApiClientOptions
   ): Promise<z.infer<T>> {
-    
-    const useCache = false; // default false
-    console.log("useCache", useCache);
-    // const cacheTTL = options?.cacheTTL ?? 5 * 60 * 1000; // default 5 minutes
-
-    // const cacheKey = this.generateCacheKey(config);
-
-    // if (useCache && this.cache.has(cacheKey)) {
-    //   const entry = this.cache.get(cacheKey)!;
-    //   const isExpired = Date.now() - entry.timestamp > cacheTTL;
-
-    //   if (!isExpired) {
-    //     return entry.data;
-    //   } else {
-    //     this.cache.delete(cacheKey);
-    //   }
-    // }
 
     try {
       const response = await this.instance(config);
@@ -120,13 +89,6 @@ export class ApiClient {
       }
 
       const result = parsed.data;
-
-      // if (useCache) {
-      //   this.cache.set(cacheKey, {
-      //     data: result,
-      //     timestamp: Date.now(),
-      //   });
-      // }
 
       return result;
     } catch (error) {
@@ -143,17 +105,13 @@ export class ApiClient {
     }
   }
 
-  public clearCache() {
-    //this.cache.clear();
-  }
 
   public async get<T extends ZodType>(
     url: string,
     schema: T,
     config?: AxiosRequestConfig,
-    options?: ApiClientOptions
   ): Promise<z.infer<T>> {
-    return this.request({ ...config, method: 'GET', url }, schema , options);
+    return this.request({ ...config, method: 'GET', url }, schema);
   }
 
   public async post<T extends ZodType>(
@@ -161,9 +119,8 @@ export class ApiClient {
     schema: T,
     data?: unknown,
     config?: AxiosRequestConfig,
-    options?: ApiClientOptions
   ): Promise<z.infer<T>> {
-    return this.request({ ...config, method: 'POST', url, data }, schema, options);
+    return this.request({ ...config, method: 'POST', url, data }, schema);
   }
 
   public async put<T extends ZodType>(

@@ -58,14 +58,14 @@ export function ProductComboBox({
         sortDirection: "desc",
       },
     });
-  }, []);
+  }, [getProducts]);
 
   const debouncedSearch = React.useMemo(
     () =>
       debounce((value: string) => {
         handleSearch(value);
       }, 400),
-    []
+    [handleSearch]
   );
 
   return (

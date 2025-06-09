@@ -12,12 +12,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-import { NavUser } from "./NavUser";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { adminMenu } from "@/lib/constants";
-import CommonNav from "./CommonNav";
-import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import CommonNav from "./CommonNav";
+import { NavUser } from "./NavUser";
 
 export default function AppSidebar({
   ...props

@@ -12,7 +12,6 @@ import { z } from "zod";
 
 import { create } from "zustand";
 import { handleDeleteReloadGeneric } from "./reload.store";
-import { delay } from "@/lib/utils";
 
 const productApiClient = ApiClient.getInstance();
 
@@ -71,12 +70,10 @@ const getProductItems = async (
   query: QueryParams,
 ) => {
 
-  console.log("getProductItems", query);
-
   set(state => ({error: null , queryParams: {
     ...state.queryParams,
     ...query,
-  }}))
+  }, productItems: null }));
 
   try {
     const response = await productApiClient.post(

@@ -12,7 +12,6 @@ import { useActionToast } from "@/hooks/use-action-toast";
 import { getDateLocal } from "@/lib/date_helper";
 import { useCouponStore } from "@/stores/coupon.store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { get } from "lodash";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { FormEvent, useEffect } from "react";

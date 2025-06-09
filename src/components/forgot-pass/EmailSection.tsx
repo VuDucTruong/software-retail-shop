@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { useTranslations } from "next-intl";
 
 type Props = {
     form: ReturnType<typeof useForm<ChangePassword>>;
@@ -26,18 +27,18 @@ type Props = {
 
 export default function EmailSection(props: Props) {
   const { form } = props;
-  
+  const t = useTranslations();
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit((data) => {
+      <form onSubmit={form.handleSubmit(() => {
         props.onSubmit?.();
       })}>
         <Card>
           <CardHeader>
-            <CardTitle>Forgot password</CardTitle>
+            <CardTitle>{t('Forgot_password')}</CardTitle>
             <CardDescription>
-              Please enter your email address for the verification process, we will send you a verification code to reset your password.
+              {t('forgot_password_email_description')}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
@@ -49,7 +50,7 @@ export default function EmailSection(props: Props) {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" {...field} />
+                      <Input type="email" {...field} value={field.value ?? ""} required />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -59,7 +60,7 @@ export default function EmailSection(props: Props) {
 
           </CardContent>
           <CardFooter>
-            <Button className="w-full h-10" type="submit">Continue</Button>
+            <Button className="w-full h-10" type="submit">{t("Continue")}</Button>
           </CardFooter>
         </Card>
       </form>

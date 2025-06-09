@@ -1,6 +1,3 @@
-import { SetState } from "@/lib/set_state";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import {
   ApiClient,
   LoginRequest,
@@ -11,11 +8,13 @@ import {
   UserProfileUpdate,
   UserSchema,
 } from "@/api";
+import { Role } from "@/lib/constants";
+import { SetState } from "@/lib/set_state";
+import { getRoleWeight } from "@/lib/utils";
 import { ApiError } from "next/dist/server/api-utils";
 import { z } from "zod";
-import { Role } from "@/lib/constants";
-import { getRoleWeight } from "@/lib/utils";
-import { redirect } from "next/navigation";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 const authClient = ApiClient.getInstance();
 

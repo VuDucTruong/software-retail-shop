@@ -62,12 +62,17 @@ export function RegisterForm() {
   };
 
   useEffect(() => {
+    form.reset();
+  }, [form]);
+
+  useEffect(() => {
     if (lastAction === "register" && status === "success") {
       const urlParams = new URLSearchParams();
       urlParams.set("email", form.getValues("email"));
       sendOTP(form.getValues("email"));
       router.push(`/register/verify?${urlParams.toString()}`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastAction, status]);
 
   return (
@@ -87,11 +92,11 @@ export function RegisterForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("Name")}</FormLabel>
-                <FormDescription>{"Tên phải từ 6 - 40 kí tự"}</FormDescription>
+                <FormDescription>{t('Input.fullName_hint')}</FormDescription>
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder={"Nhập tên của bạn"}
+                    placeholder={t('Input.name_placeholder')}
                     {...field}
                   />
                 </FormControl>
@@ -108,7 +113,7 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormDescription>
-                  {"Email phải là một email hợp lệ để có thể nhận được mã OTP"}
+                  {t("email_otp_description")}
                 </FormDescription>
                 <FormControl>
                   <Input
@@ -130,7 +135,7 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>{t("Password")}</FormLabel>
                 <FormDescription>
-                  {"Mật khẩu phải từ 6-40 kí tự"}
+                  {t("Input.password_hint")}
                 </FormDescription>
                 <FormControl>
                   <Input
@@ -163,7 +168,7 @@ export function RegisterForm() {
             )}
           />
 
-          <Button type="submit">{t("create_account")}</Button>
+          <Button type="submit">{t("Continue")}</Button>
         </form>
       </Form>
     </div>

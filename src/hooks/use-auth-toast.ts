@@ -99,5 +99,6 @@ export function useAuthToast({
         toast.error(`${message}${errorMessage ? ": " + errorMessage : ""}`);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, lastAction]);
 }

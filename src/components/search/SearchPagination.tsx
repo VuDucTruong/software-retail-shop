@@ -28,7 +28,7 @@ export default function SearchPagination(props: Props) {
             <PaginationStart disabled href="?page=0" />
           </PaginationItem>
           {
-            pageIndexes.map((val , index) => (
+            pageIndexes.map((val , ) => (
               <PaginationItem key={val}>
                 <PaginationLink
                   href={`?page=${val}`}

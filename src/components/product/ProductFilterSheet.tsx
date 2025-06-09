@@ -2,7 +2,6 @@ import { useProductStore } from "@/stores/product.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -24,18 +23,18 @@ import {
 import { CategoryMultiSelectField } from "./CategoryMultiSelect";
 import { TagMultiSelectField } from "./TagMultiSelect";
 
-const FormSchema = z.object({
-  search: z.string().optional(),
-  priceFrom: z.string().optional(),
-  priceTo: z.string().optional(),
-  categoryIds: z.number().array().optional(),
-  tags: z.string().array().optional(),
-});
+type ProductFilterForm = {
+  search?: string;
+  priceFrom?: string;
+  priceTo?: string;
+  categoryIds?: number[];
+  tags?: string[];
+}
 
 export default function ProductFilterSheet() {
   const t = useTranslations();
   const getProducts = useProductStore((state) => state.getProducts);
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<ProductFilterForm>({
     defaultValues: {
       search: "",
       priceFrom: "",
@@ -45,11 +44,11 @@ export default function ProductFilterSheet() {
     },
   });
 
-  function handleSubmit(data: z.infer<typeof FormSchema>) {
+  function handleSubmit(data: ProductFilterForm) {
     console.log(data);
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""
+        ([, value]) => value !== undefined && value !== ""
       )
     );
     

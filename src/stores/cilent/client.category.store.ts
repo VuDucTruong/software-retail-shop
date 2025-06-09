@@ -70,7 +70,7 @@ const getCategories = async (
       CategoryListSchema,
       queryParams
     );
-    set((prev) => ({ categories: response, status: "success" }));
+    set((prev) => ({...prev ,categories: response, status: "success" }));
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

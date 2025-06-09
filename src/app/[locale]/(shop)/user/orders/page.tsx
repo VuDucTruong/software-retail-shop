@@ -19,6 +19,7 @@ const scheme = z.object({
   status: z.string(),
 
 });
+
 const sampleData = Array.from({ length: 10 }, (_, i) => ({
   time: "2023-10-01 12:00:00",
   order_id: `ORD${i + 1}`,
@@ -29,7 +30,7 @@ const sampleData = Array.from({ length: 10 }, (_, i) => ({
 }));
 export default function OrderPage() {
   const t = useTranslations();
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const [data, setData] = useState<any[]>([]);
   const [pageCount, setPageCount] = useState(0);
   const [pagination, setPagination] = useState<PaginationState>({

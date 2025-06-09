@@ -58,6 +58,7 @@ function PaginationLink({
       disabled={disabled}
       variant={isActive ? "default" : "ghost"}
       size={size}
+      className={className}
     >
       <Link
         aria-current={isActive ? "page" : undefined}

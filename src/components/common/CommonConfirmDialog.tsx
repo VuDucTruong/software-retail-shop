@@ -1,4 +1,3 @@
-import React, { ReactElement, useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,8 +9,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
+import { ReactElement } from "react";
 
 type CommonConfirmDialogProps = {
   triggerName: string | ReactElement;

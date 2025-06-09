@@ -72,7 +72,7 @@ export const useCouponStore = create<CouponStore>((set) => ({
 
 const getCoupons = async (set: SetState<CouponStore>, query: QueryParams) => {
   set(state => ({ error: null, queryParams: {
-    ...state.queryParams?.pageRequest,
+    ...state.queryParams,
     ...query,
   } , coupons: null }))
 
