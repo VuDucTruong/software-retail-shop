@@ -30,6 +30,7 @@ export default function HomePage() {
     "1.000.000",
   ];
 
+
   const [products, getProducts] = useClientProductStore(
     useShallow((state) => [state.products, state.getProducts])
   );

@@ -163,6 +163,7 @@
     "write_reply_placeholder": "Write your reply",
     "price_from_placeholder": "Price from",
     "price_to_placeholder": "Price to",
+    "product_group_placeholder": "Enter product group name",
 
     "change_password_hint": "Must be 8 characters or longer\nShould contain at least 1 number or 1 special character\nShould not be the same as a recently used password",
     "password_hint": "Must be 8 characters or longer\nShould contain at least 1 number or 1 special character",
@@ -476,6 +477,10 @@
   "Verify": "Verify",
   "email_otp_description": "Please enter the valid email address you used to register. We will send you a verification code to verify your account.",
   "select_product_group": "Select product group",
+  "Return": "Return",
+  "something_wrong": "Something went wrong, please try again later.",
+  "add_product_group": "Add product group",
+  "add_product_group_description": "Enter the name of the product group you want to add. Each group should be on a new line.",
   "": "",
   "Action": {
     "create": {

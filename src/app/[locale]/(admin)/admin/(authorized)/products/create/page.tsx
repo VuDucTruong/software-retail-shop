@@ -101,6 +101,7 @@ export default function CreateProductPage() {
                   required
                 >
                   <EditAvatarSection
+                    avatarClassname="h-40 w-full"
                     field={field}
                     fileRef={fileRef}
                     name={t("upload_image")}
