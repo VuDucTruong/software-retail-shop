@@ -25,9 +25,10 @@ type CommentState = {
 };
 
 type CommentAction = {
-  getCommentsByProductId: (productId: number) => Promise<void>;
+  getCommentsByProductId: (productId?: number) => Promise<void>;
   createComment: (comment: CommentCreate, isReply?: boolean) => Promise<void>;
   deleteMyComment: (commentId: number, parentId?: number) => Promise<void>;
+  deleteMyCommentList: (commentIds: number[]) => Promise<void>;
   resetStatus: () => void;
 };
 
@@ -57,6 +58,8 @@ export const useClientCommentStore = create<CommentStore>((set) => ({
   createComment: (comment) => createComment(set, comment),
   deleteMyComment: (commentId, parentId) =>
     deleteMyComment(set, commentId, parentId),
+  deleteMyCommentList: (commentIds) => deleteMyCommentList(set, commentIds),
+
   resetStatus: () =>
     set((state) => ({
       ...state,
@@ -68,7 +71,7 @@ export const useClientCommentStore = create<CommentStore>((set) => ({
 
 export const getCommentsByProductId = async (
   set: SetState<CommentStore>,
-  productId: number
+  productId?: number
 ) => {
   set({ status: "loading", error: null, comments: null });
 
@@ -78,7 +81,7 @@ export const getCommentsByProductId = async (
       CommentListSchema,
       {
         params: {
-          productId,
+          productId: productId ?? undefined,
           page: 0,
           size: 100,
           sortBy: "createdAt",
@@ -209,3 +212,39 @@ const deleteMyComment = async (
     });
   }
 };
+
+
+const deleteMyCommentList = async (
+  set: SetState<CommentStore>,
+  commentIds: number[],
+) => {
+  set({ status: "loading", error: null, lastAction: "delete" });
+
+  try {
+    await commentApiClient.delete(`/comments`, z.number() , {
+      params: {
+        ids: commentIds.join(","),
+      },
+    });
+
+    set((state) => {
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          data:
+            state.comments?.data.filter(
+              (comment) => !commentIds.includes(comment.id)
+            ) ?? [],
+        },
+        status: "success",
+      };
+    });
+  } catch (error) {
+    const apiError = error as ApiError;
+    set({
+      error: apiError.message,
+      status: "error",
+    });
+  }
+}

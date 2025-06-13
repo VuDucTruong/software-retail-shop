@@ -3,79 +3,74 @@
 import CardSection from "@/components/dashboard/CardSection";
 import { InteractiveLineChart } from "@/components/dashboard/InteractiveLineChart";
 
-import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { convertPriceToVND } from "@/lib/currency_helper";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { z } from "zod";
+import DashboardFilterForm from "@/components/dashboard/DashboardFilterForm";
 
-const scheme = z.object({
-  id: z.number(),
-  purchaser: z.string(),
-  status: z.string(),
-  total: z.number().transform((val) => convertPriceToVND(val)),
-  recipent: z.string(),
-  createdAt: z.string(),
-});
+type ProductTrend = {
+  produt: {
+    id: number;
+    name: string;
+  };
+  saleCount: number;
+};
 
 export default function DashboardPage() {
   const t = useTranslations();
 
-  const cols: ColumnDef<z.infer<typeof scheme>>[] = [
+  const cols: ColumnDef<ProductTrend>[] = [
     {
       accessorKey: "id",
-      header: "Order ID",
+      header: "ID",
       cell: ({ row }) => {
-        return (
-          <Link
-            className="hover:underline font-medium"
-            href={`orders/${row.original.id}`}
-          >
-            {row.original.id}
-          </Link>
-        );
+        return row.original.produt.id;
       },
       enableHiding: false,
     },
     {
-      accessorKey: "purchaser",
-      header: "Purchaser",
-      cell: ({ row }) => <div className="w-32">{row.original.purchaser}</div>,
+      accessorKey: "name",
+      header: t("product_name"),
+      cell: ({ row }) => {
+        return (
+          <Link href={`/admin/products/${row.original.produt.id}`}>
+            <Button variant={"link"} className="text-left w-full">
+              {row.original.produt.name}
+            </Button>
+          </Link>
+        );
+      },
+      enableHiding: true,
     },
     {
-      accessorKey: "recipent",
-      header: "Recipent",
-      cell: ({ row }) => <div>{row.original.recipent}</div>,
-    },
-
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({  }) => <StatusBadge status="canceled" />,
-    },
-    {
-      accessorKey: "total",
-      header: () => <div>Target</div>,
-      cell: ({ row }) => <div>{row.original.total}</div>,
-    },
-    {
-      accessorKey: "createdAt",
-      header: () => <div>Create At</div>,
-      cell: ({ row }) => <div>{row.original.createdAt}</div>,
+      accessorKey: "saleCount",
+      header: t("sale_count"),
+      cell: ({ row }) => {
+        return row.original.saleCount;
+      },
+      enableHiding: true,
     },
   ];
 
   return (
     <div className="flex flex-col gap-4 px-4 py-6 lg:px-6">
+      <div className="flex flex-row justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">{t("Dashboard")}</h2>
+          <p className="text-muted-foreground">{t("dashboard_description")}</p>
+        </div>
+
+        <DashboardFilterForm />
+      </div>
       <CardSection />
       <InteractiveLineChart />
       <Card>
         <CardHeader>
           <CardTitle>
-            <h3>{t("lastest_orders")}</h3>
+            <h3>{t("top_selling_products")}</h3>
           </CardTitle>
         </CardHeader>
         <CardContent>

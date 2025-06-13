@@ -6,6 +6,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function formatNumberWithDots(num: number): string {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 export function getRandomColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';

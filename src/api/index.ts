@@ -8,6 +8,7 @@ export * from "./schemas/payment";
 export * from "./schemas/order";
 export * from "./schemas/blog.schema";
 export * from "./schemas/product";
+export * from "./schemas/statistic";
 
 // types
 export * from "./types/coupon";
@@ -21,6 +22,8 @@ export * from "./types/order_group/cartMetaData";
 export * from "./types/blog.types";
 export * from "./types/product";
 export * from "./types/common";
+export * from "./types/statistic";
+export * from "./types/ticket";
 
 
 // client

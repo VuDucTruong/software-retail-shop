@@ -24,7 +24,7 @@ import SearchBar from "./SearchBar";
   const supportLinks = [
     { name: "about_us", href: "/" },
     { name: "contact_us", href: "/" },
-    { name: "FAQS", href: "/" },
+    { name: "Support", href: "/feedback" },
   ];
 
 export default function HomeHeader() {

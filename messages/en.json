@@ -219,7 +219,7 @@
     "Pending": "Pending",
     "Processing": "Processing",
     "Completed": "Completed",
-    "Canceled": "Canceled"
+    "Failed": "Failed"
   },
   "TOAST": {
     "wishlist_item_deleted": "Product removed from wishlist",
@@ -239,7 +239,7 @@
   "lastest_orders": "Latest orders",
   "last_x_days": "Last {x} days",
   "last_x_months": "Last {x} months",
-  "total_for_last_x_months": "Total for last {x} months",
+  "total_orders_from_x_to_y": "Order status overview from {x} to {y}",
   "customer_activity": "Customer activity",
   "trending_up_by_x_this_month": "Trending up by {x}% this month",
   "trending_down_by_x_this_month": "Trending down by {x}% this month",
@@ -481,6 +481,16 @@
   "something_wrong": "Something went wrong, please try again later.",
   "add_product_group": "Add product group",
   "add_product_group_description": "Enter the name of the product group you want to add. Each group should be on a new line.",
+  "product_not_found": "Product not found",
+  "sale_count": "Sale count",
+  "top_selling_products": "Top selling products",
+  "time_range": "Time range",
+  "dashboard_description": "View statistics and manage your store",
+  "pick_date_range": "Pick a date range",
+  "send_support_ticket": "Send support ticket",
+  "support_ticket_description": "We are here to help you with any issues or questions you may have.\nWe will get back to you as soon as possible. Feel free to reach out to us anytime.",
+  "your_name": "Your name",
+  "your_message": "Your message",
   "": "",
   "Action": {
     "create": {
@@ -550,6 +560,11 @@
     "unlikeProduct": {
       "success": "The product was removed from your wishlist successfully.",
       "error": "Failed to remove product from wishlist."
+    },
+    "createTicket": {
+      "loading": "Sending support ticket...",
+      "success": "Support ticket sent successfully.\nWe will respond to you within 24 hours.",
+      "error": "Failed to send support ticket."
     }
   }
 }
