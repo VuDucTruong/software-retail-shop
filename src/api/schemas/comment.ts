@@ -13,6 +13,11 @@ export const AuthorSchema = z.object({
 export const CommentSchemaWithoutReplies = z.object({
     id: z.number(),
     author: AuthorSchema,
+    role: z.preprocess((val) => {
+      if(val) return val;
+      return "CUSTOMER";
+    }
+    , z.string()),
     createdAt: DatetimeSchema,
     deletedAt: DatetimeSchema.nullable(),
     content: z.string().nullable(),

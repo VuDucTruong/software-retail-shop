@@ -107,13 +107,14 @@ export default function KeyInsertDialog() {
                   return (
                     <FormItem className="flex-1">
                       <FormLabel>
-                        {t('product_key')}
+                        {t('Product_key')}
                         <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="text"
                           {...field}
+                          required
                         />
                       </FormControl>
                       <FormMessage />
@@ -135,6 +136,7 @@ export default function KeyInsertDialog() {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        required
                       >
                         <FormControl>
                           <SelectTrigger>

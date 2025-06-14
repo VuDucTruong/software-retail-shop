@@ -5,6 +5,7 @@ import { UserComment } from "@/api";
 import { useCommentStore } from "@/stores/comment.store";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { BadgeCheck } from "lucide-react";
 
 type Props = {
   comment: UserComment;
@@ -46,8 +47,10 @@ export default function AdminCommentItem({
       <div className="flex flex-row gap-4 items-center w-full">
         <div className="flex flex-col items-start">
           <div className="font-semibold">
-            {comment.author.fullName}
+            <div className="flex items-center gap-1">
+              {comment.author.fullName} {comment.role !== "CUSTOMER" && <BadgeCheck className="text-primary size-5"/>}
             {" : "}
+            </div>
             {comment.deletedAt ? (
               <span className="text-muted-foreground italic font-normal">
                 {t("deleted_at_x", { x: comment.deletedAt })}

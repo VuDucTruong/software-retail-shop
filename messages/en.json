@@ -213,7 +213,9 @@
     "error_full_name_min": "Full name must be at least 6 characters long.",
     "error_full_name_max": "Full name must not exceed 40 characters.",
     "error_product_group_name_min": "Product group name must be at least 3 characters long.",
-    "error_otp_empty": "OTP must contain 6 digits."
+    "error_otp_empty": "OTP must contain 6 digits.",
+    "error_product_key_required": "Product key is required.",
+    "error_region_required": "Region is required."
   },
   "ORDER_STATUS": {
     "Pending": "Pending",
