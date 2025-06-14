@@ -2,17 +2,12 @@ import {
   ApiClient,
   OrderStatistic,
   OrderStatisticSchema,
-  Product,
-  ProductCreate,
-  ProductList,
-  ProductListSchema,
-  ProductSchema,
-  ProductUpdate,
-  QueryParams,
+  ProductTrend,
+  ProductTrendSchema,
   StatisticQuery,
   StatisticQuerySchema,
   TotalStatistic,
-  TotalStatisticSchema,
+  TotalStatisticSchema
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
@@ -25,6 +20,7 @@ const apiClient = ApiClient.getInstance();
 type DashboardState = {
   totalStatistic: TotalStatistic | null;
   orderStatistic: OrderStatistic[] | null;
+  productTrends: ProductTrend[] | null;
   queryParams: StatisticQuery;
 
   error: string | null;
@@ -33,7 +29,7 @@ type DashboardState = {
 type DashboardAction = {
   getTotalStatistic: (query?: StatisticQuery) => Promise<void>;
   getOrderStatistic: (query?: StatisticQuery) => Promise<void>;
-  getProductTrends: (query?: QueryParams) => Promise<void>;
+  getProductTrends: (size?: number) => Promise<void>;
   setQueryParams: (queryParams: StatisticQuery) => void;
 };
 
@@ -42,6 +38,7 @@ type DashboardStore = DashboardState & DashboardAction;
 const initialState: DashboardState = {
   totalStatistic: null,
   orderStatistic: null,
+  productTrends: null,
   queryParams: StatisticQuerySchema.parse({
     from: new Date(new Date().setDate(new Date().getDate() - 30)),
     to: new Date(),
@@ -55,7 +52,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
   getOrderStatistic: (query) => getOrderStatistic(set, query),
   setQueryParams: (queryParams) =>
     set({queryParams: queryParams}),
-  getProductTrends: (query) => getProductTrends(set, query),
+  getProductTrends: (size) => getProductTrends(set, size),
 }));
 
 async function getTotalStatistic(
@@ -104,22 +101,21 @@ async function getOrderStatistic(
 
 const getProductTrends = async (
   set: SetState<DashboardStore>,
-  query?: QueryParams
+  size: number = 10
 ) => {
-  // try {
-  //   const response = await apiClient.get(
-  //     "/statistics/product-trends",
-  //     ,
-  //     {
-  //       params: query,
-  //     }
-  //   );
-  //   set({
-  //     productTrends: response,
-  //   });
-  // } catch (error) {
-  //   set({
-  //     error: ApiError.getMessage(error),
-  //   });
-  // }
+  try {
+    const response = await apiClient.get(
+      "/products/trends",
+      z.array(ProductTrendSchema),
+    );
+
+    set(prev => ({
+      ...prev,
+      productTrends: response,
+    }));
+  } catch (error) {
+    set({
+      error: ApiError.getMessage(error),
+    });
+  }
 }

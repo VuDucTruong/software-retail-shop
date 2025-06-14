@@ -63,10 +63,8 @@ export function CommmonDataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const t = useTranslations();
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+
+
   // Add selection and actions columns if needed
   const tableColumns = React.useMemo(() => {
     const cols = [...columns];
@@ -113,7 +111,10 @@ export function CommmonDataTable<TData, TValue>({
     state: {
       rowSelection,
       columnVisibility,
-      pagination,
+      pagination: pagination ?? {
+        pageIndex: 0,
+        pageSize: 10,
+      },
       sorting,
     },
     onRowSelectionChange: setRowSelection,
@@ -123,10 +124,12 @@ export function CommmonDataTable<TData, TValue>({
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange,
-    manualSorting: sorting !== undefined,
+    manualSorting: !!sorting,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+
+  console.log(" Rows", table.getRowModel())
 
   const hanndleDeleteRows = () => {
     const ids = getSelectedIds();
@@ -169,7 +172,7 @@ export function CommmonDataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-          {isLoading || !mounted ? (
+          {isLoading ? (
             <TableBody>
               <TableRow>
                 <TableCell

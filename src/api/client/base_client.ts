@@ -11,6 +11,7 @@ export class ApiError extends Error {
 
 
   static getMessage(error: unknown): string {
+    console.error('API Error:', error);
     if (error instanceof ApiError) {
       return error.message;
     } else if (error instanceof ZodError) {
@@ -24,6 +25,6 @@ export class ApiError extends Error {
 
 export class ValidationError extends ApiError {
   constructor(public zodError: ZodError) {
-    super('Validation failed', 666);
+    super('Validation failed' + zodError, 666);
   }
 }

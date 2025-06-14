@@ -102,6 +102,8 @@ export class ApiClient {
           name: user?.name || "unauthenticated",
         },
       });
+
+      console.error("Sentry captured an error:", error);
     } catch (e) {
       console.error("Error parsing user info for Sentry:", e);
     }

@@ -1,59 +1,18 @@
 "use client";
 
 import CardSection from "@/components/dashboard/CardSection";
-import { InteractiveLineChart } from "@/components/dashboard/InteractiveLineChart";
-
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ColumnDef } from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
+const InteractiveLineChart = React.lazy(
+  () => import("@/components/dashboard/InteractiveLineChart")
+);
 import DashboardFilterForm from "@/components/dashboard/DashboardFilterForm";
-
-type ProductTrend = {
-  produt: {
-    id: number;
-    name: string;
-  };
-  saleCount: number;
-};
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslations } from "next-intl";
+import ProductTrendTable from "@/components/dashboard/ProductTrendTable";
+import React, { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardPage() {
   const t = useTranslations();
-
-  const cols: ColumnDef<ProductTrend>[] = [
-    {
-      accessorKey: "id",
-      header: "ID",
-      cell: ({ row }) => {
-        return row.original.produt.id;
-      },
-      enableHiding: false,
-    },
-    {
-      accessorKey: "name",
-      header: t("product_name"),
-      cell: ({ row }) => {
-        return (
-          <Link href={`/admin/products/${row.original.produt.id}`}>
-            <Button variant={"link"} className="text-left w-full">
-              {row.original.produt.name}
-            </Button>
-          </Link>
-        );
-      },
-      enableHiding: true,
-    },
-    {
-      accessorKey: "saleCount",
-      header: t("sale_count"),
-      cell: ({ row }) => {
-        return row.original.saleCount;
-      },
-      enableHiding: true,
-    },
-  ];
 
   return (
     <div className="flex flex-col gap-4 px-4 py-6 lg:px-6">
@@ -66,7 +25,9 @@ export default function DashboardPage() {
         <DashboardFilterForm />
       </div>
       <CardSection />
-      <InteractiveLineChart />
+      <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+        <InteractiveLineChart />
+      </Suspense>
       <Card>
         <CardHeader>
           <CardTitle>
@@ -74,7 +35,7 @@ export default function DashboardPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <CommmonDataTable columns={cols} data={[]} />
+          <ProductTrendTable />
         </CardContent>
       </Card>
     </div>

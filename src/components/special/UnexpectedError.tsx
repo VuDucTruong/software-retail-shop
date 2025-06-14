@@ -24,6 +24,7 @@ export default function UnexpectedError(props: UnexpectedErrorProps) {
         src={"/runtime_error.jpg"}
         width={350}
         height={350}
+        priority
       />
       <p className="italic text-muted-foreground mb-2">{description}</p>
       <Button onClick={handleBack}><ArrowLeft /> {buttonText}</Button>

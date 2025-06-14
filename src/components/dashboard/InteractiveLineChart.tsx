@@ -44,7 +44,7 @@ const barConfig = [
     color: "var(--color-canceled)",
   },
 ];
-export function InteractiveLineChart() {
+export default function InteractiveLineChart() {
   const t = useTranslations();
   const locale = useLocale();
   const datePickerLocale = React.useMemo(() => {
