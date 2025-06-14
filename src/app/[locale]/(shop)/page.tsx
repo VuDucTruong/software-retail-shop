@@ -6,11 +6,8 @@ import { HomeCarousel } from "@/components/home/HomeCarousel";
 import HomeProductSection from "@/components/home/HomeProductSection";
 import TopItemsList from "@/components/home/TopItemsList";
 import { useClientCategoryState } from "@/stores/cilent/client.category.store";
-import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useTranslations } from "next-intl";
 
-import { useEffect } from "react";
-import { useShallow } from "zustand/shallow";
 
 export default function HomePage() {
   const t = useTranslations();
@@ -33,24 +30,6 @@ export default function HomePage() {
 
   const categories = useClientCategoryState(state => state.categories);
 
-
-  const [products, getProducts] = useClientProductStore(
-    useShallow((state) => [state.products, state.getProducts])
-  );
-
-  useEffect(() => {
-    getProducts(
-      {
-        pageRequest: {
-          page: 0,
-          size: 8,
-          sortBy: "createdAt",
-          sortDirection: "desc",
-        },
-      },
-      "lastest"
-    );
-  }, [getProducts]);
 
   return (
     <div className="flex flex-col gap-4 main-container">

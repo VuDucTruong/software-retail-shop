@@ -27,7 +27,6 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { useShallow } from "zustand/shallow";
 
 export default function FeedbackPage() {

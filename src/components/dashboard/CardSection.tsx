@@ -1,15 +1,13 @@
-import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
 import { convertPriceToVND } from "@/lib/currency_helper";
 import { formatNumberWithDots } from "@/lib/utils";
 import { useDashboardStore } from "@/stores/dashboard.store";
-import { Package, TrendingUpIcon, User2 } from "lucide-react";
+import { Package, User2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useShallow } from "zustand/shallow";

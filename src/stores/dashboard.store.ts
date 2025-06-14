@@ -107,6 +107,11 @@ const getProductTrends = async (
     const response = await apiClient.get(
       "/products/trends",
       z.array(ProductTrendSchema),
+      {
+        params: {
+          size: size,
+        },
+      }
     );
 
     set(prev => ({

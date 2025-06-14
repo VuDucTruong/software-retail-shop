@@ -1,14 +1,12 @@
-import React from "react";
-import Image from "next/image";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import DiscountItem from "./DiscountItem";
-import { cn } from "@/lib/utils";
+import { useRouter } from "@/i18n/navigation";
 import {
   calcDiscountPercentage,
   convertPriceToVND,
 } from "@/lib/currency_helper";
-import { useRouter } from "@/i18n/navigation";
-import { Product } from "@/api";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import DiscountItem from "./DiscountItem";
 
 type ProductItemProps = {
   price: number;

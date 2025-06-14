@@ -37,7 +37,7 @@ export function ProductComboBox({
   const status = useProductStore((state) => state.status);
   const products = useProductStore((state) => state.products);
   const t = useTranslations();
-  const handleSearch = (value: string) => {
+  const handleSearch = React.useCallback((value: string) => {
     getProducts({
       pageRequest: {
         page: 0,
@@ -47,7 +47,7 @@ export function ProductComboBox({
       },
       search: value,
     });
-  };
+  }, [getProducts]);
 
   useEffect(() => {
     getProducts({

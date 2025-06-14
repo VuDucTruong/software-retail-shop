@@ -1,7 +1,6 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { IoMdTrendingUp } from "react-icons/io";
-import { Button } from "../ui/button";
 import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useShallow } from "zustand/shallow";
 import { useEffect } from "react";

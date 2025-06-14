@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useClientCommentStore } from "@/stores/cilent/client.comment.store";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
-import { Delete } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -16,13 +15,10 @@ import { useShallow } from "zustand/shallow";
 
 export default function CommentsPage() {
   const t = useTranslations();
-  const [getComments , comments, queryParams , status , lastAction , error , deleteMyCommentList] = useClientCommentStore(useShallow((state) => [
+  const [getComments , comments, queryParams  , deleteMyCommentList] = useClientCommentStore(useShallow((state) => [
     state.getCommentsByProductId,
     state.comments,
     state.queryParams,
-    state.status,
-    state.lastAction,
-    state.error,
     state.deleteMyCommentList,
   ]));
 

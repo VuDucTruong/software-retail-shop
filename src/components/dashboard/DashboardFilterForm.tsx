@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { StatisticQuery, StatisticQuerySchema } from "@/api";
+import {  StatisticQuerySchema } from "@/api";
 import { Form, FormControl, FormField } from "../ui/form";
 import { getDateLocal, getDatePickerLocale, getDateTimeLocal } from "@/lib/date_helper";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
