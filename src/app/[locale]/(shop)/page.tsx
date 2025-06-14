@@ -5,6 +5,7 @@ import CategoryCard from "@/components/home/CategoryCard";
 import { HomeCarousel } from "@/components/home/HomeCarousel";
 import HomeProductSection from "@/components/home/HomeProductSection";
 import TopItemsList from "@/components/home/TopItemsList";
+import { useClientCategoryState } from "@/stores/cilent/client.category.store";
 import { useClientProductStore } from "@/stores/cilent/client.product.store";
 import { useTranslations } from "next-intl";
 
@@ -18,8 +19,8 @@ export default function HomePage() {
     "giai_tri",
     "lam_viec",
     "steam",
-    "youtube",
-    "open_api",
+    "office",
+    "vpn",
   ];
   const suitablePrices = [
     "20.000",
@@ -29,6 +30,8 @@ export default function HomePage() {
     "500.000",
     "1.000.000",
   ];
+
+  const categories = useClientCategoryState(state => state.categories);
 
 
   const [products, getProducts] = useClientProductStore(
@@ -52,7 +55,7 @@ export default function HomePage() {
   return (
     <div className="flex flex-col gap-4 main-container">
       <div className="flex gap-4">
-        <CategoryCard />
+        <CategoryCard categories={categories}/>
         <div className="flex-1">
           <HomeCarousel />
         </div>
@@ -61,14 +64,26 @@ export default function HomePage() {
       {/* Main content */}
       <BrandCarousel />
       <HomeProductSection
-        data={products?.get("lastest")?.data ?? []}
-        isLoading={!products?.get("lastest")}
         title={t("latest_products")}
-        onMoreClick={() => {}}
+        name="lastest"
+        
       />
       <TopItemsList title={t("popular_tags")} items={popularTags} />
       <BestSellerSection />
       <TopItemsList title={t("suitable_prices")} items={suitablePrices} />
+
+      {
+        categories && categories.data.length > 0 && (
+          categories.data.map((category) => (
+            <HomeProductSection
+              key={category.id}
+              title={category.name}
+              categoryId={category.id}
+              name={category.name}
+            />
+          ))
+        )
+      }
     </div>
   );
 }

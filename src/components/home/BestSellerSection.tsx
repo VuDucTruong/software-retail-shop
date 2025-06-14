@@ -2,10 +2,23 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { IoMdTrendingUp } from "react-icons/io";
 import { Button } from "../ui/button";
-
+import { useClientProductStore } from "@/stores/cilent/client.product.store";
+import { useShallow } from "zustand/shallow";
+import { useEffect } from "react";
+import ProductItem from "../common/ProductItem";
+import { Skeleton } from "../ui/skeleton";
 
 export default function BestSellerSection() {
   const t = useTranslations();
+
+  const [productTrend, getProductTrending] = useClientProductStore(
+    useShallow((state) => [state.productTrend, state.getProductTrending])
+  );
+
+  useEffect(() => {
+    getProductTrending(8);
+  }, [getProductTrending]);
+
   return (
     <div className="bg-[#000d21] rounded-md flex flex-col gap-4">
       <div className="relative w-full h-[200px] ">
@@ -22,18 +35,30 @@ export default function BestSellerSection() {
             <IoMdTrendingUp className="size-8 text-red-500" />
             <h3 className="text-white">#{t("best_selling_products")}</h3>
           </div>
-          <Button variant="link" className="text-white">
-            {t("see_more")}
-          </Button>
         </div>
-        <div className="grid grid-cols-4 place-items-stretch gap-6 auto-rows-auto">
-          {/* {Array.from({ length: 8 }).map((_, index) => (
-            <ProductItem
-            key={index}
-            product=
-            />
-          ))} */}
-        </div>
+        {productTrend && productTrend.length > 0 ? (
+          <div className="grid grid-cols-4 place-items-stretch gap-6 auto-rows-auto">
+            {productTrend?.map((product) => (
+              <ProductItem
+                key={product.id}
+                {...product}
+                className="bg-accent shadow-md"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-4 place-items-stretch gap-6 auto-rows-auto">
+          {
+            Array(8)
+            .fill(0)
+            .map((_, index) => (
+              <Skeleton
+                key={index}
+                className="h-[250px] rounded-md"
+              />
+            ))
+          }</div>
+        )}
       </div>
     </div>
   );

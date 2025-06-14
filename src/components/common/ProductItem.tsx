@@ -11,23 +11,27 @@ import { useRouter } from "@/i18n/navigation";
 import { Product } from "@/api";
 
 type ProductItemProps = {
-  product: Product;
+  price: number;
+  originalPrice: number;
+  slug: string;
+  imageUrl: string;
+  name: string;
   className?: string;
 };
 
 export default function ProductItem(props: ProductItemProps) {
-  const { product } = props;
-  const convertedPrice = convertPriceToVND(product.price);
+  const { price , originalPrice , imageUrl, name ,slug  } = props;
+  const convertedPrice = convertPriceToVND(price);
 
-  const convertedOriginalPrice = convertPriceToVND(product.originalPrice);
+  const convertedOriginalPrice = convertPriceToVND(originalPrice);
 
   const discountPercentage = calcDiscountPercentage(
-    product.price,
-    product.originalPrice
+    price,
+    originalPrice
   );
   const router = useRouter();
   const handleClick = () => {
-    router.push("/product/" + product.slug);
+    router.push("/product/" + slug);
   };
   return (
     <Card
@@ -41,19 +45,19 @@ export default function ProductItem(props: ProductItemProps) {
         <figure className="relative aspect-video">
           <Image
             className={
-              product.imageUrl == "/empty_img.png"
+              imageUrl === "/empty_img.png"
                 ? "object-contain"
                 : "object-conver"
             }
             fill
             sizes="100%"
-            src={product.imageUrl}
+            src={imageUrl}
             alt="Product image"
           />
         </figure>
       </CardTitle>
       <CardContent className="px-2 pb-2 flex h-full flex-col">
-        <div>{product.name}</div>
+        <div>{name}</div>
         <div className="text-lg font-semibold flex-1 flex flex-col justify-center">{convertedPrice}</div>
         {discountPercentage > 0 && (
           <div className="flex gap-4 items-center">

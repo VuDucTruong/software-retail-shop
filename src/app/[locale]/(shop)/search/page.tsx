@@ -73,7 +73,7 @@ export default function SearchResultPage() {
             {productList.data.map((product) => (
               <ProductItem
                 key={product.id}
-                product={product}
+                {...product}
                 className="w-full"
               />
             ))}

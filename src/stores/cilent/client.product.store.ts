@@ -4,11 +4,14 @@ import {
   ProductList,
   ProductListSchema,
   ProductSchema,
+  ProductTrend,
+  ProductTrendSchema,
   QueryParams,
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
 import { urlToFile } from "@/lib/utils";
+import { z } from "zod";
 
 import { create } from "zustand";
 
@@ -19,6 +22,7 @@ type ProductState = {
   search: ProductList | null;
   selectedProduct: Product | null;
   queryParams: QueryParams;
+  productTrend: ProductTrend[] | null;
 
   lastAction: "like" | null;
   error: string | null;
@@ -30,12 +34,14 @@ type ProductAction = {
   getProducts: (query: QueryParams, name: string) => Promise<void>; // name is used to differentiate between different product lists
   getProductBySlug: (slug: string) => Promise<void>;
   searchProducts: (query: QueryParams) => Promise<void>;
+  getProductTrending: (size?: number) => Promise<void>;
 };
 
 type ProductStore = ProductState & ProductAction;
 
 const initialState: ProductState = {
   products: new Map<string, ProductList>(),
+  productTrend: null,
   search: null,
   selectedProduct: null,
   queryParams: {
@@ -63,6 +69,7 @@ export const useClientProductStore = create<ProductStore>((set) => ({
   getProducts: (query, name) => getProducts(set, query, name),
   getProductBySlug: (slug) => getProductBySlug(set, slug),
   searchProducts: (query) => searchProducts(set, query),
+  getProductTrending: (size) => getProductTrending(set , size)
 }));
 
 const getProducts = async (
@@ -133,3 +140,31 @@ export const searchProducts = async (
     set({ error: appError.message, status: "error" });
   }
 };
+
+
+const getProductTrending = async (
+  set: SetState<ProductStore>,
+  size: number = 8
+) => {
+  set({ status: "loading", lastAction: null, error: null });
+
+  try {
+    const response = await productApiClient.get(
+      `/products/trends`,
+      z.array(ProductTrendSchema),
+      {
+        params: {
+          size: size,
+        }
+      }
+    );
+
+    set({
+      productTrend: response,
+      status: "success",
+    });
+  } catch (error) {
+    const appError = error as ApiError;
+    set({ error: appError.message, status: "error" });
+  }
+}

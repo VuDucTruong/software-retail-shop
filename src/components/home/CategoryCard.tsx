@@ -5,17 +5,21 @@ import {
   CardHeader,
   CardTitle
 } from "@/components/ui/card";
-import { useClientCategoryState } from "@/stores/cilent/client.category.store";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Skeleton } from "../ui/skeleton";
 import { useRouter } from "next/navigation";
+import { CategoryList } from "@/api";
 
-export default function CategoryCard() {
+type Props = {
+  categories: CategoryList | null;
+}
+
+export default function CategoryCard({ categories }: Props) {
   const t = useTranslations();
   const router = useRouter();
   
-  const categories = useClientCategoryState((state) => state.categories);
+
   const handleCategoryClick = (id: number) => {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set("categoryId", id.toString());
