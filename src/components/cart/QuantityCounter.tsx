@@ -2,18 +2,21 @@ import React from "react";
 import { Button } from "../ui/button";
 
 
-export default function QuantityCounter({quantity}: {quantity: React.RefObject<number>}) {
+export default function QuantityCounter({quantity, onQtyChange}: {quantity: React.RefObject<number>, onQtyChange(quantity: number):void}) {
   
-    const [number , setNumber] = React.useState(quantity.current);
+    const [qty , setQty] = React.useState(quantity.current);
     const handleDecrease = () => {
-        if (number > 1) {
-            setNumber(number - 1);
-            quantity.current = number - 1;
+        if (qty > 1) {
+            setQty(qty - 1);
+            quantity.current = qty - 1;
         }
+        onQtyChange(qty)
+        
     }
     const handleIncrease = () => {
-        setNumber(number + 1);
-        quantity.current = number + 1;
+        setQty(qty + 1);
+        quantity.current = qty + 1;
+        onQtyChange(qty)
     }
     
     return (
@@ -26,7 +29,7 @@ export default function QuantityCounter({quantity}: {quantity: React.RefObject<n
         -
       </Button>
       <div className="w-8 h-8 rounded-md text-primary border border-border flex items-center justify-center">
-        {number}
+        {qty}
       </div>
       <Button
       onClick={handleIncrease}

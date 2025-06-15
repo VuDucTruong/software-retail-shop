@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -52,7 +53,7 @@ export function AuthDialog() {
     {
       key: "logout",
       icon: LogOut,
-      title: "Đăng xuất",
+      title: "Register",
       onClick: () => {
         logout();
       },

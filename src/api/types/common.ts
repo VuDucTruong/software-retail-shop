@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {QueyParamsSchema} from "@/api";
+import {ArrayIndexSchema, QueyParamsSchema} from "@/api";
 import type {StateCreator} from "zustand/vanilla";
 import {SetState} from "@/lib/set_state";
 import {ApiError} from "@/api/client/base_client";
@@ -17,6 +17,9 @@ export type BaseAction = {
 export type DisposeAction = {
     clean(): void,
 }
+export type ArrayIndex = z.infer<typeof ArrayIndexSchema>
+
+
 export const defaultAsyncState: BaseState = {
     lastAction: null,
     status: "loading" as const,

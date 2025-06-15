@@ -1,9 +1,9 @@
 "use client";
-import { useTranslations } from "next-intl";
+import { Product } from "@/api";
 import ProductItem from "@/components/common/ProductItem";
+import { useTranslations } from "next-intl";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-import { Product } from "@/api";
 import { Skeleton } from "../ui/skeleton";
 
 type HomeProductSectionProps = {
@@ -12,6 +12,8 @@ type HomeProductSectionProps = {
   data: Product[];
   isLoading?: boolean;
 };
+
+
 
 export default function HomeProductSection(props: HomeProductSectionProps) {
   const t = useTranslations();
@@ -27,20 +29,27 @@ export default function HomeProductSection(props: HomeProductSectionProps) {
         </div>
         {/* List item */}
         {
-          isLoading ? (<div className="grid grid-cols-4 place-items-stretch gap-6 auto-rows-auto">
-          {Array.from({length: 8}).map((item, index) => (
-            <Skeleton
-              key={index}
-              className="h-[200px] w-full rounded-sm" />
-          ))}
-        </div>) : (<div className="grid grid-cols-4 place-items-stretch gap-6 auto-rows-auto">
-          {data.map((item, index) => (
-            <ProductItem
-              key={index}
-              product={item}
-            />
-          ))}
-        </div>)
+          isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 auto-rows-auto">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Skeleton key={index} className="h-[200px] w-full rounded-sm" />
+              ))}
+            </div>
+          ) : (
+            <div className={`
+            grid   grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6
+            min-w-[230px]
+            auto-rows-auto
+            `}>
+              {data.map((item, index) => (
+                <ProductItem
+                  key={index}
+                  className="w-full relative"
+                  product={item}
+                />
+              ))}
+            </div>
+          )
         }
       </CardContent>
     </Card>

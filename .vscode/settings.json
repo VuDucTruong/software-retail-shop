@@ -1,0 +1,41 @@
+{
+    // "emmet.includeLanguages": {
+    //     "javascript": "",
+    //     "javascriptreact": "",
+    //     "typescriptreact": "",
+    // },
+    // "emmet.showSuggestionsAsSnippets": false,
+    // "editor.suggest.showEmmetSuggestions": false,
+    "emmet.showExpandedAbbreviation": "never",
+    "typescript.tsserver.maxTsServerMemory": 6000,
+    "todo-tree.customHighlight": {
+        "TODO": {
+            "icon": "check",
+            "type": "line",
+            "iconColour": "yellow",
+            "foreground": "red",
+            "background": "yellow",
+        },
+        "FIXME": {
+            "icon": "beaker",
+            "iconColour": "red",
+            "foreground": "white",
+            "background": "red"
+        }
+    },
+    "todo-tree.highlights.customHighlight": {
+        "TODO": {
+            "icon": "check",
+            "type": "line",
+            "iconColour": "yellow",
+            "foreground": "red",
+            "background": "yellow"
+        },
+        "FIXME": {
+            "icon": "beaker",
+            "iconColour": "red",
+            "foreground": "white",
+            "background": "red"
+        }
+    },
+}

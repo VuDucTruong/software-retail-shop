@@ -16,7 +16,7 @@ export class ApiClient {
   private constructor(basePath: string = '') {
     this.instance = axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_API_URL}${basePath}`,
-      timeout: 10000,
+      timeout: 60000,
       headers: {
         'Content-Type': 'application/json',
       },
