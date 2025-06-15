@@ -8,6 +8,7 @@ export const PaymentSchema = z.object({
     id: z.number(),
     status: z.string(),
     orderId: z.number(),
+    deletedAt: z.string(),
     user: UserProfileSchema,
     paymentMethod: z.string(),
     amount: z.number(),

@@ -1,23 +1,24 @@
 "use client";
 
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { StatusBadge } from "@/components/common/StatusBadge";
+import {StatusBadge} from "@/components/common/StatusBadge";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useRouter } from "@/i18n/navigation";
-import { Payment ,Category} from "@/api";
-import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { useState, useEffect } from "react";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Payment} from "@/api";
+import {ColumnDef, PaginationState, SortingState} from "@tanstack/react-table";
+import {UserX2, Trash2} from "lucide-react";
+import {useTranslations} from "next-intl";
+import {useEffect, useState} from "react";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
+
 const sampleData: Payment[] = Array.from({ length: 20 }, (_, i) => ({
   id: i,
   status: "SUCCESS",
   orderId: 20230423,
   createAt: "2025-04-23T14:30:00Z",
+  deletedAt: null,
   user: {
     id: 1,
     fullName: "Alice Nguyen",
@@ -28,10 +29,11 @@ const sampleData: Payment[] = Array.from({ length: 20 }, (_, i) => ({
   paymentMethod: "VISA",
   amount: 150.75,
   currency: "USD",
-  bankCode: "VCB",
+  bankCode: "VCBPAY",
   orderInfo: "Payment for Order #20230423",
   cardInfo: "**** **** **** 1234"
 }));
+
 export default function TransactionMangementPage() {
   const t = useTranslations();
 const [data, setData] = useState<Payment[]>([]);
@@ -58,6 +60,9 @@ const [data, setData] = useState<Payment[]>([]);
     };
     fetchData();
   }, [pagination, sorting]);
+  function handleDelete(id){
+    console.log("deleting",id)
+  }
   const cols: ColumnDef<Payment>[] = [
     {
         accessorKey: "Id",
@@ -107,7 +112,31 @@ const [data, setData] = useState<Payment[]>([]);
         header: "",
         cell: ({ row }) => {
           return (
-            <TransactionDetailDialog payment={row.original} />
+            <>
+              <div className="flex items-end gap-2">
+                <TransactionDetailDialog payment={row.original} />
+
+                {row.original.deletedAt ? null : (
+                    <CommonConfirmDialog
+                        triggerName={
+                          <Button
+                              variant={"destructive"}
+                              size="icon"
+                              className="w-8 h-8"
+                          >
+                            <Trash2 />
+                          </Button>
+                        }
+                        title={"Cấm người dùng"}
+                        description={
+                          "Bạn có chắc chắn muốn xóa đơn hàng này không?"
+                        }
+                        onConfirm={() => handleDelete(row.original.id)}
+                    />
+                )}
+              </div>
+
+            </>
           );
         },
       }
