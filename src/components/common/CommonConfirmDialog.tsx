@@ -36,16 +36,13 @@ export default function CommonConfirmDialog(props: CommonConfirmDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        {typeof triggerName === "string" ? (
-          <Button
-            variant="ghost"
-            className="w-full font-normal flex justify-start px-2"
-          >
-            {triggerName}
-          </Button>
-        ) : (
-          triggerName
-        )}
+        
+        {
+          typeof(triggerName) === "string" ? 
+           <Button variant="ghost" className="w-full font-normal flex justify-start px-2">
+          {triggerName}
+        </Button> : triggerName
+        }
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useRouter } from "@/i18n/navigation";
@@ -115,14 +116,14 @@ export function AuthDialog() {
       <Link href={"/login"}>
         {" "}
         <Button variant={"link"} className="px-0">
-          Đăng nhập
+          {t("Login")}
         </Button>
       </Link>
       {"/"}
       <Link href={"/register"}>
         {" "}
         <Button variant={"link"} className="px-0">
-          Đăng kí
+          {t("Register")}
         </Button>
       </Link>
     </div>

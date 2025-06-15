@@ -1,6 +1,9 @@
-import { QueyParamsSchema } from "@/api";
-import { SetState } from "@/lib/set_state";
+
 import { z } from "zod";
+
+import {z} from "zod";
+import {ArrayIndexSchema, QueyParamsSchema} from "@/api";
+import {SetState} from "@/lib/set_state";
 
 export type QueryParams = z.infer<typeof QueyParamsSchema>;
 export type LastActions = "get" |"create" | "update" | "delete" | null;
@@ -15,6 +18,9 @@ export type BaseAction = {
 export type DisposeAction = {
     clean(): void,
 }
+export type ArrayIndex = z.infer<typeof ArrayIndexSchema>
+
+
 export const defaultAsyncState: BaseState = {
     lastAction: null,
     status: "loading" as const,

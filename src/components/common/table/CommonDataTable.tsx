@@ -1,3 +1,4 @@
+'use client'
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -185,7 +186,7 @@ export function CommmonDataTable<TData, TValue>({
             </TableBody>
           ) : (
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {table.getRowModel()?.rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
