@@ -169,11 +169,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               {t("buy_now")}
             </Button>
 
-            <Button onClick={removeFromCart} className="w-1/10 bg-gray-300 text-red-500 font-bold" disabled={product.quantity <= 0}>
-              <GiCancel color="red" />
-              {"Cancel"}
-            </Button>
-
             <Button onClick={addToCart} variant={"outline"} className="w-1/2" disabled={product.quantity <= 0}>
               <FaCartPlus />
               {t("add_to_cart")}

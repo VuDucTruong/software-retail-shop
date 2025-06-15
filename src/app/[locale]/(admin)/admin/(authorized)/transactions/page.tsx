@@ -9,25 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-const sampleData: Payment[] = Array.from({ length: 20 }, (_, i) => ({
-  id: i,
-  status: "SUCCESS",
-  orderId: 20230423,
-  createAt: "2025-04-23T14:30:00Z",
-  user: {
-    id: 1,
-    fullName: "Alice Nguyen",
-    email: "alice.nguyen@example.com",
-    imageUrl: "https://example.com/avatar/alice.jpg",
-    createdAt: "2023-09-01T08:00:00Z"
-  },
-  paymentMethod: "VISA",
-  amount: 150.75,
-  currency: "USD",
-  bankCode: "VCB",
-  orderInfo: "Payment for Order #20230423",
-  cardInfo: "**** **** **** 1234"
-}));
+const sampleData: Payment[] = [];
 export default function TransactionMangementPage() {
   const t = useTranslations();
 const [data, setData] = useState<Payment[]>([]);
