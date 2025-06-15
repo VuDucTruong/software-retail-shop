@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { PasswordSchema, UserSchema } from "..";
+import { UserSchema } from "./user";
+import { PasswordSchema } from "./common";
 
 
 
@@ -7,7 +8,8 @@ export const messages = {
     required: {
       email: "Input.error_email_empty",
       password: "Input.error_password_empty",
-        fullName: "Input.error_fullname_empty",
+      fullName: "Input.error_fullname_empty",
+      otp: "Input.error_otp_empty",
     },
     invalid: {
       email: "Input.error_email_format",
@@ -25,7 +27,7 @@ export const messages = {
         fullName: "Input.error_fullname_max",
     },
     notMatch: {
-      password: "Input.error_password_not_match",
+      password: "Input.error_pass_not_match",
     },
   };
 
@@ -78,9 +80,11 @@ export const RegisterRequestSchema = z.object({
 
 
 export const ChangePasswordSchema = z.object({
-  newPassword: PasswordSchema,
+  email: z.string().email(messages.invalid.email),
+  otp: z.string().length(6 , messages.required.otp),
+  password: PasswordSchema,
   confirmPassword: PasswordSchema,
-}).refine((data) => data.newPassword === data.confirmPassword, {
+}).partial().refine((data) => data.password === data.confirmPassword, {
   message: messages.notMatch.password,
   path: ["confirmPassword"],
 })

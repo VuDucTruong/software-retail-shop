@@ -1,8 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useUserStore } from "@/stores/user.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -21,24 +20,20 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useUserStore } from "@/stores/user.store";
-import { getDateTimeLocal } from "@/lib/date_helper";
 
 
-
-
-const FormSchema = z.object({
-    fullName: z.string().optional(),
-    email: z.string().optional(),
-    createdAtFrom: z.string().optional(),
-    createdAtTo: z.string().optional(),
-})
+type UserFilterForm = {
+  fullName?: string;
+  email?: string;
+  createdAtFrom?: string;
+  createdAtTo?: string;
+}
 
 export default function UserFilterSheet() {
   const t = useTranslations();
   const getUsers = useUserStore(
     (state) => state.getUsers );
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<UserFilterForm>({
     defaultValues: {
       fullName: "",
       email: "",
@@ -48,10 +43,10 @@ export default function UserFilterSheet() {
   });
 
 
-  function handleSubmit(data: z.infer<typeof FormSchema>) {
+  function handleSubmit(data: UserFilterForm) {
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""
+        ([, value]) => value !== undefined && value !== ""
       )
     );
 
@@ -70,14 +65,14 @@ export default function UserFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm khách hàng
+          <Filter /> {t('search_and_filter', { x: t("customer") })}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm khách hàng</SheetTitle>
+          <SheetTitle>{t('search_and_filter', { x: t("customer") })}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm khách hàng theo tên và email, lọc theo khoảng thời gian tham gia
+            {t('search_and_filter_description', { x: t("customer") })}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -88,7 +83,7 @@ export default function UserFilterSheet() {
                 name="fullName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm theo tên</FormLabel>
+                    <FormLabel>{t('search_by', {x: t('name')})}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -101,7 +96,7 @@ export default function UserFilterSheet() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm theo email</FormLabel>
+                    <FormLabel>{t('search_by', {x: "Email"})}</FormLabel>
                     <FormControl>
                        <Input {...field} />
                     </FormControl>
@@ -115,7 +110,7 @@ export default function UserFilterSheet() {
                 name="createdAtFrom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Từ ngày</FormLabel>
+                    <FormLabel>{t('from_date')}</FormLabel>
                     <FormControl>
                       <Input type="datetime-local" {...field} />
                     </FormControl>
@@ -129,9 +124,9 @@ export default function UserFilterSheet() {
                 name="createdAtTo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đến ngày</FormLabel>
+                    <FormLabel>{t('to_date')}</FormLabel>
                     <FormControl>
-                      <Input type="datetime-local" placeholder="Đến ngày" {...field} />
+                      <Input type="datetime-local" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -144,7 +139,7 @@ export default function UserFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t("apply_filters")}
             </Button>
 
             <Button
@@ -154,7 +149,7 @@ export default function UserFilterSheet() {
                 form.reset();
               }}
             >
-              Đặt lại
+              {t("reset_filters")}
             </Button>
           </div>
         </div>

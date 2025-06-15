@@ -10,7 +10,6 @@ import {
 import { ApiError } from "@/api/client/base_client";
 import { Role } from "@/lib/constants";
 import { SetState } from "@/lib/set_state";
-import { usePathname } from "next/navigation";
 import { z } from "zod";
 import { create } from "zustand";
 
@@ -61,8 +60,10 @@ export const useUserStore = create<UserStore>()((set) => ({
 }));
 
 const getUsers = async (set: SetState<UserStore>, query: QueryParams) => {
-  set({ status: "loading", lastAction: "getUsers", queryParams: query });
-
+  set((prev) => ({status: "loading", lastAction: "getUsers", queryParams: {
+    ...prev.queryParams,
+    ...query,
+  },users: null, error: null}));
   
   if(window.location.pathname.includes("/staffs")) {
     query = {
@@ -142,7 +143,7 @@ const deleteUsers = async (set: SetState<UserStore>, ids: number[]) => {
 const createUser = async (set: SetState<UserStore>, user: UserCreate) => {
   set({ status: "loading", lastAction: "createUser" });
   try {
-    const response = await apiClient.post("/users", z.any(), user , {
+    await apiClient.post("/users", z.any(), user , {
       headers: {
         "Content-Type": "multipart/form-data",
       },

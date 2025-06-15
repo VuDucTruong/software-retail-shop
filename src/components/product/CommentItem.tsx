@@ -1,14 +1,15 @@
 import { useTranslations } from "next-intl";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
-import { UserComment, Reply } from "@/api";
+import { UserComment } from "@/api";
 import { useAuthStore } from "@/stores/auth.store";
 import { Role } from "@/lib/constants";
 import { getRoleWeight } from "@/lib/utils";
 import { useClientCommentStore } from "@/stores/cilent/client.comment.store";
+import { BadgeCheck } from "lucide-react";
 
 type Props = {
   comment: UserComment;
@@ -47,7 +48,7 @@ export default function CommentItem({ comment, productId, parentId }: Props) {
     deleteMyComment(id, parentId);
   };
 
-  if(comment.deletedAt) {
+  if (comment.deletedAt) {
     return;
   }
 
@@ -63,8 +64,8 @@ export default function CommentItem({ comment, productId, parentId }: Props) {
           />
         </div>
         <div className="flex flex-col items-start">
-          <div className="font-semibold">
-            {comment.author.fullName}{" "}
+          <div className="font-semibold flex items-center gap-1">
+            {comment.author.fullName}{comment.role !== "CUSTOMER" && <BadgeCheck className="text-primary size-5"/>}
             <span className="italic font-normal text-sm">
               {new Date(comment.createdAt).toLocaleDateString()}
             </span>
@@ -114,18 +115,16 @@ export default function CommentItem({ comment, productId, parentId }: Props) {
       )}
 
       {/* Hiển thị danh sách phản hồi */}
-      {(comment.replies ?? []).length > 0 && (
-        <div className="ml-12 border-l-2 pl-4 border-border">
-          {comment.replies!.map((reply, index) => (
-            <CommentItem
-              key={index}
-              comment={reply}
-              parentId={parentId}
-              productId={productId}
-            />
-          ))}
-        </div>
-      )}
+      <div className="ml-12 border-l-2 pl-4 border-border">
+        {(comment.replies ?? []).map((reply: UserComment, index: number) => (
+          <CommentItem
+            key={index}
+            comment={reply}
+            parentId={comment.id}
+            productId={productId}
+          />
+        ))}
+      </div>
     </div>
   );
 }

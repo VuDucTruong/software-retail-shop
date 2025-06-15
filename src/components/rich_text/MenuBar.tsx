@@ -1,36 +1,33 @@
+import { Editor } from "@tiptap/react";
 import {
-    AlignCenter,
-    AlignLeft,
-    AlignRight,
-    Bold,
-    Heading1,
-    Heading2,
-    Heading3,
-    Highlighter,
-    Italic,
-    Link,
-    List,
-    ListOrdered,
-    Strikethrough,
-    Table,
-    Underline,
-  } from "lucide-react";
-  import { Toggle } from "../ui/toggle";
-  import { Editor } from "@tiptap/react";
-  import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
-  } from "../ui/dropdown-menu";
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Bold,
+  Heading1,
+  Heading2,
+  Heading3,
+  Highlighter,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  Strikethrough,
+  Table,
+  Underline,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger
+} from "../ui/dropdown-menu";
+import { Toggle } from "../ui/toggle";
   
   export default function MenuBar({ editor }: { editor: Editor | null }) {
     if (!editor) {

@@ -1,13 +1,16 @@
 "use client";
 
+import { Category } from "@/api";
+import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
 import EditCategoryDialog from "@/components/category/EditCategoryDialog";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import SortingHeader from "@/components/common/table/SortingHeader";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Category, CategoryCreate } from "@/api";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { useCategoryStore } from "@/stores/category.store";
 import {
   ColumnDef,
   PaginationState,
@@ -16,13 +19,8 @@ import {
 import { Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useCategoryStore } from "@/stores/category.store";
-import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { shallow, useShallow } from "zustand/shallow";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 export default function CategoryManagementPage() {
   const t = useTranslations();
 
@@ -79,7 +77,7 @@ export default function CategoryManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
+  }, [sorting, pagination, getCategories]);
 
   const cols: ColumnDef<Category>[] = [
     {
@@ -140,8 +138,8 @@ export default function CategoryManagementPage() {
                   <Trash2Icon />
                 </Button>
               }
-              title={"Xóa danh mục"}
-              description={"Bạn có chắc chắn muốn xóa danh mục này không?"}
+              title={t("delete_category")}
+              description={t("delete_category_description")}
               onConfirm={() => handleDelete(row.original.id)}
             />
           </div>

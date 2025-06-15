@@ -1,8 +1,3 @@
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 
 export type FloatingCart_ListDisplay_Type = { id: number, name: string, childItems: { name: string }[] }[]
 

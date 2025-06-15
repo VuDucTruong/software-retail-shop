@@ -10,12 +10,13 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isAdminRootPage = pathname.endsWith('/admin') || pathname.endsWith('/admin/');
   const isAdminLoginPage = pathname.endsWith('/admin/login');
-  const isProtectedRoute = (pathname.startsWith('/vi/admin') || pathname.startsWith('/en/admin')) && !isAdminLoginPage;
+  const isAdminPage = pathname.includes('/admin');
+
 
   const refreshToken = request.cookies.get('refreshToken')?.value;
   const accessToken = request.cookies.get('accessToken')?.value;
 
-  if (isProtectedRoute) {
+  if (isAdminPage) {
     try {
       const refreshPayload = decodeJWTPayload(refreshToken!);
       const accessPayload = decodeJWTPayload(accessToken!);
@@ -25,13 +26,17 @@ export function middleware(request: NextRequest) {
       
       if (exp < now || getRoleWeight(role) < Role.STAFF.weight) throw new Error("Token expired");
 
-      if (isAdminRootPage) {
+      if (isAdminRootPage || isAdminLoginPage) {
         const locale = pathname.split('/')[1] || routing.defaultLocale;
         const admin = new URL(`/${locale}/admin/dashboard`, request.url);
         return NextResponse.redirect(admin);
       }
 
-    } catch (err) {
+    } catch (error) {
+      console.error("Middleware error:", error);
+      if (isAdminLoginPage) {
+        return NextResponse.next();
+      }
       const locale = pathname.split('/')[1] || routing.defaultLocale;
       const login = new URL(`/${locale}/admin/login`, request.url);
       return NextResponse.redirect(login);

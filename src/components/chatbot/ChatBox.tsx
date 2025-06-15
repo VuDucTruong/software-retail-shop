@@ -1,19 +1,10 @@
 import { motion } from "framer-motion";
 import { RefreshCcw, Send } from "lucide-react";
-import React from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { RiRobot3Line } from "react-icons/ri";
-import { ChatMessage } from "./ChatMessage";
-import { Textarea } from "../ui/textarea";
 import { useTranslations } from "next-intl";
+import React from "react";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
+import { ChatMessage } from "./ChatMessage";
 
 type Message = { isBot: boolean; message: string; isLoading?: boolean };
 type ChatBoxProps = {
@@ -21,9 +12,9 @@ type ChatBoxProps = {
 }
 export default function ChatBox({isOpen}: ChatBoxProps) {
   const t = useTranslations();
-
+  
   const [messages, setMessages] = React.useState<Message[]>([
-    { isBot: true, message: "Hello" },
+    { isBot: true, message: t('Hello') },
   ]);
   const [loading, setLoading] = React.useState(false);
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
@@ -48,7 +39,7 @@ export default function ChatBox({isOpen}: ChatBoxProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ message: message }),
+      body: JSON.stringify({ message: message}),
     });
 
     const reader = res.body?.getReader();

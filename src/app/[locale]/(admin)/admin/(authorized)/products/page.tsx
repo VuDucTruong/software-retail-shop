@@ -3,14 +3,19 @@
 import { Product } from "@/api";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import TableOptionMenu from "@/components/common/TableOptionMenu";
+import SortingHeader from "@/components/common/table/SortingHeader";
 import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "@/i18n/navigation";
 import { useProductStore } from "@/stores/product.store";
-import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import {
+  ColumnDef,
+  PaginationState,
+  SortingState,
+} from "@tanstack/react-table";
+import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,30 +23,33 @@ import { useEffect, useState } from "react";
 import { CgAdd } from "react-icons/cg";
 import { useShallow } from "zustand/shallow";
 
-
 export default function ProductManagementPage() {
   const t = useTranslations();
   const router = useRouter();
- 
 
-  const [getProducts , products , queryParams , lastAction , error , status , resetStatus , deleteProducts] = useProductStore(useShallow((state) => [
-    state.getProducts,
-    state.products,
-    state.queryParams,
-    state.lastAction,
-    state.error,
-    state.status,
-    state.resetStatus,
-    state.deleteProducts,
-  ]));
+  const [
+    getProducts,
+    products,
+    queryParams,
+    lastAction,
+    error,
+    status,
+    deleteProducts,
+  ] = useProductStore(
+    useShallow((state) => [
+      state.getProducts,
+      state.products,
+      state.queryParams,
+      state.lastAction,
+      state.error,
+      state.status,
+      state.deleteProducts,
+    ])
+  );
 
-  useEffect(() => {
-    resetStatus();
-  },[])
+  useActionToast({ lastAction, status, errorMessage: error || undefined });
 
-  useActionToast({lastAction , status , errorMessage: error || undefined})
-
-   const [pagination, setPagination] = useState<PaginationState>({
+  const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
   });
@@ -62,8 +70,7 @@ export default function ProductManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
-
+  }, [sorting, pagination, getProducts]);
 
   const cols: ColumnDef<Product>[] = [
     {
@@ -78,23 +85,26 @@ export default function ProductManagementPage() {
       accessorKey: "image",
       header: t("Image"),
       cell: ({ row }) => {
-        return <div className="flex items-center justify-center">
-                    <div className="relative size-20 border border-border rounded-lg">
-                      <Image
-                        alt={row.original.id.toString()}
-                        src={row.original.imageUrl ?? "/empty_img.png"}
-                        fill
-                        sizes="100%"
-                        className="rounded-md object-cover"
-                      />
-                    </div>
-                  </div>
+        return (
+          <div className="flex items-center justify-center">
+            <div className="relative size-20 border border-border rounded-lg">
+              <Image
+                alt={row.original.id.toString()}
+                src={row.original.imageUrl ?? "/empty_img.png"}
+                fill
+                sizes="100%"
+                className="rounded-md object-cover"
+              />
+            </div>
+          </div>
+        );
       },
-      enableHiding: false,
     },
     {
       accessorKey: "name",
-      header: t("Name"),
+      header: ({ column }) => (
+              <SortingHeader column={column} title={t("Name")} />
+            ),
       cell: ({ row }) => {
         return row.original.name;
       },
@@ -142,29 +152,17 @@ export default function ProductManagementPage() {
       accessorKey: "actions",
       header: "",
       cell: ({ row }) => {
-        return <TableOptionMenu actions={[
-          {
-            label: t("Detail"),
-            onClick: () => handleViewDetails(row.original.id!),
-          },
-          {
-            label: t("Delete"),
-            onClick: () => handleDelete(row.original.id!),
-            confirm: {
-              title: t("delete_product_x", { x: row.original.id! }),
-              description: t("delete_product_warning"),
-            },
-          },
-        ]} />
-      }
-    }
+        return <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => handleViewDetails(row.original.id)}
+          >
+            <Eye />
+          </Button>
+        </div>;
+      },
+    },
   ];
-
-
-
-  const handleDelete = (id: number) => {
-    deleteProducts([id]);
-  };
 
   const handleViewDetails = (id: number) => {
     router.push(`products/${id}`);
@@ -174,7 +172,7 @@ export default function ProductManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{t("product_management")}</h2>
+          <h2 className="capitalize">{t("product_management")}</h2>
           <div className="flex items-center gap-2">
             <Link href={"products/create"}>
               <Button variant="outline" className="bg-primary text-white">
@@ -186,7 +184,7 @@ export default function ProductManagementPage() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-      <CommmonDataTable
+        <CommmonDataTable
           objectName={t("product")}
           isLoading={products === null}
           columns={cols}

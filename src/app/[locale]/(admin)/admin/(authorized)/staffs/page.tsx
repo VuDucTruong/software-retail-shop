@@ -1,7 +1,6 @@
 "use client";
 
 import { User } from "@/api";
-import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
@@ -10,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AdminFilterSheet from "@/components/user/AdminFilterSheet";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
-import UserFilterSheet from "@/components/user/UserFilterSheet";
 import { useUserToast } from "@/hooks/use-user-toast";
 
 import { useUserStore } from "@/stores/user.store";
@@ -28,7 +26,7 @@ import { useShallow } from "zustand/shallow";
 export default function StaffManagementPage() {
   const t = useTranslations();
 
-  const [status, lastAction, error, queryParams, users, getUsers, deleteUsers,resetStatus] =
+  const [status, lastAction, error, queryParams, users, getUsers, deleteUsers] =
     useUserStore(
       useShallow((state) => [
         state.status,
@@ -38,7 +36,6 @@ export default function StaffManagementPage() {
         state.users,
         state.getUsers,
         state.deleteUsers,
-        state.resetStatus,
       ])
     );
 
@@ -47,11 +44,6 @@ export default function StaffManagementPage() {
     pageSize: queryParams?.pageRequest?.size ?? 10,
   });
 
-  useEffect(() => {
-    if (status !== "idle") {
-      resetStatus();
-    }
-  }, []);
 
   useUserToast({
     status,
@@ -74,7 +66,7 @@ export default function StaffManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
+  }, [sorting, pagination, getUsers]);
 
   const cols: ColumnDef<User>[] = [
     {
@@ -104,14 +96,14 @@ export default function StaffManagementPage() {
     },
     {
       accessorKey: "role",
-      header: "Vai trò",
+      header: t("Role"),
       cell: ({ row }) => {
         return row.original.role;
       },
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("Status"),
       cell: ({ row }) => {
         return (
           <StatusBadge status={row.original.deletedAt ? "banned" : "active"} />
@@ -120,7 +112,7 @@ export default function StaffManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: "Ngày tạo",
+      header: t("created_at"),
       cell: ({ row }) => {
         return row.original.createdAt;
       },
@@ -144,9 +136,11 @@ export default function StaffManagementPage() {
                         <UserX2 />
                       </Button>
                     }
-                    title={"Cấm người dùng"}
+                    title={t("ban_user")}
                     description={
-                      "Bạn có chắc chắn muốn cấm người dùng này này không?"
+                      t("ban_user_description", {
+                        user: row.original.profile.fullName,
+                      })
                     }
                     onConfirm={() => handleDelete(row.original.id)}
                   />
@@ -165,11 +159,11 @@ export default function StaffManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{"Quản lý quản trị viên"}</h2>
+          <h2>{t("admin_management")}</h2>
           <div className="flex items-center gap-2">
             <Link href={"/admin/staffs/create"}>
                 <Button>
-                    Thêm quản trị viên
+                    {t('create_admin')}
                 </Button>
             </Link>
             <AdminFilterSheet />
@@ -178,7 +172,7 @@ export default function StaffManagementPage() {
       </CardHeader>
       <CardContent>
         <CommmonDataTable
-            objectName={"nhân viên/quản trị viên"}
+            objectName={t("admin")}
           isLoading={status === "loading" && lastAction === "getUsers"}
           columns={cols}
           data={users?.data ?? []}

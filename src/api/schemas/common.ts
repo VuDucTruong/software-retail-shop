@@ -15,18 +15,18 @@ export const PasswordSchema = z
 
 
 export const QueyParamsSchema = z
-    .object({
-        pageRequest: z.object({
-            page: z.number(),
-            size: z.number(),
-            sortBy: z.string(),
-            sortDirection: z.enum(["asc", "desc"]),
-        }),
-        ids: z.array(z.number()).optional(),
-    })
-    .catchall(z.any())
-    .partial()
-    .optional();
+  .object({
+    pageRequest: z.object({
+      page: z.number(),
+      size: z.number(),
+      sortBy: z.string(),
+      sortDirection: z.string(),
+    }),
+    ids: z.array(z.number()).optional(),
+  })
+  .catchall(z.any())
+  .partial()
+  .optional();
 
 export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
     z.object({
@@ -37,23 +37,29 @@ export const ApiResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
     });
 
 export const DateSchema = z
-    .preprocess((val) => {
-        if (typeof val === "string" || val instanceof String) {
-            return new Date(val as string).toLocaleDateString();
-        }
-        return val;
-    }, z.string())
-    .transform((value) => {
-        const date = new Date(value);
-        return date.toISOString();
-    });
+  .preprocess((val) => {
+    if (typeof val === "string" || val instanceof String) {
+      return new Date(val as string);
+    }
+    return val;
+  }, z.date())
+  .transform((date) => {
+    return date.toISOString().split("T")[0]; // YYYY-MM-DD
+  });
 
 export const DatetimeSchema = z.string().transform((value) => {
     const date = new Date(value);
     return date.toLocaleString();
 });
 
+
+export const ApiDatetimeSchema = z.string().transform((value) => {
+  const date = new Date(value);
+  return date.toISOString();
+})
+
 const hasWindow = typeof window !== 'undefined' && window !== null
+
 
 export const ImageSchema = (requiredMessage?: string) => {
     if (requiredMessage) {

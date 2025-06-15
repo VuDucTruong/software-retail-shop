@@ -11,8 +11,9 @@ import {
   BreadcrumbPage,
 } from "../ui/breadcrumb";
 import { Separator } from "../ui/separator";
-import { usePathname } from "@/i18n/navigation";
-import SearchCommandDialog from "@/components/common/SearchCommandDialog";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { CommonSelect } from "../common/CommonSelect";
+import { languages } from "@/lib/constants";
 
 export default function AdminHeader() {
   const pathName = usePathname();
@@ -26,6 +27,13 @@ export default function AdminHeader() {
       href,
     };
   });
+
+    const router = useRouter();
+  
+    const switchLanguage = (locale: string) => {
+      const newPath = `/${locale}${pathName.substring(3)}`; // Change locale in the URL
+      router.replace(newPath);
+    };
 
   return (
     <header className="flex justify-between h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -56,7 +64,14 @@ export default function AdminHeader() {
         </Breadcrumb>
       </div>
 
-      <SearchCommandDialog />
+      {/* <SearchCommandDialog /> */}
+      <CommonSelect
+                    data={languages}
+                    defaultValue={languages[0]}
+                    onChange={(value) => {
+                      switchLanguage(value);
+                    }}
+                  />
     </header>
   );
 }

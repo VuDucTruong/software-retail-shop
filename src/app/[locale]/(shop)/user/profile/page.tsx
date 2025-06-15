@@ -15,12 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useProfileToast } from "@/hooks/use-profile-toast";
 import { useClientUserStore } from "@/stores/cilent/client.user.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 
 export default function UserProfilePage() {
   const t = useTranslations();
@@ -34,9 +34,9 @@ export default function UserProfilePage() {
   const fileRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     getProfile();
-  }, []);
+  }, [getProfile]);
 
-  useProfileToast({
+  useAuthToast({
     status,
     lastAction,
     errorMessage: error || undefined,
@@ -84,7 +84,7 @@ export default function UserProfilePage() {
     if (user) {
       form.setValue("fullName", user.profile.fullName);
     }
-  }, [user]);
+  }, [user, form]);
 
   if (status !== "success" && lastAction === "getUser") {
     return <LoadingPage />;

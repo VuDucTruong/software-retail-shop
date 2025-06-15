@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { ApiResponseSchema } from "./common";
+import { ApiResponseSchema, DatetimeSchema } from "./common";
+
 
 export const AuthorSchema = z.object({
     id: z.number(),
@@ -9,24 +10,39 @@ export const AuthorSchema = z.object({
 })
 
 
-export const ReplySchema = z.object({
+export const CommentSchemaWithoutReplies = z.object({
     id: z.number(),
     author: AuthorSchema,
-    createdAt: z.string().transform((val) => new Date(val).toLocaleDateString()),
-    deletedAt: z.string().nullable(),
-    content: z.string().nullable(), 
+    role: z.preprocess((val) => {
+      if(val) return val;
+      return "CUSTOMER";
+    }
+    , z.string()),
+    createdAt: DatetimeSchema,
+    deletedAt: DatetimeSchema.nullable(),
+    content: z.string().nullable(),
+    parentCommentId: z.number().nullable().optional(),
+    product: z.object({
+      id: z.number(),
+      name: z.string(),
+      slug: z.preprocess((val) => {
+        if (typeof val === "string") return val;
+        return "";
+      }, z.string()),
+      imageUrl: z.string().nullable(),
+      represent: z.boolean().nullable(),
+      price: z.number().nullable(),
+      originalPrice: z.number().nullable(),
+    }).optional().nullable(),
 })
 
-export const CommentSchema = ReplySchema.extend({
-    replies: z.preprocess((val) => {
-        if(val) return val;
-        return [];
-    }, z.array(ReplySchema)).optional(),
+export const CommentSchema = CommentSchemaWithoutReplies.extend({
+    replies: z.array(CommentSchemaWithoutReplies).optional().nullable(),
 })
 
 export const CommentCreateSchema = z.object({
     productId: z.number(),
-    content: z.string().min(1, { message: "Comment content is required" }),
+    content: z.string().min(1, { message: "Input.error_content_required" }),
     parentCommentId: z.number().optional(),
 })
 

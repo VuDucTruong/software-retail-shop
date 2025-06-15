@@ -38,7 +38,7 @@ export default function CreateBlogPage() {
             // imageUrl: f.imageUrl,
             genreIds: [...f.selectedGenre2Ids]
         }
-        proxyLoading(() => createBlog(requestUpdate).then(v=>{
+        proxyLoading(() => createBlog(requestUpdate).then(()=>{
             setFormValues(blogFormDefaultValues)
         }), 'create')
     }
@@ -47,8 +47,8 @@ export default function CreateBlogPage() {
         <>
             <BlogForm initialValues={formValues} onFormSubmit={onSubmitUpdate} mode={'create'}
                       uiTitles={{
-                          formTitle: t("Tạo bài viết"),
-                          buttonTitle: t("Tạo")
+                          formTitle: t("create_blog"),
+                          buttonTitle: t("Create")
                       }}
             />
         </>

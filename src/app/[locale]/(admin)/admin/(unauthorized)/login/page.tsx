@@ -16,17 +16,22 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useLoginToast } from "@/hooks/use-login-toast";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useAuthStore } from "@/stores/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useShallow } from "zustand/shallow";
 
 export default function LoginPage() {
   const t = useTranslations();
-  const login = useAuthStore((state) => state.login);
+  const [login , status , lastAction, error] = useAuthStore(useShallow((state) => [
+    state.login,
+    state.status,
+    state.lastAction,
+    state.error
+  ]));
   const form = useForm<LoginRequest>({
     resolver: zodResolver(LoginRequestSchema),
     defaultValues: {
@@ -35,21 +40,16 @@ export default function LoginPage() {
     },
   });
 
-  useEffect(() => {
-    useAuthStore.getState().resetStatus();
-  }
-  , []);
-
   function onSubmit(request: LoginRequest) {
     login(request)
   }
 
 
 
-  useLoginToast({
-    status: useAuthStore((state) => state.status),
-    lastAction: useAuthStore((state) => state.lastAction),
-    errorMessage: useAuthStore((state) => state.error) || undefined,
+  useAuthToast({
+    status: status,
+    lastAction: lastAction,
+    errorMessage: error || undefined,
   });
 
 

@@ -16,13 +16,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useProfileToast } from "@/hooks/use-profile-toast";
 import { useAuthStore } from "@/stores/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
+import { useAuthToast } from "@/hooks/use-auth-toast";
+
 
 export default function AdminProfilePage() {
   const t = useTranslations();
@@ -40,13 +41,19 @@ export default function AdminProfilePage() {
   const fileRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     getMe();
-  }, []);
+  }, [getMe]);
 
-  useProfileToast({
+  useAuthToast({
     status,
     lastAction,
     errorMessage: error || undefined,
   });
+
+  useEffect(() => {
+    if(status === "success" && lastAction === "changePassword") {
+      window.location.reload();
+    }
+  }, [status, lastAction]);
 
   const handleProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -68,7 +75,7 @@ export default function AdminProfilePage() {
     form.reset({
       fullName: user?.profile.fullName,
     });
-  } , [user]);
+  } , [user, form]);
 
   const gridItems = [
     {
@@ -88,6 +95,8 @@ export default function AdminProfilePage() {
       value: user?.createdAt.toString(),
     },
   ];
+
+  useEffect(() => {},[]);
 
   if (status !== "success" && lastAction === "getMe") {
     return LoadingPage();

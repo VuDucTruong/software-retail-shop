@@ -10,8 +10,6 @@ import {
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
-import { delay } from "@/lib/utils";
-import { get } from "http";
 import { z } from "zod";
 
 import { create } from "zustand";
@@ -73,7 +71,10 @@ export const useCouponStore = create<CouponStore>((set) => ({
 }));
 
 const getCoupons = async (set: SetState<CouponStore>, query: QueryParams) => {
-  set({ error: null, queryParams: query , coupons: null });
+  set(state => ({ error: null, queryParams: {
+    ...state.queryParams,
+    ...query,
+  } , coupons: null }))
 
   try {
     const response = await couponApiClient.post(
@@ -121,6 +122,7 @@ const getCouponById = async (set: SetState<CouponStore>, id: number) => {
         }
       }
     );
+    
     set({ selectedCoupon: response, status: "success" });
   } catch (error) {
     const appError = error as ApiError;

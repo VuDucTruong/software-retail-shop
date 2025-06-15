@@ -4,6 +4,8 @@ import {
   ProductList,
   ProductListSchema,
   ProductSchema,
+  ProductTrend,
+  ProductTrendSchema,
   QueryParams,
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
@@ -16,10 +18,11 @@ import { create } from "zustand";
 const productApiClient = ApiClient.getInstance();
 
 type ProductState = {
-  products: Map<string, ProductList> | null;
+  products: Map<string, ProductList>;
   search: ProductList | null;
   selectedProduct: Product | null;
   queryParams: QueryParams;
+  productTrend: ProductTrend[] | null;
 
   lastAction: "like" | null;
   error: string | null;
@@ -28,21 +31,23 @@ type ProductState = {
 
 type ProductAction = {
   resetStatus: () => void;
-  getProducts: (query: QueryParams, name: string) => Promise<void>;
+  getProducts: (query: QueryParams, name: string) => Promise<void>; // name is used to differentiate between different product lists
   getProductBySlug: (slug: string) => Promise<void>;
   searchProducts: (query: QueryParams) => Promise<void>;
+  getProductTrending: (size?: number) => Promise<void>;
 };
 
 type ProductStore = ProductState & ProductAction;
 
 const initialState: ProductState = {
-  products: null,
+  products: new Map<string, ProductList>(),
+  productTrend: null,
   search: null,
   selectedProduct: null,
   queryParams: {
     pageRequest: {
       page: 0,
-      size: 10,
+      size: 8,
       sortBy: "createdAt",
       sortDirection: "desc",
     },
@@ -64,6 +69,7 @@ export const useClientProductStore = create<ProductStore>((set) => ({
   getProducts: (query, name) => getProducts(set, query, name),
   getProductBySlug: (slug) => getProductBySlug(set, slug),
   searchProducts: (query) => searchProducts(set, query),
+  getProductTrending: (size) => getProductTrending(set , size)
 }));
 
 const getProducts = async (
@@ -71,7 +77,12 @@ const getProducts = async (
   query: QueryParams,
   name: string
 ) => {
-  set({ status: "loading", lastAction: null, error: null, queryParams: query });
+  set((state) => ({
+     status: "loading", error: null , queryParams: {
+    ...state.queryParams,
+    ...query,
+     }
+  }));
 
   try {
     const response = await productApiClient.post(
@@ -129,3 +140,31 @@ export const searchProducts = async (
     set({ error: appError.message, status: "error" });
   }
 };
+
+
+const getProductTrending = async (
+  set: SetState<ProductStore>,
+  size: number = 8
+) => {
+  set({ status: "loading", lastAction: null, error: null });
+
+  try {
+    const response = await productApiClient.get(
+      `/products/trends`,
+      z.array(ProductTrendSchema),
+      {
+        params: {
+          size: size,
+        }
+      }
+    );
+
+    set({
+      productTrend: response,
+      status: "success",
+    });
+  } catch (error) {
+    const appError = error as ApiError;
+    set({ error: appError.message, status: "error" });
+  }
+}

@@ -1,9 +1,9 @@
 "use client";
 
+import { ChevronsUpDown } from "lucide-react";
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
 
-import { cn, delay } from "@/lib/utils";
+import { Product } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -19,10 +19,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useProductStore } from "@/stores/product.store";
-import { useEffect } from "react";
-import { Product } from "@/api";
 import debounce from "lodash/debounce";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export function ProductComboBox({
   ref,
@@ -36,8 +36,8 @@ export function ProductComboBox({
   const getProducts = useProductStore((state) => state.getProducts);
   const status = useProductStore((state) => state.status);
   const products = useProductStore((state) => state.products);
-
-  const handleSearch = (value: string) => {
+  const t = useTranslations();
+  const handleSearch = React.useCallback((value: string) => {
     getProducts({
       pageRequest: {
         page: 0,
@@ -47,7 +47,7 @@ export function ProductComboBox({
       },
       search: value,
     });
-  };
+  }, [getProducts]);
 
   useEffect(() => {
     getProducts({
@@ -58,14 +58,14 @@ export function ProductComboBox({
         sortDirection: "desc",
       },
     });
-  }, []);
+  }, [getProducts]);
 
   const debouncedSearch = React.useMemo(
     () =>
       debounce((value: string) => {
         handleSearch(value);
       }, 400),
-    []
+    [handleSearch]
   );
 
   return (
@@ -78,14 +78,14 @@ export function ProductComboBox({
             role="combobox"
             aria-expanded={open}
           >
-            Chọn sản phẩm...
+            {t('select_product')}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="p-0 w-[300px]" align="start">
           <Command>
             <CommandInput
-              placeholder="Tìm kiếm sản phẩm"
+              placeholder={t('search_products')}
               onValueChange={debouncedSearch}
               className="h-9"
             />

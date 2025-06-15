@@ -7,14 +7,21 @@ export const ProductItemSchema = z.object({
     productId: z.number(),
     productKey: z.string(),
     region: z.string().optional(),
+    account: z.object({}).catchall(z.any()).optional().nullable(),
 })
 
 
 export const ProductItemDetailSchema = z.object({
     id: z.number(),
-    slug: z.string(),
+    slug: z.preprocess((val) => {
+        if (val) return val;
+        return ""
+    }, z.string()),
     name: z.string(),
-    imageUrl: z.string().nullable(),
+    imageUrl: z.preprocess((val) => {
+        if (val || val === "") return val;
+        return "/empty_img.png"
+        }, z.string()),
     represent: z.boolean(),
     price: z.number(),
     originalPrice: z.number(),
@@ -23,6 +30,7 @@ export const ProductItemDetailSchema = z.object({
     createdAt: z.string(),
     region: z.string(),
     used: z.boolean(),
+    account: z.object({}).catchall(z.any()).optional().nullable(),
 })
 
 export const ProductItemDetailListSchema = ApiResponseSchema(z.array(ProductItemDetailSchema));
@@ -30,6 +38,11 @@ export const ProductItemDetailListSchema = ApiResponseSchema(z.array(ProductItem
 
 export const ProductItemCreateSchema = z.object({
     productId: z.number().nullable(),
-    productKey: z.string().nonempty(),
-    region: z.string().nonempty(),
+    productKey: z.string().nonempty({
+        message: "Input.error_product_key_required"
+    }),
+    region: z.string().nonempty({
+        message: "Input.error_region_required"
+    }),
+    account: z.object({}).catchall(z.any()).optional(),
 })

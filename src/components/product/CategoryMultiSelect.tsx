@@ -42,7 +42,7 @@ export function CategoryMultiSelectField({
       sort: "name",
       order: "asc",
     });
-  },[])
+  },[getCategories]);
 
   const options = categories?.data ?? [];
 

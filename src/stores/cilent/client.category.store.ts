@@ -1,16 +1,12 @@
 import {
   ApiClient,
-  CategoryCreate,
+  Category,
   CategoryList,
   CategoryListSchema,
-  CategorySchema,
-  CategoryUpdate,
+  QueryParams
 } from "@/api";
-import { Category } from "@/api";
-import { QueryParams } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
-import { z } from "zod";
 import { create } from "zustand";
 const categoryClient = ApiClient.getInstance();
 
@@ -74,7 +70,7 @@ const getCategories = async (
       CategoryListSchema,
       queryParams
     );
-    set((prev) => ({ categories: response, status: "success" }));
+    set((prev) => ({...prev ,categories: response, status: "success" }));
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });

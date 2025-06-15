@@ -1,4 +1,13 @@
+import { Product, ProductItemCreate, ProductItemCreateSchema, ProductItemDetail } from "@/api";
+import { regions } from "@/lib/constants";
+import { useProductItemStore } from "@/stores/product.item.store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Key } from "lucide-react";
+import { useTranslations } from "next-intl";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,35 +16,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { ProductComboBox } from "./ProductComboBox";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { Product, ProductItemCreate, ProductItemCreateSchema, ProductItemDetail } from "@/api";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "../ui/input";
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "../ui/select";
-import { Key, Link } from "lucide-react";
-import { regions } from "@/lib/constants";
-import { Input } from "../ui/input";
-import { toast } from "sonner";
-import { create } from "domain";
-import { useProductItemStore } from "@/stores/product.item.store";
+import { ProductComboBox } from "./ProductComboBox";
 
 export default function KeyInsertDialog() {
   const t = useTranslations();
@@ -57,7 +54,7 @@ export default function KeyInsertDialog() {
     form.handleSubmit((data) => {
        
         if (productRef.current === null) {
-            toast.error("Vui lòng chọn sản phẩm");
+            toast.error(t('please_select_product'));
             return;
         }
         const productItem:ProductItemDetail = {
@@ -87,14 +84,14 @@ export default function KeyInsertDialog() {
         }
     }}>
       <DialogTrigger asChild>
-        <Button variant={"outline"}>{"Thêm khóa phần mềm thủ công"}</Button>
+        <Button variant={"outline"}>{t('add_product_key_manually')}</Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{"Thêm khóa mới"}</DialogTitle>
+          <DialogTitle>{t('add_new_product_key')}</DialogTitle>
           <DialogDescription>
-            Chọn sản phẩm cần thêm , sau đó nhập những thông tin cần thiết khác
+            {t('add_new_product_key_description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -110,14 +107,14 @@ export default function KeyInsertDialog() {
                   return (
                     <FormItem className="flex-1">
                       <FormLabel>
-                        {"Mã sản phẩm"}
+                        {t('Product_key')}
                         <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
                           type="text"
-                          placeholder="Nhập khóa sản phẩm"
                           {...field}
+                          required
                         />
                       </FormControl>
                       <FormMessage />
@@ -133,16 +130,17 @@ export default function KeyInsertDialog() {
                   return (
                     <FormItem >
                       <FormLabel>
-                        {"Khu vực"}
+                        {t('Region')}
                         <span className="text-red-500">*</span>
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        required
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Chọn khu vực" />
+                            <SelectValue placeholder={t('select_region')} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -166,7 +164,7 @@ export default function KeyInsertDialog() {
           </Form>
           <div className="flex items-center justify-end">
             <Button disabled={false} onClick={handleSubmit}>
-            {"Thêm khóa sản phẩm"}
+            {t('add_new_product_key')}
             <Key />
           </Button>
           </div>

@@ -1,14 +1,11 @@
-import { FaBlog, FaComment, FaHeart, FaMoneyCheck, FaShareAlt, FaUserAlt } from "react-icons/fa";
-import { IoCart, IoKeySharp } from "react-icons/io5";
-import { MdPayment, MdSecurity } from "react-icons/md";
-import { MdOutlineCategory } from "react-icons/md";
 import { AiOutlineProduct } from "react-icons/ai";
-import { IoHomeOutline } from "react-icons/io5";
 import { BiSolidDiscount } from "react-icons/bi";
-import { LuShoppingBag } from "react-icons/lu";
-import { RiFolderUserLine } from "react-icons/ri";
+import { FaBlog, FaComment, FaHeart, FaMoneyCheck, FaUserAlt } from "react-icons/fa";
+import { IoCart, IoHomeOutline, IoKeySharp } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
-import { LogOut } from "lucide-react";
+import { LuShoppingBag } from "react-icons/lu";
+import { MdOutlineCategory, MdPayment, MdSecurity } from "react-icons/md";
+import { RiFolderUserLine } from "react-icons/ri";
 
 export type AdminMenuItem = {
     title: string;

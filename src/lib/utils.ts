@@ -1,12 +1,13 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { Role } from "./constants";
-import { GetState, SetState } from "@/lib/set_state";
-import { UseBoundStore } from "zustand/react";
-import { StoreApi } from "zustand/vanilla";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+export function formatNumberWithDots(num: number): string {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function getRandomColor() {
@@ -72,15 +73,15 @@ export class StringUtils {
     return typeof str === 'string' && str.trim().length > 0;
   }
 }
-export function resolveStore<T, U>(
-  useStore: UseBoundStore<StoreApi<T>>,
-  selector: (store: T) => U
-): [SetState<T>, GetState<T>, U] {
-  const selected = useStore(selector);
-  const setState = useStore.setState;
-  const getState = useStore.getState;
-  return [setState, getState, selected];
-}
+// export function resolveStore<T, U>(
+//   useStore: UseBoundStore<StoreApi<T>>,
+//   selector: (store: T) => U
+// ): [SetState<T>, GetState<T>, U] {
+//   const selected = useStore(selector);
+//   const setState = useStore.setState;
+//   const getState = useStore.getState;
+//   return [setState, getState, selected];
+// }
 export class HashSet {
   public static add<T>(
     current: readonly T[],

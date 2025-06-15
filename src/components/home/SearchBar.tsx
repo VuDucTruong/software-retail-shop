@@ -1,10 +1,10 @@
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, ChevronDown, PackageSearch } from "lucide-react";
-import { use, useEffect, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCategoryStore } from "@/stores/category.store";
-import React from "react";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -12,49 +12,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Form, FormField } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useProductStore } from "@/stores/product.store";
-import debounce from "lodash/debounce";
 import { useClientCategoryState } from "@/stores/cilent/client.category.store";
 import { useClientProductStore } from "@/stores/cilent/client.product.store";
+import debounce from "lodash/debounce";
+import { PackageSearch, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Form, FormField } from "../ui/form";
 import { Skeleton } from "../ui/skeleton";
 
-const SearchSchema = z
-  .object({
-    category: z.string(),
-    search: z.string(),
-  })
-  .partial();
+
+type SearchForm = {
+  categoryId?: string;
+  search?: string;
+}
 
 export default function SearchBar() {
-  const [mounted , setMounted] = useState(false);
-  const form = useForm<z.infer<typeof SearchSchema>>({
+  const form = useForm<SearchForm>({
     defaultValues: {
-      category: "-1",
+      categoryId: "all",
       search: "",
     },
   });
   const getCategories = useClientCategoryState((state) => state.getCategories);
+  const categories = useClientCategoryState((state) => state.categories);
   const searchProducts = useClientProductStore((state) => state.searchProducts);
   const search = useClientProductStore((state) => state.search);
-  const categories = useClientCategoryState((state) => state.categories);
+  
   React.useEffect(() => {
-    setMounted(true);
     getCategories({});
-  }, []);
+  }, [getCategories]);
 
   const router = useRouter();
+  const t = useTranslations();
 
   const debouncedSearch = React.useMemo(
     () =>
-      debounce((data: z.infer<typeof SearchSchema>) => {
+      debounce((data: SearchForm) => {
         if (data.search !== "") {
           searchProducts({
             pageRequest: {
@@ -64,7 +60,7 @@ export default function SearchBar() {
               sortDirection: "desc",
             },
             search: data.search,
-            categoryIds: data.category === "-1" ? [] : [Number(data.category)],
+            categoryIds: data.categoryId === "all" ? [] : [Number(data.categoryId)],
           });	
         } else {
           searchProducts({
@@ -74,11 +70,11 @@ export default function SearchBar() {
               sortBy: "createdAt",
               sortDirection: "desc",
             },
-            categoryIds: data.category === "-1" ? [] : [Number(data.category)],
+            categoryIds: data.categoryId === "all" ? [] : [Number(data.categoryId)],
           });
         }
       }, 400),
-    []
+    [searchProducts]
   );
 
   useEffect(() => {
@@ -89,25 +85,30 @@ export default function SearchBar() {
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [form, debouncedSearch]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     form.handleSubmit((data) => {
-      router.push(
-        "/search" +
-          "?" +
-          new URLSearchParams({
-            category:
-              ((data.category ?? "-1") === "-1" ? "" : data.category) ?? "",
-            query: data.search ?? "",
-          }).toString()
+
+      const cleanData = Object.fromEntries(
+        Object.entries(data).filter(([, value]) => value !== "" && value !== "all")
       );
+
+      const searchParams = new URLSearchParams();
+
+      searchParams.set("search", cleanData.search ?? "");
+      searchParams.set("categoryId", cleanData.categoryId ?? "");
+      searchParams.set("page", "0");
+      searchParams.set("sort", "id,asc");
+
+      router.push(`/search?${searchParams.toString()}`);
+      
     })();
   };
 
-  if (!mounted) {
+  if (!categories) {
     return <Skeleton className="h-12 w-full max-w-lg" />;
   }
 
@@ -120,7 +121,7 @@ export default function SearchBar() {
             onSubmit={handleSubmit}
           >
             <FormField
-              name="category"
+              name="categoryId"
               control={form.control}
               render={({ field }) => {
                 return (
@@ -132,7 +133,7 @@ export default function SearchBar() {
                       <SelectValue placeholder="Danh mục" />
                     </SelectTrigger>
                     <SelectContent className="top-1">
-                      <SelectItem value="-1">Tất cả danh mục</SelectItem>
+                      <SelectItem value="all">{t('all_categories')}</SelectItem>
                       {categories?.data.map((category) => (
                         <SelectItem
                           key={category.id}
@@ -153,15 +154,15 @@ export default function SearchBar() {
               render={({ field }) => {
                 return (
                   <Input
-                    placeholder="Tìm kiếm sản phẩm..."
+                    placeholder={t('search_hint')}
                     className="flex-1 border-none focus-visible:ring-0 shadow-none"
                     {...field}
                   />
                 );
               }}
             />
-            <Button variant="ghost" className="p-2" type="submit">
-              <Search className="w-5 h-5 text-gray-500" />
+            <Button variant="ghost" className="p-2 hover:bg-primary/80 hover:text-white text-gray-500 cursor-pointer" type="submit">
+              <Search className="w-5 h-5 " />
             </Button>
           </form>
         </Form>

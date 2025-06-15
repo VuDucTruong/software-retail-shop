@@ -1,7 +1,6 @@
 "use client";
 
 import { User } from "@/api";
-import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
@@ -11,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
 import UserFilterSheet from "@/components/user/UserFilterSheet";
 import { useUserToast } from "@/hooks/use-user-toast";
-import { Role } from "@/lib/constants";
 import { useUserStore } from "@/stores/user.store";
 import {
   ColumnDef,
@@ -65,7 +63,7 @@ export default function CustomerManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [sorting, pagination]);
+  }, [sorting, pagination,getUsers]);
 
   const cols: ColumnDef<User>[] = [
     {
@@ -95,14 +93,14 @@ export default function CustomerManagementPage() {
     },
     {
       accessorKey: "role",
-      header: "Vai trò",
+      header: t("Role"),
       cell: ({ row }) => {
         return row.original.role;
       },
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("Status"),
       cell: ({ row }) => {
         return (
           <StatusBadge status={row.original.deletedAt ? "banned" : "active"} />
@@ -111,7 +109,7 @@ export default function CustomerManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: "Ngày tạo",
+      header: t("created_at"),
       cell: ({ row }) => {
         return row.original.createdAt;
       },
@@ -156,7 +154,7 @@ export default function CustomerManagementPage() {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2>{"Quản lý khách hàng"}</h2>
+          <h2>{t('customer_management')}</h2>
           <div className="flex items-center gap-2">
             <UserFilterSheet />
           </div>

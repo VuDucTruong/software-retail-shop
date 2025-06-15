@@ -5,11 +5,10 @@ import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 
 import { TransactionsFilterForm } from "@/components/transactions/TransactionsFilterForm";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { convertPriceToVND } from "@/lib/currency_helper";
 import { ColumnDef } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
-import React from "react";
 import { z } from "zod";
 
 export default function TransactionsPage() {

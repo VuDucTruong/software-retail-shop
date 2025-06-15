@@ -1,20 +1,16 @@
 "use client";
 
-import CartItemsSection from "@/components/cart/CartItemsSection";
-import PaymentSection from "@/components/cart/PaymentSection";
-import { usePathname } from "@/i18n/navigation";
 import { CartLocal } from "@/stores/order/cart.store";
 import { OrderCustomer } from "@/stores/order/order.store";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { GiConfirmed } from "react-icons/gi";
 import { IoCartSharp } from "react-icons/io5";
 import { MdOutlinePayments } from "react-icons/md";
 
+import CartForm from "@/components/cart/CartForm";
 import { useTranslations } from "use-intl";
 import { useShallow } from "zustand/shallow";
-import CartForm from "@/components/cart/CartForm";
-import { OrderCreateRequest, OrderDetailRequest, PaymentUrlRequest } from "@/api";
 
 const stepItems = [
     { name: "Checking out", icon: IoCartSharp },

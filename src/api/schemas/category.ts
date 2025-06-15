@@ -3,9 +3,8 @@ import { ApiResponseSchema, ImageSchema } from "./common";
 
 const messages = {
   required: {
-    name: "INPUT.category_name_required",
-    image: "INPUT.category_image_required",
-    description: "INPUT.category_description_required",
+    name: "Input.error_name_required_min_3",
+    image: "Input.error_image_required",
   },
 };
 export const CategorySchema = z.object({
@@ -16,6 +15,7 @@ export const CategorySchema = z.object({
     return "/empty_img.png"
   } , z.string()),
   description: z.string(),
+  image: ImageSchema().optional(),
 });
 
 export const CategoryCreateSchema = z.object({

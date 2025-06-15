@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { toast } from "sonner"; // hoặc react-hot-toast, tùy bạn
 
@@ -12,15 +13,15 @@ interface UseActionToastProps {
 
 const messages: Record<string, Record<Status, string>> = {
   createUser: {
-    loading: "Đang tạo người dùng...",
-    success: "Người dùng đã được tạo thành công!",
-    error: "Tạo người dùng thất bại",
+    loading: "Action.createUser.loading",
+    success: "Action.createUser.success",
+    error: "Action.createUser.error",
     idle: "",
   },
   deleteUsers: {
-    loading: "Đang cấm người dùng...",
-    success: "Người dùng đã bị cấm thành công!",
-    error: "Cấm người dùng thất bại",
+    loading: "Action.deleteUsers.loading",
+    success: "Action.deleteUsers.success",
+    error: "Action.deleteUsers.error",
     idle: "",
   }
 };
@@ -31,6 +32,7 @@ export function useUserToast({
   errorMessage,
   reset
 }: UseActionToastProps) {
+  const t = useTranslations();
   useEffect(() => {
     if (!lastAction || status === "idle") return;
 
@@ -38,7 +40,7 @@ export function useUserToast({
 
     if(!actionMess) return;
 
-    const message = actionMess[status];
+    const message = t(actionMess[status]);
 
 
     let toastId: string | number | undefined;
@@ -57,6 +59,6 @@ export function useUserToast({
     }
 
     
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status, lastAction]);
 }

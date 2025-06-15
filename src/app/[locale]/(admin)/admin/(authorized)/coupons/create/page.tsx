@@ -1,20 +1,21 @@
 "use client";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
-import ValueTypeInput from "@/components/coupon/ValueTypeInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { Coupon, CouponCreate, CouponCreateSchema } from "@/api";
+import { CouponCreate, CouponCreateSchema } from "@/api";
+import CouponTypeSelect from "@/components/coupon/CouponTypeSelect";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { getDateLocal } from "@/lib/date_helper";
+import { useCouponStore } from "@/stores/coupon.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { FormEvent } from "react";
 import { useForm } from "react-hook-form";
-import { useCouponStore } from "@/stores/coupon.store";
-import { useActionToast } from "@/hooks/use-action-toast";
 import { useShallow } from "zustand/shallow";
-import { getDateLocal, getDateTimeLocal } from "@/lib/date_helper";
 
 export default function CreateCouponPage() {
   const t = useTranslations();
@@ -46,13 +47,13 @@ export default function CreateCouponPage() {
 
   useActionToast({ status, lastAction, errorMessage: error || undefined });
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     form.handleSubmit((data) => {
-      if(data.type === "FIXED") {
+      if (data.type === "FIXED") {
         data.maxAppliedAmount = data.value;
       }
-      createCoupon(data)
+      createCoupon(data);
     })();
   };
   return (
@@ -78,10 +79,6 @@ export default function CreateCouponPage() {
               )}
             />
 
-            <div className="col-span-2">
-              <ValueTypeInput />
-            </div>
-
             <FormField
               name="availableFrom"
               control={form.control}
@@ -102,7 +99,36 @@ export default function CreateCouponPage() {
               )}
             />
 
-            <div></div>
+            <FormField
+              name="value"
+              control={form.control}
+              render={({ field }) => (
+                <CommonInputOutline title={t("discount_value")}>
+                  <Input
+                    {...field}
+                    type="number"
+                    max={form.watch("type") === "PERCENTAGE" ? 100 : undefined}
+                  />
+                </CommonInputOutline>
+              )}
+            />
+            <FormField
+              name="type"
+              control={form.control}
+              render={({ field }) => (
+                <CommonInputOutline
+                  title={t("discount_type")}
+                  className="border-l-0"
+                >
+                  <CouponTypeSelect
+                    {...field}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    hasAllOption={false}
+                  />
+                </CommonInputOutline>
+              )}
+            />
 
             <FormField
               name="minAmount"
@@ -123,7 +149,6 @@ export default function CreateCouponPage() {
                 return (
                   <CommonInputOutline title={t("max_applied_amount")}>
                     <Input
-                      
                       {...field}
                       type="number"
                       value={isFixed ? form.watch("value") : field.value}
@@ -143,6 +168,8 @@ export default function CreateCouponPage() {
               )}
             />
 
+            
+
             <FormField
               name="description"
               control={form.control}
@@ -156,7 +183,7 @@ export default function CreateCouponPage() {
               )}
             />
 
-            <Button className="col-start-3">{t("create_coupon")}</Button>
+            <Button type="submit" className="col-start-3">{t("create_coupon")}</Button>
           </form>
         </Form>
       </CardContent>

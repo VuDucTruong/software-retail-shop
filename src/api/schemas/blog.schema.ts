@@ -1,10 +1,7 @@
 
 import { z } from "zod";
-import { UserProfileSchema } from "./user";
 import { ApiResponseSchema, DatetimeSchema } from "./common";
-import {GenreDomain} from "@/stores/blog/genre.store";
-import Genre2Schema = GenreDomain.Genre2Schema;
-import {BlogResponseListType} from "@/api";
+import { UserProfileSchema } from "./user";
 const hasWindow = typeof window !== "undefined";
 
 export const BlogBase = z.object({

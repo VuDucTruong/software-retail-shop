@@ -1,13 +1,10 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { ChangePassword } from "@/api";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,91 +12,72 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
+import { useForm } from "react-hook-form";
 
-export function ChangePasswordForm() {
+type Props = {
+  form: ReturnType<typeof useForm<ChangePassword>>;
+  onSubmit?: () => void;
+};
+
+export function ChangePasswordForm(props: Props) {
+  const { form } = props;
   const t = useTranslations();
 
-  const formSchema = z
-    .object({
-      new_password: z
-        .string()
-        .min(1, {
-          message: t("Input.error_password_empty"),
-        })
-        .min(8, {
-          message: t("Input.error_pass_length"),
-        }),
-      comfirm_password: z
-        .string()
-        .min(1, {
-          message: t("Input.error_password_empty"),
-        })
-        .min(8, {
-          message: t("Input.error_pass_length"),
-        }),
-    })
-    .refine((data) => data.new_password === data.comfirm_password, {
-      message: t("Input.error_pass_not_match"),
-    });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      new_password: "",
-      comfirm_password: "",
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 flex flex-col overflow-y-auto px-2"
-      >
-        {/* Password */}
-        <FormField
-          control={form.control}
-          name="new_password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("new_password")}</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder={t("Input.new_password_placeholder")}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div className="flex flex-col gap-4 w-1/3">
+      <h4>{t("change_password")}</h4>
+      <Form {...form}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            form.handleSubmit(() => {
+              props.onSubmit?.();
+            })();
+          }}
+          className="space-y-6 flex flex-col overflow-y-auto px-2"
+        >
+          {/* Password */}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("new_password")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={t("Input.new_password_placeholder")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Password Again */}
-        <FormField
-          control={form.control}
-          name="comfirm_password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("confirm_password")}</FormLabel>
-              <FormControl>
-                <Input
-                  type="password"
-                  placeholder={t("Input.confirm_password_placeholder")}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Password Again */}
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("confirm_password")}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder={t("Input.confirm_password_placeholder")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Button type="submit">{t("change_password")}</Button>
-      </form>
-    </Form>
+          <Button disabled={(form.watch("password")?.length ?? 0 ) === 0} type="submit">{t("Continue")}</Button>
+        </form>
+      </Form>
+    </div>
   );
 }

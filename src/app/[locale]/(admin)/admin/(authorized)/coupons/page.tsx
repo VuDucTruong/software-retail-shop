@@ -2,15 +2,15 @@
 
 import { Coupon } from "@/api";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import TableOptionMenu from "@/components/common/TableOptionMenu";
 import CouponFilterSheet from "@/components/coupon/CouponFilterSheet";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "@/i18n/navigation";
+import { convertPriceToVND } from "@/lib/currency_helper";
 import { useCouponStore } from "@/stores/coupon.store";
 import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
+import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -21,11 +21,10 @@ export default function CouponManagementPage() {
   const t = useTranslations();
   const router = useRouter();
 
-  const [queryParams , getCoupons , resetStatus , status , lastAction , error , coupons , deleteCouponns] = useCouponStore(
+  const [queryParams , getCoupons , status , lastAction , error , coupons , deleteCouponns] = useCouponStore(
     useShallow((state) => [
       state.queryParams,
       state.getCoupons,
-      state.resetStatus,
       state.status,
       state.lastAction,
       state.error,
@@ -33,10 +32,6 @@ export default function CouponManagementPage() {
       state.deleteCoupons,
     ])
   )
-
-  useEffect(() => {
-    resetStatus();
-  },[])
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
@@ -65,7 +60,7 @@ export default function CouponManagementPage() {
           sortDirection: sorting[0]?.desc ? "desc" : "asc",
         },
       });
-    }, [sorting, pagination]);
+    }, [sorting, pagination,getCoupons]);
 
   const cols: ColumnDef<Coupon>[] = [
     {
@@ -78,14 +73,14 @@ export default function CouponManagementPage() {
     },
     {
       accessorKey: "availableFrom",
-      header: t("Available From"),
+      header: t("available_from"),
       cell: ({ row }) => {
         return new Date(row.original.availableFrom!).toLocaleDateString();
       },
     },
     {
       accessorKey: "availableTo",
-      header: t("Available To"),
+      header: t("available_to"),
       cell: ({ row }) => {
         return new Date(row.original.availableTo!).toLocaleDateString();
       },
@@ -95,7 +90,11 @@ export default function CouponManagementPage() {
       header: t("Value"),
       cell: ({ row }) => {
         return <div className="flex flex-col gap-1">
-          <div>{row.original.value} {row.original.type === "PERCENTAGE" ? <span>%</span> : ""}</div>
+          {
+          row.original.type === "PERCENTAGE" ? 
+            <div>{row.original.value} %</div> : 
+            <div>{convertPriceToVND(row.original.value)}</div>
+          }
           <div className="text-muted-foreground">{t("for_min_order_value_x", {x: row.original.minAmount ?? 0})}</div>
           <div className="text-muted-foreground">{t("max_reduction_x", {x: row.original.maxAppliedAmount ?? "∞"})}</div>
         </div>;
@@ -103,7 +102,7 @@ export default function CouponManagementPage() {
     },
     {
       accessorKey: "usageLimit",
-      header: t("Usage Limit"),
+      header: t("usage_limit"),
       cell: ({ row }) => {
         return row.original.usageLimit;
       },
@@ -120,30 +119,18 @@ export default function CouponManagementPage() {
       header: "",
       cell: ({ row }) => {
         return (
-          <TableOptionMenu actions={[
-            {
-              label: t("Detail"),
-              onClick: () => handleViewDetails(row.original.id!),
-            },
-            {
-              label: t("Delete"),
-              onClick: () => handleDelete(row.original.id!),
-              confirm: {
-                title: t("delete_coupon_x", { x: row.original.id! }),
-                description: t("delete_coupon_warning"),
-              },
-            },
-           ]}/>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => handleViewDetails(row.original.id)}
+            >
+              <Eye />
+            </Button>
+          </div>
         );
       },
     }
   ];
-
-
-
-  const handleDelete = (id: number) => {
-    deleteCouponns([id]);
-  };
 
   const handleViewDetails = (id: number) => {
     router.push(`coupons/${id}`);
@@ -167,7 +154,7 @@ export default function CouponManagementPage() {
       </CardHeader>
       <CardContent>
       <CommmonDataTable
-          objectName={"Mã giảm giá"}
+          objectName={t("coupon")}
           isLoading={coupons === null}
           columns={cols}
           data={coupons?.data ?? []}

@@ -1,18 +1,17 @@
 "use client";
 
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import OrderDetailItem from "@/components/orders/OrderDetaiItem";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
-  CardHeader,
-  CardTitle,
+  CardHeader
 } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
-import OrderDetailItem from "@/components/orders/OrderDetaiItem";
 import { useParams } from "next/navigation";
 import { FaCartPlus } from "react-icons/fa";
-import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 
 export default function OrderDetailPage() {
   const params = useParams();

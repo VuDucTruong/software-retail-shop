@@ -1,8 +1,10 @@
-import React, { RefObject, use } from "react";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
+import React, { RefObject } from "react";
+import { ControllerRenderProps } from "react-hook-form";
 import { Button } from "../ui/button";
-import { ControllerRenderProps, useFormContext } from "react-hook-form";
+import { cn } from "@/lib/utils";
+
 
 type EditAvatarProps = {
   fileRef: RefObject<HTMLInputElement | null>;
@@ -10,6 +12,7 @@ type EditAvatarProps = {
   avatarHint: string; // Hint for the avatar
   defaultAvatar?: string | null; // Optional default avatar URL
   field?: ControllerRenderProps<any,any>;
+  avatarClassname?: string; // Optional class name for the avatar image
 };
 
 export default function EditAvatarSection({
@@ -18,6 +21,7 @@ export default function EditAvatarSection({
   avatarHint,
   defaultAvatar = "/empty_img.png",
   field,
+  avatarClassname, // Default class name for the avatar image
 }: EditAvatarProps) {
   const [avatar, setAvatar] = React.useState<string | null>(null); // State to hold the avatar URL
 
@@ -40,12 +44,12 @@ export default function EditAvatarSection({
   return (
     <div className="flex flex-row gap-4 items-center">
       {/* Just avatar display */}
-      <div className="relative ring-border ring-offset-base-100 size-40 rounded-lg ring ring-offset-2">
+      <div className={cn("relative ring-border ring-offset-base-100 size-40 rounded-lg ring ring-offset-2", avatarClassname)}>
         <Image
           alt="Avatar"
           fill
           sizes="100%"
-          className="object-cover rounded-lg"
+          className="object-contain rounded-lg"
           src={avatar || defaultAvatar || "empty_img.png"} // Use the avatar URL or a default image
         />
       </div>

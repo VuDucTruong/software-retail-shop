@@ -1,4 +1,3 @@
-import { User, User2, UserIcon } from "lucide-react";
 import { RiRobot3Line } from "react-icons/ri";
 import ReactMarkdown from "react-markdown";
 import { LoadingDots } from "./LoadingDots";

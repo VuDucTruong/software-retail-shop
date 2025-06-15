@@ -1,14 +1,12 @@
-import * as React from "react"
 
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+  SelectValue
+} from "@/components/ui/select";
 import { useTranslations } from "next-intl";
 
 type CommonSelectProps = {

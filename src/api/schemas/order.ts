@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {CouponSchema, makeNullable, PaymentDomainSchema, PaymentResponseSchema} from "@/api";
+import {CouponSchema, makeNullable, PaymentDomainSchema, PaymentResponseSchema, UserProfileSchema} from "@/api";
 
 
 export const OrderStatusSchema = z.enum(['PENDING','PROCESSING','RETRY_1','FAILED_MAIL','COMPLETED','FAILED'])
@@ -29,6 +29,7 @@ export const OrderSchema = z.object({
     id: z.number(),
     createdAt: z.string(),
     deletedAt: z.string(),
+    profile: UserProfileSchema,
     orderStatus: OrderStatusSchema.nullable(),
     coupon: CouponSchema,
     totalValue: z.number(),

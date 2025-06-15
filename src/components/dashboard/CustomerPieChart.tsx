@@ -19,7 +19,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { getCurrentMY } from "@/lib/date_helper"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 const chartData = [
   { status: "Active", customers: 275, fill: "var(--status-active)" },
   { status: "Inactive", customers: 200, fill: "var(--status-inactive)" },
@@ -43,7 +43,7 @@ const chartConfig = {
 
 export function CustomerPieChart() {
   const t = useTranslations()
-
+  const locale = useLocale();
   const totalCustomers = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.customers, 0)
   }, [])
@@ -52,7 +52,7 @@ export function CustomerPieChart() {
     <Card className="flex flex-col">
       <CardHeader className="items-center text-center pb-0 border-b-0">
         <CardTitle>{t('customer_activity')}</CardTitle>
-        <CardDescription>{getCurrentMY()}</CardDescription>
+        <CardDescription>{getCurrentMY(locale)}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer

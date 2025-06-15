@@ -1,56 +1,49 @@
 "use client";
 
-import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
-import EditCategoryDialog from "@/components/category/EditCategoryDialog";
+import { ProductItemDetail } from "@/api";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import SortingHeader from "@/components/common/table/SortingHeader";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
-import { Button } from "@/components/ui/button";
+import KeyFileUploadDialog from "@/components/product/KeyFileUploadDialog";
+import KeyInsertDialog from "@/components/product/KeyInsertDialog";
+import ProductItemFilterSheet from "@/components/product/ProductItemFilterSheet";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Category, CategoryCreate, ProductItemDetail } from "@/api";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { useProductItemStore } from "@/stores/product.item.store";
 import {
   ColumnDef,
   PaginationState,
   SortingState,
 } from "@tanstack/react-table";
-import { Trash2Icon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useCategoryStore } from "@/stores/category.store";
-import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { shallow, useShallow } from "zustand/shallow";
-import { useProductItemStore } from "@/stores/product.item.store";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import KeyFileUploadDialog from "@/components/product/KeyFileUploadDialog";
-import KeyInsertDialog from "@/components/product/KeyInsertDialog";
-import { ProductComboBox } from "@/components/product/ProductComboBox";
-import ProductItemFilterSheet from "@/components/product/ProductItemFilterSheet";
+import { useEffect } from "react";
+import { useShallow } from "zustand/shallow";
 export default function KeyManagementPage() {
   const t = useTranslations();
 
-  const [getProductItems , queryParams , lastAction , error , status ,resetStatus , productItems , deleteProductItems] = useProductItemStore(useShallow((state) => [
+  const [getProductItems , queryParams , lastAction , error , status , productItems , deleteProductItems] = useProductItemStore(useShallow((state) => [
     state.getProductItems,
     state.queryParams,
     state.lastAction,
     state.error,
     state.status,
-    state.resetStatus,
     state.productItems,
     state.deleteProductItems,
   ]));
 
-  useEffect(() => {
-    resetStatus();
-  },[]); 
 
-  const [pagination, setPagination] = useState<PaginationState>({
+  let pagination:PaginationState = {
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
-  });
+  };
+
+  let sorting:SortingState = [
+    {
+      id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+      desc: queryParams?.pageRequest?.sortDirection === "desc",
+    },
+  ];
+
 
   useActionToast({
     status,
@@ -58,23 +51,17 @@ export default function KeyManagementPage() {
     errorMessage: error || undefined,
   });
 
-  const [sorting, setSorting] = useState<SortingState>([
-    {
-      id: queryParams?.pageRequest?.sortBy ?? "createdAt",
-      desc: queryParams?.pageRequest?.sortDirection === "desc",
-    },
-  ]);
 
   useEffect(() => {
     getProductItems({
       pageRequest: {
-        page: pagination.pageIndex,
-        size: pagination.pageSize,
-        sortBy: sorting[0]?.id,
-        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+        page: 0,
+        size: 10,
+        sortBy: "createdAt",
+        sortDirection: "desc",	
       },
     });
-  }, [sorting, pagination]);
+  }, [getProductItems]);
 
   const cols: ColumnDef<ProductItemDetail>[] = [
     {
@@ -106,7 +93,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "productName",
-      header: "Tên sản phẩm",
+      header: t('Product_name'),
       cell: ({ row }) => {
         return row.original.name;
       },
@@ -114,7 +101,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "productKey",
-      header: "Mã sản phẩm",
+      header: t("Product_key"),
       cell: ({ row }) => {
         return row.original.productKey;
       },
@@ -122,7 +109,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "region",
-      header: "Khu vực",
+      header: t("Region"),
       cell: ({ row }) => {
         return row.original.region;
       },
@@ -130,7 +117,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: "Ngày thêm",
+      header: t('created_at'),
       cell: ({ row }) => {
         const date = new Date(row.original.createdAt);
         return date.toLocaleDateString();
@@ -139,47 +126,19 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "status",
-      header: "Trạng thái",
+      header: t("Status"),
       cell: ({ row }) => {
         return <StatusBadge status={row.original.used ? "used" : "unused"} />;
       },
      
     },
-    {
-      accessorKey: "actions",
-      header: "",
-      cell: ({ row }) => {
-        return (
-          <div className="flex items-center gap-2">
-
-            <CommonConfirmDialog
-              triggerName={
-                <Button variant={"destructive"} size="icon" className="w-8 h-8">
-                  <Trash2Icon />
-                </Button>
-              }
-              title={"Xóa khóa sản phẩm"}
-              description={<p>
-                Bạn có chắc chắn muốn xóa khóa sản phẩm này không? <br />
-                <span className="font-semibold">{row.original.name}: {row.original.productKey}</span>
-              </p>}
-              onConfirm={() => handleDelete(row.original.id)}
-            />
-          </div>
-        );
-      },
-    },
   ];
-
-  const handleDelete = (id: number) => {
-    deleteProductItems([id]);
-  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <h2 className="capitalize">{"Quản lý khóa sản phẩm"}</h2>
+          <h2 className="capitalize">{t('product_key_management')}</h2>
           <div className="flex items-center gap-2">
             <KeyFileUploadDialog />
             <KeyInsertDialog />
@@ -190,7 +149,7 @@ export default function KeyManagementPage() {
       <CardContent>
          
           <CommmonDataTable
-          objectName="khóa sản phẩm"
+          objectName={t("product_key")}
           isLoading={productItems === null}
           columns={cols}
           data={productItems?.data ?? []}
@@ -198,9 +157,15 @@ export default function KeyManagementPage() {
           pageCount={productItems?.totalPages ?? 0}
           pagination={pagination}
           onPaginationChange={(updater) => {
-            setPagination((old) =>
-              typeof updater === "function" ? updater(old) : updater
-            );
+            pagination = typeof updater === "function" ? updater(pagination) : updater;
+            getProductItems({
+              pageRequest: {
+                page: pagination.pageIndex,
+                size: pagination.pageSize,
+                sortBy: sorting[0]?.id,
+                sortDirection: sorting[0]?.desc ? "desc" : "asc",
+              },
+            });
           }}
           canSelect
           onDeleteRows={(rows) => {
@@ -208,9 +173,15 @@ export default function KeyManagementPage() {
           }}
           sorting={sorting}
           onSortingChange={(updater) => {
-            setSorting((prev) =>
-              typeof updater === "function" ? updater(prev) : updater
-            );
+            sorting = typeof updater === "function" ? updater(sorting) : updater;
+            getProductItems({
+              pageRequest: {
+                page: pagination.pageIndex,
+                size: pagination.pageSize,
+                sortBy: sorting[0]?.id,
+                sortDirection: sorting[0]?.desc ? "desc" : "asc",
+              },
+            });
           }}
         />
         

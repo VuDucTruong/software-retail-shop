@@ -1,23 +1,16 @@
 import {
   ApiClient,
-  Coupon,
-  CouponCreate,
-  CouponList,
-  CouponListSchema,
-  CouponSchema,
-  CouponUpdate,
   Product,
   ProductCreate,
   ProductList,
   ProductListSchema,
   ProductSchema,
   ProductUpdate,
-  QueryParams,
+  QueryParams
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
-import { delay, urlToFile } from "@/lib/utils";
-import { use } from "react";
+import { urlToFile } from "@/lib/utils";
 import { z } from "zod";
 
 import { create } from "zustand";
@@ -79,7 +72,10 @@ export const useProductStore = create<ProductStore>((set) => ({
 }));
 
 const getProducts = async (set: SetState<ProductStore>, query: QueryParams) => {
-  set({ error: null, queryParams: query , products: null });
+  set(state => ({ error: null, queryParams: {
+    ...state.queryParams,
+    ...query,
+  } , products: null }));
 
   try {
     const response = await productApiClient.post(
@@ -168,7 +164,7 @@ const updateProduct = async (
   set({ status: "loading", lastAction: "update", error: null });
 
   try {
-    const response = await productApiClient.put(
+    await productApiClient.put(
       `/products`,
       z.any(),
       product,

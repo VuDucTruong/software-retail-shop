@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -9,8 +8,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { AdminMenuItem } from "@/lib/constants";
 import { usePathname } from "@/i18n/navigation";
+import { AdminMenuItem } from "@/lib/constants";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 

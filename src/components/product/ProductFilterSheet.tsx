@@ -1,8 +1,7 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useProductStore } from "@/stores/product.store";
 import { Filter } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "../ui/button";
 import {
   Form,
@@ -21,33 +20,35 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useProductStore } from "@/stores/product.store";
 import { CategoryMultiSelectField } from "./CategoryMultiSelect";
+import { TagMultiSelectField } from "./TagMultiSelect";
 
-const FormSchema = z.object({
-  search: z.string().optional(),
-  priceFrom: z.string().optional(),
-  priceTo: z.string().optional(),
-  categoryIds: z.number().array().optional(),
-});
+type ProductFilterForm = {
+  search?: string;
+  priceFrom?: string;
+  priceTo?: string;
+  categoryIds?: number[];
+  tags?: string[];
+}
 
 export default function ProductFilterSheet() {
   const t = useTranslations();
   const getProducts = useProductStore((state) => state.getProducts);
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<ProductFilterForm>({
     defaultValues: {
       search: "",
       priceFrom: "",
       priceTo: "",
       categoryIds: [],
+      tags: [],
     },
   });
 
-  function handleSubmit(data: z.infer<typeof FormSchema>) {
+  function handleSubmit(data: ProductFilterForm) {
     console.log(data);
     const cleanedData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== undefined && value !== ""
+        ([, value]) => value !== undefined && value !== ""
       )
     );
     
@@ -67,14 +68,14 @@ export default function ProductFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> Lọc & Tìm kiếm sản phẩm
+          <Filter /> {t('search_and_filter' , {x: t('products')})}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Lọc & Tìm kiếm sản phẩm</SheetTitle>
+          <SheetTitle>{t('search_and_filter' , {x: t('products')})}</SheetTitle>
           <SheetDescription>
-            Hỗ trợ tìm kiếm sản phẩm, lọc theo khoảng giá trị, danh mục sản phẩm
+            {t('search_and_filter_description' , {x: t('products')})}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -85,7 +86,7 @@ export default function ProductFilterSheet() {
                 name="search"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tìm kiếm</FormLabel>
+                    <FormLabel>{t('Search')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -99,11 +100,11 @@ export default function ProductFilterSheet() {
                 name="priceFrom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giá trị từ</FormLabel>
+                    <FormLabel>{t('Input.price_from_placeholder')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Giá trị từ"
+                        placeholder={t('Input.price_from_placeholder')}
                         {...field}
                       />
                     </FormControl>
@@ -117,11 +118,11 @@ export default function ProductFilterSheet() {
                 name="priceTo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đến giá trị</FormLabel>
+                    <FormLabel>{t('Input.price_to_placeholder')}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Giá trị đến"
+                        placeholder={t('Input.price_to_placeholder')}
                         {...field}
                       />
                     </FormControl>
@@ -135,7 +136,7 @@ export default function ProductFilterSheet() {
                 name="categoryIds"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Chọn các danh mục</FormLabel>
+                    <FormLabel>{t('Categories')}</FormLabel>
                     <FormControl>
                       <CategoryMultiSelectField field={field} />
                     </FormControl>
@@ -143,6 +144,22 @@ export default function ProductFilterSheet() {
                   </FormItem>
                 )}
               />
+
+                <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("Tags")}</FormLabel>
+                    <FormControl>
+                      <TagMultiSelectField field={field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              
             </form>
           </Form>
           <div className="absolute right-0 left-0 bottom-2 flex gap-2 mx-3 bg-white pt-2">
@@ -150,7 +167,7 @@ export default function ProductFilterSheet() {
               className="flex-1"
               onClick={form.handleSubmit(handleSubmit)}
             >
-              Lọc và tìm kiếm
+              {t('apply_filters')}
             </Button>
 
             <Button
@@ -160,7 +177,7 @@ export default function ProductFilterSheet() {
                 form.reset();
               }}
             >
-              Đặt lại
+              {t('reset_filters')}
             </Button>
           </div>
         </div>

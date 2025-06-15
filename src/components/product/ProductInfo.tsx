@@ -1,21 +1,25 @@
-import { useFormatter, useTranslations } from "next-intl";
+
+import { Product } from "@/api";
+import CommonSwapIcon from "@/components/common/CommonSwapIcon";
+import DiscountItem from "@/components/common/DiscountItem";
+import { useRouter } from "@/i18n/navigation";
+
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BsBoxSeam } from "react-icons/bs";
 import { FaBarcode, FaBell } from "react-icons/fa";
 import { CiShoppingTag } from "react-icons/ci";
+
 import {
   calcDiscountPercentage,
   convertPriceToVND,
 } from "@/lib/currency_helper";
-import { FaCartPlus, FaHeart, FaRegCreditCard } from "react-icons/fa6";
-import DiscountItem from "@/components/common/DiscountItem";
-import { Button } from "../ui/button";
-import CommonSwapIcon from "@/components/common/CommonSwapIcon";
-import { Product } from "@/api";
-import { useRouter } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { useClientFavouriteStore } from "@/stores/cilent/client.favourite.store";
+import { FaCartPlus, FaHeart, FaRegCreditCard } from "react-icons/fa6";
+import { Button } from "../ui/button";
+
 import { CartLocal } from "@/stores/order/cart.store";
 import { useShallow } from "zustand/shallow";
 import { GiCancel } from "react-icons/gi";
@@ -163,11 +167,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             <Button className="w-1/2" disabled={product.quantity <= 0}>
               <FaRegCreditCard />
               {t("buy_now")}
-            </Button>
-
-            <Button onClick={removeFromCart} className="w-1/10 bg-gray-300 text-red-500 font-bold" disabled={product.quantity <= 0}>
-              <GiCancel color="red" />
-              {"Cancel"}
             </Button>
 
             <Button onClick={addToCart} variant={"outline"} className="w-1/2" disabled={product.quantity <= 0}>

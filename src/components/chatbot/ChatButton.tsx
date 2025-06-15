@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import Chatbox from "./ChatBox";
+import { useState } from "react";
 import { TbMessageChatbotFilled } from "react-icons/tb";
-import { Button } from "../ui/button";
+import Chatbox from "./ChatBox";
 export default function ChatButton() {
   const [open, setOpen] = useState(false);
 

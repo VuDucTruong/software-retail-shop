@@ -3,31 +3,26 @@
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import { CategoryMultiSelectField } from "@/components/product/CategoryMultiSelect";
 
+import { ProductCreate, ProductCreateSchema } from "@/api";
 import ProductDescriptionTab from "@/components/product/ProductDescriptionTab";
+import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
 import { TagsInput } from "@/components/product/TagInput";
 import EditAvatarSection from "@/components/profile/EditAvatarSection";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
+  FormField
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { ProductCreate, ProductCreateSchema, ProductValidation } from "@/api";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { flattenObject } from "@/lib/utils";
+import { useProductStore } from "@/stores/product.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useProductStore } from "@/stores/product.store";
 import { useShallow } from "zustand/shallow";
-import { useActionToast } from "@/hooks/use-action-toast";
-import ProductGroupComboBox from "@/components/product/ProductGroupComboBox";
-import { z } from "zod";
-import { flattenObject } from "@/lib/utils";
 
 export default function CreateProductPage() {
   const t = useTranslations();
@@ -74,7 +69,7 @@ export default function CreateProductPage() {
 
   const handleSubmit = () => {
     form.handleSubmit((data) => {
-      createProduct(flattenObject(data));
+      createProduct(flattenObject(data) as ProductCreate);
     })();
   };
 
@@ -106,6 +101,7 @@ export default function CreateProductPage() {
                   required
                 >
                   <EditAvatarSection
+                    avatarClassname="h-40 w-full"
                     field={field}
                     fileRef={fileRef}
                     name={t("upload_image")}
@@ -143,11 +139,12 @@ export default function CreateProductPage() {
                   <Input
                     type="number"
                     step={100}
+                    min={0}
                     placeholder={t("original_price")}
                     {...field}
                     onChange={(e) =>
                       field.onChange(
-                        e.target.value === "" ? "" : Number(e.target.value)
+                        e.target.value === "" ? 0 : Number(e.target.value)
                       )
                     }
                   />
@@ -163,10 +160,11 @@ export default function CreateProductPage() {
                     step={100}
                     placeholder={t("Price")}
                     type="number"
+                    min={0}
                     {...field}
                     onChange={(e) =>
                       field.onChange(
-                        e.target.value === "" ? "" : Number(e.target.value)
+                        e.target.value === "" ? 0 : Number(e.target.value)
                       )
                     }
                   />

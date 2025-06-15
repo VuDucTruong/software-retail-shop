@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useProductGroupStore } from "@/stores/product.group.store";
+import { useTranslations } from "next-intl";
+import React, { useEffect } from "react";
+import { ControllerRenderProps } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
   Command,
@@ -7,17 +9,16 @@ import {
   CommandInput,
   CommandItem,
 } from "../ui/command";
-import { ControllerRenderProps } from "react-hook-form";
-import { useProductGroupStore } from "@/stores/product.group.store";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Skeleton } from "../ui/skeleton";
 import AddGroupDialog from "./AddGroupDialog";
-import { ProductGroup } from "@/api";
 
 export default function ProductGroupComboBox({
   field,
 }: {
-  field: ControllerRenderProps;
+  field: ControllerRenderProps<any, string>;
 }) {
+  const t = useTranslations();
   const getProductGroups = useProductGroupStore(
     (state) => state.getProductGroups
   );
@@ -25,18 +26,14 @@ export default function ProductGroupComboBox({
   const status = useProductGroupStore((state) => state.status);
   useEffect(() => {
     getProductGroups();
-  }, []);
+  }, [getProductGroups]);
 
   const [open, setOpen] = React.useState(false);
 
   const options = productGroups ?? [];
 
-  const selectedGroup = options.find((group) => group.id === field.value)?.name || "Chọn nhóm sản phẩm";
+  const selectedGroup = options.find((group) => group.id === field.value)?.name || t('select_product_group');
 
-  const handleSelect = (group : ProductGroup) => {
-    setOpen(false);
-
-  };
 
   return (
     <div className="flex flex-row-reverse gap-2">
@@ -56,7 +53,7 @@ export default function ProductGroupComboBox({
 
       <PopoverContent className="flex px-0" align="start">
         <Command>
-          <CommandInput placeholder="Tìm kiếm nhóm sản phẩm" />
+          <CommandInput placeholder={t('Search', {x: t('product_group')})} />
           <CommandGroup>
             {
               options.length > 0 ? (
@@ -65,14 +62,14 @@ export default function ProductGroupComboBox({
                     key={group.id}
                     onSelect={() => {
                       field.onChange(group.id);
-                      handleSelect(group);
+                      setOpen(false);
                     }}
                   >
                     {group.name}
                   </CommandItem>
                 ))
               ) : (
-                <div className="p-2 flex items-center justify-center italic text-sm">Không có nhóm sản phẩm nào cả</div>
+                <div className="p-2 flex items-center justify-center italic text-sm">{t('no_products_found')}</div>
               )
             }
           </CommandGroup>

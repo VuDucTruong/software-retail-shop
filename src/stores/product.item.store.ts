@@ -1,11 +1,10 @@
 import {
   ApiClient,
-  ProductItem,
   ProductItemDetail,
   ProductItemDetailList,
   ProductItemDetailListSchema,
   ProductItemSchema,
-  QueryParams,
+  QueryParams
 } from "@/api";
 import { ApiError } from "@/api/client/base_client";
 import { SetState } from "@/lib/set_state";
@@ -21,7 +20,7 @@ type ProductItemState = {
   selectedItem: ProductItemDetail | null;
   queryParams: QueryParams;
 
-  lastAction: "create" | "update" | "delete" | null;
+  lastAction: "get" | "create" | "update" | "delete" | null;
   error: string | null;
   status: "idle" | "loading" | "success" | "error";
 };
@@ -60,29 +59,35 @@ export const useProductItemStore = create<ProductItemStore>((set) => ({
       lastAction: null,
       error: null,
     })),
-  getProductItems: (query) => getProductItems(set, query),
+  getProductItems: (query) =>
+    getProductItems(set, query),
   deleteProductItems: (ids) => deleteProductItems(set, ids),
   createProductItems: (data) => createProductitems(set, data),
 }));
 
 const getProductItems = async (
   set: SetState<ProductItemStore>,
-  query: QueryParams
+  query: QueryParams,
 ) => {
-  set({ error: null });
+
+  set(state => ({error: null , queryParams: {
+    ...state.queryParams,
+    ...query,
+  }, productItems: null }));
 
   try {
     const response = await productApiClient.post(
       "/products/items/searches",
       ProductItemDetailListSchema,
-      query
+      useProductItemStore.getState().queryParams
     );
-    set({ status: "success", productItems: response });
+    set({ status: "success", productItems: response , lastAction: "get" });
   } catch (error) {
     const apiError = error as ApiError;
     set({
       status: "error",
       error: apiError.message,
+      lastAction: "get",
     });
   }
 };
@@ -108,7 +113,7 @@ const deleteProductItems = async (
         ids,
         "productItems",
         useProductItemStore.getState,
-        getProductItems
+        getProductItems,
       );
     }
   } catch (error) {

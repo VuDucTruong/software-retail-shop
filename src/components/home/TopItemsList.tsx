@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+'use client'
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "../ui/button";
 
 type TopItemsListProps = {
@@ -8,7 +8,7 @@ type TopItemsListProps = {
 };
 
 export default function TopItemsList({ title, items }: TopItemsListProps) {
-  const gradients = [
+  const gradients = useMemo(() => [
     "bg-gradient-to-r from-red-400 to-yellow-300",
     "bg-gradient-to-r from-blue-400 to-indigo-300",
     "bg-gradient-to-r from-green-400 to-teal-300",
@@ -17,15 +17,14 @@ export default function TopItemsList({ title, items }: TopItemsListProps) {
     "bg-gradient-to-r from-cyan-400 to-blue-300",
     "bg-gradient-to-r from-yellow-400 to-green-300",
     "bg-gradient-to-r from-sky-400 to-sky-300",
-  ];
+  ],[]);
 
   const [shuffledGradients, setShuffledGradients] = useState(gradients);
 
   useEffect(() => {
     setShuffledGradients([...gradients].sort(() => Math.random() - 0.5));
-  }, []);
+  }, [gradients]);
 
-  const t = useTranslations();
 
   return (
     <div className="flex flex-col gap-4">

@@ -10,6 +10,9 @@ export default async function AuthorizedLayout({
   children: React.ReactNode;
 }>) {
 
+
+
+
   return (
     <SidebarProvider>
       <AppSideBar />

@@ -1,6 +1,8 @@
 "use client";
 import LoadingPage from "@/components/special/LoadingPage";
 
+
+
 export default function AdminPage() {
 
   return (

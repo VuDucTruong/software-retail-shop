@@ -4,10 +4,11 @@ import "@/styles/globals.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
+import { Locale, routing } from "@/i18n/routing";
 import { Toaster } from "sonner";
 import BlogNavMenu from "@/components/blog/BlogNavMenu";
 import Image from "next/image";
+import Link from "next/link";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -27,7 +28,7 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = await params;
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as Locale)) {
     notFound();
   }
 
@@ -40,7 +41,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <header className="shadow-md">
             <div className="main-container">
-              <Image src={"/logo.png"} alt="LOGO" width={150} height={150} />
+              <Link href="/"><Image src={"/logo.png"} alt="LOGO" width={150} height={150} /></Link>
               <BlogNavMenu />
             </div>
           </header>

@@ -4,7 +4,6 @@ import { CommonSelect } from "@/components/common/CommonSelect";
 import Logo from "@/components/common/Logo";
 import { Separator } from "@/components/ui/separator";
 import {
-  currencies,
   languages
 } from "@/lib/constants";
 import { useTranslations } from "next-intl";
@@ -25,7 +24,7 @@ import SearchBar from "./SearchBar";
   const supportLinks = [
     { name: "about_us", href: "/" },
     { name: "contact_us", href: "/" },
-    { name: "FAQS", href: "/faq" },
+    { name: "Support", href: "/feedback" },
   ];
 
 export default function HomeHeader() {
@@ -70,7 +69,6 @@ export default function HomeHeader() {
             <div className="py-1">
               <Separator orientation="vertical" />
             </div>
-            <CommonSelect data={currencies} defaultValue={currencies[0]} />
           </div>
         </section>
         <Separator />

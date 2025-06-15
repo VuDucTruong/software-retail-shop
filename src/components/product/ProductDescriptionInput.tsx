@@ -1,17 +1,14 @@
 "use client";
 
-import { UseFieldArrayReturn, useFormContext } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Trash2, Plus } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { Trash2 } from "lucide-react";
+import { useFormContext } from "react-hook-form";
 import RichTextEditor from "../rich_text/RichTextEditor";
 import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
+  FormMessage
 } from "../ui/form";
 
 
@@ -23,7 +20,6 @@ type Props = {
 export default function ProductDescriptionInput(props: Props) {
   const { name,hint } = props;
   const { control,getValues,setValue } = useFormContext();
-  const t = useTranslations();
   const handleClearText = () =>{
     const currentValue = getValues(name);
     if (currentValue) {
