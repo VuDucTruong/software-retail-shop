@@ -14,6 +14,7 @@ import {
   ProductSchema,
   ProductTrendSchema,
   ProductUpdateSchema,
+  SimpleProductTrendSchema,
 } from "@/api";
 
 export type Product = z.infer<typeof ProductSchema>;
@@ -30,3 +31,4 @@ export type ProductItemDetail = z.infer<typeof ProductItemDetailSchema>;
 export type ProductItemDetailList = z.infer<typeof ProductItemDetailListSchema>;
 export type ProductItemCreate = z.infer<typeof ProductItemCreateSchema>;
 export type ProductTrend = z.infer<typeof ProductTrendSchema>;
+export type SimpleProductTrend = z.infer<typeof SimpleProductTrendSchema>;

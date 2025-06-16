@@ -4,6 +4,8 @@ import {
   OrderStatisticSchema,
   ProductTrend,
   ProductTrendSchema,
+  SimpleProductTrend,
+  SimpleProductTrendSchema,
   StatisticQuery,
   StatisticQuerySchema,
   TotalStatistic,
@@ -20,7 +22,7 @@ const apiClient = ApiClient.getInstance();
 type DashboardState = {
   totalStatistic: TotalStatistic | null;
   orderStatistic: OrderStatistic[] | null;
-  productTrends: ProductTrend[] | null;
+  productTrends: SimpleProductTrend[] | null;
   queryParams: StatisticQuery;
 
   error: string | null;
@@ -29,7 +31,7 @@ type DashboardState = {
 type DashboardAction = {
   getTotalStatistic: (query?: StatisticQuery) => Promise<void>;
   getOrderStatistic: (query?: StatisticQuery) => Promise<void>;
-  getProductTrends: (size?: number) => Promise<void>;
+  getProductTrends: (query?: StatisticQuery) => Promise<void>;
   setQueryParams: (queryParams: StatisticQuery) => void;
 };
 
@@ -52,7 +54,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
   getOrderStatistic: (query) => getOrderStatistic(set, query),
   setQueryParams: (queryParams) =>
     set({queryParams: queryParams}),
-  getProductTrends: (size) => getProductTrends(set, size),
+  getProductTrends: (query) => getProductTrends(set, query),
 }));
 
 async function getTotalStatistic(
@@ -101,16 +103,16 @@ async function getOrderStatistic(
 
 const getProductTrends = async (
   set: SetState<DashboardStore>,
-  size: number = 10
+  query?: StatisticQuery,
 ) => {
   try {
     const response = await apiClient.get(
-      "/products/trends",
-      z.array(ProductTrendSchema),
+      "/statistics/trends",
+      z.array(SimpleProductTrendSchema),
       {
-        params: {
-          size: size,
-        },
+        params: 
+          query
+
       }
     );
 

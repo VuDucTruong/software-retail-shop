@@ -29,3 +29,11 @@ export const ProductTrendSchema = z.object({
     totalSold: z.number(),
     represent: z.boolean().optional(),
 })
+
+export const SimpleProductTrendSchema = z.object({
+    saleCount: z.number(),
+    product: z.object({
+        id: z.number(),
+        name: z.string(),
+    })
+})
