@@ -37,8 +37,6 @@ export default function AdminProfilePage() {
     state.updateProfile,
   ]))
 
-
-  const fileRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     getMe();
   }, [getMe]);
@@ -134,10 +132,9 @@ export default function AdminProfilePage() {
               control={form.control}
               render={({ field }) => (
                 <EditAvatarSection
-                  fileRef={fileRef}
                   field={field}
                   avatarHint={t("image_hint")}
-                  name={t("change_avatar")}
+                  name="image"
                   defaultAvatar={user?.profile.imageUrl ?? undefined}
                 />
               )}

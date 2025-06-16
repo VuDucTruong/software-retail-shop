@@ -58,20 +58,17 @@ export const ApiDatetimeSchema = z.string().transform((value) => {
   return date.toISOString();
 })
 
-const hasWindow = typeof window !== 'undefined' && window !== null
-
 
 export const ImageSchema = (requiredMessage?: string) => {
     if (requiredMessage) {
-        return hasWindow ? z
-            .instanceof(File)
-            .nullable()
-            .refine((val) => val instanceof File, {
+        return z
+            .any()
+            .refine((file) => !!file, {
                 message: requiredMessage,
-            }) : z.any();
+            });
     }
 
-    return hasWindow ? z.instanceof(File).nullable() : z.any();
+    return z.any();
 };
 export const ArrayIndexSchema = z.number().gte(0, {message: "invalid action"})
 

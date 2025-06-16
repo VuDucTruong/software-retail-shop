@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { FormEvent } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
+import { RiResetLeftFill } from "react-icons/ri";
 
 export default function CreateCouponPage() {
   const t = useTranslations();
@@ -59,8 +60,16 @@ export default function CreateCouponPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center justify-between">
           <h2>{t("create_coupon")}</h2>
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              form.reset();
+            }}
+          >
+            <RiResetLeftFill /> {t("Reset")}
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -168,8 +177,6 @@ export default function CreateCouponPage() {
               )}
             />
 
-            
-
             <FormField
               name="description"
               control={form.control}
@@ -183,7 +190,9 @@ export default function CreateCouponPage() {
               )}
             />
 
-            <Button type="submit" className="col-start-3">{t("create_coupon")}</Button>
+            <Button type="submit" className="col-start-3">
+              {t("create_coupon")}
+            </Button>
           </form>
         </Form>
       </CardContent>

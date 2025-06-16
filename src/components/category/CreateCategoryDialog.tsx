@@ -25,6 +25,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { CommonImageUpload } from "../common/CommonImageUpload";
 
 export default function CreateCategoryDialog() {
   const t = useTranslations();
@@ -63,36 +64,7 @@ export default function CreateCategoryDialog() {
         <div>
           <Form {...form}>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("Image")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        onChange={(e) => field.onChange(e.target.files?.[0])}
-                        ref={field.ref}
-                        accept="image/*"
-                        name={field.name}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <FormDescription>
-                      {field.value && (
-                        <Image
-                          alt="category image"
-                          src={URL.createObjectURL(field.value)}
-                          width={100}
-                          height={100}
-                          className="rounded-md object-cover"
-                        />
-                      )}
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
+              <CommonImageUpload name="image"/>
 
               <FormField
                 control={form.control}

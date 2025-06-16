@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { FormEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { RiResetLeftFill } from "react-icons/ri";
 import { useShallow } from "zustand/shallow";
 
 export default function ConponDetailPage() {
@@ -59,7 +60,7 @@ export default function ConponDetailPage() {
       code: "",
       type: "PERCENTAGE",
       availableFrom: getDateLocal(),
-      availableTo:  getDateLocal(),
+      availableTo: getDateLocal(),
       value: 0,
       minAmount: 0,
       maxAppliedAmount: 0,
@@ -75,7 +76,7 @@ export default function ConponDetailPage() {
         ...selectedCoupon,
       });
     }
-  }, [selectedCoupon,form]);
+  }, [selectedCoupon, form]);
 
   if (!selectedCoupon) {
     return LoadingPage();
@@ -94,8 +95,16 @@ export default function ConponDetailPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center justify-between">
           <h2>{t("coupon_x", { x: couponId })}</h2>
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              form.reset();
+            }}
+          >
+            <RiResetLeftFill /> {t("Reset")}
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -134,7 +143,6 @@ export default function ConponDetailPage() {
               )}
             />
 
-
             <FormField
               name="value"
               control={form.control}
@@ -157,7 +165,12 @@ export default function ConponDetailPage() {
                   title={t("discount_type")}
                   className="border-l-0"
                 >
-                  <CouponTypeSelect {...field} value={field.value} onValueChange={field.onChange} hasAllOption={false} />
+                  <CouponTypeSelect
+                    {...field}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    hasAllOption={false}
+                  />
                 </CommonInputOutline>
               )}
             />

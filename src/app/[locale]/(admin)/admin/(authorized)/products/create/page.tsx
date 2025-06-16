@@ -20,9 +20,9 @@ import { flattenObject } from "@/lib/utils";
 import { useProductStore } from "@/stores/product.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
+import { RiResetLeftFill } from "react-icons/ri";
 
 export default function CreateProductPage() {
   const t = useTranslations();
@@ -65,7 +65,6 @@ export default function CreateProductPage() {
     mode: "onSubmit",
   });
 
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
     form.handleSubmit((data) => {
@@ -76,8 +75,13 @@ export default function CreateProductPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
+        <CardTitle className="flex items-center justify-between">
           <h2>{t("create_product")}</h2>
+          <Button variant={"destructive"} onClick={() => {
+            form.reset();
+          }}>
+            <RiResetLeftFill /> {t("Reset")}
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -103,8 +107,7 @@ export default function CreateProductPage() {
                   <EditAvatarSection
                     avatarClassname="h-40 w-full"
                     field={field}
-                    fileRef={fileRef}
-                    name={t("upload_image")}
+                    name="image"
                     avatarHint={t("image_hint")}
                   />
                 </CommonInputOutline>

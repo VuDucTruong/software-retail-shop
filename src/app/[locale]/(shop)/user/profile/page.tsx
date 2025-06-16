@@ -120,10 +120,9 @@ export default function UserProfilePage() {
               control={form.control}
               render={({ field }) => (
                 <EditAvatarSection
-                  fileRef={fileRef}
                   field={field}
                   avatarHint={t("image_hint")}
-                  name={t("change_avatar")}
+                  name="image"
                   defaultAvatar={user?.profile.imageUrl ?? undefined}
                 />
               )}

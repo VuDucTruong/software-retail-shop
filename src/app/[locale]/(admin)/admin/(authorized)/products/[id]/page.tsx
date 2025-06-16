@@ -18,16 +18,16 @@ import { useProductStore } from "@/stores/product.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
+import { RiResetLeftFill } from "react-icons/ri";
 
 export default function CreateProductPage() {
   const pathName = usePathname();
   const id = pathName.split("/").pop() || "";
   const t = useTranslations();
 
-  const fileRef = useRef<HTMLInputElement>(null);
   const [
     lastAction,
     status,
@@ -82,15 +82,13 @@ export default function CreateProductPage() {
         groupId: selectedProduct?.groupId || null,
       });
     }
-  }, [selectedProduct,form]);
+  }, [selectedProduct, form]);
 
   useActionToast({
     lastAction,
     status,
     errorMessage: error || undefined,
   });
-
-  
 
   const handleSubmit = () => {
     form.setValue("id", Number(id));
@@ -102,8 +100,18 @@ export default function CreateProductPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <h2>{t("Product")} #{id}</h2>
+        <CardTitle className="flex items-center justify-between">
+          <h2>
+            {t("Product")} #{id}
+          </h2>
+          <Button
+            variant={"destructive"}
+            onClick={() => {
+              form.reset();
+            }}
+          >
+            <RiResetLeftFill /> {t("Reset")}
+          </Button>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -127,8 +135,7 @@ export default function CreateProductPage() {
                 >
                   <EditAvatarSection
                     field={field}
-                    fileRef={fileRef}
-                    name={t("upload_image")}
+                    name="image"
                     avatarHint={t("image_hint")}
                     defaultAvatar={selectedProduct?.imageUrl}
                   />

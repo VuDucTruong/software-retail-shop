@@ -15,7 +15,6 @@ export const CategorySchema = z.object({
     return "/empty_img.png"
   } , z.string()),
   description: z.string(),
-  image: ImageSchema().optional(),
 });
 
 export const CategoryCreateSchema = z.object({

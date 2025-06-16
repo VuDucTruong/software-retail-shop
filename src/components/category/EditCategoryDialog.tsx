@@ -2,7 +2,6 @@
 import { Category, CategoryUpdate, CategoryUpdateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -20,7 +19,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,6 +26,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { CommonImageUpload } from "../common/CommonImageUpload";
 
 type EditCategoryDialogProps = {
   selectedCategory: Category;
@@ -46,6 +45,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
     },
     resolver: zodResolver(CategoryUpdateSchema),
   });
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,38 +77,7 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
         <div>
           <Form {...form}>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("Image")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="file"
-                        onChange={(e) => field.onChange(e.target.files?.[0])}
-                        ref={field.ref}
-                        accept="image/*"
-                        name={field.name}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                    <FormDescription>
-                      <Image
-                        alt="category image"
-                        src={
-                          field.value == null
-                            ? selectedCategory.imageUrl ?? "/empty_img.png"
-                            : URL.createObjectURL(field.value)
-                        }
-                        width={100}
-                        height={100}
-                        className="rounded-md object-cover"
-                      />
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
+              <CommonImageUpload name="image" defaultImageUrl={selectedCategory.imageUrl}/>
 
               <FormField
                 control={form.control}

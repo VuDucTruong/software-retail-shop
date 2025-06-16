@@ -178,11 +178,11 @@ const updateCategory = async (
 
       return {
         selectedCategory: response,
-        status: "success",
         categories: {
           ...prev.categories,
           data: newData,
         },
+        status: "success",
       };
     });
   } catch (error) {
