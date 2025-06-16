@@ -122,7 +122,6 @@ export namespace BlogSingle {
 export namespace BlogMany {
     type State = BaseState & Pageable & {
         blogs: BlogDomainList;
-        genres: GenreDomain.Genre2Type[] | null;
     }
 
     type Action = BaseAction & DisposeAction & {
@@ -138,7 +137,6 @@ export namespace BlogMany {
         totalInstances: 0,
         totalPages: 0,
         currentPage: 0,
-        genres: null,
         ...defaultAsyncState,
         queryParams: {
             pageRequest: {

@@ -105,6 +105,7 @@ export function CommmonDataTable<TData, TValue>({
 
     return cols;
   }, [columns, canSelect]);
+  console.log(data)
 
   const table = useReactTable({
     data,
@@ -130,7 +131,7 @@ export function CommmonDataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  console.log(" Rows", table.getRowModel())
+  // console.log(" Rows", table.getRowModel())
 
   const hanndleDeleteRows = () => {
     const ids = getSelectedIds();

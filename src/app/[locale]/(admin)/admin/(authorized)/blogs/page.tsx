@@ -33,7 +33,6 @@ export default function BlogManagementPage() {
             ])
         );
 
-
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: queryParams?.pageRequest?.page ?? 0,
         pageSize: queryParams?.pageRequest?.size ?? 10,

@@ -1,9 +1,8 @@
 "use client";
 
-import {Order, Payment} from "@/api";
+import {Order, OrderStatus, PAYMENT_FALLBACK} from "@/api";
 import {StatusBadge} from "@/components/common/StatusBadge";
 import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
-import ProductFilterSheet from "@/components/product/ProductFilterSheet";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {ColumnDef, PaginationState, SortingState} from "@tanstack/react-table";
@@ -12,78 +11,33 @@ import {useEffect, useState} from "react";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {Button} from "@/components/ui/button";
 import {Trash2} from "lucide-react";
+import {OrderMany} from "@/stores/order/order.store";
+import {useShallow} from "zustand/shallow";
+import {useActionToast} from "@/hooks/use-action-toast";
+import {OrdersFilterForm} from "@/components/orders/OrdersFilterForm";
 
-const sampleData: Order[] = [
-    {
-        id: 0,
-        orderStatus: 'PENDING',
-        profile: {
-          id:0,
-          fullName: 'laksdjlkjasd',
-          createdAt: new Date().toISOString(),
-          imageUrl: "/empty_user.png"
-        },
-        coupon: {
-            id: 1,
-            code: 'AJSDKLJLAS',
-            value: 10,
-            usageLimit: 100,
-            type: 'PERCENTAGE',
-            maxAppliedAmount: 100_000,
-            availableFrom: new Date().toISOString(),
-            availableTo: new Date().toISOString(),
-            description: 'lakkdjsflakj',
-            minAmount: 100
-        },
-        createdAt: new Date().toISOString(),
-        deletedAt: new Date().toISOString(),
-        details: [],
-        payment: {
-            id: 0,
-            status: 'PENDING',
-            cardType: 'ATM',
-            detailMessage: 'asldl',
-            detailCode: '10',
-            paymentMethod: 'VISA',
-            note: 'ALKSDJLKAJSD',
-            orderId: 0,
-            profileId: 1,
-        },
-        totalValue: 100_000
+type UseTranslationsType = ReturnType<typeof useTranslations>;
+
+function convertStatus(os: OrderStatus) {
+    switch (os) {
+        case 'PENDING':
+            return 'pending'
+        case "FAILED":
+            return 'canceled'
+        case "COMPLETED":
+            return "completed";
+        case 'FAILED_MAIL':
+            return 'canceled'
+        case 'RETRY_1':
+            return 'canceled'
+        case 'PROCESSING':
+            return 'processing';
     }
-];
-export default function TransactionMangementPage() {
-    const t = useTranslations();
-    const [data, setData] = useState<Order[]>([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: 0,
-        pageSize: 10,
-    });
-    const [sorting, setSorting] = useState<SortingState>([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            const sort = sorting[0];
-            const sortBy = sort?.id || "id";
-            const order = sort?.desc ? "desc" : "asc";
-            console.log(
-                "Fetching data with pagination:",
-                pagination,
-                "and sorting:",
-                sortBy,
-                order
-            );
-            setData(sampleData);
-            setPageCount(100);
-        };
-        fetchData();
-    }, [pagination, sorting]);
+}
 
-    function handleDelete(id: number) {
-        console.log("deleting", id)
-    }
+const genCols = (t: UseTranslationsType, handleDelete: (id: number) => void): ColumnDef<Order>[] => {
 
-    const cols: ColumnDef<Order>[] = [
+    return [
         {
             accessorKey: "Id",
             header: "ID",
@@ -95,29 +49,35 @@ export default function TransactionMangementPage() {
         {
             accessorKey: "User",
             header: t("User"),
-            cell: ({}) => {
-                return <div className="font-bold">{"Email"}</div>;
+            cell: ({row}) => {
+                return <div className="font-bold">
+                    {`${row.original.profile.email}\n${row.original.profile.fullName}`
+                        .split('\n')
+                        .map((line, i) => (
+                            <div key={i}>{line}</div>
+                        ))}
+                </div>
             },
         },
         {
             accessorKey: "By",
             header: t("payment_method"),
             cell: ({row}) => {
-                return row.original.payment.paymentMethod;
+                return row.original.payment?.paymentMethod;
             },
         },
         {
             accessorKey: "Amount",
             header: t("Amount"),
             cell: ({row}) => {
-                return row.original.totalValue + ' VND';
+                return row.original.amount + ' VND';
             },
         },
         {
             accessorKey: "Status",
             header: t("Status"),
-            cell: ({}) => {
-                return <StatusBadge status={"completed"}/>;
+            cell: ({row}) => {
+                return <StatusBadge status={convertStatus(row.original.orderStatus ?? 'PENDING')}/>;
             },
         },
         {
@@ -134,8 +94,7 @@ export default function TransactionMangementPage() {
                 return (
                     <>
                         <div className="flex items-end gap-2">
-                            <TransactionDetailDialog payment={row.original.payment}/>
-
+                            <TransactionDetailDialog payment={row.original?.payment ?? PAYMENT_FALLBACK}/>
                             {row.original.deletedAt ? null : (
                                 <CommonConfirmDialog
                                     triggerName={
@@ -161,6 +120,56 @@ export default function TransactionMangementPage() {
             },
         }
     ];
+}
+
+
+export default function TransactionMangementPage() {
+    const t = useTranslations();
+    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders, deleteOrderById] =
+        OrderMany.useStore(
+            useShallow((state) => [
+                state.status,
+                state.lastAction,
+                state.error,
+                state.orders,
+                state.queryParams,
+                state.totalInstances,
+                state.totalPages,
+                state.getOrders,
+                state.deleteOrders,
+                state.deleteById,
+            ])
+        );
+
+    useActionToast({
+        status, lastAction, errorMessage: error || undefined,
+    });
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: queryParams?.pageRequest?.page ?? 0,
+        pageSize: queryParams?.pageRequest?.size ?? 10,
+    });
+    const [sorting, setSorting] = useState<SortingState>([{
+        id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+        desc: queryParams?.pageRequest?.sortDirection === "desc",
+    },
+    ]);
+
+    useEffect(() => {
+        getOrders({
+            pageRequest: {
+                page: pagination.pageIndex,
+                size: pagination.pageSize,
+                sortBy: sorting[0]?.id,
+                sortDirection: sorting[0]?.desc ? "desc" : "asc",
+            },
+        });
+    }, []);
+
+    function handleDelete(id: number) {
+        deleteOrderById(id);
+    }
+
+    const cols = genCols(t, handleDelete);
 
 
     return (
@@ -169,15 +178,15 @@ export default function TransactionMangementPage() {
                 <CardTitle className="flex items-center justify-between">
                     <h2>{t("transaction_management")}</h2>
                     <div className="flex items-center gap-2">
-                        <ProductFilterSheet/>
+                        <OrdersFilterForm/>
                     </div>
                 </CardTitle>
             </CardHeader>
             <CardContent>
                 <CommmonDataTable
                     columns={cols}
-                    data={data}
-                    pageCount={pageCount}
+                    data={orders}
+                    pageCount={totalPages ?? 0}
                     pagination={pagination}
                     onPaginationChange={(updater) => {
                         setPagination((old) =>
@@ -185,8 +194,8 @@ export default function TransactionMangementPage() {
                         );
                     }}
                     canSelect
-                    onDeleteRows={(rows) => {
-                        console.log(rows);
+                    onDeleteRows={(ids) => {
+                        deleteOrders(ids)
                     }}
                     sorting={sorting}
                     onSortingChange={(updater) => {

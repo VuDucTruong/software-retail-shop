@@ -1,23 +1,30 @@
 import {
     ApiClient,
-    ApiResponseSchema,
     BaseAction,
     BaseState,
     CartMetaData,
-    Coupon, CouponSchema,
+    Coupon,
+    CouponSchema,
     defaultAsyncState,
+    DisposeAction,
+    Order,
     OrderCreateRequest,
     OrderDetail,
     OrderDetailResponse,
+    OrderPageSchema,
     OrderResponse,
-    OrderResponseSchema, PaymentDomain,
-    ProductDescriptionSchema,
-    ProductItemSchema,
+    OrderResponseSchema,
+    Pageable,
+    PaymentDomain,
+    ProductResponsePage,
+    ProductResponseType,
     QueryParams,
-    setLoadAndDo
+    setLoadAndDo,
+    UserProfileDetailed
 } from "@/api";
 import {create} from "zustand/index";
-import {z} from "zod";
+import {undefined, z} from "zod";
+import {ApiError} from "@/api/client/base_client";
 
 
 export namespace OrderCustomer {
@@ -56,7 +63,6 @@ export namespace OrderCustomer {
         ...defaultAsyncState,
         payment: {
             id: 0,
-            orderId: 0,
             profileId: 0,
             status: null,
             paymentMethod: "",
@@ -158,36 +164,84 @@ export namespace OrderCustomer {
             if (!response?.details)
                 return;
             const details: OrderDetailResponse[] = response.details as OrderDetailResponse[] ?? [];
-            const orderDetails: OrderDetail[] = Mappers.fromResponseToDomain(details);
+            const orderDetails: OrderDetail[] = Mappers.fromOderDetailResponseToDomain(details);
             const coupon = response?.coupon;
-            set({cartItems: orderDetails, ...Calculations.calculateAmounts(orderDetails, coupon), })
+            set({cartItems: orderDetails, ...Calculations.calculateAmounts(orderDetails, coupon),})
         }
     }));
 
 }
+
+export namespace OrderMany {
+    type State = BaseState & Pageable & {
+        orders: Order[],
+    }
+    type Action = BaseAction & DisposeAction & {
+        getOrders: (query: QueryParams) => Promise<void>;
+        deleteOrders(ids: number[]): Promise<void>;
+        deleteById(id: number): Promise<void>
+    }
+    type Store = State & Action;
+    const initialValues: State = {
+        orders: [],
+        totalInstances: 0,
+        totalPages: 0,
+        currentPage: 0,
+        ...defaultAsyncState,
+        queryParams: {
+            pageRequest: {
+                page: 0,
+                size: 10,
+                sortBy: "createdAt",
+                sortDirection: "desc",
+            },
+        }
+    }
+
+    export const useStore = create<Store>((set, get) => {
+        const x: Store = {
+            ...initialValues,
+            proxyLoading(run, lastAction = null) {
+                setLoadAndDo(set, run, lastAction);
+            },
+            async deleteById(id: number) {
+                if (id <= 0)
+                    return;
+                const count = await OrderApis.deleteById(id);
+                if (count < 1) {
+                    throw new ApiError(`${count} đơn hàng được xóa`)
+                }
+                const newOs = get().orders
+                    .filter(o => o.id !== id);
+                set({orders: newOs})
+            },
+            async getOrders(query: QueryParams): Promise<void> {
+                const orderPage = await OrderApis.searchOrders(query)
+                const domains: Order[] = orderPage.data.map(o => Mappers.fromOrderResponseToDomain(o))
+                set({orders: domains, ...orderPage, queryParams: query})
+            },
+            async deleteOrders(ids: number[]): Promise<void> {
+                if (ids?.length === 0)
+                    return;
+
+                const count = await OrderApis.deleteOrders(ids);
+                if (count != ids.length) {
+                    throw new ApiError(`${count} đơn hàng được xóa`)
+                }
+                const newOs = get().orders
+                    .filter(o => ids.some(id => id === o.id));
+                set({orders: newOs})
+            },
+            clean(): void {
+                set({...initialValues})
+            },
+        }
+        return x;
+    })
+}
+
 namespace OrderApis {
     const client = ApiClient.getInstance();
-
-    /// TODO: REFACTOR THIS
-    const ProductResponseSchema = z.object({
-        id: z.number(),
-        productDescription: ProductDescriptionSchema.nullish(),
-        slug: z.string().nullish(),
-        name: z.string().nullish(),
-        imageUrl: z.string().nullish(),
-        tags: z.array(z.string()).nullish(),
-        favorite: z.boolean().nullish(),
-        groupId: z.number().nullish(),
-        price: z.number().nullish(),
-        originalPrice: z.number().nullish(),
-        quantity: z.number().nullish(),
-        status: z.string().nullish(),
-        // variants: ProductMetadataSchema,
-        productItems: z.array(ProductItemSchema).nullish()
-    })
-    const ProductResponseSchemaList = z.array(ProductResponseSchema)
-    const ProductResponsePage = ApiResponseSchema(ProductResponseSchemaList)
-    type ProductResponseType = z.infer<typeof ProductResponseSchema>
 
     export const getProductByIdIn = async (ids: number[]): Promise<ProductResponseType[]> => {
         const requestPagination: QueryParams = {
@@ -216,11 +270,44 @@ namespace OrderApis {
     export const getCouponByCode = (code: string): Promise<Coupon> => {
         return client.get(`/coupons`, CouponSchema, {params: {code: code}})
     }
+
+    export function searchOrders(query: QueryParams) {
+        return client.post("/orders/searches", OrderPageSchema, query);
+    }
+
+    export function deleteOrders(ids: number[]) {
+        return client.delete("/orders", z.number(), {params: {ids}});
+    }
+
+    export function deleteById(id: number) {
+        return client.delete(`/orders/${id}`, z.number(),)
+    }
 }
 
 namespace Mappers {
-    export function fromResponseToDomain(responseDetails: OrderDetailResponse[]): OrderDetail[] {
-        return responseDetails.map(od => ({
+    const COUPON_FALL_BACK: Coupon = {
+        id: 0,
+        code: "UNKNOWN",
+        minAmount: 0,
+        maxAppliedAmount: 0,
+        description: "",
+        type: 'PERCENTAGE',
+        value: 0,
+        availableTo: new Date().toISOString(),
+        availableFrom: new Date().toISOString(),
+        usageLimit: 0
+    }
+    const USER_FALL_BACK: UserProfileDetailed = {
+        id: 0,
+        imageUrl: 'empty_img.png',
+        createdAt: new Date().toISOString(),
+        fullName: "Anonymous",
+        email: "unknown@gmail",
+        accountId: 0
+    }
+
+    export function fromOderDetailResponseToDomain(responseDetails: (OrderDetailResponse | null)[]): OrderDetail[] {
+        return responseDetails.filter((od): od is OrderDetailResponse => od !== null).map(od => ({
             id: od.id ?? 0,
             originalPrice: od.originalPrice ?? 0,
             price: od.price ?? 0,
@@ -235,6 +322,22 @@ namespace Mappers {
             productId: od.product.id ?? 0,
             quantity: od.quantity ?? 0
         }))
+    }
+
+    export function fromOrderResponseToDomain(source: OrderResponse) {
+        const target: Order = {
+            id: source.id,
+            coupon: source.coupon ?? COUPON_FALL_BACK,
+            createdAt: source.createdAt,
+            deletedAt: source.deletedAt ?? null,
+            details: fromOderDetailResponseToDomain(source.details ?? []),
+            orderStatus: source.status ?? 'PENDING',
+            payment: source.payment ?? null,
+            profile: source?.profile ?? USER_FALL_BACK,
+            amount: source.amount,
+            originalAmount: source.originalAmount,
+        }
+        return target;
     }
 }
 
@@ -280,6 +383,6 @@ namespace Calculations {
         const applied = Calculations.calculateApplied(gross, coupon);
         const net = gross - applied;
         return {gross, applied, net};
-    };
+    }
 }
 

@@ -17,8 +17,8 @@ import { IoFilter } from "react-icons/io5";
 
 const FormSchema = z.object({
   description: z.string().optional(),
-  minPrice: z.string().optional(),
-  maxPrice: z.string().optional(),
+  totalFrom: z.string().optional(),
+  totalTo: z.string().optional(),
   fromDate: z.string().optional(),
   toDate: z.string().optional(),
 });
@@ -28,8 +28,8 @@ export function TransactionsFilterForm() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
         description: "",
-        minPrice: "0",
-        maxPrice: "",
+        totalFrom: "0",
+        totalTo: "",
         fromDate: undefined,
         toDate: undefined,
         },
@@ -68,7 +68,7 @@ export function TransactionsFilterForm() {
           {/* Price */}
           <FormField
             control={form.control}
-            name="minPrice"
+            name="totalFrom"
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>{t("price_from")}</FormLabel>
@@ -86,7 +86,7 @@ export function TransactionsFilterForm() {
           />
           <FormField
             control={form.control}
-            name="maxPrice"
+            name="totalTo"
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>{t("price_to")}</FormLabel>

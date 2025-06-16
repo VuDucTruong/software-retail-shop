@@ -28,7 +28,7 @@ export namespace PaymentSingle {
 
     const initialState: State = {
         ...defaultAsyncState,
-        orderId: 0,
+        search: 0,
         bankCode: '',
         note: ''
     }
@@ -49,13 +49,13 @@ export namespace PaymentSingle {
          */
         async getPaymentUrl(): Promise<string> {
             const domainCreate = get()
-            if (domainCreate.orderId <= 0)
+            if (domainCreate.search <= 0)
                 throw new ApiError(400, "invalid payment request")
             /// TODO: bind env when deploy callBackUrl
             const request: PaymentUrlRequest = {
                 note: domainCreate.note,
                 bankCode: domainCreate.bankCode,
-                orderId: domainCreate.orderId,
+                search: domainCreate.search,
                 callbackUrl: `${window.location.origin}/cart/payment`
             }
             console.log("request is", request)
@@ -68,7 +68,7 @@ export namespace PaymentSingle {
         setOrderId(orderId: number) {
             set(s => ({
                 ...s,
-                orderId: orderId
+                search: orderId
             }))
         },
         setBankCode(bankCode: typeof BANK_CODES[number]) {
@@ -116,7 +116,7 @@ export namespace PaymentCallback {
                     detailCode: response?.status ?? '',
                     detailMessage: response?.detailMessage ?? '',
                     note: response?.note ?? '',
-                    orderId: response?.orderId ?? 0,
+                    search: response?.orderId ?? 0,
                     paymentMethod: response?.note ?? "VNPAY",
                     profileId: response?.profileId ?? 0,
                 }

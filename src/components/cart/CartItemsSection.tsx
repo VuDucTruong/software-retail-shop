@@ -188,7 +188,7 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                         />
                         <TextWithValue
                             text={"Discount 15%"}
-                            value={"-" + applied + "VND"}
+                            value={"- " + applied + "VND"}
                         />
                         <div className="w-full h-px bg-border"></div>
                         <TextWithValue text={t("total_amount_payable")} value={net + " VND"}/>
