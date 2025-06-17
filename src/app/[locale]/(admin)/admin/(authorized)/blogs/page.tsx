@@ -1,65 +1,25 @@
 "use client";
 
-import { BlogDomainType } from "@/api";
+import {BlogDomainType, Order} from "@/api";
 import BlogFilterSheet from "@/components/blog/BlogFilterSheet";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import SortingHeader from "@/components/common/table/SortingHeader";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { BlogMany } from "@/stores/blog/blog.store";
-import { ColumnDef, PaginationState, SortingState, } from "@tanstack/react-table";
-import { Eye } from "lucide-react";
-import { useTranslations } from "next-intl";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {useActionToast} from "@/hooks/use-action-toast";
+import {BlogMany} from "@/stores/blog/blog.store";
+import {ColumnDef, PaginationState, SortingState,} from "@tanstack/react-table";
+import {Eye, Trash2} from "lucide-react";
+import {useTranslations} from "next-intl";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { useShallow } from "zustand/shallow";
+import {useEffect, useState} from "react";
+import {useShallow} from "zustand/shallow";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
+import {GenreDomain} from "@/stores/blog/genre.store";
 
-export default function BlogManagementPage() {
-    const t = useTranslations();
+const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:number[])=>string, handleDelete: (id: number) => void): ColumnDef<BlogDomainType>[] => {
 
-    const [status, lastAction, error, blogs,queryParams, totalInstances, totalPages, getBlogs,  deleteBlogs] =
-        BlogMany.useStore(
-            useShallow((state) => [
-                state.status,
-                state.lastAction,
-                state.error,
-                state.blogs,
-                state.queryParams,
-                state.totalInstances,
-                state.totalPages,
-                state.getBlogs,
-                state.deleteBlogs,
-            ])
-        );
-
-    const [pagination, setPagination] = useState<PaginationState>({
-        pageIndex: queryParams?.pageRequest?.page ?? 0,
-        pageSize: queryParams?.pageRequest?.size ?? 10,
-    });
-
-    useActionToast({
-        status, lastAction, errorMessage: error || undefined,
-    });
-
-    const [sorting, setSorting] = useState<SortingState>([{
-        id: queryParams?.pageRequest?.sortBy ?? "createdAt",
-        desc: queryParams?.pageRequest?.sortDirection === "desc",
-    },
-    ]);
-
-    useEffect(() => {
-        getBlogs({
-            pageRequest: {
-                page: pagination.pageIndex,
-                size: pagination.pageSize,
-                sortBy: sorting[0]?.id,
-                sortDirection: sorting[0]?.desc ? "desc" : "asc",
-            },
-        });
-    }, [sorting, pagination, getBlogs]);
-
-    const cols: ColumnDef<BlogDomainType>[] = [
+    return [
         {
             accessorKey: "id",
             header: "ID",
@@ -89,7 +49,7 @@ export default function BlogManagementPage() {
             accessorKey: "genres",
             header: t('Genres'),
             cell: ({row}) => {
-                return row.original.genre2Ids.join(", ");
+                return toGenreDisplay(row.original.genre2Ids);
             },
         },
         {
@@ -110,11 +70,82 @@ export default function BlogManagementPage() {
                                 <Eye/>
                             </Button>
                         </Link>
+                        {row.original.deletedAt ? null : (
+                            <CommonConfirmDialog
+                                triggerName={
+                                    <Button
+                                        variant={"destructive"}
+                                        size="icon"
+                                        className="w-8 h-8"
+                                    >
+                                        <Trash2/>
+                                    </Button>
+                                }
+                                title={"Cấm người dùng"}
+                                description={
+                                    "Bạn có chắc chắn muốn xóa đơn hàng này không?"
+                                }
+                                onConfirm={() => handleDelete(row.original.id)}
+                            />
+                        )}
                     </div>
                 );
             },
         },
     ];
+}
+
+export default function BlogManagementPage() {
+    const t = useTranslations();
+
+    const [status, lastAction, error, blogs, queryParams, totalInstances, totalPages, getBlogs, deleteBlogs, deleteBlogById] =
+        BlogMany.useStore(
+            useShallow((state) => [
+                state.status,
+                state.lastAction,
+                state.error,
+                state.blogs,
+                state.queryParams,
+                state.totalInstances,
+                state.totalPages,
+                state.getBlogs,
+                state.deleteBlogs,
+                state.deleteById,
+            ])
+        );
+    const [genre2s, getGenre1s] = GenreDomain.useStore(useShallow(s => [s.genre2s, s.getGenre1s]))
+
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: queryParams?.pageRequest?.page ?? 0,
+        pageSize: queryParams?.pageRequest?.size ?? 10,
+    });
+
+    useActionToast({
+        status, lastAction, errorMessage: error || undefined,
+    });
+
+    const [sorting, setSorting] = useState<SortingState>([{
+        id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+        desc: queryParams?.pageRequest?.sortDirection === "desc",
+    },
+    ]);
+
+    useEffect(() => {
+        getBlogs({
+            pageRequest: {
+                page: pagination.pageIndex,
+                size: pagination.pageSize,
+                sortBy: sorting[0]?.id,
+                sortDirection: sorting[0]?.desc ? "desc" : "asc",
+            },
+        });
+    }, []);
+    function fromGenre2IdsToDisplays(ids:number[]){
+        return genre2s.filter(g2=>ids.some(id=>id===g2.id)).map(g2=>g2.name).join(",");
+    }
+
+
+    const cols = genCols(t,fromGenre2IdsToDisplays, deleteBlogById)
 
     return (
         <Card>
@@ -135,13 +166,13 @@ export default function BlogManagementPage() {
                 <CommmonDataTable
                     objectName={t('blog')}
                     // isLoading={status === "loading" && lastAction === null}
-                    isLoading={blogs===null}
+                    isLoading={blogs === null}
                     columns={cols}
                     data={blogs ?? []}
                     totalCount={totalInstances ?? 0}
                     pageCount={totalPages ?? 0}
                     pagination={pagination}
-                    
+
                     onPaginationChange={(updater) => {
                         setPagination((old) =>
                             typeof updater === "function" ? updater(old) : updater

@@ -50,7 +50,7 @@ export namespace GenreDomain {
             setLoadAndDo(set, run, lastAction);
         },
         getGenre1s: async (): Promise<void> => {
-
+            /// WHICH IS INITIAL STATE
             if (get().genre1s.length === 0) {
                 const responseGenre1: Api.Genre1.Response[] = await Api.client.get(
                     "/genres",

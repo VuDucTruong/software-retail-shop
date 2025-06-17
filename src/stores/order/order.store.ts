@@ -229,7 +229,7 @@ export namespace OrderMany {
                     throw new ApiError(`${count} đơn hàng được xóa`)
                 }
                 const newOs = get().orders
-                    .filter(o => ids.some(id => id === o.id));
+                    .filter(o => ids.some(id => id !== o.id));
                 set({orders: newOs})
             },
             clean(): void {
@@ -276,7 +276,7 @@ namespace OrderApis {
     }
 
     export function deleteOrders(ids: number[]) {
-        return client.delete("/orders", z.number(), {params: {ids}});
+        return client.delete("/orders", z.number(), {params: {ids: ids.join(",")}});
     }
 
     export function deleteById(id: number) {
