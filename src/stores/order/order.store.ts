@@ -4,10 +4,12 @@ import {
     BaseState,
     CartMetaData,
     Coupon,
+    COUPON_FALL_BACK,
     CouponSchema,
     defaultAsyncState,
     DisposeAction,
     Order,
+    ORDER_FALL_BACK,
     OrderCreateRequest,
     OrderDetail,
     OrderDetailResponse,
@@ -20,7 +22,7 @@ import {
     ProductResponseType,
     QueryParams,
     setLoadAndDo,
-    UserProfileDetailed
+    USER_PROFILE_DETAILED_FALL_BACK
 } from "@/api";
 import {create} from "zustand/index";
 import {undefined, z} from "zod";
@@ -103,7 +105,8 @@ export namespace OrderCustomer {
                         originalPrice: p.originalPrice ?? 0,
                         slug: p.slug ?? '',
                         tags: p.tags ?? [],
-                        imageUrl: p.imageUrl ?? "/empty_img.png"
+                        imageUrl: p.imageUrl ?? "/empty_img.png",
+                        keys: []
                     }
                 }
             })
@@ -240,6 +243,33 @@ export namespace OrderMany {
     })
 }
 
+export namespace OrderSingle {
+    type State = BaseState & {
+        order: Order
+    }
+    type Action = BaseAction & {
+        getBydId(id: number): Promise<void>
+    }
+    const initialValue: State = {
+        ...defaultAsyncState,
+        order: ORDER_FALL_BACK,
+    }
+    type Store = State & Action;
+
+    export const useStore = create<Store>((set, get) => ({
+        ...initialValue,
+        proxyLoading(run, lastAction = null) {
+            setLoadAndDo(set, run, lastAction);
+        },
+        async getBydId(id: number) {
+            const orderResponse = await OrderApis.getById(id);
+            const order: Order = Mappers.fromOrderResponseToDomain(orderResponse);
+            set({order: order,})
+        }
+    }))
+
+}
+
 namespace OrderApis {
     const client = ApiClient.getInstance();
 
@@ -285,39 +315,22 @@ namespace OrderApis {
 }
 
 namespace Mappers {
-    const COUPON_FALL_BACK: Coupon = {
-        id: 0,
-        code: "UNKNOWN",
-        minAmount: 0,
-        maxAppliedAmount: 0,
-        description: "",
-        type: 'PERCENTAGE',
-        value: 0,
-        availableTo: new Date().toISOString(),
-        availableFrom: new Date().toISOString(),
-        usageLimit: 0
-    }
-    const USER_FALL_BACK: UserProfileDetailed = {
-        id: 0,
-        imageUrl: 'empty_img.png',
-        createdAt: new Date().toISOString(),
-        fullName: "Anonymous",
-        email: "unknown@gmail",
-        accountId: 0
-    }
 
     export function fromOderDetailResponseToDomain(responseDetails: (OrderDetailResponse | null)[]): OrderDetail[] {
         return responseDetails.filter((od): od is OrderDetailResponse => od !== null).map(od => ({
-            id: od.id ?? 0,
-            originalPrice: od.originalPrice ?? 0,
-            price: od.price ?? 0,
-            product: od.product ?? {
+            id: od?.id ?? 0,
+            originalPrice: od?.originalPrice ?? 0,
+            price: od?.price ?? 0,
+            product: od?.product ?? {
                 id: 0,
                 name: "unknown",
                 slug: "unknown",
                 imageUrl: "/empty_img.png",
                 originalPrice: 0,
                 price: 0,
+                keys: od.product.keys ?? [],
+                quantity: 0,
+                tags: []
             },
             productId: od.product.id ?? 0,
             quantity: od.quantity ?? 0
@@ -333,9 +346,10 @@ namespace Mappers {
             details: fromOderDetailResponseToDomain(source.details ?? []),
             orderStatus: source.status ?? 'PENDING',
             payment: source.payment ?? null,
-            profile: source?.profile ?? USER_FALL_BACK,
+            profile: source?.profile ?? USER_PROFILE_DETAILED_FALL_BACK,
             amount: source.amount,
             originalAmount: source.originalAmount,
+            sentMail: source.sentMail
         }
         return target;
     }

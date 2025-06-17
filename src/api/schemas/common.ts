@@ -1,4 +1,4 @@
-import {z, ZodEnum} from "zod";
+import {z, ZodEnum, ZodTypeAny} from "zod";
 
 const passwordRegex = /^[a-zA-Z0-9]+$/; // At least 6 characters, at least one letter and one number
 export const PasswordSchema = z
@@ -99,21 +99,9 @@ export const zEnumDefault = <T extends ZodEnum<[string, ...string[]]>>(
 ) =>
     z.union([enumSchema, z.null(), z.undefined()]).transform((v) => v ?? def);
 
-export const zSafeInputNumParse = z
-    .string()
-    .trim()
-    .transform((val) => {
-        const num = Number(val);
-        return isNaN(num) || num <= 0 ? undefined : num;
-    });
-
-export const zSafeInputDateParse = z
-    .string()
-    .trim()
-    .optional()
-    .transform((val) => {
-        if (val === undefined)
-            return undefined;
-        const date = new Date(val);
-        return isNaN(date.getTime()) ? undefined : date;
-    });
+export function zArrayDefault<T extends ZodTypeAny>(schema: T, def: z.infer<T>[]) {
+    return z.union([z.array(schema), z.null(), z.undefined()]).transform((v) => v ?? def);
+}
+export function zNullableDefault<T extends ZodTypeAny>(schema: T) {
+    return z.union([schema, z.null(), z.undefined()]).transform((v) => v ?? null);
+}

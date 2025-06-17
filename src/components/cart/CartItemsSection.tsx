@@ -16,7 +16,6 @@ import {BankSelector} from "@/components/payment/BankSelector";
 import {BANK_CODES} from "@/lib/bankcodes";
 import {PaymentCommon, PaymentSingle} from "@/stores/order/payment.store";
 import parseStatus = PaymentCommon.parseStatus;
-import {PaymentStatus} from "@/api";
 
 type CardItemsProps = {
     handleNextStep: () => void;

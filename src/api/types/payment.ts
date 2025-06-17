@@ -15,7 +15,6 @@ export type PaymentUrlRequest = z.infer<typeof PaymentUrlRequestSchema>
 
 export const PAYMENT_FALLBACK: PaymentDomain = {
     id: 0,
-    search: 0,
     note: '',
     profileId: 0,
     status: 'PENDING',

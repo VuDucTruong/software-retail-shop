@@ -1,66 +1,130 @@
 "use client";
 
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import OrderDetailItem from "@/components/orders/OrderDetaiItem";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader
-} from "@/components/ui/card";
-import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
-import { FaCartPlus } from "react-icons/fa";
+import OrderDetailItem from "@/components/orders/OrderDetailItem";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
+import {useTranslations} from "next-intl";
+import {useParams} from "next/navigation";
+import {FaCartPlus} from "react-icons/fa";
+import {format} from "date-fns";
+import {StatusBadge} from "@/components/common/StatusBadge";
+import {OrderSingle} from "@/stores/order/order.store";
+import {useShallow} from "zustand/shallow";
+import {useEffect} from "react";
+import LoadingPage, {ErrorPage} from "@/components/special/LoadingPage";
+
+const formatCurrency = (num: number) => new Intl.NumberFormat().format(num)
 
 export default function OrderDetailPage() {
-  const params = useParams();
-  const { id } = params;
-  const t = useTranslations();
+    const params = useParams();
+    const {id} = params;
+    const t = useTranslations();
+    const [order, getOrderById, proxyLoading, status] = OrderSingle.useStore(useShallow(s => [s.order, s.getBydId, s.proxyLoading, s.status]))
 
-  const cols = [
-    { header: t("order_information"), accessorKey: "order_info" },
-    { header: "", accessorKey: "data" },
-  ];
 
-  const data = [
-    { order_info: t("order_id"), data: id },
-    { order_info: t("create_date"), data: "2023-10-01" },
-    { order_info: t("order_status"), data: "Completed" },
-    { order_info: t("recipient_email"), data: "Credit Card" },
-    {
-      order_info: t("total_product_value"),
-      data: "123 Main St, City, Country",
-    },
-  ];
+    useEffect(() => {
+        const idNum = Number(id);
+        if (!isNaN(idNum)) {
+            proxyLoading(() => getOrderById(idNum), 'get')
+        }
+    }, []);
 
-  return (
-    <Card>
-      <CardHeader className="flex justify-between"> 
-          <div>
-            <h3>
-              {t("order_detail")} #{id}
-            </h3>
-            <p className="text-sm font-normal text-muted-foreground">
-              {t("order_detail_description")}
-            </p>
-          </div>
-          <Button variant={"outline"} className="flex items-center gap-2">
-            <FaCartPlus />
-            {t("buy_product_again")}
-          </Button>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <h4>{t("order_information")}</h4>
-        {/* Order Info */}
-        <CommmonDataTable columns={cols} data={data} />
-      </CardContent>
+    return (
+        <Card>
+            <CardHeader className="flex justify-between">
+                <div>
+                    <h3>
+                        {t("order_detail")} #{id}
+                    </h3>
+                    <p className="text-sm font-normal text-muted-foreground">
+                        {t("order_detail_description")}
+                    </p>
+                </div>
+                <Button variant={"outline"} className="flex items-center gap-2">
+                    <FaCartPlus/>
+                    {t("buy_product_again")}
+                </Button>
+            </CardHeader>
+            {
+                (() => {
+                    if (status === 'loading')
+                        return <LoadingPage/>
+                    else if (status === 'error')
+                        return <ErrorPage/>
+                    return <CardContent className="flex flex-col gap-6">
+                        <h4 className="text-lg font-semibold">{t("order_information")}</h4>
 
-      <CardFooter className="flex flex-col gap-4 max-h-[400px] overflow-y-auto">
-        {Array.from({ length: 10 }).map((_, index) => (
-          <OrderDetailItem key={index} />
-        ))}
-      </CardFooter>
-    </Card>
-  );
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Order ID + Status */}
+                            <div className="border rounded-xl p-4 flex flex-col gap-2 bg-muted/30">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t("created_at")}</span>
+                                    <span>{format(new Date(order.createdAt), "PPpp")}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-muted-foreground">{t("status")}</span>
+                                    <StatusBadge status={"pending"}/>
+                                </div>
+                            </div>
+
+                            {/* Created & Deleted Date */}
+                            <div className="border rounded-xl p-4 flex flex-col gap-2 bg-muted/30">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t("original_total")}</span>
+                                    <span className="font-medium text-destructive">{formatCurrency(order.originalAmount)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t("total_paid")}</span>
+                                    <span className="font-medium text-green-600">{formatCurrency(order.amount)}</span>
+                                </div>
+                            </div>
+
+                            {/* Payment Info */}
+                            <div className="border rounded-xl p-4 flex flex-col gap-2 bg-muted/30">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t("payment_status")}</span>
+                                    <StatusBadge status={"pending"}/>
+                                </div>
+                                {order.payment?.paymentMethod && (
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">{t("payment_method")}</span>
+                                        <span>{order.payment.paymentMethod}</span>
+                                    </div>
+                                )}
+                                {order.payment?.cardType && (
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">{t("card_type")}</span>
+                                        <span>{order.payment.cardType}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Coupon Info */}
+                            <div className="border rounded-xl p-4 flex flex-col gap-2 bg-muted/30">
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">{t("coupon_applied")}</span>
+                                    <span className="font-medium">{order.coupon?.code || t("none")}</span>
+                                </div>
+                                {order.coupon?.value ? (
+                                    <div className="flex justify-between text-sm text-muted-foreground">
+                                        <span>{t("discount_value")}</span>
+                                        <span>{order.coupon.value}%</span>
+                                    </div>
+                                ) : null}
+                            </div>
+
+
+                        </div>
+                    </CardContent>
+                })()
+            }
+
+
+            <CardFooter className="flex flex-col gap-4 max-h-[400px] overflow-y-auto">
+                {order.details.map((od, index) => (
+                    <OrderDetailItem orderDetail={od} key={index}/>
+                ))}
+            </CardFooter>
+        </Card>
+    );
 }

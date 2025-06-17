@@ -4,7 +4,7 @@ import {
     CouponSchema,
     PaymentDomainSchema,
     PaymentResponseSchema,
-    UserProfileDetailedSchema,
+    UserProfileDetailedSchema, zArrayDefault,
     zNumDefault,
     zStrDefault
 } from "@/api";
@@ -21,7 +21,8 @@ export const OrderDetailProductSchema = z.object({
     imageUrl: z.string().nullable(),
     slug: zStrDefault(EMPTY_IMG),
     quantity: zNumDefault(0),
-    tags: z.array(zStrDefault(EMPTY_IMG))
+    tags: z.array(zStrDefault(EMPTY_IMG)),
+    keys: zArrayDefault(zStrDefault(''), []),
 })
 
 export const OrderDetailSchema = z.object({
@@ -45,6 +46,7 @@ export const OrderSchema = z.object({
     amount: z.number(),
     payment: PaymentDomainSchema.nullable(),
     details: z.array(OrderDetailSchema),
+    sentMail: z.string(),
 });
 
 export const OrderResponseSchema = z.object({
@@ -58,6 +60,7 @@ export const OrderResponseSchema = z.object({
     amount: zNumDefault(0),
     payment: PaymentResponseSchema.nullish(),
     details: z.array(OrderDetailSchema).nullish(),
+    sentMail: zStrDefault(''),
 })
 
 export const OrderDetailCreateSchema = z.object({
