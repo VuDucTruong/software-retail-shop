@@ -76,7 +76,7 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
                 return (
                     <>
                         <div className="flex items-end gap-2">
-                            <TransactionDetailDialog order={row.original}/>
+                            <TransactionDetailDialog orderId={row.original.id}/>
                             {row.original.deletedAt ? null : (
                                 <CommonConfirmDialog
                                     triggerName={

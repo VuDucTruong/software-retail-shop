@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {ReactNode} from 'react'
 import {Card, CardContent} from "@/components/ui/card";
 import {AlertTriangle} from "lucide-react";
 import {Button} from "@/components/ui/button";
+import {LoadingStatus} from "@/api";
+import ReactMarkdown from "react-markdown";
+
 
 export default function LoadingPage() {
     return (
@@ -13,7 +16,8 @@ export default function LoadingPage() {
     )
 }
 
-export function ErrorPage({onRetry}: { onRetry?: () => void }) {
+export function ErrorPage({errorMessage, onRetry}: { errorMessage?: string | null, onRetry?: () => void }) {
+
     return (
         <div className="flex items-center justify-center min-h-[60vh] px-4">
             <Card className="w-full max-w-md shadow-xl border border-red-300 bg-red-50">
@@ -25,7 +29,7 @@ export function ErrorPage({onRetry}: { onRetry?: () => void }) {
                         Đã xảy ra lỗi khi tải nội dung
                     </h2>
                     <p className="text-sm text-center text-red-600">
-                        Có thể do kết nối mạng hoặc lỗi hệ thống. Vui lòng thử lại sau.
+                        {errorMessage ?? `Có thể do kết nối mạng hoặc lỗi hệ thống. Vui lòng thử lại sau.`}
                     </p>
                     {
                         onRetry &&
@@ -43,3 +47,18 @@ export function ErrorPage({onRetry}: { onRetry?: () => void }) {
     )
 }
 
+export function StatusDependentRenderer({status, error, children}: {
+    status: LoadingStatus,
+    error: string | null |undefined,
+    children: ReactNode
+}): ReactNode {
+    if (status === 'loading')
+        return <LoadingPage/>
+    else if (status === 'error')
+        return <ErrorPage errorMessage={error}/>
+    return (
+        <>
+            {children}
+        </>
+    )
+}

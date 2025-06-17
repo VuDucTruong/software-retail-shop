@@ -4,10 +4,11 @@ import {ArrayIndexSchema, QueyParamsSchema} from "@/api";
 import {SetState} from "@/lib/set_state";
 
 export type QueryParams = z.infer<typeof QueyParamsSchema>;
+export type LoadingStatus ="idle" | "loading" | "error" | "success"
 export type LastActions = "get" |"create" | "update" | "delete" | null;
 export type BaseState = {
     lastAction: LastActions;
-    status: "idle" | "loading" | "error" | "success";
+    status: LoadingStatus;
     error: string | null;
 }
 export type BaseAction = {
