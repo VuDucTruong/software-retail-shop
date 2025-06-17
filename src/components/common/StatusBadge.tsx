@@ -2,6 +2,26 @@ import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { Clock, Loader2, CheckCircle2, XCircle, PackageCheck, PackageX, Ban, Rss } from "lucide-react"
 import { useTranslations } from "next-intl"
+import {ColumnDef} from "@tanstack/react-table";
+import {Order, OrderStatus} from "@/api";
+
+export function convertStatus(os: OrderStatus) {
+  switch (os) {
+    case 'PENDING':
+      return 'pending'
+    case "FAILED":
+      return 'canceled'
+    case "COMPLETED":
+      return "completed";
+    case 'FAILED_MAIL':
+      return 'canceled'
+    case 'RETRY_1':
+      return 'canceled'
+    case 'PROCESSING':
+      return 'processing';
+  }
+}
+
 
 type Status = "pending" | "processing" | "completed" | "canceled" | "in_stock" | "out_stock"	| "active" | "banned" | "used" | "unused"
 

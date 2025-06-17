@@ -1,114 +1,177 @@
 "use client";
 
-import { StatusBadge } from "@/components/common/StatusBadge";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
-import { OrdersFilterForm } from "@/components/orders/OrdersFilterForm";
+import {convertStatus, StatusBadge} from "@/components/common/StatusBadge";
+import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
+import {OrdersFilterForm} from "@/components/orders/OrdersFilterForm";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { convertPriceToVND } from "@/lib/currency_helper";
-import { ColumnDef, PaginationState, SortingState } from "@tanstack/react-table";
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { z } from "zod";
-const scheme = z.object({
-  time: z.string(),
-  order_id: z.string(),
-  product: z.string(),
-  quantity: z.number(),
-  total: z.number().transform((val) => convertPriceToVND(val)),
-  status: z.string(),
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {ColumnDef, PaginationState, SortingState} from "@tanstack/react-table";
+import {useTranslations} from "next-intl";
+import {useEffect, useState} from "react";
+import {Order} from "@/api";
+import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
+import {Button} from "@/components/ui/button";
+import {Trash2} from "lucide-react";
+import {getDateTimeLocal} from "@/lib/date_helper";
+import {OrderMany} from "@/stores/order/order.store";
+import {useShallow} from "zustand/shallow";
 
-});
 
-const sampleData = Array.from({ length: 10 }, (_, i) => ({
-  time: "2023-10-01 12:00:00",
-  order_id: `ORD${i + 1}`,
-  product: `Product ${i + 1}`,
-  quantity: Math.floor(Math.random() * 10) + 1,
-  total: Math.floor(Math.random() * 1000000) + 100000,
-  status: "pending",
-}));
+const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: number) => void): ColumnDef<Order>[] => {
+
+    return [
+        {
+            accessorKey: "Id",
+            header: "ID",
+            cell: ({row}) => {
+                return row.original.id;
+            },
+            enableHiding: false,
+        },
+        {
+            accessorKey: "By",
+            header: t("payment_method"),
+            cell: ({row}) => {
+                return row.original.payment?.paymentMethod;
+            },
+        },
+        {
+            accessorKey: "Amount",
+            header: t("Amount"),
+            cell: ({row}) => {
+                return row.original.amount + ' VND';
+            },
+        },
+        {
+            accessorKey: "Status",
+            header: t("Status"),
+            cell: ({row}) => {
+                return <StatusBadge status={convertStatus(row.original.orderStatus ?? 'PENDING')}/>;
+            },
+        },
+        {
+            accessorKey: "createdAt",
+            header: t("Time"),
+            cell: ({row}) => {
+                return getDateTimeLocal(row.original.createdAt);
+            },
+        },
+        {
+            accessorKey: "actions",
+            header: "",
+            cell: ({row}) => {
+                return (
+                    <>
+                        <div className="flex justify-center items-end gap-2">
+                            <TransactionDetailDialog order={row.original}/>
+                            {row.original.deletedAt ? null : (
+                                <CommonConfirmDialog
+                                    triggerName={
+                                        <Button
+                                            variant={"destructive"}
+                                            size="icon"
+                                            className="w-8 h-8"
+                                        >
+                                            <Trash2/>
+                                        </Button>
+                                    }
+                                    title={"Cấm người dùng"}
+                                    description={
+                                        "Bạn có chắc chắn muốn xóa đơn hàng này không?"
+                                    }
+                                    onConfirm={() => handleDelete(row.original.id)}
+                                />
+                            )}
+                        </div>
+
+                    </>
+                );
+            },
+        }
+    ];
+}
+
+
 export default function OrderPage() {
-  const t = useTranslations();
+    const t = useTranslations();
 
-const [data, setData] = useState<any[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-  const [sorting, setSorting] = useState<SortingState>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const sort = sorting[0];
-      const sortBy = sort?.id || "id";
-      const order = sort?.desc ? "desc" : "asc";
-      console.log(
-        "Fetching data with pagination:",
-        pagination,
-        "and sorting:",
-        sortBy,
-        order
-      );
-      setData(sampleData);
-      setPageCount(100);
-    };
-    fetchData();
-  }, [pagination, sorting]);
-
-
-  const cols: ColumnDef<z.infer<typeof scheme>>[] = [
-    { header: t("Time"), accessorKey: "time"},
-    {
-      header: t("order_id"),
-      accessorKey: "order_id",
+    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders, deleteOrderById] =
+        OrderMany.useStore(
+            useShallow((state) => [
+                state.status,
+                state.lastAction,
+                state.error,
+                state.orders,
+                state.queryParams,
+                state.totalInstances,
+                state.totalPages,
+                state.getOrders,
+                state.deleteOrders,
+                state.deleteById,
+            ])
+        );
+    const [pagination, setPagination] = useState<PaginationState>({
+        pageIndex: queryParams?.pageRequest?.page ?? 0,
+        pageSize: queryParams?.pageRequest?.size ?? 10,
+    });
+    const [sorting, setSorting] = useState<SortingState>([{
+        id: queryParams?.pageRequest?.sortBy ?? "createdAt",
+        desc: queryParams?.pageRequest?.sortDirection === "desc",
     },
-    { header: t("Product"), accessorKey: "product"},
-    {
-      header: t("Quantity"),
-      accessorKey: "quantity",
-      cell: ({row}) => <div className="text-center">{row.original.quantity}</div>
-    },
-    { header: t("Total"), accessorKey: "total" },
-    { header: t("Status"), accessorKey: "status",cell: () => {
-      return (
-        <StatusBadge status="pending" />
-      );
-    },}
-  ];
+    ]);
+    useEffect(() => {
+        getOrders({
+            pageRequest: {
+                page: pagination.pageIndex,
+                size: pagination.pageSize,
+                sortBy: sorting[0]?.id,
+                sortDirection: sorting[0]?.desc ? "desc" : "asc",
+            },
+        });
+    }, []);
 
-  return (
-    <Card>
-      <CardHeader>
-        <h3>{t("order_history")}</h3>
-        <p className="font-normal italic text-muted-foreground">
-          {t("order_history_description")}
-        </p>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-4">
-          <div className="divider"></div>
-          <OrdersFilterForm />
+    function handleDelete(id: number){
 
-          <CommmonDataTable
-          columns={cols}
-          data={data}
-          pageCount={pageCount}
-          pagination={pagination}
-          onPaginationChange={(updater) => {
-            setPagination((old) =>
-              typeof updater === "function" ? updater(old) : updater
-            );
-          }}
-          sorting={sorting}
-          onSortingChange={(updater) => {
-            setSorting((prev) =>
-              typeof updater === "function" ? updater(prev) : updater
-            );
-          }}
-        />
-        </div>
-      </CardContent>
-    </Card>
-  );
+    }
+
+    const cols = genCols(t, handleDelete)
+
+    return (
+        <Card>
+            <CardHeader>
+                <h3>{t("order_history")}</h3>
+                <p className="font-normal italic text-muted-foreground">
+                    {t("order_history_description")}
+                </p>
+              <CardTitle className="flex items-center justify-between">
+                <OrdersFilterForm mode={'personal'}/>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-col ">
+                    <div className="divider"></div>
+
+
+                    <CommmonDataTable
+                        columns={cols}
+                        data={orders}
+                        pageCount={totalPages}
+                        pagination={pagination}
+                        onPaginationChange={(updater) => {
+                            setPagination((old) =>
+                                typeof updater === "function" ? updater(old) : updater
+                            );
+                        }}
+                        sorting={sorting}
+                        onSortingChange={(updater) => {
+                            setSorting((prev) =>
+                                typeof updater === "function" ? updater(prev) : updater
+                            );
+                        }}
+                    />
+                </div>
+            </CardContent>
+        </Card>
+    );
 }

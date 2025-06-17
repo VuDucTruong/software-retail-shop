@@ -86,9 +86,11 @@ export function makeNullable<T extends z.ZodRawShape>(schema: z.ZodObject<T>) {
 export function zStrDefault(def: string) {
     return z.union([z.string(), z.null(), z.undefined()]).transform((v) => v ?? def)
 }
-export function zNumDefault  (def: number){
+
+export function zNumDefault(def: number) {
     return z.union([z.number(), z.null(), z.undefined()]).transform((v) => v ?? def);
 }
+
 export const zBoolDefault = (def: boolean = false) =>
     z.union([z.boolean(), z.null(), z.undefined()]).transform((v) => v ?? def);
 export const zEnumDefault = <T extends ZodEnum<[string, ...string[]]>>(
@@ -96,3 +98,22 @@ export const zEnumDefault = <T extends ZodEnum<[string, ...string[]]>>(
     def: z.infer<T>
 ) =>
     z.union([enumSchema, z.null(), z.undefined()]).transform((v) => v ?? def);
+
+export const zSafeInputNumParse = z
+    .string()
+    .trim()
+    .transform((val) => {
+        const num = Number(val);
+        return isNaN(num) || num <= 0 ? undefined : num;
+    });
+
+export const zSafeInputDateParse = z
+    .string()
+    .trim()
+    .optional()
+    .transform((val) => {
+        if (val === undefined)
+            return undefined;
+        const date = new Date(val);
+        return isNaN(date.getTime()) ? undefined : date;
+    });

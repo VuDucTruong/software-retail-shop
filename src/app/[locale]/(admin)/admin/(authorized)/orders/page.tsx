@@ -1,7 +1,7 @@
 "use client";
 
 import {Order, OrderStatus, PAYMENT_FALLBACK} from "@/api";
-import {StatusBadge} from "@/components/common/StatusBadge";
+import {convertStatus, StatusBadge} from "@/components/common/StatusBadge";
 import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
@@ -16,22 +16,6 @@ import {useShallow} from "zustand/shallow";
 import {useActionToast} from "@/hooks/use-action-toast";
 import {OrdersFilterForm} from "@/components/orders/OrdersFilterForm";
 
-function convertStatus(os: OrderStatus) {
-    switch (os) {
-        case 'PENDING':
-            return 'pending'
-        case "FAILED":
-            return 'canceled'
-        case "COMPLETED":
-            return "completed";
-        case 'FAILED_MAIL':
-            return 'canceled'
-        case 'RETRY_1':
-            return 'canceled'
-        case 'PROCESSING':
-            return 'processing';
-    }
-}
 
 const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: number) => void): ColumnDef<Order>[] => {
 
@@ -176,7 +160,7 @@ export default function TransactionMangementPage() {
                 <CardTitle className="flex items-center justify-between">
                     <h2>{t("transaction_management")}</h2>
                     <div className="flex items-center gap-2">
-                        <OrdersFilterForm/>
+                        <OrdersFilterForm mode={'all'}/>
                     </div>
                 </CardTitle>
             </CardHeader>

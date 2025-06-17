@@ -11,12 +11,13 @@ import {IoFilter} from "react-icons/io5";
 import {OrderMany} from "@/stores/order/order.store";
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet";
 import {Filter} from "lucide-react";
-import {OrderStatus, OrderStatusSchema} from "@/api";
+import {OrderStatusSchema} from "@/api";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {StringUtils} from "@/lib/utils";
 
 // const STATUS_OPTIONS = [undefined, ...OrderStatusSchema.options,]
 const FormSchema = z.object({
+    id: z.string().optional(),
     search: z.string().optional(),
     totalFrom: z.string().optional(),
     status: z.union([OrderStatusSchema, z.literal("IGNORE")]),
@@ -33,13 +34,17 @@ const STATUS_MAP = {
     'order successfully delivered': 'COMPLETED',
     'failed on payment': "FAILED"
 }
+type OrdersFilterFormType = {
+    mode: 'all' | 'personal'
+}
 
-export function OrdersFilterForm() {
+export function OrdersFilterForm({mode}: OrdersFilterFormType) {
     const getOrders = OrderMany.useStore((state) => state.getOrders);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
+            id: "",
             search: "",
             totalFrom: "0",
             status: 'IGNORE',
@@ -55,6 +60,9 @@ export function OrdersFilterForm() {
         const totalFNum = rawFrom <= 0 ? undefined : rawFrom;
         const totalTNum = rawTo >= Number.MAX_SAFE_INTEGER ? undefined : rawTo;
         const status = data.status === 'IGNORE' ? undefined : data.status;
+        const arrids = data.id?.split(/[\s,]+/)
+            .map((v) => Number(v.trim()))
+            .filter((v) => !isNaN(v) && v > 0);
         getOrders({
             pageRequest: {
                 page: 0,
@@ -65,6 +73,7 @@ export function OrdersFilterForm() {
             totalFrom: totalFNum,
             totalTo: totalTNum,
             status: status,
+            ids: arrids && arrids.length > 0 ? arrids : [],
             search: StringUtils.hasLength(data.search) ? data.search : undefined
         });
     }
@@ -93,20 +102,37 @@ export function OrdersFilterForm() {
                             {/* Order id */}
                             <FormField
                                 control={form.control}
-                                name="search"
+                                name="id"
                                 render={({field}) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>{`${t("full_name")} or email`}</FormLabel>
+                                        <FormLabel>{`Your Order Ids (comma delimited)`}</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                className="bg-background"
-                                                type="text"
-                                                {...field}
+                                            <Input className="bg-background"
+                                                   type="text" {...field}
                                             />
                                         </FormControl>
                                     </FormItem>
                                 )}
                             />
+                            {
+                                mode === 'all' &&
+                                <FormField
+                                    control={form.control}
+                                    name="search"
+                                    render={({field}) => (
+                                        <FormItem className="flex flex-col">
+                                            <FormLabel>{`${t("full_name")} or email`}</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    className="bg-background"
+                                                    type="text"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+                            }
                             <FormField
                                 control={form.control}
                                 name="status"
@@ -117,13 +143,12 @@ export function OrdersFilterForm() {
                                             <Select
                                                 value={field.value}
                                                 onValueChange={field.onChange}
-                                                defaultValue={field.value}
-                                            >
+                                                defaultValue={field.value}>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select status"/>
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {Object.entries(STATUS_MAP).map(([k, v], i) => (
+                                                    {Object.entries(STATUS_MAP).map(([k, v],) => (
                                                         <SelectItem key={k} value={v}>
                                                             {k}
                                                         </SelectItem>
