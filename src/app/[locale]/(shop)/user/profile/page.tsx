@@ -15,12 +15,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useAuthToast } from "@/hooks/use-auth-toast";
 import { useClientUserStore } from "@/stores/cilent/client.user.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useAuthToast } from "@/hooks/use-auth-toast";
 
 export default function UserProfilePage() {
   const t = useTranslations();
@@ -31,7 +31,6 @@ export default function UserProfilePage() {
   const error = useClientUserStore((state) => state.error);
   const status = useClientUserStore((state) => state.status);
   const user = useClientUserStore((state) => state.user);
-  const fileRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     getProfile();
   }, [getProfile]);

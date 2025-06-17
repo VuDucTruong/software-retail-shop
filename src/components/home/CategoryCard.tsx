@@ -59,7 +59,7 @@ export default function CategoryCard({ categories }: Props) {
             key={category.id}
             className="flex items-center mb-4 cursor-pointer hover:text-primary hover:opacity-80 gap-2"
           >
-            <div className="relative size-10 border-border border rounded-full overflow-hidden">
+            <div className="relative size-10 rounded-full overflow-hidden">
               <Image
                 src={category.imageUrl}
                 alt={category.name}

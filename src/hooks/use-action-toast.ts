@@ -48,8 +48,9 @@ export function useActionToast({
   const didMount = useRef(false);
   const toastIdRef = useRef<string | number | undefined>(undefined);
   useEffect(() => {
-    console.trace("useActionToast effect");
-    console.log("mounted" , didMount.current)
+
+    console.log("isMounted", didMount.current);
+
     if (!didMount.current) {
       didMount.current = true;
       return;
@@ -75,7 +76,6 @@ export function useActionToast({
       }
       reset?.();
     }
-    
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, lastAction]);
 }

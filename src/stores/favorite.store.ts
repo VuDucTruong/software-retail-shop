@@ -16,7 +16,7 @@ export namespace FavoriteDomain {
         ids: new Set(),
     }
 
-    export const useStore = create<Store>((set, get) => ({
+    export const useStore = create<Store>((set) => ({
         ...initialValues,
         async getFavorite(): Promise<void> {
             const response = await FavoriteApis.getFavoriteIds();

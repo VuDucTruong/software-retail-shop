@@ -2,10 +2,10 @@ import { CategoryCreate, CategoryCreateSchema } from "@/api";
 import { useCategoryStore } from "@/stores/category.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CgAdd } from "react-icons/cg";
+import { CommonImageUpload } from "../common/CommonImageUpload";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -17,15 +17,13 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { CommonImageUpload } from "../common/CommonImageUpload";
 
 export default function CreateCategoryDialog() {
   const t = useTranslations();

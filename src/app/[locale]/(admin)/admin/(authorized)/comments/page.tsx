@@ -167,7 +167,7 @@ export default function CommentManagementPage() {
       <CardContent>
         <CommmonDataTable
           objectName={t("comment")}
-          isLoading={status === "loading" && lastAction === null}
+          isLoading={comments === null}
           columns={cols}
           data={comments?.data ?? []}
           totalCount={comments?.totalInstances ?? 0}

@@ -130,8 +130,6 @@ export function CommmonDataTable<TData, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  console.log(" Rows", table.getRowModel())
-
   const hanndleDeleteRows = () => {
     const ids = getSelectedIds();
     setRowSelection({});

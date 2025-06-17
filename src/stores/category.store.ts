@@ -32,7 +32,6 @@ type CategoryAction = {
   createCategory: (category: CategoryCreate) => Promise<void>;
   updateCategory: (category: CategoryUpdate) => Promise<void>;
   deleteCategories: (ids: number[]) => Promise<void>;
-  resetStatus: () => void;
 };
 
 type CategoryStore = CategoryState & CategoryAction;
@@ -62,13 +61,7 @@ export const useCategoryStore = create<CategoryStore>((set) => ({
   createCategory: (category) => createCategory(set, category),
   updateCategory: (category) => updateCategory(set, category),
   deleteCategories: (ids) => deleteCategories(set, ids),
-  resetStatus: () =>
-    set((state) => ({
-      ...state,
-      status: "idle",
-      lastAction: null,
-      error: null,
-    })),
+
 }));
 
 

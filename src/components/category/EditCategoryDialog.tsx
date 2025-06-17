@@ -1,13 +1,15 @@
 "use client";
-import { Category, CategoryUpdate, CategoryUpdateSchema } from "@/api";
+import { CategoryUpdate, CategoryUpdateSchema } from "@/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import { urlToFile } from "@/lib/utils";
 import { useCategoryStore } from "@/stores/category.store";
-import { PenLine } from "lucide-react";
+import { useCategoryDialogStore } from "@/stores/dialog.store";
+import { useShallow } from "zustand/shallow";
+import { CommonImageUpload } from "../common/CommonImageUpload";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -26,33 +28,42 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { CommonImageUpload } from "../common/CommonImageUpload";
 
-type EditCategoryDialogProps = {
-  selectedCategory: Category;
-};
 
-export default function EditCategoryDialog(props: EditCategoryDialogProps) {
-  const { selectedCategory } = props;
+export default function EditCategoryDialog() {
+ 
+  const [open,selectedCategory]= useCategoryDialogStore(useShallow(state=> [state.open, state.data]));
+  
   const t = useTranslations();
   const updateCategory = useCategoryStore((state) => state.updateCategory);
 
   const form = useForm<CategoryUpdate>({
     defaultValues: {
-      name: selectedCategory.name,
+      name: selectedCategory?.name,
       image: null,
-      description: selectedCategory.description,
+      description: selectedCategory?.description,
     },
     resolver: zodResolver(CategoryUpdateSchema),
   });
 
 
+  useEffect(() => {
+    if (selectedCategory) {
+      form.reset({
+        name: selectedCategory.name,
+        image: null, // Reset image to allow re-upload
+        description: selectedCategory.description,
+      });
+    }
+  }, [selectedCategory]);
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    form.setValue("id", selectedCategory.id);
+    form.setValue("id", selectedCategory?.id);
     if (!form.getValues("image")) {
       const image = await urlToFile(
-        selectedCategory.imageUrl
+        selectedCategory?.imageUrl??"/empty_img.png"
       );
       form.setValue("image", image);
     }
@@ -62,22 +73,26 @@ export default function EditCategoryDialog(props: EditCategoryDialogProps) {
   };
 
   return (
-    <Dialog onOpenChange={(open) => open && form.reset()}>
+    <Dialog open={open} onOpenChange={(val) => {
+      if (!val) {
+        useCategoryDialogStore.getState().closeDialog();
+        form.reset();
+      }
+      console.log("Dialog closed", val , selectedCategory);
+    }}>
       <DialogTrigger asChild>
-        <Button className="size-8 bg-yellow-400 hover:bg-yellow-500">
-          <PenLine />
-        </Button>
+        <div className="hidden"></div>
       </DialogTrigger>
-      <DialogContent className="w-1/2 aria-describedby={undefined}">
+      <DialogContent className="w-1/2 " aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-2xl" asChild>
-            <h2>{t("update_category_x", { x: selectedCategory.id })}</h2>
+            <h2>{t("update_category_x", { x: selectedCategory?.id ?? 0 })}</h2>
           </DialogTitle>
         </DialogHeader>
         <div>
           <Form {...form}>
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-              <CommonImageUpload name="image" defaultImageUrl={selectedCategory.imageUrl}/>
+              <CommonImageUpload name="image" defaultImageUrl={selectedCategory?.imageUrl}/>
 
               <FormField
                 control={form.control}

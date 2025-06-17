@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react'
-import { CommmonDataTable } from '../common/table/CommonDataTable'
-import { useTranslations } from 'next-intl';
-import { ProductTrend, SimpleProductTrend } from '@/api';
-import { ColumnDef } from '@tanstack/react-table';
-import Link from 'next/link';
-import { Button } from '../ui/button';
+import { SimpleProductTrend } from '@/api';
 import { useDashboardStore } from '@/stores/dashboard.store';
+import { ColumnDef } from '@tanstack/react-table';
+import { useTranslations } from 'next-intl';
+import Link from 'next/link';
+import { useEffect } from 'react';
 import { useShallow } from 'zustand/shallow';
+import { CommmonDataTable } from '../common/table/CommonDataTable';
+import { Button } from '../ui/button';
 
 export default function ProductTrendTable() {
 

@@ -6,10 +6,10 @@ import { useRouter } from "@/i18n/navigation";
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { useState } from "react";
+import { useState } from "react";
 import { BsBoxSeam } from "react-icons/bs";
-import { FaBarcode, FaBell } from "react-icons/fa";
 import { CiShoppingTag } from "react-icons/ci";
+import { FaBarcode, FaBell } from "react-icons/fa";
 
 import {
   calcDiscountPercentage,
@@ -22,7 +22,6 @@ import { Button } from "../ui/button";
 
 import { CartLocal } from "@/stores/order/cart.store";
 import { useShallow } from "zustand/shallow";
-import { GiCancel } from "react-icons/gi";
 
 
 type ProductInfoProps = {
@@ -37,8 +36,8 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     product.originalPrice
   );
   const [addedToCart, setAddedToCart] = useState<boolean>(false)
-  const [setItem, removeItem, cartItems] = CartLocal.useStore(useShallow(s => [
-    s.setItem, s.removeItem, s.orderDetailsMeta
+  const [setItem, removeItem] = CartLocal.useStore(useShallow(s => [
+    s.setItem, s.removeItem
   ]))
 
   function addToCart() {

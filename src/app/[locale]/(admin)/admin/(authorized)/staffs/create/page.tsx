@@ -20,7 +20,6 @@ import { flattenObject } from "@/lib/utils";
 import { useUserStore } from "@/stores/user.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
 import { RiResetLeftFill } from "react-icons/ri";
@@ -60,7 +59,6 @@ export default function CreateStaffPage() {
     mode: "onSubmit",
   });
 
-  const fileRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
     form.handleSubmit((data) => {

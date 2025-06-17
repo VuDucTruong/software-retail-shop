@@ -2,8 +2,6 @@ import {
   ApiClient,
   OrderStatistic,
   OrderStatisticSchema,
-  ProductTrend,
-  ProductTrendSchema,
   SimpleProductTrend,
   SimpleProductTrendSchema,
   StatisticQuery,

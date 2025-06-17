@@ -1,5 +1,5 @@
 // stores/generic-dialog.store.ts
-import { UserComment } from "@/api";
+import { Category, UserComment } from "@/api";
 import { create } from "zustand";
 
 type DialogState<T> = {
@@ -20,3 +20,4 @@ function createDialogStore<T>() {
 
 
 export const useCommentDialogStore = createDialogStore<UserComment>();
+export const useCategoryDialogStore = createDialogStore<Category>();
