@@ -12,8 +12,11 @@ import Table from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
 import TableHeader from "@tiptap/extension-table-header";
 import TableCell from "@tiptap/extension-table-cell";
+import Youtube from '@tiptap/extension-youtube';
+import Image from "@tiptap/extension-image";
 import "./rich_text.css"
 import { Skeleton } from "../ui/skeleton";
+import Code from "@tiptap/extension-code";
 
 
 
@@ -67,11 +70,20 @@ export default function RichTextEditor({
       TableRow,
       TableHeader,
       TableCell,
+      Youtube.configure({
+        HTMLAttributes: {
+          class: "w-3/4 aspect-video mx-auto",
+        }
+      }),
+      Image.configure({
+        allowBase64: true,
+      }),
+      Code
     ],
     content: content,
     editorProps: {
       attributes: {
-        class: "min-h-[156px] border rounded-md bg-slate-50 py-2 px-3",
+        class: "min-h-[400px] border rounded-md bg-slate-50 py-2 px-3",
       },
     },
     onBlur: ({ editor }) => {

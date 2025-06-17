@@ -4,6 +4,7 @@ import {
   AlignLeft,
   AlignRight,
   Bold,
+  Code2,
   Heading1,
   Heading2,
   Heading3,
@@ -28,6 +29,7 @@ import {
   DropdownMenuTrigger
 } from "../ui/dropdown-menu";
 import { Toggle } from "../ui/toggle";
+import { FaImage, FaYoutube } from "react-icons/fa";
   
   export default function MenuBar({ editor }: { editor: Editor | null }) {
     if (!editor) {
@@ -58,6 +60,11 @@ import { Toggle } from "../ui/toggle";
       {
         icon: <Italic className="size-4" />,
         onClick: () => editor.chain().focus().toggleItalic().run(),
+        preesed: editor.isActive("italic"),
+      },
+      {
+        icon: <Code2 className="size-4" />,
+        onClick: () => editor.chain().focus().toggleCode().run(),
         preesed: editor.isActive("italic"),
       },
       {
@@ -99,6 +106,24 @@ import { Toggle } from "../ui/toggle";
         icon: <Underline className="size-4" />,
         onClick: () => editor.chain().focus().toggleUnderline().run(),
         preesed: editor.isActive("underline"),
+      },
+      {
+        icon: <FaYoutube className="size-4" />,
+        onClick: () => {
+          const url = window.prompt("YouTube URL")?.trim();
+          if (url) {
+            editor.chain().setYoutubeVideo({src: url}).focus().run();
+          }
+        },
+      },
+      {
+        icon: <FaImage className="size-4" />,
+        onClick: () => {
+          const url = window.prompt("Image URL")?.trim();
+          if (url) {
+            editor.chain().focus().setImage({ src: url }).run()
+          }
+        },
       },
       {
         icon: <Link className="size-4" />,

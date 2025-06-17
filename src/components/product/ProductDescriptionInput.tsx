@@ -10,6 +10,7 @@ import {
   FormItem,
   FormMessage
 } from "../ui/form";
+import { RichTextViewer } from "../rich_text/RichTextViewer";
 
 
 type Props = {
@@ -19,12 +20,14 @@ type Props = {
 
 export default function ProductDescriptionInput(props: Props) {
   const { name,hint } = props;
-  const { control,getValues,setValue } = useFormContext();
+  const { control,getValues,setValue,watch } = useFormContext();
   const handleClearText = () =>{
     const currentValue = getValues(name);
-    if (currentValue) {
-      setValue(name, "");
-    }
+    // if (currentValue) {
+    //   setValue(name, "");
+    // }
+    console.log("Clearing text for", name, "Current value:", currentValue);
+    
   }
   return (
         <div
@@ -62,6 +65,12 @@ export default function ProductDescriptionInput(props: Props) {
               </FormItem>
             )}
           />
+
+
+          <RichTextViewer content={watch(name)}/>
         </div>
+
+
+
   );
 }

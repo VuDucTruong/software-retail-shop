@@ -6,11 +6,13 @@ import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import TextAlign from "@tiptap/extension-text-align";
 import Underline from "@tiptap/extension-underline";
+import Youtube from "@tiptap/extension-youtube";
+import Image from "@tiptap/extension-image";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Code from "@tiptap/extension-code";
 
 export const RichTextViewer = ({ content }: { content: string }) => {
-
   const editor = useEditor({
     editable: false,
     extensions: [
@@ -43,6 +45,15 @@ export const RichTextViewer = ({ content }: { content: string }) => {
       TableRow,
       TableHeader,
       TableCell,
+      Youtube.configure({
+        HTMLAttributes: {
+          class: "w-3/4 aspect-video mx-auto",
+        },
+      }),
+      Image.configure({
+              allowBase64: true,
+            }),
+            Code
     ],
     content: content,
     immediatelyRender: false,
