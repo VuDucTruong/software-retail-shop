@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { Role } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function formatNumberWithDots(num: number): string {
@@ -11,37 +11,34 @@ export function formatNumberWithDots(num: number): string {
 }
 
 export function getRandomColor() {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
+  const letters = "0123456789ABCDEF";
+  let color = "#";
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
-  if (color === '#FFFFFF') {
+  if (color === "#FFFFFF") {
     return getRandomColor();
   }
   return color;
 }
 
 export function decodeJWTPayload(token: string) {
-  const payload = token.split('.')[1]; // phần giữa
+  const payload = token.split(".")[1]; // phần giữa
   const decoded = atob(payload); // base64 decode
   return JSON.parse(decoded);
 }
-
 
 export async function urlToFile(url: string): Promise<File> {
   const response = await fetch(url);
   const blob = await response.blob();
   const contentType = blob.type || "image/jpeg";
-  const fileName = url.split('/').pop() || "image.jpg"; // Lấy tên file từ URL
+  const fileName = url.split("/").pop() || "image.jpg"; // Lấy tên file từ URL
   return new File([blob], fileName, { type: contentType });
 }
 
 export function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-
 
 export const getRoleWeight = (role: string) => {
   switch (role) {
@@ -54,7 +51,7 @@ export const getRoleWeight = (role: string) => {
     default:
       return 0;
   }
-}
+};
 
 export function computeIfAbsent<K, V>(
   map: Map<K, V>,
@@ -62,7 +59,10 @@ export function computeIfAbsent<K, V>(
   defaultValue: V | (() => V)
 ): V {
   if (!map.has(key)) {
-    const value = typeof defaultValue === 'function' ? (defaultValue as () => V)() : defaultValue;
+    const value =
+      typeof defaultValue === "function"
+        ? (defaultValue as () => V)()
+        : defaultValue;
     map.set(key, value);
   }
   return map.get(key)!;
@@ -70,7 +70,7 @@ export function computeIfAbsent<K, V>(
 
 export class StringUtils {
   public static hasLength(str: string | null | undefined): boolean {
-    return typeof str === 'string' && str.trim().length > 0;
+    return typeof str === "string" && str.trim().length > 0;
   }
 }
 // export function resolveStore<T, U>(
@@ -101,14 +101,14 @@ export class HashSet {
     keyExtractor: (v: T) => Primitives
   ): T[] {
     const keys = new Set(current.map(keyExtractor));
-    const newItems = coming.filter(item => !keys.has(keyExtractor(item)));
+    const newItems = coming.filter((item) => !keys.has(keyExtractor(item)));
     return [...current, ...newItems];
   }
 
   public static addAll<T>(
-      current: T[],
-      coming: readonly T[],
-      keyExtractor: (v: T) => Primitives
+    current: T[],
+    coming: readonly T[],
+    keyExtractor: (v: T) => Primitives
   ): void {
     const keys = new Set(current.map(keyExtractor));
     for (const item of coming) {
@@ -119,7 +119,14 @@ export class HashSet {
     }
   }
 }
-export type Primitives = | string | number | boolean | null | undefined | symbol | bigint;
+export type Primitives =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | symbol
+  | bigint;
 
 export function flattenObject(data: any): Record<string, any> {
   const record: Record<string, any> = {};
@@ -131,7 +138,7 @@ export function flattenObject(data: any): Record<string, any> {
       value.forEach((item, index) => {
         flatten(item, `${keyPath}[${index}]`);
       });
-    } else if (value !== null && typeof value === 'object') {
+    } else if (value !== null && typeof value === "object") {
       Object.entries(value).forEach(([subKey, subValue]) => {
         const newKey = keyPath ? `${keyPath}.${subKey}` : subKey;
         flatten(subValue, newKey);
@@ -144,3 +151,18 @@ export function flattenObject(data: any): Record<string, any> {
   flatten(data);
   return record;
 }
+
+export const extractDataFromInnerAPI = async (res: Response) => {
+  const reader = res.body?.getReader();
+  const decoder = new TextDecoder();
+  let message = "";
+  while (true) {
+    const { done, value } = await reader!.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value, { stream: true });
+    message = message + chunk;
+  }
+
+  return message;
+};

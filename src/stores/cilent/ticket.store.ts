@@ -36,7 +36,10 @@ const createTicket = async (ticket: Ticket, set: SetState<TicketStore>) => {
   set({ status: "loading", lastAction: "createTicket", error: null });
 
   try {
-    await apiClient.post(ticketUrl , z.any() , ticket)
+    await apiClient.post(ticketUrl , z.any() , ticket, {
+      headers: {},
+      withCredentials: false,
+    })
     set({ status: "success", error: null });
   } catch (error) {
     set({error: ApiError.getMessage(error) , status: "error" });

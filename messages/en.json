@@ -494,6 +494,7 @@
   "support_ticket_description": "We are here to help you with any issues or questions you may have.\nWe will get back to you as soon as possible. Feel free to reach out to us anytime.",
   "your_name": "Your name",
   "your_message": "Your message",
+  "chatbot_welcome_message": "Hello! I am your AI assistant of Phoenix Shop. How can I help you today?",
   "": "",
   "Action": {
     "create": {

@@ -8,8 +8,9 @@ export class ApiClient {
   private instance: AxiosInstance;
 
   private constructor(basePath: string = "") {
+    const baseUrl = basePath !== "" ? basePath : process.env.NEXT_PUBLIC_API_URL || "";
     this.instance = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_API_URL}${basePath}`,
+      baseURL: baseUrl,
       timeout: 60000,
       headers: {
         "Content-Type": "application/json",

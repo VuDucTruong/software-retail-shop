@@ -1,0 +1,41 @@
+
+name: ai-agent-tools
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: my-n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_TUNNEL_URL=http://localhost:5678
+      - N8N_EDITOR_BASE_URL=http://localhost:5678
+      - N8N_CORS_ENABLED=true                              # ✅ Bật CORS
+      - N8N_CORS_ORIGINS=http://localhost:3000            # ✅ Chỉ định Origin
+      - N8N_CORS_ALLOW_CREDENTIALS=false                  # ✅ true nếu bạn dùng credentials
+    volumes:
+      - ./my-n8n-data:/home/node/.n8n
+    networks:
+      - ai-tools
+
+  flowise:
+    image: flowiseai/flowise
+    container_name: my-flowise
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      - FLOWISE_USERNAME=admin
+      - FLOWISE_PASSWORD=1234
+      - PORT=3000
+    volumes:
+      - ./my-flowise-data:/root/.flowise
+    networks:
+      - ai-tools
+
+networks:
+  ai-tools:
+    driver: bridge
