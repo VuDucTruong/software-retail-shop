@@ -17,11 +17,12 @@ import { flattenObject } from "@/lib/utils";
 import { useProductStore } from "@/stores/product.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useShallow } from "zustand/shallow";
 import { RiResetLeftFill } from "react-icons/ri";
+import LoadingPage from "@/components/special/LoadingPage";
 
 export default function CreateProductPage() {
   const pathName = usePathname();
@@ -96,6 +97,15 @@ export default function CreateProductPage() {
       updateProduct(flattenObject(data) as ProductUpdate);
     })();
   };
+
+
+  if(error) {
+    return notFound();
+  }
+
+  if (!selectedProduct) {
+    return LoadingPage();
+  }
 
   return (
     <Card>
@@ -228,7 +238,7 @@ export default function CreateProductPage() {
               control={form.control}
               name="groupId"
               render={({ field }) => (
-                <CommonInputOutline title={t("product_group")}>
+                <CommonInputOutline title={t("product_group")} required>
                   <ProductGroupComboBox field={field} />
                 </CommonInputOutline>
               )}

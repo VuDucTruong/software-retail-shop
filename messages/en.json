@@ -215,7 +215,8 @@
     "error_product_group_name_min": "Product group name must be at least 3 characters long.",
     "error_otp_empty": "OTP must contain 6 digits.",
     "error_product_key_required": "Product key is required.",
-    "error_region_required": "Region is required."
+    "error_region_required": "Region is required.",
+    "error_group_id_required": "Product group is required."
   },
   "ORDER_STATUS": {
     "Pending": "Pending",

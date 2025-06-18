@@ -55,7 +55,7 @@ export default function EditCategoryDialog() {
         description: selectedCategory.description,
       });
     }
-  }, [selectedCategory]);
+  }, [selectedCategory,form]);
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

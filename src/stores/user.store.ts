@@ -68,12 +68,12 @@ const getUsers = async (set: SetState<UserStore>, query: QueryParams) => {
   if(window.location.pathname.includes("/staffs")) {
     query = {
       roles: [Role.ADMIN.value, Role.STAFF.value],
-      ...query,
+      ...useUserStore.getState().queryParams,
       deleted: true,
     };
   } else {
     query = {
-      ...query,
+      ...useUserStore.getState().queryParams,
       roles: [Role.CUSTOMER.value],
       deleted: true,
     };

@@ -54,7 +54,7 @@ export default function ProductGroupComboBox({
       <PopoverContent className="flex px-0" align="start">
         <Command>
           <CommandInput placeholder={t('Search', {x: t('product_group')})} />
-          <CommandGroup>
+          <CommandGroup className="max-h-52 overflow-y-auto">
             {
               options.length > 0 ? (
                 options.map((group) => (

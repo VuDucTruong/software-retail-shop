@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 export default function KeyManagementPage() {
   const t = useTranslations();
@@ -32,17 +32,17 @@ export default function KeyManagementPage() {
   ]));
 
 
-  let pagination:PaginationState = {
+  const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
-  };
+  });
 
-  let sorting:SortingState = [
+  const [sorting, setSorting] = useState<SortingState>([
     {
       id: queryParams?.pageRequest?.sortBy ?? "createdAt",
       desc: queryParams?.pageRequest?.sortDirection === "desc",
     },
-  ];
+  ]);
 
 
   useActionToast({
@@ -55,13 +55,13 @@ export default function KeyManagementPage() {
   useEffect(() => {
     getProductItems({
       pageRequest: {
-        page: 0,
-        size: 10,
-        sortBy: "createdAt",
-        sortDirection: "desc",	
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
     });
-  }, [getProductItems]);
+  }, [pagination, sorting ,getProductItems]);
 
   const cols: ColumnDef<ProductItemDetail>[] = [
     {
@@ -157,15 +157,9 @@ export default function KeyManagementPage() {
           pageCount={productItems?.totalPages ?? 0}
           pagination={pagination}
           onPaginationChange={(updater) => {
-            pagination = typeof updater === "function" ? updater(pagination) : updater;
-            getProductItems({
-              pageRequest: {
-                page: pagination.pageIndex,
-                size: pagination.pageSize,
-                sortBy: sorting[0]?.id,
-                sortDirection: sorting[0]?.desc ? "desc" : "asc",
-              },
-            });
+            setPagination((old) =>
+              typeof updater === "function" ? updater(old) : updater
+            );
           }}
           canSelect
           onDeleteRows={(rows) => {
@@ -173,15 +167,9 @@ export default function KeyManagementPage() {
           }}
           sorting={sorting}
           onSortingChange={(updater) => {
-            sorting = typeof updater === "function" ? updater(sorting) : updater;
-            getProductItems({
-              pageRequest: {
-                page: pagination.pageIndex,
-                size: pagination.pageSize,
-                sortBy: sorting[0]?.id,
-                sortDirection: sorting[0]?.desc ? "desc" : "asc",
-              },
-            });
+            setSorting((prev) =>
+              typeof updater === "function" ? updater(prev) : updater
+            );
           }}
         />
         

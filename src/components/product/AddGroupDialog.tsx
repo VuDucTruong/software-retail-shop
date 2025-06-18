@@ -36,6 +36,7 @@ export default function AddGroupDialog() {
       createProductGroup(data);
       form.reset();
     })();
+
   };
 
   return (
@@ -52,12 +53,7 @@ export default function AddGroupDialog() {
             {t('add_product_group_description')}
           </DialogDescription>
           <Form {...form}>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit();
-              }}
-            >
+            <form>
               <FormField
                 name="name"
                 control={form.control}
@@ -74,14 +70,15 @@ export default function AddGroupDialog() {
               <div className="flex justify-end mt-4">
                 <Button
                   variant="outline"
+                  type="button"
                   onClick={() => {
                     form.reset();
                   }}
                   className="mr-2"
                 >
-                  {t('Cancel')}	
+                  {t('Reset')}	
                 </Button>
-                <Button type="submit" disabled={status === "loading"}>
+                <Button type="button" onClick={handleSubmit} disabled={status === "loading"}>
                   {t("Add")}
                 </Button>
               </div>

@@ -119,8 +119,8 @@ const getFavouriteProducts = async (
     status: "loading",
     error: null,
     queryParams: {
-      ...state.queryParams?.pageRequest,
-      ...query,
+    ...state.queryParams,
+    ...query,
     },
   }));
 

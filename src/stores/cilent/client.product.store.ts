@@ -88,7 +88,7 @@ const getProducts = async (
     const response = await productApiClient.post(
       "/products/searches",
       ProductListSchema,
-      query
+      useClientProductStore.getState().queryParams
     );
     // set products
     set((state) => ({

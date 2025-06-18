@@ -87,10 +87,6 @@ export default function CreateProductPage() {
       <CardContent>
         <Form {...form}>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
             className=" grid grid-cols-3 space-x-4 gap-6"
           >
             {/* Image Upload */}
@@ -201,7 +197,7 @@ export default function CreateProductPage() {
               control={form.control}
               name="groupId"
               render={({ field }) => (
-                <CommonInputOutline title={"Nhóm sản phẩm"}>
+                <CommonInputOutline title={t("product_group")} required>
                   <ProductGroupComboBox field={field} />
                 </CommonInputOutline>
               )}
@@ -213,7 +209,8 @@ export default function CreateProductPage() {
 
             <Button
               className="col-start-3 bg-green-400 hover:bg-green-500"
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
             >
               {t("Create")}
             </Button>

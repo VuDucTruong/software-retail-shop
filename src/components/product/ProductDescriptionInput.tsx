@@ -23,10 +23,9 @@ export default function ProductDescriptionInput(props: Props) {
   const { control,getValues,setValue,watch } = useFormContext();
   const handleClearText = () =>{
     const currentValue = getValues(name);
-    // if (currentValue) {
-    //   setValue(name, "");
-    // }
-    console.log("Clearing text for", name, "Current value:", currentValue);
+    if (currentValue) {
+      setValue(name, "");
+    }
     
   }
   return (

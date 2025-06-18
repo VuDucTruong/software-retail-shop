@@ -18,7 +18,6 @@ type ProductGroupState = {
 
 
 type ProductGroupAction = {
-    resetStatus: () => void;
     getProductGroups: () => Promise<void>;
     createProductGroup: (group: ProductGroupCreate) => Promise<void>;
 }
@@ -43,13 +42,6 @@ const initialState: ProductGroupState = {
 
 export const useProductGroupStore = create<ProductGroupStore>((set) => ({
     ...initialState,
-    resetStatus: () =>
-        set((state) => ({
-            ...state,
-            status: "idle",
-            lastAction: null,
-            error: null,
-        })),
     getProductGroups: () => getProductGroups(set),
     createProductGroup: (group) => createProductGroup(set, group),
 }));

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "@/i18n/navigation";
+import { convertPriceToVND } from "@/lib/currency_helper";
 import { useProductStore } from "@/stores/product.store";
 import {
   ColumnDef,
@@ -75,7 +76,9 @@ export default function ProductManagementPage() {
   const cols: ColumnDef<Product>[] = [
     {
       accessorKey: "id",
-      header: "ID",
+      header: ({ column }) => (
+        <SortingHeader column={column} title={"ID"} />
+      ),
       cell: ({ row }) => {
         return row.original.id;
       },
@@ -127,7 +130,7 @@ export default function ProductManagementPage() {
       accessorKey: "price",
       header: t("Price"),
       cell: ({ row }) => {
-        return row.original.price;
+        return convertPriceToVND(row.original.price);
       },
     },
     {

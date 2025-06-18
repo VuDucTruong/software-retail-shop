@@ -13,7 +13,7 @@ import { getDateLocal } from "@/lib/date_helper";
 import { useCouponStore } from "@/stores/coupon.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
+import { notFound, usePathname } from "next/navigation";
 import { FormEvent, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { RiResetLeftFill } from "react-icons/ri";
@@ -80,6 +80,10 @@ export default function ConponDetailPage() {
 
   if (!selectedCoupon) {
     return LoadingPage();
+  }
+
+  if (error) {
+    return notFound();
   }
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

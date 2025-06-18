@@ -95,8 +95,8 @@ export default function CouponManagementPage() {
             <div>{row.original.value} %</div> : 
             <div>{convertPriceToVND(row.original.value)}</div>
           }
-          <div className="text-muted-foreground">{t("for_min_order_value_x", {x: row.original.minAmount ?? 0})}</div>
-          <div className="text-muted-foreground">{t("max_reduction_x", {x: row.original.maxAppliedAmount ?? "∞"})}</div>
+          <div className="text-muted-foreground">{t("for_min_order_value_x", {x: convertPriceToVND(row.original.minAmount ?? 0)})}</div>
+          <div className="text-muted-foreground">{t("max_reduction_x", {x: convertPriceToVND(row.original.maxAppliedAmount ?? 0)})}</div>
         </div>;
       },
     },

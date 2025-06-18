@@ -78,7 +78,7 @@ const getCategories = async (
     const response = await categoryClient.post(
       "/categories/searches",
       CategoryListSchema,
-      query
+      useCategoryStore.getState().queryParams,
     );
 
     set((prev) => ({...prev, categories: response, status: "success" }));

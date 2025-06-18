@@ -65,7 +65,7 @@ import { FaImage, FaYoutube } from "react-icons/fa";
       {
         icon: <Code2 className="size-4" />,
         onClick: () => editor.chain().focus().toggleCode().run(),
-        preesed: editor.isActive("italic"),
+        preesed: editor.isActive("code"),
       },
       {
         icon: <Strikethrough className="size-4" />,

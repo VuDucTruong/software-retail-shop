@@ -17,6 +17,7 @@ const messages = {
     tags: "Input.error_tags_required",
     categories: "Input.error_categories_required", 
     image: "Input.error_image_required",
+    groupId: "Input.error_group_id_required",
   },
   name: "Input.error_name_required_min_3",
   price: "Input.error_price_required_gt0",
@@ -64,7 +65,7 @@ export const ProductValidation = z.object({
   categoryIds: z.array(z.number()).nonempty({ message: messages.required.categories }),
   tags: z.array(z.string()).nonempty({ message: messages.required.tags }),
   productDescription: ProductDescriptionSchema,
-  groupId: z.number().optional().nullable(),
+  groupId: z.number().nullable().refine((val) => val && val >= 0, {message: messages.required.groupId}),
 });
 
 

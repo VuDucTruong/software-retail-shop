@@ -7,7 +7,6 @@ export const ProductItemSchema = z.object({
     productId: z.number(),
     productKey: z.string(),
     region: z.string().optional(),
-    account: z.object({}).catchall(z.any()).optional().nullable(),
 })
 
 
@@ -30,7 +29,6 @@ export const ProductItemDetailSchema = z.object({
     createdAt: z.string(),
     region: z.string(),
     used: z.boolean(),
-    account: z.object({}).catchall(z.any()).optional().nullable(),
 })
 
 export const ProductItemDetailListSchema = ApiResponseSchema(z.array(ProductItemDetailSchema));
@@ -44,5 +42,4 @@ export const ProductItemCreateSchema = z.object({
     region: z.string().nonempty({
         message: "Input.error_region_required"
     }),
-    account: z.object({}).catchall(z.any()).optional(),
 })

@@ -69,10 +69,10 @@ export function TagMultiSelectField({
             </PopoverTrigger>
           )
         }
-        <PopoverContent className="flex px-0" align="start">
+        <PopoverContent className="flex px-0 " align="start">
           <Command>
             <CommandInput placeholder={t('search_tags')} />
-            <CommandGroup>
+            <CommandGroup className="max-h-52 overflow-y-auto">
               {options.map((item) => (
                 <CommandItem
                   key={item}
