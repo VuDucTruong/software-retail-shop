@@ -38,7 +38,6 @@ export default function CartItem({ data, index, onQtyChange, onDelete }: {
     const { id, product, quantity } = data;
 
     const quantityRef = React.useRef(quantity);
-
     const t = useTranslations();
     const isAvailable = product.quantity > 0;
 
@@ -80,7 +79,7 @@ export default function CartItem({ data, index, onQtyChange, onDelete }: {
                             !viewOnly && (
                                 <QuantityCounter onQtyChange={(qty) => {
                                     onQtyChange(index, qty);
-                                }} quantity={quantityRef} />
+                                }} quantity={quantity} />
                             )
                         }
                         <CommonPriceItem price={product.price} originalPrice={product.originalPrice} />

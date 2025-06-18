@@ -45,7 +45,7 @@ export const PaymentResponseSchema = z.object({
 
 
 export const PaymentCreateSchema = z.object({
-    search: z.number(),
+    orderId: z.number(),
     bankCode: z.enum(BANK_CODES).nullish(),
     note: z.string(),
 })

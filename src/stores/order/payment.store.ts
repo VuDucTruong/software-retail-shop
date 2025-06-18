@@ -2,10 +2,14 @@ import {
     ApiClient,
     BaseAction,
     BaseState,
-    defaultAsyncState, PaymentCreateDomain,
+    defaultAsyncState,
+    PaymentCreateDomain,
     PaymentDomain,
-    PaymentResponseSchema, PaymentStatus, PaymentStatusSchema,
-    PaymentUrlRequest, setLoadAndDo
+    PaymentResponseSchema,
+    PaymentStatus,
+    PaymentStatusSchema,
+    PaymentUrlRequest,
+    setLoadAndDo
 } from "@/api";
 import {create} from "zustand";
 import {z} from "zod";
@@ -28,7 +32,7 @@ export namespace PaymentSingle {
 
     const initialState: State = {
         ...defaultAsyncState,
-        search: 0,
+        orderId: 0,
         bankCode: '',
         note: ''
     }
@@ -49,13 +53,13 @@ export namespace PaymentSingle {
          */
         async getPaymentUrl(): Promise<string> {
             const domainCreate = get()
-            if (domainCreate.search <= 0)
+            if (domainCreate.orderId <= 0)
                 throw new ApiError(400, "invalid payment request")
             /// TODO: bind env when deploy callBackUrl
             const request: PaymentUrlRequest = {
                 note: domainCreate.note,
                 bankCode: domainCreate.bankCode,
-                search: domainCreate.search,
+                orderId: domainCreate.orderId,
                 callbackUrl: `${window.location.origin}/cart/payment`
             }
             console.log("request is", request)
@@ -68,7 +72,7 @@ export namespace PaymentSingle {
         setOrderId(orderId: number) {
             set(s => ({
                 ...s,
-                search: orderId
+                orderId: orderId
             }))
         },
         setBankCode(bankCode: typeof BANK_CODES[number]) {
@@ -116,7 +120,6 @@ export namespace PaymentCallback {
                     detailCode: response?.status ?? '',
                     detailMessage: response?.detailMessage ?? '',
                     note: response?.note ?? '',
-                    search: response?.orderId ?? 0,
                     paymentMethod: response?.note ?? "VNPAY",
                     profileId: response?.profileId ?? 0,
                 }

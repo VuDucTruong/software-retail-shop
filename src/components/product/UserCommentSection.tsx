@@ -18,7 +18,7 @@ export default function UserCommentSection({ productId }: Props) {
 
   useEffect(() => {
     getCommentsByProductId(productId);
-  }, [getCommentsByProductId, productId]);
+  }, []);
 
   const handleSubmitComment = (data: string) => {
     createComment({

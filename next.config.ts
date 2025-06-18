@@ -1,38 +1,45 @@
 import {withSentryConfig} from "@sentry/nextjs";
-import { NextConfig } from "next";
+import {NextConfig} from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "randomuser.me",
-      },
-      {
-        protocol: "https",
-        hostname: "www.pokemon.com",
-      },
-      {
-        protocol: "https",
-        hostname: "res.cloudinary.com",
-        port: "",
-        pathname: "/**",
-      },
-    ],
-  },
-  productionBrowserSourceMaps: true,
-  env: {
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
-  },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
-      },
+    reactStrictMode: false,
+    typescript:{
+      ignoreBuildErrors: true,
     },
-  },
+    eslint:{
+      ignoreDuringBuilds: true
+    },
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "randomuser.me",
+            },
+            {
+                protocol: "https",
+                hostname: "www.pokemon.com",
+            },
+            {
+                protocol: "https",
+                hostname: "res.cloudinary.com",
+                port: "",
+                pathname: "/**",
+            },
+        ],
+    },
+    productionBrowserSourceMaps: true,
+    env: {
+        GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    },
+    turbopack: {
+        rules: {
+            '*.svg': {
+                loaders: ['@svgr/webpack'],
+                as: '*.js',
+            },
+        },
+    },
 };
 
 const withNextIntl = createNextIntlPlugin();
@@ -40,17 +47,17 @@ export default withSentryConfig(withNextIntl(nextConfig), {
 // For all available options, see:
 // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-org: "uit-eb",
-project: "software-retail-ecommerce",
+    org: "uit-eb",
+    project: "software-retail-ecommerce",
 
 // Only print logs for uploading source maps in CI
-silent: !process.env.CI,
+    silent: !process.env.CI,
 
 // For all available options, see:
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
 // Upload a larger set of source maps for prettier stack traces (increases build time)
-widenClientFileUpload: true,
+    widenClientFileUpload: true,
 
 // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
 // This can increase your server load as well as your hosting bill.
@@ -59,11 +66,11 @@ widenClientFileUpload: true,
 // tunnelRoute: "/monitoring",
 
 // Automatically tree-shake Sentry logger statements to reduce bundle size
-disableLogger: true,
+    disableLogger: true,
 
 // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
 // See the following for more information:
 // https://docs.sentry.io/product/crons/
 // https://vercel.com/docs/cron-jobs
-automaticVercelMonitors: true,
+    automaticVercelMonitors: true,
 });

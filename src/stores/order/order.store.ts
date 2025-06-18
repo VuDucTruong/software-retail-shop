@@ -116,14 +116,15 @@ export namespace OrderCustomer {
         removeCartItem(index: number) {
             const rs = get().cartItems;
             rs.splice(index, 1);
-            set({cartItems: rs})
+
+            set({cartItems: rs, ...Calculations.calculateAmounts(rs, get().coupon)})
         },
         setQty(index: number, qty: number) {
             if (index < 0 || index > get().cartItems.length)
                 return;
             const newOds = [...get().cartItems]
             newOds[index].quantity = qty;
-            set({cartItems: newOds})
+            set({cartItems: newOds, ...Calculations.calculateAmounts(newOds, get().coupon)})
         },
         applyMail(string: string): string | undefined {
             const parsedMail = MailSchema.safeParse(string);
