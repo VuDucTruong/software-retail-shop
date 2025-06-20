@@ -47,18 +47,40 @@ export function ErrorPage({errorMessage, onRetry}: { errorMessage?: string | nul
     )
 }
 
-export function StatusDependentRenderer({status, error, children}: {
+type StatusDependentType = {
     status: LoadingStatus,
-    error: string | null |undefined,
-    children: ReactNode
-}): ReactNode {
-    if (status === 'loading')
+    error: string | null | undefined,
+    children: ReactNode,
+    altLoading?: ReactNode | null
+    altError?: ReactNode | null
+}
+
+export function StatusDependentRenderer({status, error, children, altLoading, altError}
+                                        : StatusDependentType): ReactNode {
+    if (status === 'loading') {
+        if (altLoading)
+            return <>{altLoading}</>
         return <LoadingPage/>
-    else if (status === 'error')
+    } else if (status === 'error') {
+        if (altError)
+            return <>{altError}</>
         return <ErrorPage errorMessage={error}/>
+    }
     return (
         <>
             {children}
         </>
     )
 }
+
+// export function SkeletonAlternateRenderer({status, error, children, alternate}:
+//                                               StatusDependentType & AlternateChildren): ReactNode {
+//     if (status === 'loading') {
+//         return <>{alternate}</>
+//     }
+//     if (status === 'error')
+//         return <ErrorPage errorMessage={error}/>
+//     return (
+//         <>{children}</>
+//     )
+// }

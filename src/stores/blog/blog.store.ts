@@ -1,14 +1,16 @@
 import {
     ApiClient,
     BaseAction,
-    BaseState,
+    BaseState, BLOG_FALL_BACK,
     BlogCreateRequest,
     BlogDomainType,
     BlogPaginationResponseSchema,
     BlogResponseSchema,
     BlogResponseType,
+    BlogsGenre1Responses,
     BlogUpdateRequest,
-    defaultAsyncState, DisposeAction,
+    defaultAsyncState,
+    DisposeAction,
     Pageable,
     QueryParams,
     setLoadAndDo
@@ -17,7 +19,6 @@ import {z} from "zod";
 
 
 import {create} from "zustand";
-import {GenreDomain} from "./genre.store";
 import {useUserStore} from "@/stores/user.store";
 import {fallbackProfile} from "@/lib/fallback_values";
 import {flattenObject} from "@/lib/utils";
@@ -56,7 +57,7 @@ const mapFromResponseToDomain = (response: BlogResponseType): BlogDomainType => 
 export namespace BlogSingle {
     export type State = BaseState & {
         id: null | number,
-        blog: BlogDomainType | null,
+        blog: BlogDomainType,
     }
 
     export type Action = BaseAction & DisposeAction & {
@@ -69,7 +70,7 @@ export namespace BlogSingle {
     export const initialState: State = {
         ...defaultAsyncState,
         id: null,
-        blog: null
+        blog: BLOG_FALL_BACK
     }
 
     export const useStore = create<Store>((set, get) => ({
@@ -155,6 +156,7 @@ export namespace BlogMany {
                     setLoadAndDo(set, run, lastAction)
                 },
                 getBlogs: async (query) => {
+
                     const response = await BlogApis.getBlogs(query);
                     const domains: BlogDomainType[] = response.data.map(b => mapFromResponseToDomain(b));
                     set({
@@ -195,6 +197,41 @@ export namespace BlogMany {
 
 }
 
+export namespace BlogGroups {
+    type State = BaseState & {
+        g1IdToBlogs: Record<number, BlogDomainType[]>;
+    }
+
+    type Action = BaseAction & DisposeAction & {
+        getBlogsPartitionByG1Id: (g1Ids: number[]) => Promise<void>;
+    }
+
+    const initialState: State = {
+        g1IdToBlogs: {},
+        ...defaultAsyncState,
+    }
+    type Store = State & Action
+
+    export const useStore = create<Store>((set, get) => ({
+        ...initialState,
+        proxyLoading(run, lastAction = null) {
+            setLoadAndDo(set, run, lastAction)
+        },
+        clean() {
+            set({...initialState})
+        },
+        async getBlogsPartitionByG1Id(g1Ids) {
+            const blogsPartitionedResponses = await BlogApis.getPartitionByG1Ids(g1Ids);
+            const g1IdToBlogs: Record<number, BlogDomainType[]> = {};
+            blogsPartitionedResponses.forEach(partition => {
+                g1IdToBlogs[partition.id] = partition.blogs.map(b => mapFromResponseToDomain(b));
+            })
+            set({g1IdToBlogs: g1IdToBlogs})
+        }
+    }))
+
+
+}
 
 export namespace BlogApis {
 
@@ -221,6 +258,14 @@ export namespace BlogApis {
         }
     }
 
+    export const getPartitionByG1Ids = async (g1Ids: number[]) => {
+        return await apiClient.get("/genres/blogs", BlogsGenre1Responses, {
+            params: {
+                ids: g1Ids.join(","),
+                size: 10
+            }
+        })
+    }
     // set({ status: "loading", lastAction: "create" });
     export const createBlog = async (data: BlogCreateRequest): Promise<BlogResponseType> => {
         return apiClient.post("/blogs", BlogResponseSchema, flattenObject(data), {
@@ -237,7 +282,7 @@ export namespace BlogApis {
         });
     }
     export const deleteById = async (id: number) => {
-        const response = await apiClient.delete(`/blogs/${id}`, z.number(), );
+        const response = await apiClient.delete(`/blogs/${id}`, z.number(),);
         if (response < 1) {
             throw new ApiError("No blogs deleted");
         }

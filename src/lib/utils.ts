@@ -71,6 +71,21 @@ export class StringUtils {
     public static hasLength(str: string | null | undefined): boolean {
         return typeof str === 'string' && str.trim().length > 0;
     }
+    public static isNum(value: unknown): value is string {
+        return typeof value === 'string' && value.trim() !== '' && !isNaN(Number(value));
+    }
+    public static isArray(value: unknown): value is unknown[] {
+        return Array.isArray(value);
+    }
+}
+export class CollectionUtils {
+    public static isEmpty(arr: unknown[] | null | undefined): boolean {
+        return !Array.isArray(arr) || arr.length === 0;
+    }
+
+    public static isNotEmpty<T>(arr: T[] | null | undefined): arr is T[] {
+        return Array.isArray(arr) && arr.length > 0;
+    }
 }
 
 // export function resolveStore<T, U>(

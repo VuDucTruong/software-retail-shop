@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     eslint:{
       ignoreDuringBuilds: true
     },
+    content:['./src/**/*.{js,ts,jsx,tsx}'],
     images: {
         remotePatterns: [
             {
