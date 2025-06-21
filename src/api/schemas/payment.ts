@@ -1,13 +1,13 @@
-import { z } from "zod";
-import { UserProfileSchema } from "@/api";
-import { BANK_CODES } from "@/lib/bankcodes";
-
+import {undefined, z} from "zod";
+import {UserProfileSchema, zEnumDefault, zNumDefault, zStrDefault} from "@/api";
+import {BANK_CODES} from "@/lib/bankcodes";
 
 
 export const PaymentSchema = z.object({
     id: z.number(),
     status: z.string(),
     orderId: z.number(),
+    deletedAt: z.string(),
     user: UserProfileSchema,
     paymentMethod: z.string(),
     amount: z.number(),
@@ -17,12 +17,10 @@ export const PaymentSchema = z.object({
     cardInfo: z.string(),
     createAt: z.string(),
 })
+export const PaymentStatusSchema = z.enum(['SUCCESS', 'PENDING', 'FAILED'] )
 
-export const PaymentStatusSchema = z.enum(['SUCCESS','PENDING', 'FAILED'])
-
- const PaymentBaseSchema=  z.object({
+const PaymentBaseSchema = z.object({
     id: z.number(),
-    orderId: z.number(),
     profileId: z.number(),
     status: PaymentStatusSchema.nullish(),
     paymentMethod: z.string().nullish(),
@@ -31,6 +29,20 @@ export const PaymentStatusSchema = z.enum(['SUCCESS','PENDING', 'FAILED'])
     note: z.string(),
     cardType: z.string().nullish(),
 })
+export const PaymentResponseSchema = z.object({
+    id: zNumDefault(0),
+    orderId: zNumDefault(0),
+    profileId: zNumDefault(0),
+    status: zEnumDefault(PaymentStatusSchema,'PENDING'),
+    paymentMethod: zStrDefault(''),
+    detailCode: zStrDefault(''),
+    detailMessage: zStrDefault(''),
+    note: z.string(),
+    cardType: zStrDefault(''),
+})
+
+
+
 
 export const PaymentCreateSchema = z.object({
     orderId: z.number(),
@@ -43,8 +55,5 @@ export const PaymentUrlRequestSchema = PaymentCreateSchema.extend({
 })
 
 
-
-
 export const PaymentDomainSchema = PaymentBaseSchema.extend({})
 
-export const PaymentResponseSchema = PaymentBaseSchema.partial();

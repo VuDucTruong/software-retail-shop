@@ -1,18 +1,16 @@
 "use client";
-import { useEffect } from "react";
+import {useEffect} from "react";
 
 import ProductInfo from "@/components/product/ProductInfo";
 import RelatedProductSection from "@/components/product/RelatedProductSection";
 import UserCommentSection from "@/components/product/UserCommentSection";
-import { RichTextViewer } from "@/components/rich_text/RichTextViewer";
+import {RichTextViewer} from "@/components/rich_text/RichTextViewer";
 import LoadingPage from "@/components/special/LoadingPage";
-import { usePathname } from "@/i18n/navigation";
-import { useClientProductStore } from "@/stores/cilent/client.product.store";
-import { get } from "lodash";
-import { useTranslations } from "next-intl";
-import { notFound } from "next/navigation";
-
-
+import {usePathname} from "@/i18n/navigation";
+import {useClientProductStore} from "@/stores/cilent/client.product.store";
+import {get} from "lodash";
+import {useTranslations} from "next-intl";
+import {notFound} from "next/navigation";
 
 
 export default function DetailProductPage() {
@@ -31,8 +29,9 @@ export default function DetailProductPage() {
   );
 
   useEffect(() => {
-    getProductBySlug(slug);
-  }, [getProductBySlug, slug]);
+    if(getProductBySlug!==undefined)
+        getProductBySlug(slug);
+  }, []);
 
 
   if(error && lastAction === null) {
@@ -44,7 +43,6 @@ export default function DetailProductPage() {
       <LoadingPage />
     </div>;
   }
-  console.log("selectedProduct", selectedProduct);
 
   return (
     <div className="flex flex-col gap-6">

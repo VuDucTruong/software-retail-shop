@@ -10,15 +10,17 @@ import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTri
 import {BlogMany} from "@/stores/blog/blog.store";
 import { getDateTimeLocal } from "@/lib/date_helper";
 
-export default function BlogFilterSheet() {
-  const t = useTranslations();
-  const getBlogs = BlogMany.useStore((state) => state.getBlogs);
-  const FormSchema = z.object({
+const FormSchema = z.object({
     search: z.string().optional(),
     genres: z.array(z.string()).optional(),
     publishedFrom: z.string().optional(),
     publishedTo: z.string().optional(),
-  });
+});
+
+export default function BlogFilterSheet() {
+  const t = useTranslations();
+  const getBlogs = BlogMany.useStore((s) => s.getBlogs);
+/// TODO: query by genreIds not genres (names)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

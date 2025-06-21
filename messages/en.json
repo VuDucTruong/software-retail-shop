@@ -1,4 +1,5 @@
 {
+  "full_name": "full name",
   "all_categories": "All Categories",
   "what_copyright_software": "What is copyright software?",
   "introduce_shop": "Introduce shop",
@@ -438,6 +439,7 @@
   "Region": "Region",
   "please_select_product": "Please select a product",
   "products": "products",
+  "orders": "orders",
   "Selected": "Selected",
   "search_tags": "Search tags",
   "select_tags": "Select tags",

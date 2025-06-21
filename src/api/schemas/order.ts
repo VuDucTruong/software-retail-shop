@@ -1,25 +1,35 @@
 import {z} from "zod";
-import {CouponSchema, makeNullable, PaymentDomainSchema, PaymentResponseSchema} from "@/api";
+import {
+    ApiResponseSchema,
+    CouponSchema,
+    PaymentDomainSchema,
+    PaymentResponseSchema,
+    UserProfileDetailedSchema, zArrayDefault,
+    zNumDefault,
+    zStrDefault
+} from "@/api";
 
+const EMPTY_IMG = 'empty_img.png'
 
-export const OrderStatusSchema = z.enum(['PENDING','PROCESSING','RETRY_1','FAILED_MAIL','COMPLETED','FAILED'])
+export const OrderStatusSchema = z.enum(['PENDING', 'PROCESSING', 'RETRY_1', 'FAILED_MAIL', 'COMPLETED', 'FAILED'])
 
 
 /// order details
 export const OrderDetailProductSchema = z.object({
-    id: z.number(),
-    name: z.string(),
+    id: zNumDefault(0),
+    name: zStrDefault(EMPTY_IMG),
     imageUrl: z.string().nullable(),
-    slug: z.string(),
-    quantity: z.number(),
-    tags: z.array(z.string())
+    slug: zStrDefault(EMPTY_IMG),
+    quantity: zNumDefault(0),
+    tags: z.array(zStrDefault(EMPTY_IMG)),
+    keys: zArrayDefault(zStrDefault(''), []),
 })
 
 export const OrderDetailSchema = z.object({
-    id: z.number(),
-    price: z.number(),
-    originalPrice: z.number(),
-    quantity: z.number(),
+    id: zNumDefault(0),
+    price: zNumDefault(0),
+    originalPrice: zNumDefault(0),
+    quantity: zNumDefault(0),
     product: OrderDetailProductSchema,
 });
 ///END order details
@@ -28,13 +38,30 @@ export const OrderDetailSchema = z.object({
 export const OrderSchema = z.object({
     id: z.number(),
     createdAt: z.string(),
-    deletedAt: z.string(),
+    deletedAt: z.string().nullable(),
+    profile: UserProfileDetailedSchema,
     orderStatus: OrderStatusSchema.nullable(),
     coupon: CouponSchema,
-    totalValue: z.number(),
-    payment: PaymentDomainSchema,
+    originalAmount: z.number(),
+    amount: z.number(),
+    payment: PaymentDomainSchema.nullable(),
     details: z.array(OrderDetailSchema),
+    sentMail: z.string(),
 });
+
+export const OrderResponseSchema = z.object({
+    id: zNumDefault(0),
+    createdAt: zStrDefault(new Date().toISOString()),
+    deletedAt: z.string().nullish(),
+    profile: UserProfileDetailedSchema.nullish(),
+    coupon: CouponSchema.nullish(),
+    status: OrderStatusSchema.nullish(),
+    originalAmount: zNumDefault(0),
+    amount: zNumDefault(0),
+    payment: PaymentResponseSchema.nullish(),
+    details: z.array(OrderDetailSchema).nullish(),
+    sentMail: zStrDefault(''),
+})
 
 export const OrderDetailCreateSchema = z.object({
     productId: z.number().positive(),
@@ -48,11 +75,6 @@ export const OrderCreateSchema = z.object({
 })
 
 
-export const OrderResponseSchema = makeNullable(OrderSchema.omit({
-    details: true,
-    orderStatus: true,
-})).partial().extend({
-    details: z.array(makeNullable(OrderDetailSchema)).nullish(),
-    payment: PaymentResponseSchema.nullish(),
-    status: OrderStatusSchema.nullish(),
-})
+export const OrderPageSchema = ApiResponseSchema(z.array(
+    OrderResponseSchema
+))

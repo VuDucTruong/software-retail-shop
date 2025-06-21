@@ -193,3 +193,9 @@ export const regions = [
   { label: "SEA", value: "sea" },
   { label: "CN", value: "cn" },
 ]
+
+export const BLOG_Q_PARAMS = {
+  search: 'search',
+  page: 'page',
+  genres: 'g2s'
+}

@@ -33,7 +33,7 @@ export default function Page() {
         if (orderDetailsMeta) {
             initialize(orderDetailsMeta)
         }
-    }, [initialize, orderDetailsMeta])
+    }, [])
 
     useEffect(() => {
         if (loadMeta)

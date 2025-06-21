@@ -2,10 +2,14 @@ import {
     ApiClient,
     BaseAction,
     BaseState,
-    defaultAsyncState, PaymentCreateDomain,
+    defaultAsyncState,
+    PaymentCreateDomain,
     PaymentDomain,
-    PaymentResponseSchema, PaymentStatus, PaymentStatusSchema,
-    PaymentUrlRequest, setLoadAndDo
+    PaymentResponseSchema,
+    PaymentStatus,
+    PaymentStatusSchema,
+    PaymentUrlRequest,
+    setLoadAndDo
 } from "@/api";
 import {create} from "zustand";
 import {z} from "zod";
@@ -116,7 +120,6 @@ export namespace PaymentCallback {
                     detailCode: response?.status ?? '',
                     detailMessage: response?.detailMessage ?? '',
                     note: response?.note ?? '',
-                    orderId: response?.orderId ?? 0,
                     paymentMethod: response?.note ?? "VNPAY",
                     profileId: response?.profileId ?? 0,
                 }

@@ -16,7 +16,6 @@ import {BankSelector} from "@/components/payment/BankSelector";
 import {BANK_CODES} from "@/lib/bankcodes";
 import {PaymentCommon, PaymentSingle} from "@/stores/order/payment.store";
 import parseStatus = PaymentCommon.parseStatus;
-import {PaymentStatus} from "@/api";
 
 type CardItemsProps = {
     handleNextStep: () => void;
@@ -188,7 +187,7 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                         />
                         <TextWithValue
                             text={"Discount 15%"}
-                            value={"-" + applied + "VND"}
+                            value={"- " + applied + "VND"}
                         />
                         <div className="w-full h-px bg-border"></div>
                         <TextWithValue text={t("total_amount_payable")} value={net + " VND"}/>

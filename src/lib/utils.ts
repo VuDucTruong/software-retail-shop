@@ -1,13 +1,13 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { Role } from "./constants";
+import {type ClassValue, clsx} from "clsx";
+import {twMerge} from "tailwind-merge";
+import {Role} from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function formatNumberWithDots(num: number): string {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function getRandomColor() {
@@ -23,9 +23,9 @@ export function getRandomColor() {
 }
 
 export function decodeJWTPayload(token: string) {
-  const payload = token.split(".")[1]; // phần giữa
-  const decoded = atob(payload); // base64 decode
-  return JSON.parse(decoded);
+    const payload = token.split('.')[1]; // phần giữa
+    const decoded = atob(payload); // base64 decode
+    return JSON.parse(decoded);
 }
 
 export async function urlToFile(url: string): Promise<File> {
@@ -54,25 +54,38 @@ export const getRoleWeight = (role: string) => {
 };
 
 export function computeIfAbsent<K, V>(
-  map: Map<K, V>,
-  key: K,
-  defaultValue: V | (() => V)
+    map: Map<K, V>,
+    key: K,
+    defaultValue: V | (() => V)
 ): V {
-  if (!map.has(key)) {
-    const value =
-      typeof defaultValue === "function"
-        ? (defaultValue as () => V)()
-        : defaultValue;
-    map.set(key, value);
-  }
-  return map.get(key)!;
+    if (!map.has(key)) {
+        const value = typeof defaultValue === 'function' ? (defaultValue as () => V)() : defaultValue;
+        map.set(key, value);
+    }
+    return map.get(key)!;
 }
 
 export class StringUtils {
-  public static hasLength(str: string | null | undefined): boolean {
-    return typeof str === "string" && str.trim().length > 0;
-  }
+    public static hasLength(str: string | null | undefined): boolean {
+        return typeof str === 'string' && str.trim().length > 0;
+    }
+    public static isNum(value: unknown): value is string {
+        return typeof value === 'string' && value.trim() !== '' && !isNaN(Number(value));
+    }
+    public static isArray(value: unknown): value is unknown[] {
+        return Array.isArray(value);
+    }
 }
+export class CollectionUtils {
+    public static isEmpty(arr: unknown[] | null | undefined): boolean {
+        return !Array.isArray(arr) || arr.length === 0;
+    }
+
+    public static isNotEmpty<T>(arr: T[] | null | undefined): arr is T[] {
+        return Array.isArray(arr) && arr.length > 0;
+    }
+}
+
 // export function resolveStore<T, U>(
 //   useStore: UseBoundStore<StoreApi<T>>,
 //   selector: (store: T) => U
@@ -83,73 +96,68 @@ export class StringUtils {
 //   return [setState, getState, selected];
 // }
 export class HashSet {
-  public static add<T>(
-    current: readonly T[],
-    item: T,
-    keyExtractor: (v: T) => Primitives
-  ): T[] {
-    const keys = new Set(current.map(keyExtractor));
-    if (!keys.has(keyExtractor(item))) {
-      return [...current, item];
+    public static add<T>(
+        current: readonly T[],
+        item: T,
+        keyExtractor: (v: T) => Primitives
+    ): T[] {
+        const keys = new Set(current.map(keyExtractor));
+        if (!keys.has(keyExtractor(item))) {
+            return [...current, item];
+        }
+        return [...current];
     }
-    return [...current];
-  }
 
-  public static addAllReturnNew<T>(
-    current: readonly T[],
-    coming: readonly T[],
-    keyExtractor: (v: T) => Primitives
-  ): T[] {
-    const keys = new Set(current.map(keyExtractor));
-    const newItems = coming.filter((item) => !keys.has(keyExtractor(item)));
-    return [...current, ...newItems];
-  }
-
-  public static addAll<T>(
-    current: T[],
-    coming: readonly T[],
-    keyExtractor: (v: T) => Primitives
-  ): void {
-    const keys = new Set(current.map(keyExtractor));
-    for (const item of coming) {
-      if (!keys.has(keyExtractor(item))) {
-        current.push(item);
-        keys.add(keyExtractor(item));
-      }
+    public static addAllReturnNew<T>(
+        current: readonly T[],
+        coming: readonly T[],
+        keyExtractor: (v: T) => Primitives
+    ): T[] {
+        const keys = new Set(current.map(keyExtractor));
+        const newItems = coming.filter(item => !keys.has(keyExtractor(item)));
+        return [...current, ...newItems];
     }
-  }
+
+    public static addAll<T>(
+        current: T[],
+        coming: readonly T[],
+        keyExtractor: (v: T) => Primitives
+    ): void {
+        const keys = new Set(current.map(keyExtractor));
+        for (const item of coming) {
+            if (!keys.has(keyExtractor(item))) {
+                current.push(item);
+                keys.add(keyExtractor(item));
+            }
+        }
+    }
 }
-export type Primitives =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | symbol
-  | bigint;
+
+export type Primitives = | string | number | boolean | null | undefined | symbol | bigint;
+
 
 export function flattenObject(data: any): Record<string, any> {
-  const record: Record<string, any> = {};
+    const record: Record<string, any> = {};
 
-  const flatten = (value: any, keyPath?: string) => {
-    if (value instanceof File || value instanceof Blob) {
-      record[keyPath!] = value;
-    } else if (Array.isArray(value)) {
-      value.forEach((item, index) => {
-        flatten(item, `${keyPath}[${index}]`);
-      });
-    } else if (value !== null && typeof value === "object") {
-      Object.entries(value).forEach(([subKey, subValue]) => {
-        const newKey = keyPath ? `${keyPath}.${subKey}` : subKey;
-        flatten(subValue, newKey);
-      });
-    } else if (value !== undefined && value !== null) {
-      record[keyPath!] = value;
-    }
-  };
+    const flatten = (value: any, keyPath?: string) => {
+        if (value instanceof File || value instanceof Blob) {
+            record[keyPath!] = value;
+        } else if (Array.isArray(value)) {
+            value.forEach((item, index) => {
+                flatten(item, `${keyPath}[${index}]`);
+            });
+        } else if (value !== null && typeof value === 'object') {
+            Object.entries(value).forEach(([subKey, subValue]) => {
+                const newKey = keyPath ? `${keyPath}.${subKey}` : subKey;
+                flatten(subValue, newKey);
+            });
+        } else if (value !== undefined && value !== null) {
+            record[keyPath!] = value;
+        }
+    };
 
-  flatten(data);
-  return record;
+    flatten(data);
+    return record;
 }
 
 export const extractDataFromInnerAPI = async (res: Response) => {

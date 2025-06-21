@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 import {
   ProductCreateSchema,
   ProductDescriptionSchema,
@@ -11,6 +11,7 @@ import {
   ProductItemSchema,
   ProductListSchema,
   ProductMetadataSchema,
+  ProductResponseSchema,
   ProductSchema,
   ProductTrendSchema,
   ProductUpdateSchema,
@@ -32,3 +33,5 @@ export type ProductItemDetailList = z.infer<typeof ProductItemDetailListSchema>;
 export type ProductItemCreate = z.infer<typeof ProductItemCreateSchema>;
 export type ProductTrend = z.infer<typeof ProductTrendSchema>;
 export type SimpleProductTrend = z.infer<typeof SimpleProductTrendSchema>;
+export type ProductResponseType = z.infer<typeof ProductResponseSchema>
+

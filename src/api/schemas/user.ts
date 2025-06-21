@@ -1,5 +1,13 @@
 import { z } from "zod";
-import { ApiResponseSchema, DateSchema, DatetimeSchema, ImageSchema, PasswordSchema } from "./common";
+import {
+    ApiResponseSchema,
+    DateSchema,
+    DatetimeSchema,
+    ImageSchema,
+    PasswordSchema,
+    zNumDefault,
+    zStrDefault
+} from "./common";
 
 
 const messages = {
@@ -60,3 +68,7 @@ export const UserProfileUpdateSchema = z.object({
 }).partial();
 
 export const UserListSchema = ApiResponseSchema(z.array(UserSchema));
+export const UserProfileDetailedSchema = UserProfileSchema.extend({
+    accountId: zNumDefault(0),
+    email: zStrDefault("21522458@gm.uit.edu.vn")
+})

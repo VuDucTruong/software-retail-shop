@@ -1,23 +1,32 @@
 import {
     ApiClient,
-    ApiResponseSchema,
     BaseAction,
     BaseState,
     CartMetaData,
-    Coupon, CouponSchema,
+    Coupon,
+    COUPON_FALL_BACK,
+    CouponSchema,
     defaultAsyncState,
+    DisposeAction,
+    Order,
+    ORDER_FALL_BACK,
     OrderCreateRequest,
     OrderDetail,
     OrderDetailResponse,
+    OrderPageSchema,
     OrderResponse,
-    OrderResponseSchema, PaymentDomain,
-    ProductDescriptionSchema,
-    ProductItemSchema,
+    OrderResponseSchema,
+    Pageable,
+    PaymentDomain,
+    ProductResponsePage,
+    ProductResponseType,
     QueryParams,
-    setLoadAndDo
+    setLoadAndDo,
+    USER_PROFILE_DETAILED_FALL_BACK
 } from "@/api";
 import {create} from "zustand/index";
-import {z} from "zod";
+import {undefined, z} from "zod";
+import {ApiError} from "@/api/client/base_client";
 
 
 export namespace OrderCustomer {
@@ -56,7 +65,6 @@ export namespace OrderCustomer {
         ...defaultAsyncState,
         payment: {
             id: 0,
-            orderId: 0,
             profileId: 0,
             status: null,
             paymentMethod: "",
@@ -97,7 +105,8 @@ export namespace OrderCustomer {
                         originalPrice: p.originalPrice ?? 0,
                         slug: p.slug ?? '',
                         tags: p.tags ?? [],
-                        imageUrl: p.imageUrl ?? "/empty_img.png"
+                        imageUrl: p.imageUrl ?? "/empty_img.png",
+                        keys: []
                     }
                 }
             })
@@ -107,14 +116,15 @@ export namespace OrderCustomer {
         removeCartItem(index: number) {
             const rs = get().cartItems;
             rs.splice(index, 1);
-            set({cartItems: rs})
+
+            set({cartItems: rs, ...Calculations.calculateAmounts(rs, get().coupon)})
         },
         setQty(index: number, qty: number) {
             if (index < 0 || index > get().cartItems.length)
                 return;
             const newOds = [...get().cartItems]
             newOds[index].quantity = qty;
-            set({cartItems: newOds})
+            set({cartItems: newOds, ...Calculations.calculateAmounts(newOds, get().coupon)})
         },
         applyMail(string: string): string | undefined {
             const parsedMail = MailSchema.safeParse(string);
@@ -158,36 +168,111 @@ export namespace OrderCustomer {
             if (!response?.details)
                 return;
             const details: OrderDetailResponse[] = response.details as OrderDetailResponse[] ?? [];
-            const orderDetails: OrderDetail[] = Mappers.fromResponseToDomain(details);
+            const orderDetails: OrderDetail[] = Mappers.fromOderDetailResponseToDomain(details);
             const coupon = response?.coupon;
-            set({cartItems: orderDetails, ...Calculations.calculateAmounts(orderDetails, coupon), })
+            set({cartItems: orderDetails, ...Calculations.calculateAmounts(orderDetails, coupon),})
         }
     }));
 
 }
+
+export namespace OrderMany {
+    type State = BaseState & Pageable & {
+        orders: Order[],
+    }
+    type Action = BaseAction & DisposeAction & {
+        getOrders: (query: QueryParams) => Promise<void>;
+        deleteOrders(ids: number[]): Promise<void>;
+        deleteById(id: number): Promise<void>
+    }
+    type Store = State & Action;
+    const initialValues: State = {
+        orders: [],
+        totalInstances: 0,
+        totalPages: 0,
+        currentPage: 0,
+        ...defaultAsyncState,
+        queryParams: {
+            pageRequest: {
+                page: 0,
+                size: 10,
+                sortBy: "createdAt",
+                sortDirection: "desc",
+            },
+        }
+    }
+
+    export const useStore = create<Store>((set, get) => {
+        const x: Store = {
+            ...initialValues,
+            proxyLoading(run, lastAction = null) {
+                setLoadAndDo(set, run, lastAction);
+            },
+            async deleteById(id: number) {
+                if (id <= 0)
+                    return;
+                const count = await OrderApis.deleteById(id);
+                if (count < 1) {
+                    throw new ApiError(`${count} đơn hàng được xóa`)
+                }
+                const newOs = get().orders
+                    .filter(o => o.id !== id);
+                set({orders: newOs})
+            },
+            async getOrders(query: QueryParams): Promise<void> {
+                const orderPage = await OrderApis.searchOrders(query)
+                const domains: Order[] = orderPage.data.map(o => Mappers.fromOrderResponseToDomain(o))
+                set({orders: domains, ...orderPage, queryParams: query})
+            },
+            async deleteOrders(ids: number[]): Promise<void> {
+                if (ids?.length === 0)
+                    return;
+
+                const count = await OrderApis.deleteOrders(ids);
+                if (count != ids.length) {
+                    throw new ApiError(`${count} đơn hàng được xóa`)
+                }
+                const newOs = get().orders
+                    .filter(o => ids.some(id => id !== o.id));
+                set({orders: newOs})
+            },
+            clean(): void {
+                set({...initialValues})
+            },
+        }
+        return x;
+    })
+}
+
+export namespace OrderSingle {
+    type State = BaseState & {
+        order: Order
+    }
+    type Action = BaseAction & {
+        getBydId(id: number): Promise<void>
+    }
+    const initialValue: State = {
+        ...defaultAsyncState,
+        order: ORDER_FALL_BACK,
+    }
+    type Store = State & Action;
+
+    export const useStore = create<Store>((set, get) => ({
+        ...initialValue,
+        proxyLoading(run, lastAction = null) {
+            setLoadAndDo(set, run, lastAction);
+        },
+        async getBydId(id: number) {
+            const orderResponse = await OrderApis.getById(id);
+            const order: Order = Mappers.fromOrderResponseToDomain(orderResponse);
+            set({order: order,})
+        }
+    }))
+
+}
+
 namespace OrderApis {
     const client = ApiClient.getInstance();
-
-    /// TODO: REFACTOR THIS
-    const ProductResponseSchema = z.object({
-        id: z.number(),
-        productDescription: ProductDescriptionSchema.nullish(),
-        slug: z.string().nullish(),
-        name: z.string().nullish(),
-        imageUrl: z.string().nullish(),
-        tags: z.array(z.string()).nullish(),
-        favorite: z.boolean().nullish(),
-        groupId: z.number().nullish(),
-        price: z.number().nullish(),
-        originalPrice: z.number().nullish(),
-        quantity: z.number().nullish(),
-        status: z.string().nullish(),
-        // variants: ProductMetadataSchema,
-        productItems: z.array(ProductItemSchema).nullish()
-    })
-    const ProductResponseSchemaList = z.array(ProductResponseSchema)
-    const ProductResponsePage = ApiResponseSchema(ProductResponseSchemaList)
-    type ProductResponseType = z.infer<typeof ProductResponseSchema>
 
     export const getProductByIdIn = async (ids: number[]): Promise<ProductResponseType[]> => {
         const requestPagination: QueryParams = {
@@ -216,25 +301,58 @@ namespace OrderApis {
     export const getCouponByCode = (code: string): Promise<Coupon> => {
         return client.get(`/coupons`, CouponSchema, {params: {code: code}})
     }
+
+    export function searchOrders(query: QueryParams) {
+        return client.post("/orders/searches", OrderPageSchema, query);
+    }
+
+    export function deleteOrders(ids: number[]) {
+        return client.delete("/orders", z.number(), {params: {ids: ids.join(",")}});
+    }
+
+    export function deleteById(id: number) {
+        return client.delete(`/orders/${id}`, z.number(),)
+    }
 }
 
 namespace Mappers {
-    export function fromResponseToDomain(responseDetails: OrderDetailResponse[]): OrderDetail[] {
-        return responseDetails.map(od => ({
-            id: od.id ?? 0,
-            originalPrice: od.originalPrice ?? 0,
-            price: od.price ?? 0,
-            product: od.product ?? {
+
+    export function fromOderDetailResponseToDomain(responseDetails: (OrderDetailResponse | null)[]): OrderDetail[] {
+        return responseDetails.filter((od): od is OrderDetailResponse => od !== null).map(od => ({
+            id: od?.id ?? 0,
+            originalPrice: od?.originalPrice ?? 0,
+            price: od?.price ?? 0,
+            product: od?.product ?? {
                 id: 0,
                 name: "unknown",
                 slug: "unknown",
                 imageUrl: "/empty_img.png",
                 originalPrice: 0,
                 price: 0,
+                keys: od.product.keys ?? [],
+                quantity: 0,
+                tags: []
             },
             productId: od.product.id ?? 0,
             quantity: od.quantity ?? 0
         }))
+    }
+
+    export function fromOrderResponseToDomain(source: OrderResponse) {
+        const target: Order = {
+            id: source.id,
+            coupon: source.coupon ?? COUPON_FALL_BACK,
+            createdAt: source.createdAt,
+            deletedAt: source.deletedAt ?? null,
+            details: fromOderDetailResponseToDomain(source.details ?? []),
+            orderStatus: source.status ?? 'PENDING',
+            payment: source.payment ?? null,
+            profile: source?.profile ?? USER_PROFILE_DETAILED_FALL_BACK,
+            amount: source.amount,
+            originalAmount: source.originalAmount,
+            sentMail: source.sentMail
+        }
+        return target;
     }
 }
 
@@ -280,6 +398,6 @@ namespace Calculations {
         const applied = Calculations.calculateApplied(gross, coupon);
         const net = gross - applied;
         return {gross, applied, net};
-    };
+    }
 }
 
