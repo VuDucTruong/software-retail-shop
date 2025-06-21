@@ -2,6 +2,7 @@ import {z} from "zod";
 import {
     ApiResponseSchema,
     CouponSchema,
+    DatetimeSchema,
     PaymentDomainSchema,
     PaymentResponseSchema,
     UserProfileDetailedSchema, zArrayDefault,
@@ -37,8 +38,8 @@ export const OrderDetailSchema = z.object({
 
 export const OrderSchema = z.object({
     id: z.number(),
-    createdAt: z.string(),
-    deletedAt: z.string().nullable(),
+    createdAt: DatetimeSchema,
+    deletedAt: DatetimeSchema,
     profile: UserProfileDetailedSchema,
     orderStatus: OrderStatusSchema.nullable(),
     coupon: CouponSchema,
@@ -51,8 +52,8 @@ export const OrderSchema = z.object({
 
 export const OrderResponseSchema = z.object({
     id: zNumDefault(0),
-    createdAt: zStrDefault(new Date().toISOString()),
-    deletedAt: z.string().nullish(),
+    createdAt: DatetimeSchema,
+    deletedAt: DatetimeSchema.nullish(),
     profile: UserProfileDetailedSchema.nullish(),
     coupon: CouponSchema.nullish(),
     status: OrderStatusSchema.nullish(),

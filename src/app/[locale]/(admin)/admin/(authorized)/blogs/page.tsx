@@ -16,6 +16,7 @@ import {useEffect, useState} from "react";
 import {useShallow} from "zustand/shallow";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {GenreDomain} from "@/stores/blog/genre.store";
+import { TbChecklist } from "react-icons/tb";
 
 const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:number[])=>string, handleDelete: (id: number) => void): ColumnDef<BlogDomainType>[] => {
 
@@ -56,7 +57,10 @@ const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:num
             accessorKey: "publishedAt",
             header: t('publish_date'),
             cell: ({row}) => {
-                return row.original.publishedAt;
+                return row.original.publishedAt ?? <div className="flex flex-col items-center justify-center">
+                    <div className="text-red-500 font-medium">{t('not_published')}</div>
+                    <div className="italic text-muted-foreground">{t('not_published_description')}</div>
+                </div>;
             },
         },
         {
@@ -70,6 +74,27 @@ const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:num
                                 <Eye/>
                             </Button>
                         </Link>
+
+                        {!row.original.publishedAt ? null : (
+                            <CommonConfirmDialog
+                                triggerName={
+                                    <Button
+                                        size="icon"
+                                        className="w-8 h-8"
+                                    >
+                                        <TbChecklist />
+                                    </Button>
+                                }
+                                title={"Xác nhận xuất bản"}
+                                description={
+                                    "Bạn có chắc chắn muốn xuất bản bài viết này không?"
+                                }
+                                onConfirm={() => {
+                                    // TODO: Implement publish logic
+                                }}
+                            />
+                        )}
+
                         {row.original.deletedAt ? null : (
                             <CommonConfirmDialog
                                 triggerName={
@@ -88,6 +113,8 @@ const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:num
                                 onConfirm={() => handleDelete(row.original.id)}
                             />
                         )}
+
+                        
                     </div>
                 );
             },

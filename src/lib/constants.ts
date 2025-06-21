@@ -66,11 +66,6 @@ export const userOptions = [
     href: "/user/orders",
   },
   {
-    icon: MdPayment,
-    title: "transaction_history",
-    href: "/user/transactions",
-  },
-  {
     icon: MdSecurity,
     title: "pass_security",
     href: "/user/security",
@@ -137,12 +132,6 @@ export const adminMenu: AdminMenu = {
         title: "Orders",
         url: "/admin/orders",
         icon: LuShoppingBag,
-        items: [],
-      },
-      {
-        title: "Transactions",
-        url: "/admin/transactions",
-        icon: FaMoneyCheck,
         items: [],
       },
       {

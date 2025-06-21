@@ -223,8 +223,10 @@
     "Pending": "Pending",
     "Processing": "Processing",
     "Completed": "Completed",
-    "Failed": "Failed"
+    "Failed": "Failed",
+    "Canceled": "Canceled"
   },
+  "failed_mail": "Failed Mail",
   "TOAST": {
     "wishlist_item_deleted": "Product removed from wishlist",
     "wishlist_item_added": "Product added to wishlist",
@@ -572,5 +574,11 @@
       "success": "Support ticket sent successfully.\nWe will respond to you within 24 hours.",
       "error": "Failed to send support ticket."
     }
-  }
+  },
+
+  "Order": "Order",
+  "order_management": "Order Management",
+  "not_published": "Not published yet",
+  "not_published_description": "This blog need to be approved by admin before it can be published"
+  
 }

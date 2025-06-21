@@ -1,6 +1,6 @@
 "use client";
 
-import {Order, OrderStatus, PAYMENT_FALLBACK} from "@/api";
+import {Order} from "@/api";
 import {convertStatus, StatusBadge} from "@/components/common/StatusBadge";
 import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
@@ -15,9 +15,11 @@ import {OrderMany} from "@/stores/order/order.store";
 import {useShallow} from "zustand/shallow";
 import {useActionToast} from "@/hooks/use-action-toast";
 import {OrdersFilterForm} from "@/components/orders/OrdersFilterForm";
+import { convertPriceToVND } from "@/lib/currency_helper";
+import { TbMailUp } from "react-icons/tb";
 
 
-const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: number) => void): ColumnDef<Order>[] => {
+const genCols = (t: ReturnType<typeof useTranslations>, handleResendMail: (id: number) => void): ColumnDef<Order>[] => {
 
     return [
         {
@@ -52,7 +54,7 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
             accessorKey: "Amount",
             header: t("Amount"),
             cell: ({row}) => {
-                return row.original.amount + ' VND';
+                return convertPriceToVND(row.original.amount ?? 0);
             },
         },
         {
@@ -77,22 +79,21 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
                     <>
                         <div className="flex items-end gap-2">
                             <TransactionDetailDialog orderId={row.original.id}/>
-                            {row.original.deletedAt ? null : (
+                            {convertStatus(row.original.orderStatus ?? "PENDING") !== 'failed_mail' ? null : (
                                 <CommonConfirmDialog
                                     triggerName={
                                         <Button
-                                            variant={"destructive"}
+                                            variant={"outline"}
                                             size="icon"
-                                            className="w-8 h-8"
                                         >
-                                            <Trash2/>
+                                            <TbMailUp />
                                         </Button>
                                     }
-                                    title={"Cấm người dùng"}
+                                    title={"Bạn có muốn gửi lại email thông báo không?"}
                                     description={
                                         "Bạn có chắc chắn muốn xóa đơn hàng này không?"
                                     }
-                                    onConfirm={() => handleDelete(row.original.id)}
+                                    onConfirm={() => handleResendMail(row.original.id)}
                                 />
                             )}
                         </div>
@@ -107,7 +108,7 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
 
 export default function TransactionMangementPage() {
     const t = useTranslations();
-    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders, deleteOrderById] =
+    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders] =
         OrderMany.useStore(
             useShallow((state) => [
                 state.status,
@@ -147,18 +148,18 @@ export default function TransactionMangementPage() {
         });
     }, []);
 
-    function handleDelete(id: number) {
-        deleteOrderById(id);
+    function handleResendMail(id: number) {
+        
     }
 
-    const cols = genCols(t, handleDelete);
+    const cols = genCols(t, handleResendMail);
 
 
     return (
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                    <h2>{t("transaction_management")}</h2>
+                    <h2>{t("order_management")}</h2>
                     <div className="flex items-center gap-2">
                         <OrdersFilterForm mode={'all'}/>
                     </div>
@@ -166,6 +167,9 @@ export default function TransactionMangementPage() {
             </CardHeader>
             <CardContent>
                 <CommmonDataTable
+                isLoading={orders === null}
+                    totalCount={totalInstances ?? 0}
+                    objectName={t('Order')}
                     columns={cols}
                     data={orders}
                     pageCount={totalPages ?? 0}

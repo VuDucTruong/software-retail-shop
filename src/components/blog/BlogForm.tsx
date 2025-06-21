@@ -18,6 +18,7 @@ import { GenreDomain } from "@/stores/blog/genre.store";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {getDateTimeLocal} from "@/lib/date_helper";
+import { TbChecklist } from "react-icons/tb";
 
 export const BlogFormSchema = RequiredSchema.extend({
     title: z.string().min(1).max(40),
@@ -106,7 +107,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
     };
     useEffect(() => {
         form.reset(initialValues);
-    }, [initialValues, form]);
+    }, [form]);
 
     // const imagePreview = ImagePreview(form);
 
@@ -149,8 +150,15 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
     return (
         <Card>
             <CardHeader>
-                <CardTitle>
+                <CardTitle className="flex items-center justify-between">
                     <h2 className="capitalize">{uiTitles.formTitle}</h2>
+                    {
+                        mode === 'update' ? (
+                            <Button className="bg-green-400 hover:bg-green-500" onClick={() => {}}>
+                                  <TbChecklist />   {("Xác nhận xuất bản")} 
+                            </Button>
+                        ) : null
+                    }
                 </CardTitle>
             </CardHeader>
             <CardContent>

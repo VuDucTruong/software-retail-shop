@@ -4,6 +4,7 @@ import { Clock, Loader2, CheckCircle2, XCircle, PackageCheck, PackageX, Ban, Rss
 import { useTranslations } from "next-intl"
 import {ColumnDef} from "@tanstack/react-table";
 import {Order, OrderStatus} from "@/api";
+import { LuMailWarning } from "react-icons/lu";
 
 export function convertStatus(os: OrderStatus) {
   switch (os) {
@@ -14,7 +15,7 @@ export function convertStatus(os: OrderStatus) {
     case "COMPLETED":
       return "completed";
     case 'FAILED_MAIL':
-      return 'canceled'
+      return 'failed_mail'
     case 'RETRY_1':
       return 'canceled'
     case 'PROCESSING':
@@ -83,6 +84,11 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
       icon: <Rss className="h-3 w-3 mr-1" />,
       label: "Unused",
       styles: "bg-green-100 text-green-800 hover:bg-green-100/80 dark:bg-green-900 dark:text-green-100",
+    },
+    failed_mail: {
+      icon: <LuMailWarning className="h-3 w-3 mr-1" />,
+      label: "failed_mail",
+      styles: "bg-red-100 text-red-800 hover:bg-red-100/80 dark:bg-red-900 dark:text-red-100",
     },
   }
 

@@ -4,7 +4,6 @@ import { CategorySchema } from "../category";
 import { ProductDescriptionSchema } from "./product_description";
 import { ProductMetadataSchema } from "./product_metadata";
 import { ApiResponseSchema, ImageSchema } from "../common";
-import {ProductItemSchema} from "@/api";
 
 // const hasWindow = typeof window !== "undefined";
 
@@ -108,7 +107,6 @@ export const ProductResponseSchema = z.object({
   quantity: z.number().nullish(),
   status: z.string().nullish(),
   // variants: ProductMetadataSchema,
-  productItems: z.array(ProductItemSchema).nullish()
 })
 export const ProductResponseSchemaList = z.array(ProductResponseSchema)
 export const ProductResponsePage = ApiResponseSchema(ProductResponseSchemaList)
