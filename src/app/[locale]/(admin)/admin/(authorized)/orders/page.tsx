@@ -8,18 +8,21 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {ColumnDef, PaginationState, SortingState} from "@tanstack/react-table";
 import {useTranslations} from "next-intl";
 import {useEffect, useState} from "react";
-import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import {Button} from "@/components/ui/button";
-import {Trash2} from "lucide-react";
 import {OrderMany} from "@/stores/order/order.store";
 import {useShallow} from "zustand/shallow";
 import {useActionToast} from "@/hooks/use-action-toast";
 import {OrdersFilterForm} from "@/components/orders/OrdersFilterForm";
-import { convertPriceToVND } from "@/lib/currency_helper";
-import { TbMailUp } from "react-icons/tb";
+import {convertPriceToVND} from "@/lib/currency_helper";
+import OrderResendMailDialogContent from "@/components/transactions/OrderResendMailDialogContent";
+import {toast} from "sonner";
+import {ApiError} from "@/api/client/base_client";
 
+type GenColsParams = {
+    t: ReturnType<typeof useTranslations>;
+    handleResendMail: (id: number, email: string) => void
+}
 
-const genCols = (t: ReturnType<typeof useTranslations>, handleResendMail: (id: number) => void): ColumnDef<Order>[] => {
+const genCols = ({t, handleResendMail} : GenColsParams): ColumnDef<Order>[] => {
 
     return [
         {
@@ -80,21 +83,8 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleResendMail: (id: n
                         <div className="flex items-end gap-2">
                             <TransactionDetailDialog orderId={row.original.id}/>
                             {convertStatus(row.original.orderStatus ?? "PENDING") !== 'failed_mail' ? null : (
-                                <CommonConfirmDialog
-                                    triggerName={
-                                        <Button
-                                            variant={"outline"}
-                                            size="icon"
-                                        >
-                                            <TbMailUp />
-                                        </Button>
-                                    }
-                                    title={"Bạn có muốn gửi lại email thông báo không?"}
-                                    description={
-                                        "Bạn có chắc chắn muốn xóa đơn hàng này không?"
-                                    }
-                                    onConfirm={() => handleResendMail(row.original.id)}
-                                />
+                                <OrderResendMailDialogContent email={row.original.sentMail}
+                                 onSubmit={(email) => handleResendMail(row.original.id, email ?? "",)}/>
                             )}
                         </div>
 
@@ -108,19 +98,13 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleResendMail: (id: n
 
 export default function TransactionMangementPage() {
     const t = useTranslations();
-    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders] =
+    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders, deleteById, resendMail] =
         OrderMany.useStore(
             useShallow((state) => [
-                state.status,
-                state.lastAction,
-                state.error,
-                state.orders,
-                state.queryParams,
-                state.totalInstances,
-                state.totalPages,
-                state.getOrders,
-                state.deleteOrders,
-                state.deleteById,
+                state.status, state.lastAction, state.error, state.orders,
+                state.queryParams, state.totalInstances, state.totalPages,
+                state.getOrders, state.deleteOrders,
+                state.deleteById, state.resendMail
             ])
         );
 
@@ -148,11 +132,18 @@ export default function TransactionMangementPage() {
         });
     }, []);
 
-    function handleResendMail(id: number) {
-        
-    }
 
-    const cols = genCols(t, handleResendMail);
+    function handleResendMail(id: number, email: string) {
+        resendMail(id,email, true).then(()=>{
+            toast.success("Đã thêm vào hàng chờ xử lý, vui lòng chờ một chút để email được gửi")
+        }).catch(e=>{
+            if(e instanceof ApiError){
+                const apiError = e as ApiError;
+                toast.error("Có vấn đề khi gửi mail",{description:apiError.message})
+            }
+        })
+    }
+    const cols = genCols({t, handleResendMail});
 
 
     return (
@@ -167,7 +158,7 @@ export default function TransactionMangementPage() {
             </CardHeader>
             <CardContent>
                 <CommmonDataTable
-                isLoading={orders === null}
+                    isLoading={orders === null}
                     totalCount={totalInstances ?? 0}
                     objectName={t('Order')}
                     columns={cols}

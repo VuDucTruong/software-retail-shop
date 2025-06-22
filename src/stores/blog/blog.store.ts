@@ -1,7 +1,8 @@
 import {
     ApiClient,
     BaseAction,
-    BaseState, BLOG_FALL_BACK,
+    BaseState,
+    BLOG_FALL_BACK,
     BlogCreateRequest,
     BlogDomainType,
     BlogPaginationResponseSchema,
@@ -44,32 +45,34 @@ const fallbackBlog: BlogDomainType = {
 const mapFromResponseToDomain = (response: BlogResponseType): BlogDomainType => {
     return {
         id: response.id,
+        approvedAt: response.approvedAt,
+        deletedAt: response.deletedAt,
         title: response.title ?? 'ok',
         subtitle: response.subtitle ?? 'anonymouse',
         content: response.content ?? '',
         author: response.author ?? {id: 1, fullName: 'anonymous', createdAt: '', imageUrl: ''},
         genre2Ids: response.genre2Ids || [],
         imageUrl: response.imageUrl,
-        publishedAt: new Date().toISOString()
+        publishedAt: response.publishedAt
     }
 }
 
 export namespace BlogSingle {
     export type State = BaseState & {
-        id: null | number,
         blog: BlogDomainType,
     }
 
     export type Action = BaseAction & DisposeAction & {
         getById: (id: number, includeDeleted?: boolean) => Promise<void>
+        approveBlog(id: number, isApproved: boolean): Promise<void>
         createBlog: (data: BlogCreateRequest) => Promise<void>;
         updateBlog: (data: BlogUpdateRequest) => Promise<void>;
         /// may be delete as well;
     }
+
     export type Store = State & Action;
     export const initialState: State = {
         ...defaultAsyncState,
-        id: null,
         blog: BLOG_FALL_BACK
     }
 
@@ -93,14 +96,22 @@ export namespace BlogSingle {
             }
             set({blog: domain})
         },
+        async approveBlog(id: number, isApproved: boolean) {
+            const response = await BlogApis.approveById(id, isApproved);
+            if (response < 1)
+                throw new ApiError("No Changes made");
+            const domain = {...get().blog};
+            domain.approvedAt = isApproved ? new Date().toLocaleString() : null;
+            set({blog: domain})
+        },
         updateBlog: async (request: BlogUpdateRequest) => {
             const response = await BlogApis.updateBlogById(request);
 
             let imageUrl: string;
             if (request.image)
-                imageUrl = response?.imageUrl ?? "/empty_image.png"
+                imageUrl = response?.imageUrl ?? "/empty_img.png"
             else
-                imageUrl = get().blog?.imageUrl ?? "/empty_image.png"
+                imageUrl = get().blog?.imageUrl ?? "/empty_img.png"
 
             const domain: BlogDomainType = {
                 author: get()?.blog?.author || fallbackProfile,
@@ -127,6 +138,8 @@ export namespace BlogMany {
 
     type Action = BaseAction & DisposeAction & {
         getBlogs: (query: QueryParams) => Promise<void>;
+        approveBlog(id: number, action: boolean): Promise<void>
+
         deleteBlogs: (ids: number[]) => Promise<void>;
         deleteById: (id: number) => Promise<void>,
         getById: (id: number, includeDeleted: boolean) => Promise<void>
@@ -155,8 +168,16 @@ export namespace BlogMany {
                 proxyLoading(run, lastAction) {
                     setLoadAndDo(set, run, lastAction)
                 },
+                async approveBlog(id: number, isApproved: boolean) {
+                    const response = await BlogApis.approveById(id, isApproved);
+                    if (response < 1)
+                        throw new ApiError("No Changes made");
+                    const updatedBlogs = get().blogs.map(blog =>
+                        blog.id === id ? {...blog, approvedAt: isApproved ? new Date().toLocaleString() : null} : blog
+                    );
+                    set({blogs: updatedBlogs})
+                },
                 getBlogs: async (query) => {
-
                     const response = await BlogApis.getBlogs(query);
                     const domains: BlogDomainType[] = response.data.map(b => mapFromResponseToDomain(b));
                     set({
@@ -166,6 +187,7 @@ export namespace BlogMany {
                         currentPage: response.currentPage
                     })
                 },
+
                 deleteBlogs: async (ids) => {
                     await BlogApis.deleteBlogs(ids)
                     const {blogs, totalInstances, totalPages, currentPage} = get();
@@ -286,6 +308,14 @@ export namespace BlogApis {
         if (response < 1) {
             throw new ApiError("No blogs deleted");
         }
+    }
+
+    export async function approveById(id: number, approved: boolean) {
+        return await apiClient.put(`/blogs/approval/${id}`, z.number(), undefined, {
+            params: {
+                approved: approved
+            }
+        })
     }
 
 }

@@ -1,5 +1,12 @@
 import {z} from "zod";
-import {ApiResponseSchema, DatetimeSchema, zArrayDefault, zNumDefault, zStrDefault} from "./common";
+import {
+    ApiResponseSchema,
+    DatetimeNoFallbackSchema,
+    DatetimeSchema,
+    zArrayDefault,
+    zNumDefault,
+    zStrDefault
+} from "./common";
 import {UserProfileSchema} from "./user";
 
 const hasWindow = typeof window !== "undefined";
@@ -7,11 +14,12 @@ const hasWindow = typeof window !== "undefined";
 export const BlogSchema = z.object({
     id: z.number(),
     title: z.string(),
-    deletedAt: z.string().nullish(),
+    publishedAt: DatetimeSchema,
+    deletedAt: DatetimeNoFallbackSchema.nullish(),
+    approvedAt: DatetimeNoFallbackSchema.nullish(),
     subtitle: z.string(),
     author: UserProfileSchema,
     genre2Ids: z.array(z.number()),
-    publishedAt: DatetimeSchema,
     imageUrl: z.preprocess((value) => {
         if (value) return value;
         else return "/empty_img.png";
@@ -24,8 +32,9 @@ export const BlogResponseSchema = z.object({
     title: zStrDefault(''),
     subtitle: zStrDefault(''),
     author: UserProfileSchema.nullish(),
-    deletedAt: DatetimeSchema.nullish(),
-    publishedAt: DatetimeSchema.nullish(),
+    publishedAt: DatetimeSchema,
+    deletedAt: DatetimeNoFallbackSchema.nullish(),
+    approvedAt: DatetimeNoFallbackSchema.nullish(),
     imageUrl: z.preprocess((value) => {
         if (value) return value;
         else return "/empty_img.png";
@@ -47,19 +56,10 @@ export const BlogCreateSchema = z.object({
     genreIds: z.array(z.number()).min(1, "At least one genre is required"),
     publishedAt: z.string(),
     image: hasWindow ? z.instanceof(File).nullable() : z.any(),
-    content: z.string().min(2, "Content must be at least 2 characters long").max(10000, "Content must be at most 10000 characters long"),
+    content: z.string().min(2, "Content must be at least 2 characters long").max(5000, "Content must be at most 5000 characters long"),
 })
 
 export const BlogUpdateSchema = BlogCreateSchema.extend({
     id: z.number(),
-})
-
-export const GenreSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-    genres: z.array(z.object({
-        id: z.number(),
-        name: z.string(),
-    })),
 })
 

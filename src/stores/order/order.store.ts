@@ -181,6 +181,7 @@ export namespace OrderMany {
         orders: Order[],
     }
     type Action = BaseAction & DisposeAction & {
+        resendMail: (id: number, email: string, isFail: boolean) => Promise<void>
         getOrders: (query: QueryParams) => Promise<void>;
         deleteOrders(ids: number[]): Promise<void>;
         deleteById(id: number): Promise<void>
@@ -205,6 +206,9 @@ export namespace OrderMany {
     export const useStore = create<Store>((set, get) => {
         const x: Store = {
             ...initialValues,
+            async resendMail(id, email, isFail) {
+                await OrderApis.resendMailProductKeys(id, email, isFail);
+            },
             proxyLoading(run, lastAction = null) {
                 setLoadAndDo(set, run, lastAction);
             },
@@ -306,6 +310,14 @@ namespace OrderApis {
         return client.post("/orders/searches", OrderPageSchema, query);
     }
 
+    export function resendMailProductKeys(id: number, email: string, isFail: boolean) {
+        return client.put(`/orders/mails`, z.undefined().nullish(), {orderId: id, email: email}, {
+            params: {
+                isFail: isFail
+            }
+        })
+    }
+
     export function deleteOrders(ids: number[]) {
         return client.delete("/orders", z.number(), {params: {ids: ids.join(",")}});
     }
@@ -342,6 +354,7 @@ namespace Mappers {
         const target: Order = {
             id: source.id,
             coupon: source.coupon ?? COUPON_FALL_BACK,
+            reason: source.reason ?? null,
             createdAt: source.createdAt,
             deletedAt: source.deletedAt ?? null,
             details: fromOderDetailResponseToDomain(source.details ?? []),

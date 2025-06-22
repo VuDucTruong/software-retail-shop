@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ApiResponseSchema, DatetimeSchema } from "./common";
+import {ApiResponseSchema, DatetimeNoFallbackSchema, DatetimeSchema} from "./common";
 
 
 export const AuthorSchema = z.object({
@@ -19,7 +19,7 @@ export const CommentSchemaWithoutReplies = z.object({
     }
     , z.string()),
     createdAt: DatetimeSchema,
-    deletedAt: DatetimeSchema.nullable(),
+    deletedAt: DatetimeNoFallbackSchema.nullable(),
     content: z.string().nullable(),
     parentCommentId: z.number().nullable().optional(),
     product: z.object({

@@ -1,6 +1,6 @@
 "use client";
 
-import {BlogDomainType, Order} from "@/api";
+import {BlogDomainType} from "@/api";
 import BlogFilterSheet from "@/components/blog/BlogFilterSheet";
 import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import SortingHeader from "@/components/common/table/SortingHeader";
@@ -16,9 +16,25 @@ import {useEffect, useState} from "react";
 import {useShallow} from "zustand/shallow";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {GenreDomain} from "@/stores/blog/genre.store";
-import { TbChecklist } from "react-icons/tb";
+import {TbChecklist} from "react-icons/tb";
+import {GrUndo} from "react-icons/gr";
 
-const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:number[])=>string, handleDelete: (id: number) => void): ColumnDef<BlogDomainType>[] => {
+
+type GenColsParams = {
+    t: ReturnType<typeof useTranslations>,
+    toGenreDisplay: (ids: number[]) => string,
+    handleDelete: (id: number) => void,
+    handleApprove: (id: number) => void,
+    handleUndoApprove: (id: number) => void
+}
+
+const genCols = ({
+                     t,
+                     toGenreDisplay,
+                     handleDelete,
+                     handleApprove,
+                     handleUndoApprove
+                 }: GenColsParams): ColumnDef<BlogDomainType>[] => {
 
     return [
         {
@@ -67,6 +83,11 @@ const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:num
             accessorKey: "actions",
             header: "",
             cell: ({row}) => {
+                const approvedAt = row.original.approvedAt
+                const approved = typeof approvedAt !== 'undefined' && approvedAt !== null
+                const approvedText = approved ? "Hủy " : "";
+                const deletedAt = row.original.deletedAt
+                const deleted = typeof deletedAt !== 'undefined' && deletedAt !== null
                 return (
                     <div className="flex items-center gap-2">
                         <Link href={`/admin/blogs/${row.original.id}`}>
@@ -74,47 +95,39 @@ const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:num
                                 <Eye/>
                             </Button>
                         </Link>
-
-                        {!row.original.publishedAt ? null : (
-                            <CommonConfirmDialog
-                                triggerName={
-                                    <Button
-                                        size="icon"
-                                        className="w-8 h-8"
-                                    >
-                                        <TbChecklist />
-                                    </Button>
+                        {<CommonConfirmDialog
+                            triggerName={
+                                <Button
+                                    size="icon"
+                                    className={`w-8 h-8 ${approved ? 'bg-muted text-foreground' : 'bg-red-100 text-green-600 hover:bg-red-200'}`}>
+                                    {approved ? <GrUndo /> : <TbChecklist strokeWidth={2.5} />}
+                                </Button>
+                            }
+                            title={`Xác nhận ${approvedText} xuất bản?`}
+                            description={`Bạn có chắc chắn muốn ${approvedText} xuất bản bài viết này không?`}
+                            onConfirm={() => {
+                                if (approved) {
+                                    handleUndoApprove(row.original.id)
+                                } else {
+                                    handleApprove(row.original.id)
                                 }
-                                title={"Xác nhận xuất bản"}
-                                description={
-                                    "Bạn có chắc chắn muốn xuất bản bài viết này không?"
-                                }
-                                onConfirm={() => {
-                                    // TODO: Implement publish logic
-                                }}
-                            />
-                        )}
-
-                        {row.original.deletedAt ? null : (
-                            <CommonConfirmDialog
-                                triggerName={
-                                    <Button
+                            }}
+                        />}
+                        {<CommonConfirmDialog
+                            triggerName={
+                                <Button disabled={deleted}
                                         variant={"destructive"}
                                         size="icon"
-                                        className="w-8 h-8"
-                                    >
-                                        <Trash2/>
-                                    </Button>
-                                }
-                                title={"Cấm người dùng"}
-                                description={
-                                    "Bạn có chắc chắn muốn xóa đơn hàng này không?"
-                                }
-                                onConfirm={() => handleDelete(row.original.id)}
-                            />
-                        )}
+                                        className="w-8 h-8">
+                                    <Trash2/>
+                                </Button>
+                            }
+                            title={"Xóa bài viết"}
+                            description={"Bạn có chắc chắn muốn xóa bài viết này không?"}
+                            onConfirm={() => handleDelete(row.original.id)}
+                        />
+                        }
 
-                        
                     </div>
                 );
             },
@@ -125,22 +138,16 @@ const genCols = (t: ReturnType<typeof useTranslations>, toGenreDisplay: (ids:num
 export default function BlogManagementPage() {
     const t = useTranslations();
 
-    const [status, lastAction, error, blogs, queryParams, totalInstances, totalPages, getBlogs, deleteBlogs, deleteBlogById] =
+    const [status, lastAction, error, blogs, queryParams, totalInstances, totalPages, getBlogs, deleteBlogs, deleteBlogById, approveBlogById] =
         BlogMany.useStore(
-            useShallow((state) => [
-                state.status,
-                state.lastAction,
-                state.error,
-                state.blogs,
-                state.queryParams,
-                state.totalInstances,
-                state.totalPages,
-                state.getBlogs,
-                state.deleteBlogs,
-                state.deleteById,
+            useShallow((s) => [
+                s.status, s.lastAction, s.error,
+                s.blogs, s.queryParams, s.totalInstances, s.totalPages,
+                s.getBlogs, s.deleteBlogs,
+                s.deleteById, s.approveBlog
             ])
         );
-    const [genre2s, getGenre1s] = GenreDomain.useStore(useShallow(s => [s.genre2s, s.getGenre1s]))
+    const [genre2s] = GenreDomain.useStore(useShallow(s => [s.genre2s]))
 
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: queryParams?.pageRequest?.page ?? 0,
@@ -167,12 +174,17 @@ export default function BlogManagementPage() {
             },
         });
     }, []);
-    function fromGenre2IdsToDisplays(ids:number[]){
-        return genre2s.filter(g2=>ids.some(id=>id===g2.id)).map(g2=>g2.name).join(",");
+
+    function fromGenre2IdsToDisplays(ids: number[]) {
+        return genre2s.filter(g2 => ids.some(id => id === g2.id)).map(g2 => g2.name).join(",");
     }
 
-
-    const cols = genCols(t,fromGenre2IdsToDisplays, deleteBlogById)
+    const cols = genCols({
+        t, toGenreDisplay: fromGenre2IdsToDisplays,
+        handleDelete: deleteBlogById,
+        handleApprove: id => approveBlogById(id, true),
+        handleUndoApprove: id => approveBlogById(id, false)
+    })
 
     return (
         <Card>

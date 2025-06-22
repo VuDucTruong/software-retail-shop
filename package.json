@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -83,8 +83,9 @@
     "@tailwindcss/postcss": "^4",
     "@types/lodash": "^4.17.16",
     "@types/node": "^20",
-    "@types/react": "19.1.6",
-    "@types/react-dom": "19.1.6",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.6",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",

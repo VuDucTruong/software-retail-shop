@@ -3,7 +3,6 @@ import {Card, CardContent} from "@/components/ui/card";
 import {AlertTriangle} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {LoadingStatus} from "@/api";
-import ReactMarkdown from "react-markdown";
 
 
 export default function LoadingPage() {

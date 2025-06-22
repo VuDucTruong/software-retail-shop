@@ -1,9 +1,7 @@
 import {
     COUPON_FALL_BACK,
     OrderCreateSchema,
-    OrderDetailCreateSchema,
     OrderDetailSchema,
-    OrderPageSchema,
     OrderResponseSchema,
     OrderSchema,
     OrderStatusSchema,
@@ -16,11 +14,9 @@ import {getDateTimeLocal} from "@/lib/date_helper";
 export type Order = z.infer<typeof OrderSchema>;
 export type OrderDetail = z.infer<typeof OrderDetailSchema>;
 export type OrderStatus = z.infer<typeof OrderStatusSchema>
-export type OrderDetailRequest = z.infer<typeof OrderDetailCreateSchema>
 export type OrderCreateRequest = z.infer<typeof OrderCreateSchema>
 export type OrderResponse = z.infer<typeof OrderResponseSchema>
 export type OrderDetailResponse = z.infer<typeof OrderDetailSchema>
-export type OrderPage = z.infer<typeof OrderPageSchema>
 
 export const ORDER_FALL_BACK: Order = {
     id: 0,
@@ -34,4 +30,5 @@ export const ORDER_FALL_BACK: Order = {
     deletedAt: null,
     details: [],
     orderStatus: 'PENDING',
+    reason: null
 }

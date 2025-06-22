@@ -1,13 +1,13 @@
 'use client'
-import { BlogUpdateRequest } from '@/api';
-import BlogForm, { blogFormDefaultValues, BlogFormType } from "@/components/blog/BlogForm";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { usePathname } from '@/i18n/navigation';
-import { getDateTimeLocal } from '@/lib/date_helper';
-import { BlogSingle } from "@/stores/blog/blog.store";
-import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
-import { useShallow } from 'zustand/shallow';
+import {BlogUpdateRequest} from '@/api';
+import BlogForm, {blogFormDefaultValues, BlogFormType} from "@/components/blog/BlogForm";
+import {useActionToast} from "@/hooks/use-action-toast";
+import {usePathname} from '@/i18n/navigation';
+import {getDateTimeLocal} from '@/lib/date_helper';
+import {BlogSingle} from "@/stores/blog/blog.store";
+import {useTranslations} from 'next-intl';
+import {useEffect} from 'react';
+import {useShallow} from 'zustand/shallow';
 
 export default function DetailBlogPage() {
     const t = useTranslations();
@@ -15,21 +15,22 @@ export default function DetailBlogPage() {
     const id = pathname.split("/").at(-1);
 
     const idnum = Number(id);
-    const [proxyLoading, lastAction, status, error, blog, getById, updateBlog] = BlogSingle.useStore(useShallow(s => [
-        s.proxyLoading, s.lastAction, s.status, s.error, s.blog, s.getById, s.updateBlog
+    const [proxyLoading, lastAction, status, error, blog, getById, updateBlog, approveBlog] = BlogSingle.useStore(useShallow(s => [
+        s.proxyLoading, s.lastAction, s.status, s.error, s.blog, s.getById, s.updateBlog, s.approveBlog
     ]))
 
     useEffect(() => {
         proxyLoading(async () => {
             await getById(idnum);
         })
-    }, [getById, idnum, proxyLoading])
+    }, [])
 
 
     const blogValue: BlogFormType = (blog === null) ? blogFormDefaultValues : {
         title: blog.title,
         subtitle: blog.subtitle,
         content: blog.content,
+        approvedAt: blog.approvedAt,
         selectedGenre2Ids: new Set(blog.genre2Ids),
         author: {
             id: blog.author.id,
@@ -50,9 +51,13 @@ export default function DetailBlogPage() {
             image: f.image,
             genreIds: [...f.selectedGenre2Ids]
         }
-        proxyLoading(() => updateBlog(requestUpdate),'update')
+        proxyLoading(() => updateBlog(requestUpdate), 'update')
     }
 
+    function onApprove() {
+        const approved = typeof blog?.approvedAt !== 'undefined' && blog?.approvedAt !== null
+        approveBlog(idnum, !approved)
+    }
 
     useActionToast({
         lastAction,
@@ -62,7 +67,7 @@ export default function DetailBlogPage() {
     return (
         <div>
             {/* <Toaster richColors theme='dark' /> */}
-            <BlogForm initialValues={blogValue} onFormSubmit={onSubmitUpdate} mode={'update'}
+            <BlogForm initialValues={blogValue} onFormSubmit={onSubmitUpdate} mode={'update'} onApprove={onApprove}
                       uiTitles={{
                           formTitle: t('update_blog'),
                           buttonTitle: t('Update')

@@ -14,6 +14,7 @@ import {OrderSingle} from "@/stores/order/order.store";
 import {toast} from "sonner";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {getDateTimeLocal} from "@/lib/date_helper";
+import {convertStatus, StatusBadge} from "@/components/common/StatusBadge";
 
 type TransactionDetailDialogProps = { orderId: number }
 
@@ -29,7 +30,7 @@ export default function TransactionDetailDialog({orderId}: TransactionDetailDial
 
             <DialogContent className="w-full max-w-3xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl">{t("Order Detail")}</DialogTitle>
+                    <DialogTitle className="text-2xl">{t("order_detail")}</DialogTitle>
                 </DialogHeader>
 
                 <DialogLazyContent orderId={orderId}/>
@@ -47,7 +48,7 @@ function DialogLazyContent({orderId}: TransactionDetailDialogProps) {
     )
     const handleCopy = (key: string) => {
         navigator.clipboard.writeText(key)
-        toast(t("Copied to clipboard"), {description: getDateTimeLocal()})
+        toast(t("copied_to_clipboard"), {description: getDateTimeLocal()})
     }
     useEffect(() => {
         proxyLoading(() => getOrderById(orderId), "get")
@@ -57,7 +58,7 @@ function DialogLazyContent({orderId}: TransactionDetailDialogProps) {
             {/* Profile */}
             <div className="grid grid-cols-[auto_1fr] gap-4 items-center border-b pb-4 mb-4">
                 <Image
-                    src={order.profile.imageUrl || "/empty_user.png"}
+                    src={"/empty_img.png"}
                     alt="Profile image"
                     width={64}
                     height={64}
@@ -67,45 +68,63 @@ function DialogLazyContent({orderId}: TransactionDetailDialogProps) {
                     <p className="font-semibold text-lg">{order.profile.fullName}</p>
                     <p className="text-sm text-muted-foreground">{order.profile.email}</p>
                 </div>
+                <div>
+                    <StatusBadge status={convertStatus(order?.orderStatus ?? 'PENDING')}/>
+                </div>
             </div>
 
             {/* Summary */}
             <div className="grid grid-cols-2 gap-4 text-sm border-b pb-4 mb-4">
                 <div>
-                    <p className="font-medium">{t("Order ID")}:</p>
+                    <p className="font-medium">{t("order_id")}:</p>
                     <p>{order.id}</p>
                 </div>
                 <div>
-                    <p className="font-medium">{t("Created At")}:</p>
+                    <p className="font-medium">{t("created_at")}:</p>
                     <p>{order.createdAt}</p>
                 </div>
                 <div>
-                    <p className="font-medium">{t("Original Amount")}:</p>
+                    <p className="font-medium">{t("Amount")}:</p>
                     <p>{order.originalAmount}</p>
                 </div>
                 <div>
-                    <p className="font-medium">{t("Final Amount")}:</p>
+                    <p className="font-medium">{t("total_amount")}:</p>
                     <p>{order.amount}</p>
                 </div>
                 {order.orderStatus && (
-                    <div>
-                        <p className="font-medium">{t("Status")}:</p>
-                        <p>{order.orderStatus}</p>
-                    </div>
+                    <>
+                        {
+                            (() => {
+                                if (order.orderStatus !== 'FAILED' && order.orderStatus !== 'FAILED_MAIL')
+                                    return null;
+                                if (order.orderStatus === 'FAILED')
+                                    return <div className="col-span-2">
+                                        <p className="font-medium">{t("failure_reason")}:</p>
+                                        <p>{order?.payment?.detailMessage || "Khách hàng thực hiên thanh toán không thành công"}</p>
+                                    </div>
+                                if (order.orderStatus === 'FAILED_MAIL')
+                                    return <div className="col-span-2">
+                                        <p className="font-medium">{t("failure_reason")}:</p>
+                                        <p>{order.reason || "-"}</p>
+                                    </div>
+                            })()
+                        }
+                    </>
+
                 )}
             </div>
 
             {/* Payment */}
             {order.payment && (
                 <div className="border-b pb-4 mb-4">
-                    <h3 className="font-semibold text-lg mb-2">{t("Payment Info")}</h3>
+                    <h3 className="font-semibold text-lg mb-2">{t("payment_info")}</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                            <p className="font-medium">{t("Method")}:</p>
+                            <p className="font-medium">{t("payment_method")}:</p>
                             <p>{order.payment.paymentMethod || "-"}</p>
                         </div>
                         <div>
-                            <p className="font-medium">{t("Status")}:</p>
+                            <p className="font-medium">{t("order_status")}:</p>
                             <p>{order.payment.status || "-"}</p>
                         </div>
                         <div className="col-span-2">
@@ -118,7 +137,7 @@ function DialogLazyContent({orderId}: TransactionDetailDialogProps) {
 
             {/* Order Items */}
             <div className="mb-2">
-                <h3 className="font-semibold text-lg mb-2">{t("Order Items")}</h3>
+                <h3 className="font-semibold text-lg mb-2">{t("order_items")}</h3>
                 <div className="grid gap-3">
                     {order.details.map((detail, i) => {
                         const hasKeys = Array.isArray(detail.product.keys) && detail.product.keys.length > 0
@@ -144,15 +163,14 @@ function DialogLazyContent({orderId}: TransactionDetailDialogProps) {
                                                 variant="ghost"
                                                 size="sm"
                                                 className="mt-1 text-xs px-1.5 py-0"
-                                                onClick={() => setExpandedIndex(isExpanded ? null : i)}
-                                            >
+                                                onClick={() => setExpandedIndex(isExpanded ? null : i)}>
                                                 {isExpanded ? (
                                                     <>
-                                                        <ChevronUp className="w-4 h-4"/> {t("Hide Keys")}
+                                                        <ChevronUp className="w-4 h-4"/> {t("hide_keys")}
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <ChevronDown className="w-4 h-4"/> {t("Show Keys")}
+                                                        <ChevronDown className="w-4 h-4"/> {t("show_keys")}
                                                     </>
                                                 )}
                                             </Button>
@@ -166,8 +184,7 @@ function DialogLazyContent({orderId}: TransactionDetailDialogProps) {
                                             initial={{height: 0, opacity: 0}}
                                             animate={{height: "auto", opacity: 1}}
                                             exit={{height: 0, opacity: 0}}
-                                            className="overflow-hidden"
-                                        >
+                                            className="overflow-hidden">
                                             <div className="mt-2 flex flex-col gap-2">
                                                 {detail.product.keys!.map((key, idx) => (
                                                     <div key={idx} className="flex items-center gap-2">

@@ -579,6 +579,12 @@
   "Order": "Order",
   "order_management": "Order Management",
   "not_published": "Not published yet",
-  "not_published_description": "This blog need to be approved by admin before it can be published"
-  
+  "not_published_description": "This blog need to be approved by admin before it can be published",
+  "copied_to_clipboard": "Copied to clipboard",
+  "payment_info": "Payment Info",
+  "payment_status": "Payment status",
+  "order_items": "Order Items",
+  "hide_keys": "Hide Keys",
+  "show_keys": "Show keys",
+  "failure_reason": "Failure reason"
 }

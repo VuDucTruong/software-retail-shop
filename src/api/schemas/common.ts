@@ -47,11 +47,14 @@ export const DateSchema = z
         return date.toISOString().split("T")[0]; // YYYY-MM-DD
     });
 
-export const DatetimeSchema = z.string().transform((value) => {
-    const date = new Date(value);
+export const DatetimeSchema = z.union([z.string(), z.null(), z.undefined()]).transform((value) => {
+    const date = (typeof value === 'undefined' || value === null) ? new Date() : new Date(value);
     return date.toLocaleString();
-});
+})
 
+export const DatetimeNoFallbackSchema = z.string().transform(value => {
+    return new Date(value).toLocaleString()
+})
 
 export const ApiDatetimeSchema = z.string().transform((value) => {
     const date = new Date(value);
@@ -90,6 +93,7 @@ export function zNumDefault(def: number) {
 
 export const zBoolDefault = (def: boolean = false) =>
     z.union([z.boolean(), z.null(), z.undefined()]).transform((v) => v ?? def);
+
 export const zEnumDefault = <T extends ZodEnum<[string, ...string[]]>>(
     enumSchema: T,
     def: z.infer<T>
@@ -99,6 +103,7 @@ export const zEnumDefault = <T extends ZodEnum<[string, ...string[]]>>(
 export function zArrayDefault<T extends ZodTypeAny>(schema: T, def: z.infer<T>[]) {
     return z.union([z.array(schema), z.null(), z.undefined()]).transform((v) => v ?? def);
 }
+
 export function zNullableDefault<T extends ZodTypeAny>(schema: T) {
     return z.union([schema, z.null(), z.undefined()]).transform((v) => v ?? null);
 }

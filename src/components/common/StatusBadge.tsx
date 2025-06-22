@@ -1,10 +1,9 @@
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { Clock, Loader2, CheckCircle2, XCircle, PackageCheck, PackageX, Ban, Rss } from "lucide-react"
-import { useTranslations } from "next-intl"
-import {ColumnDef} from "@tanstack/react-table";
-import {Order, OrderStatus} from "@/api";
-import { LuMailWarning } from "react-icons/lu";
+import {Badge} from "@/components/ui/badge"
+import {cn} from "@/lib/utils"
+import {Ban, CheckCircle2, Clock, Loader2, PackageCheck, PackageX, Rss, XCircle} from "lucide-react"
+import {useTranslations} from "next-intl"
+import {OrderStatus} from "@/api";
+import {LuMailWarning} from "react-icons/lu";
 
 export function convertStatus(os: OrderStatus) {
   switch (os) {
@@ -24,7 +23,7 @@ export function convertStatus(os: OrderStatus) {
 }
 
 
-type Status = "pending" | "processing" | "completed" | "canceled" | "in_stock" | "out_stock"	| "active" | "banned" | "used" | "unused"
+type Status = "pending" | "processing" | "completed" | "canceled" | "in_stock" | "out_stock"	| "active" | "banned" | "used" | "unused" | "failed_mail"
 
 interface StatusBadgeProps {
   status: Status

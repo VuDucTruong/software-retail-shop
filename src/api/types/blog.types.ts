@@ -6,7 +6,6 @@ import {
     BlogUpdateSchema,
     USER_PROFILE_DETAILED_FALL_BACK
 } from "@/api";
-import {getDateLocal} from "@/lib/date_helper";
 
 export type BlogDomainType = z.infer<typeof BlogSchema>;
 
@@ -18,11 +17,11 @@ export type BlogResponseType = z.infer<typeof BlogResponseSchema>
 export const BLOG_FALL_BACK: BlogDomainType = {
     id: 0,
     genre2Ids: [],
-    publishedAt: getDateLocal(),
+    publishedAt: new Date().toLocaleString(),
     author: USER_PROFILE_DETAILED_FALL_BACK,
     content: "",
     subtitle: "",
     title: "",
-    imageUrl:  "/empty_img.png",
+    imageUrl: "/empty_img.png",
     deletedAt: null
 }

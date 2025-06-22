@@ -1,28 +1,31 @@
 'use client'
-import GenreDropdown, { RequiredSchema } from "@/components/blog/GenreDropdown";
+import GenreDropdown, {RequiredSchema} from "@/components/blog/GenreDropdown";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import ProductDescriptionInput from "@/components/product/ProductDescriptionInput";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {zodResolver} from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { useForm, UseFormReturn, useWatch } from "react-hook-form";
-import { z } from "zod";
+import {useForm, UseFormReturn, useWatch} from "react-hook-form";
+import {z} from "zod";
 
-import { FloatingCardList, FloatingCart_ListDisplay_Type } from "@/components/blog/display_container/FloatingCartList";
-import { StringUtils } from "@/lib/utils";
-import { GenreDomain } from "@/stores/blog/genre.store";
-import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {FloatingCardList, FloatingCart_ListDisplay_Type} from "@/components/blog/display_container/FloatingCartList";
+import {StringUtils} from "@/lib/utils";
+import {GenreDomain} from "@/stores/blog/genre.store";
+import {useTranslations} from "next-intl";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {getDateTimeLocal} from "@/lib/date_helper";
-import { TbChecklist } from "react-icons/tb";
+import {TbChecklist} from "react-icons/tb";
+import {GrUndo} from "react-icons/gr";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 
 export const BlogFormSchema = RequiredSchema.extend({
     title: z.string().min(1).max(40),
     subtitle: z.string().min(1).max(50),
+    approvedAt: z.string().nullish(),
     content: z.string().min(1).max(1000),
     author: z.object({
         id: z.number(),
@@ -50,7 +53,7 @@ export const blogFormDefaultValues: BlogFormType = {
 export type Modes = 'update' | 'create'
 
 
-function ImagePreview({ form }: { form: UseFormReturn<BlogFormType, any, BlogFormType> }) {
+function ImagePreview({form}: { form: UseFormReturn<BlogFormType, any, BlogFormType> }) {
     const watchedImage = useWatch({
         control: form.control,
         name: "image",
@@ -61,32 +64,28 @@ function ImagePreview({ form }: { form: UseFormReturn<BlogFormType, any, BlogFor
         name: "imageUrl",
     });
 
-    const imagePreview = useMemo(() => {
+    return useMemo(() => {
         const fallback = StringUtils.hasLength(watchedImageUrl)
-            ? watchedImageUrl!
-            : "/empty_img.png";
-
-        const src = watchedImage ? URL.createObjectURL(watchedImage) : fallback;
-
+            ? watchedImageUrl! : "/empty_img.png";
         return (
             <div className="relative w-full h-64">
                 <Image
                     alt="Image"
                     fill
-                    src={src}
+                    src={watchedImage ? URL.createObjectURL(watchedImage) : fallback}
                     className="object-contain"
                 />
             </div>
         );
     }, [watchedImage, watchedImageUrl]);
-    return imagePreview;
 }
 
 
-export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }: {
+export default function BlogForm({initialValues, onApprove, mode, onFormSubmit, uiTitles}: {
     initialValues: BlogFormType,
     mode: Modes,
     onFormSubmit: (f: BlogFormType) => void,
+    onApprove?: () => void,
     uiTitles: {
         formTitle: string, buttonTitle: string
     }
@@ -100,21 +99,20 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
         resolver: zodResolver(BlogFormSchema),
         mode: "onSubmit",
     });
+
     const handleSubmit = () => {
         form.handleSubmit(async (data) => {
             onFormSubmit(data);
         })();
     };
+    const [approved, setApproved] = useState<boolean>(false)
+
     useEffect(() => {
         form.reset(initialValues);
-    }, [form]);
+        setApproved(typeof initialValues?.approvedAt !== 'undefined' && initialValues?.approvedAt !== null)
+    }, [form, initialValues]);
 
-    // const imagePreview = ImagePreview(form);
-
-
-    // const [currentDisplayGenre1Id,setCurrentDisplayGenre1Id] = useState()
     const [selectedGenresDisplay, setSelectedGenreDisplay] = useState<FloatingCart_ListDisplay_Type>([]);
-    // console.log(form.getValues('selectedGenre2Ids'))
 
     function onG2Selected(genre2Ids: Set<number>): void {
         const map = new Map<number, {
@@ -123,7 +121,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
             childItems: { name: string }[]
         }>();
 
-        const { genre1s, genre2s } = GenreDomain.useStore.getState();
+        const {genre2s} = GenreDomain.useStore.getState();
 
         for (const genre2Id of genre2Ids) {
             const genre2 = genre2s.find(g2 => g2.id === genre2Id);
@@ -138,26 +136,44 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                     childItems: []
                 });
             }
-
-            map.get(genre1.id)!.childItems.push({ name: genre2.name });
+            map.get(genre1.id)!.childItems.push({name: genre2.name});
         }
 
         const newValue = Array.from(map.values());
         setSelectedGenreDisplay(newValue);
     }
 
-
+    const approvedText = approved ? "Hủy " : "";
     return (
         <Card>
             <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                    <h2 className="capitalize">{uiTitles.formTitle}</h2>
+                    <div className="flex items-center gap-2">
+                        <h2 className="capitalize">{uiTitles.formTitle}</h2>
+                        {mode === 'update' && approved && (
+                            <span className="text-green-600 text-xl"><TbChecklist
+                                strokeWidth={2.5}
+                                className="inline"
+                                aria-label="Published"
+                            /> Approved</span>
+                        )}
+                    </div>
+
                     {
-                        mode === 'update' ? (
-                            <Button className="bg-green-400 hover:bg-green-500" onClick={() => {}}>
-                                  <TbChecklist />   {("Xác nhận xuất bản")} 
-                            </Button>
-                        ) : null
+                        mode === 'update' ?
+                            <CommonConfirmDialog
+                                triggerName={
+                                    <Button
+                                        className={`${approved ? 'bg-muted text-foreground' : 'bg-red-100 text-green-600 hover:bg-red-200'}`}>
+                                        {approved
+                                            ? <><GrUndo/> {("Hủy xuất bản")} </>
+                                            : <><TbChecklist strokeWidth={2.5}/> {("Xác nhận xuất bản")} </>}
+                                    </Button>
+                                }
+                                title={`Xác nhận ${approvedText} xuất bản?`}
+                                description={`Bạn có chắc chắn muốn ${approvedText} xuất bản bài viết này không?`}
+                                onConfirm={onApprove}
+                            />: null
                     }
                 </CardTitle>
             </CardHeader>
@@ -175,7 +191,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                         <FormField
                             control={form.control}
                             name="image"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <FormItem className="col-span-3">
                                     <FormLabel>{t('Image')}</FormLabel>
                                     <FormControl>
@@ -193,11 +209,11 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                                             />
 
                                             <div className="relative w-full h-64">
-                                                <ImagePreview form={form} />
+                                                <ImagePreview form={form}/>
                                             </div>
                                         </div>
                                     </FormControl>
-                                    <FormMessage />
+                                    <FormMessage/>
                                 </FormItem>
                             )}
                         />
@@ -205,7 +221,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                         <FormField
                             control={form.control}
                             name="title"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <CommonInputOutline required title={t('Title')} className="col-span-3">
                                     <Input {...field} />
                                 </CommonInputOutline>
@@ -215,9 +231,9 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                         <FormField
                             control={form.control}
                             name="subtitle"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <CommonInputOutline title={t("Subtitle")} className="col-span-3" required>
-                                    <Textarea {...field} className="resize-none" rows={3} />
+                                    <Textarea {...field} className="resize-none" rows={3}/>
                                 </CommonInputOutline>
                             )}
                         />
@@ -226,7 +242,7 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                         <FormField
                             control={form.control}
                             name="publishedAt"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <CommonInputOutline title={t("publish_date")} required>
                                     <Input type="datetime-local" {...field} />
                                 </CommonInputOutline>
@@ -237,18 +253,19 @@ export default function BlogForm({ initialValues, mode, onFormSubmit, uiTitles }
                         <FormField
                             control={form.control}
                             name="selectedGenre2Ids"
-                            render={({ field }) => (
+                            render={({field}) => (
                                 <CommonInputOutline title={t('Genres')} required>
-                                    <GenreDropdown selectedGenre2Ids={initialValues.selectedGenre2Ids} field={field} onGenre2Selected={onG2Selected} />
+                                    <GenreDropdown selectedGenre2Ids={initialValues.selectedGenre2Ids} field={field}
+                                                   onGenre2Selected={onG2Selected}/>
                                 </CommonInputOutline>
                             )}
                         />
                         <CommonInputOutline title={t("selected_genres")}>
-                            <FloatingCardList items={selectedGenresDisplay} />
+                            <FloatingCardList items={selectedGenresDisplay}/>
                         </CommonInputOutline>
 
                         <div className="col-span-3">
-                            <ProductDescriptionInput hint={t('blog_content')} name="content" />
+                            <ProductDescriptionInput hint={t('blog_content')} name="content"/>
                         </div>
 
                         <Button

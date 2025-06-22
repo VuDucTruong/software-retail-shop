@@ -1,7 +1,7 @@
 import { z } from "zod";
 import {
     ApiResponseSchema,
-    DateSchema,
+    DateSchema, DatetimeNoFallbackSchema,
     DatetimeSchema,
     ImageSchema,
     PasswordSchema,
@@ -40,7 +40,7 @@ export const UserSchema = z.object({
     enableDate: DateSchema.nullable(),
     disableDate: DateSchema.nullable(),
     createdAt: DatetimeSchema,
-    deletedAt: DatetimeSchema.nullable(),
+    deletedAt: DatetimeNoFallbackSchema.nullable(),
     isVerified: z.boolean(),
     role: z.string(),
     email: z.string().email(),
