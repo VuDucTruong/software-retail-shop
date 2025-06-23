@@ -23,7 +23,18 @@ import CommonConfirmDialog from "../CommonConfirmDialog";
 import CommonTablePagination from "./CommonTablePagination";
 import CommonTableVisibility from "./CommonTableVisibility";
 
-interface DataTableProps<TData extends { deletedAt?: string | null }, TValue> {
+type DeletableDataType = { deletedAt?: string | null }
+
+function isDeleteableData(obj: any): obj is DeletableDataType {
+    return (
+        obj &&
+        typeof obj === 'object' &&
+        ('deletedAt' in obj) &&
+        (typeof obj.deletedAt === 'string' || obj.deletedAt === null || obj.deletedAt === undefined)
+    );
+}
+
+interface DataTableProps<TData extends (DeletableDataType | object), TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     searchComponent?: React.ReactElement,
@@ -40,21 +51,21 @@ interface DataTableProps<TData extends { deletedAt?: string | null }, TValue> {
     selectCol?: React.ReactNode;
 }
 
-export function CommmonDataTable<TData extends { deletedAt?: string | null }, TValue>({
-                                                                                          searchComponent,
-                                                                                          columns,
-                                                                                          data,
-                                                                                          canSelect = false,
-                                                                                          onDeleteRows,
-                                                                                          pageCount,
-                                                                                          pagination,
-                                                                                          onPaginationChange,
-                                                                                          sorting,
-                                                                                          totalCount,
-                                                                                          isLoading,
-                                                                                          onSortingChange,
-                                                                                          objectName,
-                                                                                      }: DataTableProps<TData, TValue>) {
+export function CommmonDataTable<TData extends (DeletableDataType | object), TValue>({
+                                                                                         searchComponent,
+                                                                                         columns,
+                                                                                         data,
+                                                                                         canSelect = false,
+                                                                                         onDeleteRows,
+                                                                                         pageCount,
+                                                                                         pagination,
+                                                                                         onPaginationChange,
+                                                                                         sorting,
+                                                                                         totalCount,
+                                                                                         isLoading,
+                                                                                         onSortingChange,
+                                                                                         objectName,
+                                                                                     }: DataTableProps<TData, TValue>) {
     const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({});
@@ -148,47 +159,6 @@ export function CommmonDataTable<TData extends { deletedAt?: string | null }, TV
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex  justify-between">
-                {/*<SearchWithDropDown*/}
-                {/*    menus={{*/}
-                {/*        items: [*/}
-                {/*            { id: "all", name: "All" },*/}
-                {/*            { id: "active", name: "Active" },*/}
-                {/*            { id: "inactive", name: "Inactive" },*/}
-                {/*        ],*/}
-                {/*        multiple: false*/}
-                {/*    }}*/}
-                {/*    search={{}}*/}
-                {/*    onDebounced={(filter, search) => {*/}
-                {/*        console.log("Filter:", filter, "Search:", search);*/}
-                {/*    }}*/}
-                {/*/>*/}
-                {/*<SearchWith2LevelsDropdown*/}
-                {/*    menus={{*/}
-                {/*        items: [*/}
-                {/*            {*/}
-                {/*                id: 1,*/}
-                {/*                name: "Genre 1",*/}
-                {/*                children: [*/}
-                {/*                    { id: 101, name: "Pop" },*/}
-                {/*                    { id: 102, name: "Rock" },*/}
-                {/*                ],*/}
-                {/*            },*/}
-                {/*            {*/}
-                {/*                id: 2,*/}
-                {/*                name: "Genre 2",*/}
-                {/*                children: [*/}
-                {/*                    { id: 201, name: "Jazz" },*/}
-                {/*                    { id: 202, name: "Classical" },*/}
-                {/*                ],*/}
-                {/*            },*/}
-                {/*        ],*/}
-                {/*    }}*/}
-                {/*    search={{}}*/}
-                {/*    onDebounced={(selected, search) => {*/}
-                {/*        console.log("Selected child IDs:", selected);*/}
-                {/*        console.log("Search string:", search);*/}
-                {/*    }}*/}
-                {/*/>*/}
                 {searchComponent}
                 <CommonTableVisibility table={table}/>
             </div>
@@ -224,29 +194,32 @@ export function CommmonDataTable<TData extends { deletedAt?: string | null }, TV
                     ) : (
                         <TableBody>
                             {table.getRowModel()?.rows?.length ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={row.getIsSelected() && "selected"}
-                                        // onClick={() => {
-                                        //   canSelect && row.toggleSelected();
-                                        // }}
-                                        className={
-                                            canSelect
-                                                ? `relative z-0 data-[state=selected]:bg-zinc-200 data-[state=selected]:text-black ${(typeof row.original?.deletedAt === 'undefined' || row?.original?.deletedAt === null) ? 'hover:bg-muted' : 'hover:bg-red-200'} ${row.original?.deletedAt && 'bg-red-100'}`
-                                                : `${row.original?.deletedAt && 'bg-red-100'}`
-                                        }
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id} className="text-center">
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))
+                                table.getRowModel().rows.map((row) => {
+                                    const deleted = isDeleteableData(row?.original) && (typeof row.original?.deletedAt !== 'undefined' && row?.original?.deletedAt !== null)
+                                    return (
+                                        <TableRow
+                                            key={row.id}
+                                            data-state={row.getIsSelected() && "selected"}
+                                            // onClick={() => {
+                                            //   canSelect && row.toggleSelected();
+                                            // }}
+                                            className={
+                                                canSelect
+                                                    ? `relative z-0 data-[state=selected]:bg-zinc-200 data-[state=selected]:text-black ${deleted ? 'hover:bg-red-200' :  'hover:bg-muted'} ${deleted ? 'bg-red-100' : ''}`
+                                                    : `${deleted && 'bg-red-100'}`
+                                            }
+                                        >
+                                            {row.getVisibleCells().map((cell) => (
+                                                <TableCell key={cell.id} className="text-center">
+                                                    {flexRender(
+                                                        cell.column.columnDef.cell,
+                                                        cell.getContext()
+                                                    )}
+                                                </TableCell>
+                                            ))}
+                                        </TableRow>
+                                    )
+                                })
                             ) : (
                                 <TableRow>
                                     <TableCell

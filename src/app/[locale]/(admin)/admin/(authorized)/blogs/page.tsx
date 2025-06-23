@@ -12,13 +12,14 @@ import {ColumnDef, PaginationState, SortingState,} from "@tanstack/react-table";
 import {Eye, Trash2} from "lucide-react";
 import {useTranslations} from "next-intl";
 import Link from "next/link";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {useShallow} from "zustand/shallow";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {GenreDomain} from "@/stores/blog/genre.store";
 import {TbChecklist} from "react-icons/tb";
 import {GrUndo} from "react-icons/gr";
 import {SearchWith2LevelsDropdown} from "@/components/ui/search/SearchWith2LevelsDropDown";
+import {CollectionUtils, StringUtils} from "@/lib/utils";
 
 
 type GenColsParams = {
@@ -166,15 +167,15 @@ export default function BlogManagementPage() {
     ]);
 
     useEffect(() => {
-        getBlogs({
+        proxyLoading(()=>getBlogs({
             pageRequest: {
                 page: pagination.pageIndex,
                 size: pagination.pageSize,
                 sortBy: sorting[0]?.id,
                 sortDirection: sorting[0]?.desc ? "desc" : "asc",
             },
-        });
-    }, [sorting, pagination, getBlogs]);
+        }),'get')
+    }, [sorting, pagination, getBlogs, proxyLoading]);
 
     function fromGenre2IdsToDisplays(ids: number[]) {
         return genre2s.filter(g2 => ids.some(id => id === g2.id)).map(g2 => g2.name).join(",");
@@ -188,6 +189,12 @@ export default function BlogManagementPage() {
     })
 
     function onSearchAndGenresDebounced(genre2Ids: (number | string)[], search: string) {
+        // if (CollectionUtils.isEmpty(genre2Ids) && !StringUtils.hasLength(search))
+        //     return;
+        //
+        // console.log("genre2s",genre2Ids)
+        // console.log("search", search)
+
         proxyLoading(() => {
             getBlogs({
                 pageRequest: {
@@ -226,19 +233,18 @@ export default function BlogManagementPage() {
                     totalCount={totalInstances ?? 0}
                     pageCount={totalPages ?? 0}
                     pagination={pagination}
-                    searchComponent={<>
-                        <SearchWith2LevelsDropdown
-                            menus={{
-                                items: genre1s.map(g1 => ({
-                                    id: g1.id,
-                                    name: g1.name,
-                                    children: g1.genre2s.map(g2 => ({...g2}))
-                                }))
-                            }}
-                            search={{}}
-                            onDebounced={onSearchAndGenresDebounced}
-                        />
-                    </>}
+                    searchComponent={<SearchWith2LevelsDropdown
+                        key={1}
+                        menus={{
+                            items: genre1s.map(g1 => ({
+                                id: g1.id,
+                                name: g1.name,
+                                children: g1.genre2s.map(g2 => ({...g2}))
+                            }))
+                        }}
+                        search={{}}
+                        onDebounced={onSearchAndGenresDebounced}
+                    />}
 
                     onPaginationChange={(updater) => {
                         setPagination((old) =>

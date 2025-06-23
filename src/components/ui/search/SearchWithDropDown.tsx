@@ -1,6 +1,6 @@
 "use client";
 
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import debounce from "lodash/debounce";
 import {cn} from "@/lib/utils";
 import {
@@ -45,10 +45,16 @@ export function SearchWithDropDown<IId extends IDMultiType>({menus,search, onDeb
         [onDebounced]
     );
 
+    const didMount = useRef(false);
+
     useEffect(() => {
+        if (!didMount.current) {
+            didMount.current = true;
+            return;
+        }
         trigger(selected, searchText);
         return () => trigger.cancel();
-    }, [selected, searchText, trigger]);
+    }, [selected, searchText]);
 
     const isSelected = useCallback(
         (id: IDType) =>

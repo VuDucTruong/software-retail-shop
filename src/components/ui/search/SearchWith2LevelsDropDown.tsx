@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { CgDetailsMore } from "react-icons/cg";
 import { SearchInput } from "@/components/ui/search/SearchInput";
-import { useEffect, useMemo, useState } from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import debounce from "lodash/debounce";
 import { cn } from "@/lib/utils";
 
@@ -50,11 +50,16 @@ export function SearchWith2LevelsDropdown({ menus, search, onDebounced }: Props)
             }, 300),
         [onDebounced]
     );
+    const didMount = useRef(false);
 
     useEffect(() => {
+        if (!didMount.current) {
+            didMount.current = true;
+            return;
+        }
         trigger(selectedIds, searchText);
         return () => trigger.cancel();
-    }, [selectedIds, searchText, trigger]);
+    }, [selectedIds, searchText, ]);
 
     const isChildChecked = (id: IDType) => selectedIds.includes(id);
 

@@ -1,13 +1,13 @@
 "use client";
 
-import {Order} from "@/api";
+import {Order, OrderStatusSchema} from "@/api";
 import {convertStatus, StatusBadge} from "@/components/common/StatusBadge";
 import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {ColumnDef, PaginationState, SortingState} from "@tanstack/react-table";
 import {useTranslations} from "next-intl";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {OrderMany} from "@/stores/order/order.store";
 import {useShallow} from "zustand/shallow";
 import {useActionToast} from "@/hooks/use-action-toast";
@@ -19,6 +19,7 @@ import {ApiError} from "@/api/client/base_client";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {Button} from "@/components/ui/button";
 import {Trash2} from "lucide-react";
+import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
 
 type GenColsParams = {
     t: ReturnType<typeof useTranslations>;
@@ -149,7 +150,7 @@ export default function TransactionMangementPage() {
                 sortDirection: sorting[0]?.desc ? "desc" : "asc",
             },
         }), 'get');
-    }, []);
+    },  [sorting, pagination, getOrders, proxyLoading]);
 
 
     function handleResendMail(id: number, email: string) {
@@ -165,6 +166,20 @@ export default function TransactionMangementPage() {
 
     const cols = genCols({t, handleResendMail, handleDelete: deleteById});
 
+    function onSearchAndStatusesDebounced(selectedStatuses: (number | string)[], search: string) {
+        proxyLoading(() => {
+            getOrders({
+                pageRequest: {
+                    page: pagination.pageIndex,
+                    size: pagination.pageSize,
+                    sortBy: sorting[0]?.id,
+                    sortDirection: sorting[0]?.desc ? "desc" : "asc",
+                },
+                search: search,
+                statuses: selectedStatuses
+            });
+        }, 'get')
+    }
 
     return (
         <Card>
@@ -178,6 +193,18 @@ export default function TransactionMangementPage() {
             </CardHeader>
             <CardContent>
                 <CommmonDataTable
+                    searchComponent={<SearchWithDropDown
+                        menus={{
+                            items: OrderStatusSchema.options.map(status => ({
+                                id: status,
+                                name: status.toLowerCase()
+                            })),
+                            multiple: true
+                        }}
+                        search={{}}
+                        onDebounced={onSearchAndStatusesDebounced}
+                    />}
+
                     isLoading={status === 'loading' && orders.length === 0}
                     totalCount={totalInstances ?? 0}
                     objectName={t('Order')}
