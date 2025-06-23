@@ -8,137 +8,154 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from ".
 import {Input} from "../ui/input";
 import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger,} from "../ui/sheet";
 import {BlogMany} from "@/stores/blog/blog.store";
-import { getDateTimeLocal } from "@/lib/date_helper";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
+import GenreDropdown from "@/components/blog/GenreDropdown";
+import {StringUtils} from "@/lib/utils";
+import {SwitchToggleField} from "@/components/ui/CommonYesNo";
 
-const FormSchema = z.object({
+export const BlogFilterFormSchema = z.object({
     search: z.string().optional(),
-    genres: z.array(z.string()).optional(),
+    selectedGenre2Ids: z.union([z.array(z.number()), z.set(z.number())])
+        .transform((val) => (val instanceof Set ? val : new Set(val))),
     publishedFrom: z.string().optional(),
+    deleted: z.boolean(),
     publishedTo: z.string().optional(),
 });
 
+export type BlogFilterFormType = z.infer<typeof BlogFilterFormSchema>;
+
 export default function BlogFilterSheet() {
-  const t = useTranslations();
-  const getBlogs = BlogMany.useStore((s) => s.getBlogs);
-/// TODO: query by genreIds not genres (names)
+    const t = useTranslations();
+    const getBlogs = BlogMany.useStore((s) => s.getBlogs);
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      search: "",
-      genres: [],
-      publishedFrom: getDateTimeLocal(),
-      publishedTo: ""
-    },
-  });
-
-  function handleSubmit(data: z.infer<typeof FormSchema>) {
-    getBlogs({
-      pageRequest: {
-        page: 0,
-        size: 10,
-        sortBy: "createdAt",
-        sortDirection: "desc",
-      },
-      ...data, // thêm các trường không rỗng
+    const form = useForm<BlogFilterFormType>({
+        resolver: zodResolver(BlogFilterFormSchema),
+        defaultValues: {
+            search: "",
+            selectedGenre2Ids: new Set<number>(),
+            deleted: false,
+            publishedFrom: "",
+            publishedTo: "",
+        },
     });
-  }
-
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" className="w-fit">
-          <Filter /> {t('search_and_filter', {x: t('blog')})}
-        </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>{t('search_and_filter', {x: t('blog')})}</SheetTitle>
-          <SheetDescription>
-            {t('search_and_filter_description', {x: t('blog')})}
-          </SheetDescription>
-        </SheetHeader>
-        <div className="flex-1 overflow-auto ">
-          <Form {...form}>
-            <form className=" w-full px-3 flex flex-col gap-4">
-              <FormField
-                control={form.control}
-                name="search"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>{t("Search")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
 
-              <FormField
-                control={form.control}
-                name="genres"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>{t("Genre")}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+    function handleSubmit(data: BlogFilterFormType) {
+        const hasPf = StringUtils.hasLength(data.publishedFrom)
+        const hasPt = StringUtils.hasLength(data.publishedTo)
+        const hasSearch = StringUtils.hasLength(data.search)
 
-              <FormField
-                control={form.control}
-                name="publishedFrom"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>{t("from_date")}</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local"  {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        getBlogs({
+            pageRequest: {
+                page: 0,
+                size: 10,
+                sortBy: "createdAt",
+                sortDirection: "desc",
+            },
+            search: hasSearch ? data.search : undefined,
+            publishedFrom: hasPf ? data.publishedFrom : undefined,
+            deleted: data.deleted,
+            publishedTo: hasPt ? data.publishedTo : undefined,
+            genreIds: [...data.selectedGenre2Ids],
+        });
+    }
 
-              <FormField
-                control={form.control}
-                name="publishedTo"
-                render={({ field }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>{t('to_date')}</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local" min={form.watch('publishedFrom')} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </form>
-          </Form>
-          <div className="absolute right-0 left-0 bottom-2 flex gap-2 mx-3 bg-white pt-2">
-            <Button
-              className="flex-1"
-              onClick={form.handleSubmit(handleSubmit)}
-            >
-              {t('apply_filters')}
-            </Button>
+    return (
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button variant="outline" className="w-fit">
+                    <Filter/> {t("search_and_filter", {x: t("blog")})}
+                </Button>
+            </SheetTrigger>
+            <SheetContent>
+                <SheetHeader>
+                    <SheetTitle>{t("search_and_filter", {x: t("blog")})}</SheetTitle>
+                    <SheetDescription>
+                        {t("search_and_filter_description", {x: t("blog")})}
+                    </SheetDescription>
+                </SheetHeader>
+                <div className="flex-1 overflow-auto ">
+                    <Form {...form}>
+                        <form className=" w-full px-3 flex flex-col gap-4">
+                            <FormField
+                                control={form.control}
+                                name="search"
+                                render={({field}) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>{t("Search")}</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
 
-            <Button
-              className="flex-1"
-              variant={"destructive"}
-              onClick={() => {
-                form.reset();
-              }}
-            >
-              {t('reset_filters')}
-            </Button>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
+                            <FormField
+                                control={form.control}
+                                name="selectedGenre2Ids"
+                                render={({field}) => (
+                                    <CommonInputOutline title={t("Genres")} required>
+                                        <GenreDropdown field={field}/>
+                                    </CommonInputOutline>
+                                )}
+                            />
+
+                            <CommonInputOutline title={t("include_deleted_item")}>
+                                <SwitchToggleField name="deleted"/>
+                            </CommonInputOutline>
+
+
+                            <FormField
+                                control={form.control}
+                                name="publishedFrom"
+                                render={({field}) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>{t("from_date")}</FormLabel>
+                                        <FormControl>
+                                            <Input type="datetime-local" {...field} />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="publishedTo"
+                                render={({field}) => (
+                                    <FormItem className="flex-1">
+                                        <FormLabel>{t("to_date")}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="datetime-local"
+                                                min={form.watch("publishedFrom")}
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </form>
+                    </Form>
+                    <div className="absolute right-0 left-0 bottom-2 flex gap-2 mx-3 bg-white pt-2">
+                        <Button className="flex-1" onClick={form.handleSubmit(handleSubmit)}>
+                            {t("apply_filters")}
+                        </Button>
+
+                        <Button
+                            className="flex-1"
+                            variant={"destructive"}
+                            onClick={() => {
+                                form.reset();
+                            }}
+                        >
+                            {t("reset_filters")}
+                        </Button>
+                    </div>
+                </div>
+            </SheetContent>
+        </Sheet>
+    );
 }

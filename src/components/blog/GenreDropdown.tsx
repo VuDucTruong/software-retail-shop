@@ -1,4 +1,3 @@
-import {BlogFormType} from "@/components/blog/BlogForm";
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -13,17 +12,15 @@ import {
 import {GenreDomain} from "@/stores/blog/genre.store";
 import {useTranslations} from "next-intl";
 import {useEffect} from "react";
-import {ControllerRenderProps} from "react-hook-form";
+import {ControllerRenderProps, FieldPath} from "react-hook-form";
 import {z} from "zod";
 import {useShallow} from "zustand/shallow";
 import {Button} from "../ui/button";
 
-type Props = {
-    field?: ControllerRenderProps<Internal.RegisteredType, "selectedGenre2Ids">; // or explicitly: ControllerRenderProps<FormValues, "genres">
-    onGenre2Selected: (genre2: Set<number>) => void;
-    selectedGenre2Ids: Set<number>;
+type Props<T extends { selectedGenre2Ids: Set<number> }> = {
+    field?: ControllerRenderProps<T, FieldPath<T> & "selectedGenre2Ids">;
+    onGenre2Selected?: (genre2: Set<number>) => void;
 };
-
 export namespace Internal {
     export namespace Genre {
         const SchemaBase = z.object({
@@ -38,7 +35,7 @@ export namespace Internal {
         });
     }
 
-    export type RegisteredType = BlogFormType;
+    export type RegisteredType = { selectedGenre2Ids: Set<number> };
 
     export type Genre1Parent = z.infer<typeof Genre.SchemaParent>;
     export type Genre2Child = z.infer<typeof Genre.SchemaChild>;
@@ -47,7 +44,7 @@ export const RequiredSchema = z.object({
     selectedGenre2Ids: z.set(z.number()),
 });
 
-export default function GenreDropdown({field, onGenre2Selected}: Props) {
+export default function GenreDropdown<T extends Internal.RegisteredType>({field, onGenre2Selected,}: Props<T>) {
     const [proxyLoading, genre1s, getGenre1s] = GenreDomain.useStore(
         useShallow((s) => [s.proxyLoading, s.genre1s, s.getGenre1s])
     );
@@ -59,7 +56,8 @@ export default function GenreDropdown({field, onGenre2Selected}: Props) {
 
     useEffect(() => {
         if (!field) return;
-        onGenre2Selected(field.value || new Set<number>());
+        if (onGenre2Selected)
+            onGenre2Selected(field.value || new Set<number>());
     }, [field]);
 
 
@@ -75,7 +73,8 @@ export default function GenreDropdown({field, onGenre2Selected}: Props) {
 
     /// THIS GONNA BE BOUND TO FIELD
     if (!field) return null;
-    const selectedGenres = field?.value || [];
+    const selectedGenres = new Set<number>(field?.value ?? []);
+
 
     const isChecked = (coming: Internal.Genre2Child[]) => {
         return coming.every((c) => selectedGenres.has(c.id));

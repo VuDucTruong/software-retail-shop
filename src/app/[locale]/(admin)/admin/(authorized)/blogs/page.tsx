@@ -18,6 +18,7 @@ import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {GenreDomain} from "@/stores/blog/genre.store";
 import {TbChecklist} from "react-icons/tb";
 import {GrUndo} from "react-icons/gr";
+import {SearchWith2LevelsDropdown} from "@/components/ui/search/SearchWith2LevelsDropDown";
 
 
 type GenColsParams = {
@@ -47,16 +48,14 @@ const genCols = ({
         },
         {
             accessorKey: "title",
-            header: t('Title'),
+            header: ({column}) => (<SortingHeader column={column} title={t('Title')}/>),
             cell: ({row}) => {
                 return row.original.title
             },
         },
         {
             accessorKey: "author",
-            header: ({column}) => (
-                <SortingHeader column={column} title={t('Author')}/>
-            ),
+            header: ({column}) => (<SortingHeader column={column} title={t('Author')}/>),
             cell: ({row}) => {
                 return <div className="font-bold">{row.original.author.fullName}</div>;
             },
@@ -71,7 +70,7 @@ const genCols = ({
         },
         {
             accessorKey: "publishedAt",
-            header: t('publish_date'),
+            header: ({column}) => (<SortingHeader column={column} title={t('publish_date')}/>),
             cell: ({row}) => {
                 return row.original.publishedAt ?? <div className="flex flex-col items-center justify-center">
                     <div className="text-red-500 font-medium">{t('not_published')}</div>
@@ -100,7 +99,7 @@ const genCols = ({
                                 <Button
                                     size="icon"
                                     className={`w-8 h-8 ${approved ? 'bg-muted text-foreground' : 'bg-red-100 text-green-600 hover:bg-red-200'}`}>
-                                    {approved ? <GrUndo /> : <TbChecklist strokeWidth={2.5} />}
+                                    {approved ? <GrUndo/> : <TbChecklist strokeWidth={2.5}/>}
                                 </Button>
                             }
                             title={`Xác nhận ${approvedText} xuất bản?`}
@@ -138,21 +137,23 @@ const genCols = ({
 export default function BlogManagementPage() {
     const t = useTranslations();
 
-    const [status, lastAction, error, blogs, queryParams, totalInstances, totalPages, getBlogs, deleteBlogs, deleteBlogById, approveBlogById] =
+    const [status, lastAction, error, blogs, queryParams, totalInstances, totalPages, getBlogs, deleteBlogs, deleteBlogById, approveBlogById, proxyLoading] =
         BlogMany.useStore(
             useShallow((s) => [
                 s.status, s.lastAction, s.error,
                 s.blogs, s.queryParams, s.totalInstances, s.totalPages,
                 s.getBlogs, s.deleteBlogs,
-                s.deleteById, s.approveBlog
+                s.deleteById, s.approveBlog,
+                s.proxyLoading
             ])
         );
-    const [genre2s] = GenreDomain.useStore(useShallow(s => [s.genre2s]))
+    const [genre2s, genre1s] = GenreDomain.useStore(useShallow(s => [s.genre2s, s.genre1s]))
 
     const [pagination, setPagination] = useState<PaginationState>({
         pageIndex: queryParams?.pageRequest?.page ?? 0,
         pageSize: queryParams?.pageRequest?.size ?? 10,
     });
+
 
     useActionToast({
         status, lastAction, errorMessage: error || undefined,
@@ -173,7 +174,7 @@ export default function BlogManagementPage() {
                 sortDirection: sorting[0]?.desc ? "desc" : "asc",
             },
         });
-    }, []);
+    }, [sorting, pagination, getBlogs]);
 
     function fromGenre2IdsToDisplays(ids: number[]) {
         return genre2s.filter(g2 => ids.some(id => id === g2.id)).map(g2 => g2.name).join(",");
@@ -185,6 +186,21 @@ export default function BlogManagementPage() {
         handleApprove: id => approveBlogById(id, true),
         handleUndoApprove: id => approveBlogById(id, false)
     })
+
+    function onSearchAndGenresDebounced(genre2Ids: (number | string)[], search: string) {
+        proxyLoading(() => {
+            getBlogs({
+                pageRequest: {
+                    page: pagination.pageIndex,
+                    size: pagination.pageSize,
+                    sortBy: sorting[0]?.id,
+                    sortDirection: sorting[0]?.desc ? "desc" : "asc",
+                },
+                search: search,
+                genreIds: genre2Ids
+            });
+        }, 'get')
+    }
 
     return (
         <Card>
@@ -204,13 +220,25 @@ export default function BlogManagementPage() {
             <CardContent>
                 <CommmonDataTable
                     objectName={t('blog')}
-                    // isLoading={status === "loading" && lastAction === null}
-                    isLoading={blogs === null}
+                    isLoading={status === "loading" && blogs.length === 0}
                     columns={cols}
                     data={blogs ?? []}
                     totalCount={totalInstances ?? 0}
                     pageCount={totalPages ?? 0}
                     pagination={pagination}
+                    searchComponent={<>
+                        <SearchWith2LevelsDropdown
+                            menus={{
+                                items: genre1s.map(g1 => ({
+                                    id: g1.id,
+                                    name: g1.name,
+                                    children: g1.genre2s.map(g2 => ({...g2}))
+                                }))
+                            }}
+                            search={{}}
+                            onDebounced={onSearchAndGenresDebounced}
+                        />
+                    </>}
 
                     onPaginationChange={(updater) => {
                         setPagination((old) =>

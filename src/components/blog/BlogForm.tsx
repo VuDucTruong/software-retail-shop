@@ -31,7 +31,6 @@ export const BlogFormSchema = RequiredSchema.extend({
         id: z.number(),
         fullName: z.string()
     }),
-    selectedGenre2Ids: z.set(z.number()),
     image: typeof window !== "undefined"
         ? z.instanceof(File).nullish()
         : z.any(),
@@ -255,7 +254,7 @@ export default function BlogForm({initialValues, onApprove, mode, onFormSubmit, 
                             name="selectedGenre2Ids"
                             render={({field}) => (
                                 <CommonInputOutline title={t('Genres')} required>
-                                    <GenreDropdown selectedGenre2Ids={initialValues.selectedGenre2Ids} field={field}
+                                    <GenreDropdown field={field}
                                                    onGenre2Selected={onG2Selected}/>
                                 </CommonInputOutline>
                             )}

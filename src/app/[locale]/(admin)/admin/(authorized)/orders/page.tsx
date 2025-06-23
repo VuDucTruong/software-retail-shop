@@ -16,13 +16,17 @@ import {convertPriceToVND} from "@/lib/currency_helper";
 import OrderResendMailDialogContent from "@/components/transactions/OrderResendMailDialogContent";
 import {toast} from "sonner";
 import {ApiError} from "@/api/client/base_client";
+import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
+import {Button} from "@/components/ui/button";
+import {Trash2} from "lucide-react";
 
 type GenColsParams = {
     t: ReturnType<typeof useTranslations>;
-    handleResendMail: (id: number, email: string) => void
+    handleResendMail: (id: number, email: string) => void,
+    handleDelete(id: number): void
 }
 
-const genCols = ({t, handleResendMail} : GenColsParams): ColumnDef<Order>[] => {
+const genCols = ({t, handleResendMail, handleDelete}: GenColsParams): ColumnDef<Order>[] => {
 
     return [
         {
@@ -84,7 +88,22 @@ const genCols = ({t, handleResendMail} : GenColsParams): ColumnDef<Order>[] => {
                             <TransactionDetailDialog orderId={row.original.id}/>
                             {convertStatus(row.original.orderStatus ?? "PENDING") !== 'failed_mail' ? null : (
                                 <OrderResendMailDialogContent email={row.original.sentMail}
-                                 onSubmit={(email) => handleResendMail(row.original.id, email ?? "",)}/>
+                                                              onSubmit={(email) => handleResendMail(row.original.id, email ?? "",)}/>
+                            )}
+                            {row.original.deletedAt ? null : (
+                                <CommonConfirmDialog
+                                    triggerName={
+                                        <Button
+                                            variant={"destructive"}
+                                            size="icon"
+                                            className="w-8 h-8">
+                                            <Trash2/>
+                                        </Button>
+                                    }
+                                    title={`${t("Delete")} ${t("Order")}`}
+                                    description={t("delete_order_warning")}
+                                    onConfirm={() => handleDelete(row.original.id)}
+                                />
                             )}
                         </div>
 
@@ -98,13 +117,13 @@ const genCols = ({t, handleResendMail} : GenColsParams): ColumnDef<Order>[] => {
 
 export default function TransactionMangementPage() {
     const t = useTranslations();
-    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders, deleteById, resendMail] =
+    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders, deleteById, resendMail, proxyLoading] =
         OrderMany.useStore(
             useShallow((state) => [
                 state.status, state.lastAction, state.error, state.orders,
                 state.queryParams, state.totalInstances, state.totalPages,
                 state.getOrders, state.deleteOrders,
-                state.deleteById, state.resendMail
+                state.deleteById, state.resendMail, state.proxyLoading
             ])
         );
 
@@ -122,28 +141,29 @@ export default function TransactionMangementPage() {
     ]);
 
     useEffect(() => {
-        getOrders({
+        proxyLoading(() => getOrders({
             pageRequest: {
                 page: pagination.pageIndex,
                 size: pagination.pageSize,
                 sortBy: sorting[0]?.id,
                 sortDirection: sorting[0]?.desc ? "desc" : "asc",
             },
-        });
+        }), 'get');
     }, []);
 
 
     function handleResendMail(id: number, email: string) {
-        resendMail(id,email, true).then(()=>{
+        resendMail(id, email, true).then(() => {
             toast.success("Đã thêm vào hàng chờ xử lý, vui lòng chờ một chút để email được gửi")
-        }).catch(e=>{
-            if(e instanceof ApiError){
+        }).catch(e => {
+            if (e instanceof ApiError) {
                 const apiError = e as ApiError;
-                toast.error("Có vấn đề khi gửi mail",{description:apiError.message})
+                toast.error("Có vấn đề khi gửi mail", {description: apiError.message})
             }
         })
     }
-    const cols = genCols({t, handleResendMail});
+
+    const cols = genCols({t, handleResendMail, handleDelete: deleteById});
 
 
     return (
@@ -158,7 +178,7 @@ export default function TransactionMangementPage() {
             </CardHeader>
             <CardContent>
                 <CommmonDataTable
-                    isLoading={orders === null}
+                    isLoading={status === 'loading' && orders.length === 0}
                     totalCount={totalInstances ?? 0}
                     objectName={t('Order')}
                     columns={cols}

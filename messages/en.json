@@ -586,5 +586,11 @@
   "order_items": "Order Items",
   "hide_keys": "Hide Keys",
   "show_keys": "Show keys",
-  "failure_reason": "Failure reason"
+  "failure_reason": "Failure reason",
+  "preview": "Preview",
+  "delete_order_warning": "Are you sure you want to delete this order?",
+  "delete_order_x": "Delete order #{x}",
+  "delete_order_x_success": "order {x} deleted successfully",
+  "delete_order_error": "order deletion failed",
+  "include_deleted_item": "include deleted items"
 }

@@ -5,7 +5,7 @@ import { Table as TableType } from '@tanstack/react-table'
 import React from 'react'
 
 export default function CommonTableVisibility({table}: {table: TableType<any>}) {
-    return <div className="flex items-center justify-end gap-2">
+    return <div className="flex items-center justify-end gap-2 max-w-[50%]  ">
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm">

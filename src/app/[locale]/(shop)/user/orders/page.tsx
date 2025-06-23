@@ -12,10 +12,11 @@ import {Order} from "@/api";
 import TransactionDetailDialog from "@/components/transactions/TransactionDetailDialog";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {Button} from "@/components/ui/button";
-import {Trash2} from "lucide-react";
+import {ScanEye, Trash2} from "lucide-react";
 import {getDateTimeLocal} from "@/lib/date_helper";
 import {OrderMany} from "@/stores/order/order.store";
 import {useShallow} from "zustand/shallow";
+import Link from "next/link";
 
 
 const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: number) => void): ColumnDef<Order>[] => {
@@ -65,21 +66,23 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
                     <>
                         <div className="flex justify-center items-end gap-2">
                             <TransactionDetailDialog orderId={row.original.id}/>
+                            <Link href={`/user/orders/${row.original.id}`}>
+                                <Button variant="outline" className="bg-primary text-white">
+                                    <ScanEye className="mr-2 w-4 h-4"/> {t("Detail")}
+                                </Button>
+                            </Link>
                             {row.original.deletedAt ? null : (
                                 <CommonConfirmDialog
                                     triggerName={
                                         <Button
                                             variant={"destructive"}
                                             size="icon"
-                                            className="w-8 h-8"
-                                        >
+                                            className="w-8 h-8">
                                             <Trash2/>
                                         </Button>
                                     }
-                                    title={"Cấm người dùng"}
-                                    description={
-                                        "Bạn có chắc chắn muốn xóa đơn hàng này không?"
-                                    }
+                                    title={`${t("Delete")} ${t("Order")}`}
+                                    description={t("delete_order_warning")}
                                     onConfirm={() => handleDelete(row.original.id)}
                                 />
                             )}
@@ -131,7 +134,7 @@ export default function OrderPage() {
         });
     }, []);
 
-    function handleDelete(id: number){
+    function handleDelete(id: number) {
 
     }
 
@@ -144,9 +147,9 @@ export default function OrderPage() {
                 <p className="font-normal italic text-muted-foreground">
                     {t("order_history_description")}
                 </p>
-              <CardTitle className="flex items-center justify-between">
-                <OrdersFilterForm mode={'personal'}/>
-              </CardTitle>
+                <CardTitle className="flex items-center justify-between">
+                    <OrdersFilterForm mode={'personal'}/>
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="flex flex-col ">

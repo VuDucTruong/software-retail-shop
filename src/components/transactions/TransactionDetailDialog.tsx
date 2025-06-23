@@ -24,7 +24,7 @@ export default function TransactionDetailDialog({orderId}: TransactionDetailDial
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="outline" className="bg-primary text-white">
-                    <Eye className="mr-2 w-4 h-4"/> {t("Detail")}
+                    <Eye className="mr-2 w-4 h-4"/> {t("preview")}
                 </Button>
             </DialogTrigger>
 

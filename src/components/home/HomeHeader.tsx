@@ -25,6 +25,7 @@ import SearchBar from "./SearchBar";
     { name: "about_us", href: "/" },
     { name: "contact_us", href: "/" },
     { name: "Support", href: "/feedback" },
+    {name: "blog", href: "/blog"}
   ];
 
 export default function HomeHeader() {
@@ -49,8 +50,7 @@ export default function HomeHeader() {
                 <Link
                   className="hover:underline hover:text-primary"
                   key={index}
-                  href={value.href}
-                >
+                  href={value.href}>
                   {t(value.name)}{" "}
                 </Link>
                 <Separator orientation="vertical" />
