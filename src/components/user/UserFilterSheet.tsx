@@ -20,10 +20,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
+import {SwitchToggleField} from "@/components/ui/CommonYesNo";
 
 
 type UserFilterForm = {
   fullName?: string;
+  deleted: boolean;
   email?: string;
   createdAtFrom?: string;
   createdAtTo?: string;
@@ -36,6 +39,7 @@ export default function UserFilterSheet() {
   const form = useForm<UserFilterForm>({
     defaultValues: {
       fullName: "",
+      deleted: false,
       email: "",
       createdAtFrom: "",
       createdAtTo: "",
@@ -104,6 +108,9 @@ export default function UserFilterSheet() {
                   </FormItem>
                 )}
               />
+              <CommonInputOutline title={t("include_deleted_item")}>
+                <SwitchToggleField name="deleted"/>
+              </CommonInputOutline>
 
               <FormField
                 control={form.control}

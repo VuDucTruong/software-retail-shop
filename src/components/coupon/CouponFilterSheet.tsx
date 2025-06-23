@@ -23,6 +23,8 @@ import {
 } from "../ui/sheet";
 import CouponTypeSelect from "./CouponTypeSelect";
 import { useCouponStore } from "@/stores/coupon.store";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
+import {SwitchToggleField} from "@/components/ui/CommonYesNo";
 
 const FormSchema = z
   .object({
@@ -30,6 +32,7 @@ const FormSchema = z
     type: z.enum(["PERCENTAGE", "FIXED", "ALL"]),
     availableFrom: z.string(),
     availableTo: z.string(),
+    deleted: z.boolean(),
     valueFrom: z.preprocess((val) => {
       if(val) return val;
       return val
@@ -49,6 +52,7 @@ export default function CouponFilterSheet() {
     defaultValues: {
       search: "",
       type: "ALL",
+      deleted: false,
       availableFrom: "",
       availableTo: "",
       valueFrom: "",
@@ -105,6 +109,11 @@ export default function CouponFilterSheet() {
                   </FormItem>
                 )}
               />
+
+              <CommonInputOutline title={t("include_deleted_item")}>
+                <SwitchToggleField name="deleted"/>
+              </CommonInputOutline>
+
               <FormField
                 control={form.control}
                 name="type"

@@ -64,11 +64,11 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
             cell: ({row}) => {
                 return (
                     <>
-                        <div className="flex justify-center items-end gap-2">
+                        <div className="flex justify-center items-center gap-2">
                             <TransactionDetailDialog orderId={row.original.id}/>
                             <Link href={`/user/orders/${row.original.id}`}>
-                                <Button variant="outline" className="bg-primary text-white">
-                                    <ScanEye className="mr-2 w-4 h-4"/> {t("Detail")}
+                                <Button variant="outline" className="bg-white text-black ">
+                                    <ScanEye className="w-4 h-4"/> {t("Detail")}
                                 </Button>
                             </Link>
                             {row.original.deletedAt ? null : (
@@ -77,7 +77,7 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
                                         <Button
                                             variant={"destructive"}
                                             size="icon"
-                                            className="w-8 h-8">
+                                            className="w-8 h-8 ">
                                             <Trash2/>
                                         </Button>
                                     }

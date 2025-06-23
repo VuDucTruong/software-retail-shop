@@ -25,7 +25,7 @@ import SearchBar from "./SearchBar";
     { name: "about_us", href: "/" },
     { name: "contact_us", href: "/" },
     { name: "Support", href: "/feedback" },
-    {name: "blog", href: "/blog"}
+    {name: "Blog", href: "/blog"}
   ];
 
 export default function HomeHeader() {

@@ -189,12 +189,6 @@ export default function BlogManagementPage() {
     })
 
     function onSearchAndGenresDebounced(genre2Ids: (number | string)[], search: string) {
-        // if (CollectionUtils.isEmpty(genre2Ids) && !StringUtils.hasLength(search))
-        //     return;
-        //
-        // console.log("genre2s",genre2Ids)
-        // console.log("search", search)
-
         proxyLoading(() => {
             getBlogs({
                 pageRequest: {
@@ -234,16 +228,16 @@ export default function BlogManagementPage() {
                     pageCount={totalPages ?? 0}
                     pagination={pagination}
                     searchComponent={<SearchWith2LevelsDropdown
-                        key={1}
-                        menus={{
-                            items: genre1s.map(g1 => ({
-                                id: g1.id,
-                                name: g1.name,
-                                children: g1.genre2s.map(g2 => ({...g2}))
-                            }))
-                        }}
-                        search={{}}
-                        onDebounced={onSearchAndGenresDebounced}
+                      key={1}
+                      menus={{
+                          items: genre1s.map(g1 => ({
+                              id: g1.id,
+                              name: g1.name,
+                              children: g1.genre2s.map(g2 => ({...g2}))
+                          }))
+                      }}
+                      search={{}}
+                      onDebounced={onSearchAndGenresDebounced}
                     />}
 
                     onPaginationChange={(updater) => {

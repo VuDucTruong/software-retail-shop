@@ -1,8 +1,8 @@
-import { useProductStore } from "@/stores/product.store";
-import { Filter } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
-import { Button } from "../ui/button";
+import {useProductStore} from "@/stores/product.store";
+import {Filter} from "lucide-react";
+import {useTranslations} from "next-intl";
+import {useForm} from "react-hook-form";
+import {Button} from "../ui/button";
 import {
   Form,
   FormControl,
@@ -11,7 +11,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Input } from "../ui/input";
+import {Input} from "../ui/input";
 import {
   Sheet,
   SheetContent,
@@ -20,11 +20,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { CategoryMultiSelectField } from "./CategoryMultiSelect";
-import { TagMultiSelectField } from "./TagMultiSelect";
+import {CategoryMultiSelectField} from "./CategoryMultiSelect";
+import {TagMultiSelectField} from "./TagMultiSelect";
+import CommonInputOutline from "@/components/common/CommonInputOutline";
+import {SwitchToggleField} from "@/components/ui/CommonYesNo";
 
 type ProductFilterForm = {
   search?: string;
+  deleted: boolean;
   priceFrom?: string;
   priceTo?: string;
   categoryIds?: number[];
@@ -39,6 +42,7 @@ export default function ProductFilterSheet() {
       search: "",
       priceFrom: "",
       priceTo: "",
+      deleted: false,
       categoryIds: [],
       tags: [],
     },
@@ -51,7 +55,7 @@ export default function ProductFilterSheet() {
         ([, value]) => value !== undefined && value !== ""
       )
     );
-    
+
 
     getProducts({
       pageRequest: {
@@ -68,14 +72,14 @@ export default function ProductFilterSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="outline" className="w-fit">
-          <Filter /> {t('search_and_filter' , {x: t('products')})}
+          <Filter/> {t('search_and_filter', {x: t('products')})}
         </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>{t('search_and_filter' , {x: t('products')})}</SheetTitle>
+          <SheetTitle>{t('search_and_filter', {x: t('products')})}</SheetTitle>
           <SheetDescription>
-            {t('search_and_filter_description' , {x: t('products')})}
+            {t('search_and_filter_description', {x: t('products')})}
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-auto ">
@@ -84,21 +88,25 @@ export default function ProductFilterSheet() {
               <FormField
                 control={form.control}
                 name="search"
-                render={({ field }) => (
+                render={({field}) => (
                   <FormItem>
                     <FormLabel>{t('Search')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
 
+              <CommonInputOutline title={t("include_deleted_item")}>
+                <SwitchToggleField name="deleted"/>
+              </CommonInputOutline>
+
               <FormField
                 control={form.control}
                 name="priceFrom"
-                render={({ field }) => (
+                render={({field}) => (
                   <FormItem>
                     <FormLabel>{t('Input.price_from_placeholder')}</FormLabel>
                     <FormControl>
@@ -108,7 +116,7 @@ export default function ProductFilterSheet() {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
@@ -116,7 +124,7 @@ export default function ProductFilterSheet() {
               <FormField
                 control={form.control}
                 name="priceTo"
-                render={({ field }) => (
+                render={({field}) => (
                   <FormItem>
                     <FormLabel>{t('Input.price_to_placeholder')}</FormLabel>
                     <FormControl>
@@ -126,7 +134,7 @@ export default function ProductFilterSheet() {
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
@@ -134,32 +142,32 @@ export default function ProductFilterSheet() {
               <FormField
                 control={form.control}
                 name="categoryIds"
-                render={({ field }) => (
+                render={({field}) => (
                   <FormItem>
                     <FormLabel>{t('Categories')}</FormLabel>
                     <FormControl>
-                      <CategoryMultiSelectField field={field} />
+                      <CategoryMultiSelectField field={field}/>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
 
-                <FormField
+              <FormField
                 control={form.control}
                 name="tags"
-                render={({ field }) => (
+                render={({field}) => (
                   <FormItem>
                     <FormLabel>{t("Tags")}</FormLabel>
                     <FormControl>
-                      <TagMultiSelectField field={field} />
+                      <TagMultiSelectField field={field}/>
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage/>
                   </FormItem>
                 )}
               />
-              
-              
+
+
             </form>
           </Form>
           <div className="absolute right-0 left-0 bottom-2 flex gap-2 mx-3 bg-white pt-2">

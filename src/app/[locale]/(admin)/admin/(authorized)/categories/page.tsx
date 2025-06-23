@@ -1,26 +1,24 @@
 "use client";
 
-import { Category } from "@/api";
+import {Category} from "@/api";
 import CategoryFilterSheet from "@/components/category/CategoryFilterSheet";
 import CreateCategoryDialog from "@/components/category/CreateCategoryDialog";
 import EditCategoryDialog from "@/components/category/EditCategoryDialog";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import SortingHeader from "@/components/common/table/SortingHeader";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { useCategoryStore } from "@/stores/category.store";
-import { useCategoryDialogStore } from "@/stores/dialog.store";
-import {
-  ColumnDef,
-  PaginationState,
-  SortingState,
-} from "@tanstack/react-table";
-import { PenLine } from "lucide-react";
-import { useTranslations } from "next-intl";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {useActionToast} from "@/hooks/use-action-toast";
+import {useCategoryStore} from "@/stores/category.store";
+import {useCategoryDialogStore} from "@/stores/dialog.store";
+import {ColumnDef, PaginationState, SortingState,} from "@tanstack/react-table";
+import {PenLine} from "lucide-react";
+import {useTranslations} from "next-intl";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useShallow } from "zustand/shallow";
+import {useEffect, useState} from "react";
+import {useShallow} from "zustand/shallow";
+import {SearchAlone} from "@/components/ui/search/SearchAlone";
+import {StringUtils} from "@/lib/utils";
 
 
 export default function CategoryManagementPage() {
@@ -48,13 +46,11 @@ export default function CategoryManagementPage() {
     ])
   );
 
-
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
   });
 
- 
 
   const [sorting, setSorting] = useState<SortingState>([
     {
@@ -75,7 +71,7 @@ export default function CategoryManagementPage() {
   }, [pagination, sorting, getCategories]);
 
 
-   useActionToast({
+  useActionToast({
     status,
     lastAction,
     errorMessage: error || undefined,
@@ -85,7 +81,7 @@ export default function CategoryManagementPage() {
     {
       accessorKey: "id",
       header: "ID",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.id;
       },
       enableHiding: false,
@@ -93,7 +89,7 @@ export default function CategoryManagementPage() {
     {
       accessorKey: "image",
       header: t("Image"),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return (
           <div className="flex items-center justify-center">
             <div className="relative size-20 border border-border rounded-lg">
@@ -111,10 +107,10 @@ export default function CategoryManagementPage() {
     },
     {
       accessorKey: "name",
-      header: ({ column }) => (
-        <SortingHeader column={column} title={t("Name")} />
+      header: ({column}) => (
+        <SortingHeader column={column} title={t("Name")}/>
       ),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return <div className="font-bold">{row.original.name}</div>;
       },
       enableHiding: false,
@@ -122,18 +118,19 @@ export default function CategoryManagementPage() {
     {
       accessorKey: "description",
       header: t("Description"),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.description;
       },
     },
     {
       accessorKey: "actions",
       header: "",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return (
           <div className="flex items-center gap-2">
-            <Button className="size-8 bg-yellow-400 hover:bg-yellow-500" onClick={() => openDialog(row.original)}>
-              <PenLine />
+            <Button className="size-8 bg-yellow-400 hover:bg-yellow-500"
+                    onClick={() => openDialog(row.original)}>
+              <PenLine/>
             </Button>
           </div>
         );
@@ -141,21 +138,34 @@ export default function CategoryManagementPage() {
     },
   ];
 
+  function onSearchDebounced(search: string) {
+    getCategories({
+      pageRequest: {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+      },
+      search: search
+    });
+  }
 
   return (
     <Card>
-      <EditCategoryDialog />
+      <EditCategoryDialog/>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <h2>{t("category_management")}</h2>
           <div className="flex items-center gap-2">
-            <CreateCategoryDialog />
-            <CategoryFilterSheet />
+            <CreateCategoryDialog/>
+            <CategoryFilterSheet/>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <CommmonDataTable
+          searchComponent={<SearchAlone onDebounced={onSearchDebounced}/>}
+
           objectName={t("category")}
           isLoading={categories === null}
           columns={cols}

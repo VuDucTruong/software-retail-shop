@@ -22,6 +22,8 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
+import {StringUtils} from "@/lib/utils";
+import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
 
 export default function StaffManagementPage() {
   const t = useTranslations();
@@ -65,6 +67,7 @@ export default function StaffManagementPage() {
         sortBy: sorting[0]?.id,
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
+      roles: ["STAFF"]
     });
   }, [sorting, pagination, getUsers]);
 
@@ -154,6 +157,21 @@ export default function StaffManagementPage() {
   const handleDelete = (id: number) => {
     deleteUsers([id]);
   };
+  function onSearchAndSearchByDebounced(searchBy: (number | string)[], search: string) {
+    if (Array.isArray(searchBy) || !StringUtils.hasLength(searchBy))
+      return
+
+    getUsers({
+      pageRequest: {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+      },
+      [searchBy]: search,
+      roles: ["STAFF"]
+    });
+  }
 
   return (
     <Card>
@@ -172,6 +190,15 @@ export default function StaffManagementPage() {
       </CardHeader>
       <CardContent>
         <CommmonDataTable
+          searchComponent={<SearchWithDropDown
+            menus={{
+              items: [{id: "email", name: "email"}, {id: "fullName", name: "name"}],
+              selectedId: "email",
+              multiple: false
+            }}
+            search={{}}
+            onDebounced={onSearchAndSearchByDebounced}
+          />}
             objectName={t("admin")}
           isLoading={status === "loading" && lastAction === "getUsers"}
           columns={cols}

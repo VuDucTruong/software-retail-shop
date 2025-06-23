@@ -19,7 +19,7 @@ export default function BlogSearchPage() {
 
     return (
         <div className="main-container flex flex-col gap-4 !pt-10">
-            <h2>{"Search result for xxxx"}</h2>
+            <h2>{`Found ${blogs?.length} blogs`}</h2>
             <div className="grid grid-cols-4 gap-3">
 
                 <StatusDependentRenderer status={status} error={error}

@@ -15,6 +15,7 @@ export const CategorySchema = z.object({
     return "/empty_img.png"
   } , z.string()),
   description: z.string(),
+  deletedAt: z.string().nullish(),
 });
 
 export const CategoryCreateSchema = z.object({

@@ -47,7 +47,7 @@ export function SearchWith2LevelsDropdown({ menus, search, onDebounced }: Props)
         () =>
             debounce((selected: IDType[], text: string) => {
                 onDebounced(selected, text);
-            }, 300),
+            }, 500),
         [onDebounced]
     );
     const didMount = useRef(false);

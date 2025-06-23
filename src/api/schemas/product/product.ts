@@ -36,6 +36,7 @@ export const ProductSchema = z.object({
     return "/empty_img.png"
   }, z.string()),
   represent: z.boolean(),
+  deletedAt: z.string().nullish(),
   price: z.number(),
   originalPrice: z.number(),
   categories: z.array(CategorySchema).nullable(),

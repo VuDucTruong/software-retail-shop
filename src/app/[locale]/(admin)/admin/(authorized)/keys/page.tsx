@@ -18,6 +18,8 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
+import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
+import {StringUtils} from "@/lib/utils";
 export default function KeyManagementPage() {
   const t = useTranslations();
 
@@ -133,6 +135,19 @@ export default function KeyManagementPage() {
      
     },
   ];
+  function onSearchAndSearchByDebounced(searchBy: (number | string)[], search: string) {
+    if (Array.isArray(searchBy) || !StringUtils.hasLength(searchBy))
+      return
+    getProductItems({
+      pageRequest: {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+      },
+      [searchBy]: search
+    });
+  }
 
   return (
     <Card>
@@ -147,8 +162,16 @@ export default function KeyManagementPage() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-         
           <CommmonDataTable
+            searchComponent={<SearchWithDropDown
+              menus={{
+                items: [{id: "productName", name: "Product name"}, {id: "productKey", name: "product Key"}],
+                selectedId: "productName",
+                multiple: false
+              }}
+              search={{}}
+              onDebounced={onSearchAndSearchByDebounced}
+            />}
           objectName={t("product_key")}
           isLoading={productItems === null}
           columns={cols}

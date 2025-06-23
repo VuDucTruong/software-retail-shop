@@ -1,25 +1,23 @@
 "use client";
 
-import { User } from "@/api";
+import {User} from "@/api";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import { StatusBadge } from "@/components/common/StatusBadge";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import {StatusBadge} from "@/components/common/StatusBadge";
+import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import SortingHeader from "@/components/common/table/SortingHeader";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import UserDetailDialog from "@/components/user/UserDetailDialog";
 import UserFilterSheet from "@/components/user/UserFilterSheet";
-import { useUserToast } from "@/hooks/use-user-toast";
-import { useUserStore } from "@/stores/user.store";
-import {
-  ColumnDef,
-  PaginationState,
-  SortingState,
-} from "@tanstack/react-table";
-import { UserX2 } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { useShallow } from "zustand/shallow";
+import {useUserToast} from "@/hooks/use-user-toast";
+import {useUserStore} from "@/stores/user.store";
+import {ColumnDef, PaginationState, SortingState,} from "@tanstack/react-table";
+import {UserX2} from "lucide-react";
+import {useTranslations} from "next-intl";
+import {useEffect, useState} from "react";
+import {useShallow} from "zustand/shallow";
+import {StringUtils} from "@/lib/utils";
+import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
 
 export default function CustomerManagementPage() {
   const t = useTranslations();
@@ -62,31 +60,32 @@ export default function CustomerManagementPage() {
         sortBy: sorting[0]?.id,
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
+      roles: ["CUSTOMER"]
     });
-  }, [sorting, pagination,getUsers]);
+  }, [sorting, pagination, getUsers]);
 
   const cols: ColumnDef<User>[] = [
     {
       accessorKey: "id",
       header: "ID",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.id;
       },
       enableHiding: false,
     },
     {
       accessorKey: "fullName",
-      header: ({ column }) => (
-        <SortingHeader column={column} title={t("Name")} />
+      header: ({column}) => (
+        <SortingHeader column={column} title={t("Name")}/>
       ),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return <div className="font-bold">{row.original.profile.fullName}</div>;
       },
     },
     {
       accessorKey: "email",
       header: "Email",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.email;
       },
       enableHiding: false,
@@ -94,33 +93,33 @@ export default function CustomerManagementPage() {
     {
       accessorKey: "role",
       header: t("Role"),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.role;
       },
     },
     {
       accessorKey: "status",
       header: t("Status"),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return (
-          <StatusBadge status={row.original.deletedAt ? "banned" : "active"} />
+          <StatusBadge status={row.original.deletedAt ? "banned" : "active"}/>
         );
       },
     },
     {
       accessorKey: "createdAt",
       header: t("created_at"),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.createdAt;
       },
     },
     {
       accessorKey: "actions",
       header: "",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return (
           <div className="flex items-center gap-2">
-            <UserDetailDialog user={row.original} />
+            <UserDetailDialog user={row.original}/>
 
             {row.original.deletedAt ? null : (
               <CommonConfirmDialog
@@ -130,7 +129,7 @@ export default function CustomerManagementPage() {
                     size="icon"
                     className="w-8 h-8"
                   >
-                    <UserX2 />
+                    <UserX2/>
                   </Button>
                 }
                 title={"Cấm người dùng"}
@@ -150,18 +149,44 @@ export default function CustomerManagementPage() {
     deleteUsers([id]);
   };
 
+  function onSearchAndSearchByDebounced(searchBy: (number | string)[], search: string) {
+    if (Array.isArray(searchBy) || !StringUtils.hasLength(searchBy))
+      return
+
+
+    getUsers({
+      pageRequest: {
+        page: pagination.pageIndex,
+        size: pagination.pageSize,
+        sortBy: sorting[0]?.id,
+        sortDirection: sorting[0]?.desc ? "desc" : "asc",
+      },
+      [searchBy]: search,
+      roles: ["CUSTOMER"]
+    });
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <h2>{t('customer_management')}</h2>
           <div className="flex items-center gap-2">
-            <UserFilterSheet />
+            <UserFilterSheet/>
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <CommmonDataTable
+          searchComponent={<SearchWithDropDown
+            menus={{
+              items: [{id: "email", name: "email"}, {id: "fullName", name: "name"}],
+              selectedId: "email",
+              multiple: false
+            }}
+            search={{}}
+            onDebounced={onSearchAndSearchByDebounced}
+          />}
           objectName={"Khách hàng"}
           isLoading={status === "loading" && lastAction === "getUsers"}
           columns={cols}

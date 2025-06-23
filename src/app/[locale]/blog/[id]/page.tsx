@@ -53,6 +53,7 @@ export default function DetailBlogPage() {
                     <BlogGenreSection genre="Moi nhat">
                         {latestBlogs.map(b => (
                             <HorizontalPostListItem
+                              id={b.id}
                                 key={b.id}
                                 title={b.title}
                                 image={b.imageUrl}
