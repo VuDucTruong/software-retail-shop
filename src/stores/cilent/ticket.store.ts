@@ -5,7 +5,7 @@ import { SetState } from "@/lib/set_state";
 import { z } from "zod";
 import { create } from "zustand";
 
-const ticketUrl = "http://localhost:5678/webhook/0d550b8c-b0ee-43c4-96a3-b9d7a02b4c55"
+const ticketUrl = process.env.NEXT_PUBLIC_N8N_WEB_HOOK ?? ""
 const apiClient = ApiClient.getInstance();
 
 type TicketState = {

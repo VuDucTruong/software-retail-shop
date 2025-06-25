@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
+  const url = process.env.NEXT_PUBLIC_CHATBOT_URL ?? ""
   try {
-    const response = await fetch('http://localhost:3001/api/v1/prediction/cb62b6bb-244b-426b-b4e0-31ead46bcbdb', {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
