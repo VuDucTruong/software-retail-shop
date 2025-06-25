@@ -21,6 +21,7 @@ import {useEffect, useState} from "react";
 import {useShallow} from "zustand/shallow";
 import {SearchAlone} from "@/components/ui/search/SearchAlone";
 import {StringUtils} from "@/lib/utils";
+import CommonToolTip from "@/components/common/CommonTooltip";
 
 export default function CommentManagementPage() {
   const t = useTranslations();
@@ -133,7 +134,8 @@ export default function CommentManagementPage() {
       cell: ({row}) => {
         return (
           <div className="flex items-center gap-2 w-fit">
-            <Button
+            <CommonToolTip content={t("view_details")}>
+              <Button
               variant="outline"
               className="hover:text-yellow-500 hover:border-yellow-500"
               onClick={() => {
@@ -142,13 +144,16 @@ export default function CommentManagementPage() {
             >
               <Eye/>
             </Button>
+            </CommonToolTip>
             <Link
               href={`/product/${row.original.product?.slug}`}
               target="_blank"
             >
-              <Button>
+              <CommonToolTip content={t('view_on_ecommerce_site')}>
+                <Button>
                 <ExternalLink/>
               </Button>
+              </CommonToolTip>
             </Link>
           </div>
         );

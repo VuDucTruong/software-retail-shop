@@ -12,6 +12,7 @@ import { User } from "@/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Eye } from "lucide-react";
 import { useTranslations } from "next-intl";
+import CommonToolTip from "../common/CommonTooltip";
 
 type UserDetailDialogProps = {
   user: User;
@@ -23,9 +24,11 @@ export default function UserDetailDialog({ user }: UserDetailDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
+        <CommonToolTip content={t("view_details")}>
+          <Button variant="outline" size="icon">
           <Eye className="h-4 w-4" />
         </Button>
+        </CommonToolTip>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

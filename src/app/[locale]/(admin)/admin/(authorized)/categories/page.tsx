@@ -19,6 +19,7 @@ import {useEffect, useState} from "react";
 import {useShallow} from "zustand/shallow";
 import {SearchAlone} from "@/components/ui/search/SearchAlone";
 import {StringUtils} from "@/lib/utils";
+import CommonToolTip from "@/components/common/CommonTooltip";
 
 
 export default function CategoryManagementPage() {
@@ -128,10 +129,12 @@ export default function CategoryManagementPage() {
       cell: ({row}) => {
         return (
           <div className="flex items-center gap-2">
-            <Button className="size-8 bg-yellow-400 hover:bg-yellow-500"
+            <CommonToolTip content={t("Edit")}>
+              <Button className="size-8 bg-yellow-400 hover:bg-yellow-500"
                     onClick={() => openDialog(row.original)}>
               <PenLine/>
             </Button>
+            </CommonToolTip>
           </div>
         );
       },

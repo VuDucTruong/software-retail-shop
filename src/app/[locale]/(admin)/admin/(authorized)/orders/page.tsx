@@ -21,6 +21,7 @@ import {Button} from "@/components/ui/button";
 import {Trash2} from "lucide-react";
 import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
 import {CollectionUtils, StringUtils} from "@/lib/utils";
+import CommonToolTip from "@/components/common/CommonTooltip";
 
 type GenColsParams = {
   t: ReturnType<typeof useTranslations>;
@@ -97,12 +98,14 @@ const genCols = ({t, handleResendMail, handleDelete}: GenColsParams): ColumnDef<
               {row.original.deletedAt ? null : (
                 <CommonConfirmDialog
                   triggerName={
-                    <Button
+                    <CommonToolTip content={t("Delete")}>
+                      <Button
                       variant={"destructive"}
                       size="icon"
                       className="w-8 h-8">
                       <Trash2/>
                     </Button>
+                    </CommonToolTip>
                   }
                   title={`${t("Delete")} ${t("Order")}`}
                   description={t("delete_order_warning")}

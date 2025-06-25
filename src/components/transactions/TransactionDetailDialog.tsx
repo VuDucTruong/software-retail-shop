@@ -15,6 +15,7 @@ import {toast} from "sonner";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {getDateTimeLocal} from "@/lib/date_helper";
 import {convertStatus, StatusBadge} from "@/components/common/StatusBadge";
+import CommonToolTip from "../common/CommonTooltip"
 
 type TransactionDetailDialogProps = { orderId: number }
 
@@ -23,9 +24,11 @@ export default function TransactionDetailDialog({orderId}: TransactionDetailDial
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" className="bg-primary text-white cursor-pointer">
-                    <Eye className="mr-2 w-4 h-4"/> {t("preview")}
+                <CommonToolTip content={t("view_details")}>
+                    <Button variant="outline" size={"icon"} className="w-8 h-8">
+                    <Eye/>
                 </Button>
+                </CommonToolTip>
             </DialogTrigger>
 
             <DialogContent className="w-full max-w-3xl max-h-[80vh] overflow-y-auto">

@@ -22,6 +22,7 @@ import {useShallow} from "zustand/shallow";
 import {useCategoryStore} from "@/stores/category.store";
 import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
 import {CollectionUtils, StringUtils} from "@/lib/utils";
+import CommonToolTip from "@/components/common/CommonTooltip";
 
 const CATEGORY_NONE_ID = -1000
 
@@ -167,12 +168,14 @@ export default function ProductManagementPage() {
       header: "",
       cell: ({row}) => {
         return <div className="flex items-center gap-2">
-          <Button
+          <CommonToolTip content={t("view_details")}>
+            <Button
             variant="outline"
             onClick={() => handleViewDetails(row.original.id)}
           >
             <Eye/>
           </Button>
+          </CommonToolTip>
         </div>;
       },
     },

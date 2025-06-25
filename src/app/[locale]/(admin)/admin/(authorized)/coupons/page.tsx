@@ -17,6 +17,7 @@ import {useEffect, useState} from "react";
 import {CgAdd} from "react-icons/cg";
 import {useShallow} from "zustand/shallow";
 import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
+import CommonToolTip from "@/components/common/CommonTooltip";
 
 export default function CouponManagementPage() {
   const t = useTranslations();
@@ -123,12 +124,14 @@ export default function CouponManagementPage() {
       cell: ({row}) => {
         return (
           <div className="flex items-center gap-2">
-            <Button
+            <CommonToolTip content={t("view_details")}>
+              <Button
               variant="outline"
               onClick={() => handleViewDetails(row.original.id)}
             >
               <Eye/>
             </Button>
+            </CommonToolTip>
           </div>
         );
       },

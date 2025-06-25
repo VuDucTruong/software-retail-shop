@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import {StringUtils} from "@/lib/utils";
 import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
+import CommonToolTip from "@/components/common/CommonTooltip";
 
 export default function StaffManagementPage() {
   const t = useTranslations();
@@ -67,7 +68,6 @@ export default function StaffManagementPage() {
         sortBy: sorting[0]?.id,
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
-      roles: ["STAFF"]
     });
   }, [sorting, pagination, getUsers]);
 
@@ -131,13 +131,15 @@ export default function StaffManagementPage() {
                 {row.original.deletedAt ? null : (
                   <CommonConfirmDialog
                     triggerName={
-                      <Button
+                      <CommonToolTip content={t("ban_user")}>
+                        <Button
                         variant={"destructive"}
                         size="icon"
                         className="w-8 h-8"
                       >
                         <UserX2 />
                       </Button>
+                      </CommonToolTip>
                     }
                     title={t("ban_user")}
                     description={
@@ -169,7 +171,6 @@ export default function StaffManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
       [searchBy]: search,
-      roles: ["STAFF"]
     });
   }
 
