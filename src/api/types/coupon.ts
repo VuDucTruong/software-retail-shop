@@ -16,5 +16,6 @@ export const COUPON_FALL_BACK: Coupon = {
     value: 0,
     availableTo: new Date().toISOString(),
     availableFrom: new Date().toISOString(),
-    usageLimit: 0
+    usageLimit: 0,
+    deletedAt: null,
 }

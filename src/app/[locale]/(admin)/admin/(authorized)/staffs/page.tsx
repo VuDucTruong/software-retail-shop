@@ -192,7 +192,7 @@ export default function StaffManagementPage() {
         <CommmonDataTable
           searchComponent={<SearchWithDropDown
             menus={{
-              items: [{id: "email", name: "email"}, {id: "fullName", name: "name"}],
+              items: [{id: "email", name: "Email"}, {id: "fullName", name: t('Name')}],
               selectedId: "email",
               multiple: false
             }}

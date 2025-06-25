@@ -29,9 +29,8 @@ export default function DetailProductPage() {
   );
 
   useEffect(() => {
-    if(getProductBySlug!==undefined)
-        getProductBySlug(slug);
-  }, []);
+      getProductBySlug(slug);
+  }, [getProductBySlug]);
 
 
   if(error && lastAction === null) {

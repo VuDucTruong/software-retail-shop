@@ -174,7 +174,7 @@ export default function CouponManagementPage() {
         <CommmonDataTable
           searchComponent={<SearchWithDropDown
             menus={{
-              items: [{id: "all", name: "all",}, {id: "FIXED", name: "fixed $",}, {id: "PERCENTAGE", name: "percentage %"}],
+              items: [{id: "all", name: t('All'),}, {id: "FIXED", name: t('Fixed'),}, {id: "PERCENTAGE", name: t('Percentage'),}],
               multiple: false
             }}
             search={{}}

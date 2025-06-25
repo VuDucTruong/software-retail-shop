@@ -23,7 +23,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
-import {SwitchToggleField} from "@/components/ui/CommonYesNo";
+import {CommonSwitch} from "@/components/common/CommonSwitch";
 
 export default function CategoryFilterSheet() {
   const t = useTranslations();
@@ -87,7 +87,7 @@ export default function CategoryFilterSheet() {
                 )}
               />
               <CommonInputOutline title={t("include_deleted_item")}>
-                <SwitchToggleField name="deleted"/>
+                <CommonSwitch name="deleted" className="data-[state=checked]:bg-red-500"/>
               </CommonInputOutline>
             </form>
           </Form>

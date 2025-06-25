@@ -132,9 +132,9 @@ export default function CustomerManagementPage() {
                     <UserX2/>
                   </Button>
                 }
-                title={"Cấm người dùng"}
+                title={t('ban_user')}
                 description={
-                  "Bạn có chắc chắn muốn cấm người dùng này này không?"
+                  t('ban_user_description')
                 }
                 onConfirm={() => handleDelete(row.original.id)}
               />
@@ -180,14 +180,14 @@ export default function CustomerManagementPage() {
         <CommmonDataTable
           searchComponent={<SearchWithDropDown
             menus={{
-              items: [{id: "email", name: "email"}, {id: "fullName", name: "name"}],
+              items: [{id: "email", name: "Email"}, {id: "fullName", name: t("Name")}],
               selectedId: "email",
               multiple: false
             }}
             search={{}}
             onDebounced={onSearchAndSearchByDebounced}
           />}
-          objectName={"Khách hàng"}
+          objectName={t('Customer')}
           isLoading={status === "loading" && lastAction === "getUsers"}
           columns={cols}
           data={users?.data ?? []}

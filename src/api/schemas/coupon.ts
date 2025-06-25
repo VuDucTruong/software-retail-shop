@@ -33,6 +33,7 @@ export const CouponSchema = z.object({
   ),
   usageLimit: z.number(),
   description: z.string(),
+  deletedAt: z.string().nullable()
 });
 
 const applyRefinement = (schema: z.ZodTypeAny) => {

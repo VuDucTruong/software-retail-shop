@@ -1,10 +1,10 @@
 import { AiOutlineProduct } from "react-icons/ai";
 import { BiSolidDiscount } from "react-icons/bi";
-import { FaBlog, FaComment, FaHeart, FaMoneyCheck, FaUserAlt } from "react-icons/fa";
+import { FaBlog, FaComment, FaHeart, FaUserAlt } from "react-icons/fa";
 import { IoCart, IoHomeOutline, IoKeySharp } from "react-icons/io5";
 import { IconType } from "react-icons/lib";
 import { LuShoppingBag } from "react-icons/lu";
-import { MdOutlineCategory, MdPayment, MdSecurity } from "react-icons/md";
+import { MdOutlineCategory, MdSecurity } from "react-icons/md";
 import { RiFolderUserLine } from "react-icons/ri";
 
 export type AdminMenuItem = {

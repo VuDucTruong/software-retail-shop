@@ -499,7 +499,9 @@
   "your_name": "Your name",
   "your_message": "Your message",
   "chatbot_welcome_message": "Hello! I am your AI assistant of Phoenix Shop. How can I help you today?",
+  "news_and_tips": "News and Tips",
   "": "",
+  "Customer": "Customer",
   "Action": {
     "create": {
       "loading": "Creating...",
@@ -592,5 +594,5 @@
   "delete_order_x": "Delete order #{x}",
   "delete_order_x_success": "order {x} deleted successfully",
   "delete_order_error": "order deletion failed",
-  "include_deleted_item": "include deleted items"
+  "include_deleted_item": "Include deleted data"
 }

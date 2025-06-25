@@ -44,9 +44,9 @@ export default function BrandCarousel() {
             <Image
               src={brand.img}
               alt={brand.name}
-              width={96} // equivalent to w-24 (24 * 4 = 96px)
-              height={0} // height will auto-adjust due to object-contain
-              className="object-contain w-24 h-auto"
+              width={96}
+              height={96}
+              className="object-contain"
             />
           </div>
         ))}

@@ -125,7 +125,7 @@ export const searchProducts = async (
   set: SetState<ProductStore>,
   query: QueryParams
 ) => {
-  set({ status: "loading", lastAction: null, error: null });
+  set({ status: "loading", lastAction: null, error: null, search: null });
 
   try {
     const response = await productApiClient.post(

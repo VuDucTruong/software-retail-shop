@@ -11,7 +11,7 @@ import {BlogMany} from "@/stores/blog/blog.store";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
 import GenreDropdown from "@/components/blog/GenreDropdown";
 import {StringUtils} from "@/lib/utils";
-import {SwitchToggleField} from "@/components/ui/CommonYesNo";
+import {CommonSwitch} from "@/components/common/CommonSwitch";
 
 export const BlogFilterFormSchema = z.object({
     search: z.string().optional(),
@@ -102,7 +102,7 @@ export default function BlogFilterSheet() {
                             />
 
                             <CommonInputOutline title={t("include_deleted_item")}>
-                                <SwitchToggleField name="deleted"/>
+                                <CommonSwitch name="deleted" className="data-[state=checked]:bg-red-500"/>
                             </CommonInputOutline>
 
 

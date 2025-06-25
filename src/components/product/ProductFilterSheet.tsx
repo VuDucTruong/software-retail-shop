@@ -23,7 +23,7 @@ import {
 import {CategoryMultiSelectField} from "./CategoryMultiSelect";
 import {TagMultiSelectField} from "./TagMultiSelect";
 import CommonInputOutline from "@/components/common/CommonInputOutline";
-import {SwitchToggleField} from "@/components/ui/CommonYesNo";
+import {CommonSwitch} from "@/components/common/CommonSwitch";
 
 type ProductFilterForm = {
   search?: string;
@@ -100,7 +100,7 @@ export default function ProductFilterSheet() {
               />
 
               <CommonInputOutline title={t("include_deleted_item")}>
-                <SwitchToggleField name="deleted"/>
+                <CommonSwitch name="deleted" className="data-[state=checked]:bg-red-500"/>
               </CommonInputOutline>
 
               <FormField

@@ -72,7 +72,7 @@ export function HomeCarousel() {
                           alt="Banner"
                           sizes="100%"
                           fill
-                          className="rounded-md"
+                          className="rounded-md w-full"
                         />
                       </CardContent>
                     </Card>
