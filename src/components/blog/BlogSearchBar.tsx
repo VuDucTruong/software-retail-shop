@@ -14,6 +14,7 @@ import {StringUtils} from "@/lib/utils";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {Skeleton} from "@/components/ui/skeleton";
 import Image from "next/image";
+import Link from "next/link";
 
 type SearchParam = {
     search: string;
@@ -40,7 +41,7 @@ export default function BlogSearchBar() {
                 proxyLoading(() => searchBlogs({
                     pageRequest: {
                         page: 0,
-                        size: 10,
+                        size: 6,
                         sortBy: "createdAt",
                         sortDirection: "desc",
                     },
@@ -155,24 +156,24 @@ export default function BlogSearchBar() {
                 <StatusDependentRenderer
                     status={status}
                     error={error}
-                    altLoading={Array.from({length: 10}).map((_, index) => (
+                    altLoading={Array.from({ length: 10 }).map((_, index) => (
                         <Skeleton key={index} className="flex flex-col gap-2 p-2 rounded-md">
                             <div className="flex gap-3">
-                                <div className="w-20 h-20 bg-muted rounded"/>
+                                <div className="w-20 h-20 bg-muted rounded" />
                                 <div className="flex-1 space-y-2">
-                                    <div className="h-4 bg-muted-foreground/30 rounded w-3/4"/>
-                                    <div className="h-3 bg-muted-foreground/20 rounded w-1/2"/>
+                                    <div className="h-4 bg-muted-foreground/30 rounded w-3/4" />
+                                    <div className="h-3 bg-muted-foreground/20 rounded w-1/2" />
                                 </div>
                             </div>
                         </Skeleton>
                     ))}
                 >
                     <div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
-                        {blogs.map((item) => (
+                        {blogs.slice(0,6).map((item) => (
                             <div
                                 key={item.id}
                                 onClick={() => router.push(`/blog/${item.id}`)}
-                                className="flex gap-3 p-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer"
+                                className="flex gap-3 p-2 rounded-md hover:bg-rose-100 transition-colors cursor-pointer"
                             >
                                 <div className="relative w-16 h-16 rounded overflow-hidden bg-muted shrink-0">
                                     <Image
@@ -183,20 +184,39 @@ export default function BlogSearchBar() {
                                     />
                                 </div>
                                 <div className="flex flex-col justify-between overflow-hidden">
-                                    <span className="text-sm font-medium line-clamp-2 leading-snug">{item.title}</span>
-                                    <span className="text-xs text-muted-foreground">{item.publishedAt}</span>
+          <span className="text-sm font-medium line-clamp-2 leading-snug text-rose-950 group-hover:text-rose-600">
+            {item.title}
+          </span>
+                                    <span className="text-xs text-muted-foreground"> {item.publishedAt}</span>
                                 </div>
                             </div>
                         ))}
 
                         {blogs.length === 0 && (
-                            <div
-                                className="col-span-2 flex items-center justify-center p-2 text-sm italic text-muted-foreground">
-                                {t("no_matching_x", {x: t("blogs")})}
+                            <div className="col-span-2 flex items-center justify-center p-2 text-sm italic text-muted-foreground">
+                                {t("no_matching_x", { x: t("blogs") })}
                             </div>
                         )}
                     </div>
+
+                    {/* View more CTA */}
+                    <div className="flex w-full justify-end mt-2">
+                        <Link
+                            href="/blog/search"
+                            className="inline-flex items-center gap-1 text-sm font-medium text-blue-400 hover:text-blue-600 transition-colors"
+                        >{t("see_more") ?? "See more"}
+                            <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    </div>
                 </StatusDependentRenderer>
+
             </PopoverContent>
         </Popover>
     );
