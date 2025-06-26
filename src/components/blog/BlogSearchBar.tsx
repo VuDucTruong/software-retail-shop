@@ -2,15 +2,18 @@ import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
 import debounce from "lodash/debounce";
-import {Search} from "lucide-react";
+import {PackageSearch, Search} from "lucide-react";
 import {useTranslations} from "next-intl";
-import {useParams, useRouter, useSearchParams} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import React, {useEffect} from "react";
 import {useForm} from "react-hook-form";
 import {Form, FormField} from "../ui/form";
 import {BlogMany} from "@/stores/blog/blog.store";
 import {useShallow} from "zustand/shallow";
 import {StringUtils} from "@/lib/utils";
+import {StatusDependentRenderer} from "@/components/special/LoadingPage";
+import {Skeleton} from "@/components/ui/skeleton";
+import Image from "next/image";
 
 type SearchParam = {
     search: string;
@@ -28,7 +31,8 @@ export default function BlogSearchBar() {
     const router = useRouter();
     const t = useTranslations();
 
-    const [searchBlogs, proxyLoading] = BlogMany.useStore(useShallow(s => [s.getBlogs, s.proxyLoading]))
+    const [blogs, status, error, searchBlogs, proxyLoading] = BlogMany.useStoreLight(useShallow(s =>
+        [s.blogs, s.status, s.error, s.getBlogs, s.proxyLoading]))
 
     const debouncedSearch = React.useMemo(
         () =>
@@ -115,8 +119,8 @@ export default function BlogSearchBar() {
     };
 
     return (
-        <Popover open={form.watch("search") !== ""}>
-            <PopoverTrigger asChild>
+        <Popover>
+            <PopoverTrigger>
                 <Form {...form}>
                     <form
                         className="flex items-center w-full max-w-md border-b rounded-md border-border shadow-sm"
@@ -148,28 +152,51 @@ export default function BlogSearchBar() {
                 onOpenAutoFocus={(e) => {
                     e.preventDefault();
                 }}>
-                <div className="flex flex-col  gap-3">
-                    {/* {search?.data.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => {
-                router.push("/blog/" + item.slug);
-              }}
-              className="flex items-center cursor-pointer hover:text-primary hover:opacity-80 gap-2 hover:underline"
-            >
-              <PackageSearch />
-              <span>{item.name}</span>
-            </div>
-          ))}
+                <StatusDependentRenderer
+                    status={status}
+                    error={error}
+                    altLoading={Array.from({length: 10}).map((_, index) => (
+                        <Skeleton key={index} className="flex flex-col gap-2 p-2 rounded-md">
+                            <div className="flex gap-3">
+                                <div className="w-20 h-20 bg-muted rounded"/>
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-4 bg-muted-foreground/30 rounded w-3/4"/>
+                                    <div className="h-3 bg-muted-foreground/20 rounded w-1/2"/>
+                                </div>
+                            </div>
+                        </Skeleton>
+                    ))}
+                >
+                    <div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+                        {blogs.map((item) => (
+                            <div
+                                key={item.id}
+                                onClick={() => router.push(`/blog/${item.id}`)}
+                                className="flex gap-3 p-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer"
+                            >
+                                <div className="relative w-16 h-16 rounded overflow-hidden bg-muted shrink-0">
+                                    <Image
+                                        src={item.imageUrl}
+                                        alt={item.title}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="flex flex-col justify-between overflow-hidden">
+                                    <span className="text-sm font-medium line-clamp-2 leading-snug">{item.title}</span>
+                                    <span className="text-xs text-muted-foreground">{item.publishedAt}</span>
+                                </div>
+                            </div>
+                        ))}
 
-          {search?.data.length === 0 && (
-            <div className="flex items-center justify-center cursor-pointer hover:text-primary hover:opacity-80 gap-2">
-              <span className="text-muted-foreground italic">
-                {t("no_matching_x", { x: t("blogs") })}
-              </span>
-            </div>
-          )} */}
-                </div>
+                        {blogs.length === 0 && (
+                            <div
+                                className="col-span-2 flex items-center justify-center p-2 text-sm italic text-muted-foreground">
+                                {t("no_matching_x", {x: t("blogs")})}
+                            </div>
+                        )}
+                    </div>
+                </StatusDependentRenderer>
             </PopoverContent>
         </Popover>
     );

@@ -12,11 +12,12 @@ import {
     BlogUpdateRequest,
     defaultAsyncState,
     DisposeAction,
+    LastActions,
     Pageable,
     QueryParams,
     setLoadAndDo
 } from "@/api"
-import {z} from "zod";
+import {undefined, z} from "zod";
 
 
 import {create} from "zustand";
@@ -142,9 +143,7 @@ export namespace BlogMany {
 
         deleteBlogs: (ids: number[]) => Promise<void>;
         deleteById: (id: number) => Promise<void>,
-        getById: (id: number, includeDeleted: boolean) => Promise<void>
     }
-
     type BlogStore = State & Action;
 
     const initialState: State = {
@@ -187,7 +186,6 @@ export namespace BlogMany {
                         currentPage: response.currentPage
                     })
                 },
-
                 deleteBlogs: async (ids) => {
                     await BlogApis.deleteBlogs(ids)
                     const {blogs, totalInstances, totalPages, currentPage} = get();
@@ -202,13 +200,6 @@ export namespace BlogMany {
                     const {totalInstances} = get();
                     set({blogs: newBlogs, totalInstances: totalInstances - 1,})
                 },
-                getById:
-                    async (id, includeDeleted: boolean = false) => {
-                        console.log(' NOT DOING ANYTHING NOW')
-                        // const response = await BlogApis.geBlogtById(id, includeDeleted)
-                        // const domain: BlogDomainType = mapFromResponseToDomain(response);
-                        // set({blog: domain})
-                    },
                 clean() {
                     set({...initialState})
                     console.log("clearing in blog many", get().blogs)
@@ -216,6 +207,40 @@ export namespace BlogMany {
             }
         ))
     ;
+
+    export const useStoreLight = create<BlogStore>((set, get) => {
+
+        const x: BlogStore = {
+            ...initialState,
+            proxyLoading(run, lastAction) {
+                setLoadAndDo(set, run, lastAction)
+            },
+            getBlogs: async (query) => {
+                const response = await BlogApis.getBlogs(query);
+                const domains: BlogDomainType[] = response.data.map(b => mapFromResponseToDomain(b));
+                set({
+                    blogs: domains,
+                    totalInstances: response.totalInstances,
+                    totalPages: response.totalPages,
+                    currentPage: response.currentPage
+                })
+            },
+            async deleteBlogs(ids: number[]): Promise<void> {
+
+            },
+            async deleteById(id: number): Promise<void> {
+
+            },
+            async approveBlog(id: number, action: boolean): Promise<void> {
+
+            },
+            clean() {
+                set({...initialState})
+                console.log("clearing in blog many", get().blogs)
+            }
+        }
+        return x;
+    })
 
 }
 

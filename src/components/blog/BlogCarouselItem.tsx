@@ -10,8 +10,7 @@ type CarouselItemPropType = {
 
 export default function BlogCarouselItem({blog}: CarouselItemPropType) {
   return (
-    <div
-      className="relative overflow-hidden border border-border group shadow-sm hover:shadow-md transition-shadow duration-300 ease-in-out">
+    <div className="relative overflow-hidden border border-border group shadow-sm hover:shadow-md transition-shadow duration-300 ease-in-out">
       <div className="absolute inset-0 transition-transform duration-300 ease-in-out group-hover:scale-105">
         <Link href={`/blog/${blog.id}`}>
           <Image

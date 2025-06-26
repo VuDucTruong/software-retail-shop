@@ -12,13 +12,16 @@ import {GenreDomain} from "@/stores/blog/genre.store";
 import {useParams} from "next/navigation";
 import {useShallow} from "zustand/shallow";
 import {Skeleton} from "@/components/ui/skeleton";
-import {useEffect, useMemo, useRef} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {v4} from 'uuid';
+import Image from "next/image";
 
 export default function DetailBlogPage() {
     const params = useParams();
     const {id} = params;
+    const idNum = Number(id);
+
 
     const [latestBlogs, latestBlogStatus,] = BlogMany.useStore(useShallow(s => [
         s.blogs, s.status, s.error,
@@ -27,8 +30,8 @@ export default function DetailBlogPage() {
     const [genre2s, genre1s,] = GenreDomain.useStore(useShallow(s =>
         [s.genre2s, s.genre1s]))
 
-    const [proxyLoading, lastAction, status, error, blog, getById, updateBlog] = BlogSingle.useStore(useShallow(s => [
-        s.proxyLoading, s.lastAction, s.status, s.error, s.blog, s.getById, s.updateBlog
+    const [proxyLoading, status, error, blog, getById] = BlogSingle.useStore(useShallow(s => [
+        s.proxyLoading, s.status, s.error, s.blog, s.getById
     ]))
 
 
@@ -38,10 +41,8 @@ export default function DetailBlogPage() {
     const g1Ids = useMemo(() => blogGenre1s.map(bg1 => bg1.id), [blogGenre1s]);
 
     useEffect(() => {
-        if (id) {
-            const idNum = Number(id);
-            if (!isNaN(idNum))
-                proxyLoading(() => getById(idNum), 'get')
+        if (id && !isNaN(idNum)) {
+            proxyLoading(() => getById(idNum), 'get')
         }
     }, []);
 
@@ -53,7 +54,7 @@ export default function DetailBlogPage() {
                     <BlogGenreSection genre="Moi nhat">
                         {latestBlogs.map(b => (
                             <HorizontalPostListItem
-                              id={b.id}
+                                id={b.id}
                                 key={b.id}
                                 title={b.title}
                                 image={b.imageUrl}
@@ -80,15 +81,10 @@ export default function DetailBlogPage() {
                                          </Skeleton>}>
                     <Card>
                         <CardHeader className="flex flex-col gap-6">
-                            <div className="flex gap-2">
-                                {genre2s.map(g2 => (
-                                    <TagItem key={g2.id} tag={g2.name}/>
-                                ))}
-                            </div>
                             <h1>{blog.title}</h1>
                             <div className="flex items-center gap-2">
                                 <Avatar>
-                                    <AvatarImage src={blog.imageUrl || "https://github.com/shadcn.png"}/>
+                                    <AvatarImage src={blog.author.imageUrl || "https://github.com/shadcn.png"}/>
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
                                 <div className="text-sm font-medium">{blog.title}</div>
@@ -97,6 +93,14 @@ export default function DetailBlogPage() {
                         </CardHeader>
 
                         <CardContent className="min-h-[400px]">
+                            <div className="relative w-full h-[400px] rounded overflow-hidden bg-muted shrink-0">
+                                <Image
+                                    src={blog.imageUrl}
+                                    alt={blog.title}
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
                             <RichTextViewer content={blog.content}/>
                         </CardContent>
 
@@ -114,19 +118,9 @@ export default function DetailBlogPage() {
                                     <TagItem key={g2.id} tag={g2.name}/>
                                 ))}
                             </div>
-
-                            <div className="grid grid-cols-2 w-full place-content-between gap-10">
-                                <NavPostLink
-                                    id={blog.id - 1}
-                                    direction="prev"
-                                    title="The Elder Scrolls IV: Oblivion Remastered tiếp tục rò rỉ thông tin"
-                                />
-                                <NavPostLink
-                                    id={blog.id + 1}
-                                    direction="next"
-                                    title="The Elder Scrolls IV: Oblivion Remastered tiếp tục rò rỉ thông tin"
-                                />
-                            </div>
+                            {id && !isNaN(idNum) &&
+                                <BlogPrevAndNext currentBlogId={idNum}/>
+                            }
                         </CardFooter>
                     </Card>
                 </StatusDependentRenderer>
@@ -143,10 +137,6 @@ function BlogRelatedByG1Ids({g1Ids}: { g1Ids: number[] }) {
         [s.g1IdToBlogs, s.status, s.error, s.getBlogsPartitionByG1Id, s.proxyLoading]))
 
     const [genre1s] = GenreDomain.useStore(useShallow(s => [s.genre1s]))
-
-    console.log('g1Ids', g1Ids)
-    console.log('g1IdToBlogs', g1IdToBlogs)
-
     const didCall = useRef(false);
     useEffect(() => {
         if (!didCall.current && g1Ids.length) {
@@ -158,7 +148,7 @@ function BlogRelatedByG1Ids({g1Ids}: { g1Ids: number[] }) {
 
     return (
         <BlogGenreSection genre="Lien quan">
-            <StatusDependentRenderer status={groupStatus} error={groupError}>
+            <StatusDependentRenderer status={groupStatus} error={groupError} altLoading={(<Skeleton/>)}>
                 <div className="flex gap-2 items-center">
                     {Object.entries(g1IdToBlogs).flatMap(([g1Id, blogs]) => {
                         return blogs.map((blog, i) => (
@@ -175,6 +165,50 @@ function BlogRelatedByG1Ids({g1Ids}: { g1Ids: number[] }) {
             </StatusDependentRenderer>
         </BlogGenreSection>
     )
+}
+
+type BlogPrevAndNextPropType = {
+    currentBlogId: number
+}
+
+function BlogPrevAndNext({currentBlogId}: BlogPrevAndNextPropType) {
+    const [g1IdToBlogs] = BlogGroups.useStore(useShallow((s) => [s.g1IdToBlogs]));
+    const [genre1s] = GenreDomain.useStore(useShallow(s => [s.genre1s]))
+
+
+    const flattenedBlogs = Object.entries(g1IdToBlogs)
+        .flatMap(([g1Id, blogs]) =>
+            blogs.map((blog) => ({
+                ...blog,
+                g1Name: genre1s.find((g1) => g1.id + "" === g1Id)?.name ?? "",
+            }))
+        )
+        .sort((a, b) => a.id - b.id);
+
+    const prev = [...flattenedBlogs]
+        .filter((b) => b.id < currentBlogId)
+        .sort((a, b) => b.id - a.id)[0];
+
+    const next = [...flattenedBlogs]
+        .filter((b) => b.id > currentBlogId)
+        .sort((a, b) => a.id - b.id)[0];
+
+    return (
+        <div className="grid grid-cols-2 w-full place-content-between gap-10">
+            <NavPostLink
+                id={prev?.id ?? -1}
+                direction="prev"
+                title={prev?.title ?? "Không có bài trước"}
+                disabled={!prev}
+            />
+            <NavPostLink
+                id={next?.id ?? -1}
+                direction="next"
+                title={next?.title ?? "Không có bài sau"}
+                disabled={!next}
+            />
+        </div>
+    );
 }
 
 function TagItem({tag, className = ""}: { tag: string; className?: string }) {

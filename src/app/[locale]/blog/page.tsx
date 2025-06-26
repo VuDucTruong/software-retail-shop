@@ -10,6 +10,7 @@ import {useEffect} from "react";
 import {getDateLocal} from "@/lib/date_helper";
 import {GenreDomain} from "@/stores/blog/genre.store";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
+import {Skeleton} from "@/components/ui/skeleton";
 
 const G1_GAME_Id = 1;
 const G1_COOL_Id = 2
@@ -35,25 +36,32 @@ export default function BlogPage() {
   return (
     <div className="main-container flex flex-col py-10">
       <div className="grid grid-cols-3 gap-2 h-[400px] w-full">
-        <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError}>
-          <div className="grid row-span-2">
+        <div className="grid row-span-2">
+          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
             {latestBlogs?.length > 0 && <BlogCarouselItem blog={latestBlogs[0]}/>}
-          </div>
-          <div className="grid row-span-2">
+          </StatusDependentRenderer>
+        </div>
+        <div className="grid row-span-2">
+          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
             {latestBlogs?.length > 1 && <BlogCarouselItem blog={latestBlogs[1]}/>}
-          </div>
+          </StatusDependentRenderer>
+        </div>
+        <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
           {latestBlogs?.length > 2 && <BlogCarouselItem blog={latestBlogs[2]}/>}
-          <div className="grid grid-cols-2 gap-2">
+        </StatusDependentRenderer>
+
+        <div className="grid grid-cols-2 gap-2">
+          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
             {latestBlogs?.length > 3 && <BlogCarouselItem blog={latestBlogs[3]}/>}
             {latestBlogs?.length > 4 && <BlogCarouselItem blog={latestBlogs[4]}/>}
-          </div>
-        </StatusDependentRenderer>
+          </StatusDependentRenderer>
+        </div>
       </div>
 
       <div className="flex flex-row-reverse gap-4">
         <div className="w-1/4">
           <BlogGenreSection genre="Moi nhat">
-            <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError}>
+            <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
               {
                 g1IdToBlogs[G1_COOL_Id]?.length &&
                 g1IdToBlogs[G1_COOL_Id].map((b) => (
@@ -75,36 +83,15 @@ export default function BlogPage() {
           <BlogGenreSection genre="Meo hay">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
               <div className="md:col-span-1">
-                {
-                  (() => {
-                    const coolBlogs = g1IdToBlogs[G1_COOL_Id]
-                    if (typeof coolBlogs === 'undefined' || coolBlogs?.length === 0)
-                      return null;
-                    const b = coolBlogs[0]
-                    return <FeaturedPostCard
-                      id={b.id}
-                      title={b.title}
-                      image={b.imageUrl || "/empty_img.png"}
-                      category={genre2s.filter(g2 =>
-                        b.genre2Ids.some(bG2Id => g2.id === bG2Id))
-                        .map(g2 => g2.name).join(", ")}
-                      author={b.author?.fullName}
-                      date={b.publishedAt}
-                      description={b.subtitle}
-                    />
-                  })()
-                }
-              </div>
-              <div className="flex flex-col justify-between">
-                {
-                  (() => {
-                    const coolBlogs = g1IdToBlogs[G1_COOL_Id]
-                    if (typeof coolBlogs === 'undefined' || coolBlogs?.length < 2)
-                      return null;
-                    return coolBlogs.slice(1).map(b => (
-                      <FeaturedPostCard
+                <StatusDependentRenderer status={groupStatus} error={groupError} altLoading={(<Skeleton/>)}>
+                  {
+                    (() => {
+                      const coolBlogs = g1IdToBlogs[G1_COOL_Id]
+                      if (typeof coolBlogs === 'undefined' || coolBlogs?.length === 0)
+                        return null;
+                      const b = coolBlogs[0]
+                      return <FeaturedPostCard
                         id={b.id}
-                        key={b.id}
                         title={b.title}
                         image={b.imageUrl || "/empty_img.png"}
                         category={genre2s.filter(g2 =>
@@ -114,9 +101,36 @@ export default function BlogPage() {
                         date={b.publishedAt}
                         description={b.subtitle}
                       />
-                    ))
-                  })()
-                }
+                    })()
+                  }
+                </StatusDependentRenderer>
+              </div>
+              <div className="flex flex-col justify-between">
+                <StatusDependentRenderer status={groupStatus} error={groupError} altLoading={
+                  Array.from({length: 2}).map((_, index) => (<Skeleton key={index}/>))
+                }>
+                  {
+                    (() => {
+                      const coolBlogs = g1IdToBlogs[G1_COOL_Id]
+                      if (typeof coolBlogs === 'undefined' || coolBlogs?.length < 2)
+                        return null;
+                      return coolBlogs.slice(1).map(b => (
+                        <FeaturedPostCard
+                          id={b.id}
+                          key={b.id}
+                          title={b.title}
+                          image={b.imageUrl || "/empty_img.png"}
+                          category={genre2s.filter(g2 =>
+                            b.genre2Ids.some(bG2Id => g2.id === bG2Id))
+                            .map(g2 => g2.name).join(", ")}
+                          author={b.author?.fullName}
+                          date={b.publishedAt}
+                          description={b.subtitle}
+                        />
+                      ))
+                    })()
+                  }
+                </StatusDependentRenderer>
               </div>
             </div>
           </BlogGenreSection>

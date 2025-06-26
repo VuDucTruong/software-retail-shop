@@ -11,7 +11,7 @@ import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 export default function BlogSearchPage() {
     //const t = useTranslations();
 
-    const [blogs, status, error] = BlogMany.useStore(useShallow(s =>
+    const [blogs, status, error] = BlogMany.useStoreLight(useShallow(s =>
         [s.blogs, s.status, s.error]))
     const [genre1s, genre2s] = GenreDomain.useStore(useShallow(s =>
         [s.genre1s, s.genre2s]))
