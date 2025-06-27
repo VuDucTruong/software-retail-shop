@@ -16,6 +16,7 @@ import React, {useEffect, useMemo, useRef} from "react";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {v4} from 'uuid';
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function DetailBlogPage() {
     const params = useParams();
@@ -87,7 +88,7 @@ export default function DetailBlogPage() {
                                     <AvatarImage src={blog.author.imageUrl || "https://github.com/shadcn.png"}/>
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
-                                <div className="text-sm font-medium">{blog.title}</div>
+                                <div className="text-sm font-medium">{blog.author.fullName}</div>
                                 <div className="text-sm text-gray-500">{blog.publishedAt}</div>
                             </div>
                         </CardHeader>
@@ -172,6 +173,7 @@ type BlogPrevAndNextPropType = {
 }
 
 function BlogPrevAndNext({currentBlogId}: BlogPrevAndNextPropType) {
+    const t = useTranslations();
     const [g1IdToBlogs] = BlogGroups.useStore(useShallow((s) => [s.g1IdToBlogs]));
     const [genre1s] = GenreDomain.useStore(useShallow(s => [s.genre1s]))
 
@@ -194,17 +196,17 @@ function BlogPrevAndNext({currentBlogId}: BlogPrevAndNextPropType) {
         .sort((a, b) => a.id - b.id)[0];
 
     return (
-        <div className="grid grid-cols-2 w-full place-content-between gap-10">
+        <div className="grid grid-cols-2 w-full gap-10">
             <NavPostLink
                 id={prev?.id ?? -1}
                 direction="prev"
-                title={prev?.title ?? "Không có bài trước"}
+                title={prev?.title ?? t('no_previous_blog')}
                 disabled={!prev}
             />
             <NavPostLink
                 id={next?.id ?? -1}
                 direction="next"
-                title={next?.title ?? "Không có bài sau"}
+                title={next?.title ?? t('no_next_blog')}
                 disabled={!next}
             />
         </div>

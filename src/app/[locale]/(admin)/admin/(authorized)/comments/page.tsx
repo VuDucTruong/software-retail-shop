@@ -19,7 +19,7 @@ import {useTranslations} from "next-intl";
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import {useShallow} from "zustand/shallow";
-import {SearchAlone} from "@/components/ui/search/SearchAlone";
+import {SearchAlone} from "@/components/blog/search/SearchAlone";
 import {StringUtils} from "@/lib/utils";
 import CommonToolTip from "@/components/common/CommonTooltip";
 

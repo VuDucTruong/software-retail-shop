@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { CgDetailsMore } from "react-icons/cg";
-import { SearchInput } from "@/components/ui/search/SearchInput";
+import { SearchInput } from "@/components/blog/search/SearchInput";
 import {useEffect, useMemo, useRef, useState} from "react";
 import debounce from "lodash/debounce";
 import { cn } from "@/lib/utils";

@@ -19,7 +19,7 @@ import {ApiError} from "@/api/client/base_client";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {Button} from "@/components/ui/button";
 import {Trash2} from "lucide-react";
-import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
+import {SearchWithDropDown} from "@/components/blog/search/SearchWithDropDown";
 import {CollectionUtils, StringUtils} from "@/lib/utils";
 import CommonToolTip from "@/components/common/CommonTooltip";
 

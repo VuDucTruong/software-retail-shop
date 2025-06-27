@@ -1,47 +1,39 @@
-import {ArrowLeftCircle} from "lucide-react";
+import { ArrowLeftCircle } from "lucide-react";
 import clsx from "clsx";
+import ThreeDButton from "@/components/common/ThreeDButton";
 import Link from "next/link";
 import React from "react";
+import { useTranslations } from "next-intl";
 
 type NavPostLinkProps = {
-    id: number;
-    title: string;
-    direction: "prev" | "next";
-    disabled?: boolean;
+  id: number;
+  title: string;
+  direction: "prev" | "next";
+  disabled?: boolean;
 };
 
 export default function NavPostLink({
-                                        direction,
-                                        title,
-                                        id,
-                                        disabled = false,
-                                    }: NavPostLinkProps) {
-    const isPrev = direction === "prev";
-
-    const content = (
+  direction,
+  title,
+  id,
+  disabled = false,
+}: NavPostLinkProps) {
+  const isPrev = direction === "prev";
+    const t = useTranslations();
+  return (
+    <Link href={`/blog/${id}`}>
+      <ThreeDButton className={clsx("flex flex-col gap-2 w-full", isPrev ? "items-start" : "items-end" , disabled && "opacity-50 pointer-events-none")}> 
         <div
-            className={clsx(
-                "group flex flex-col gap-2 w-full p-4 rounded-xl border border-rose-200 bg-rose-50/50",
-                "transition-all duration-200 shadow-sm hover:shadow-md",
-                "hover:bg-rose-300 hover:border-rose-300",
-                isPrev ? "items-start text-left" : "items-end text-right",
-                disabled && "opacity-50 pointer-events-none"
-            )}
+          className={clsx(
+            "text-sm flex gap-2 items-center",
+            isPrev ? "flex-row-reverse" : "flex-row"
+          )}
         >
-            <div
-                className={clsx(
-                    "text-sm font-medium flex items-center gap-1 text-primary group-hover:text-white",
-                    isPrev ? "flex-row-reverse" : "flex-row"
-                )}
-            >
-                {isPrev ? "Bài trước" : "Bài sau"}
-                <ArrowLeftCircle className={clsx("w-5 h-5", !isPrev && "rotate-180")} />
-            </div>
-            <div className="text-base font-semibold leading-snug line-clamp-2 text-primary group-hover:text-white">
-                {title}
-            </div>
+          {isPrev ? t('previous_blog') : t('next_blog')}
+          <ArrowLeftCircle className={isPrev ? "" : "rotate-180"} />
         </div>
-    );
-
-    return disabled ? content : <Link href={`/blog/${id}`}>{content}</Link>;
+        <div className={isPrev ? "text-start" : "text-end"}>{title}</div>
+      </ThreeDButton>
+    </Link>
+  );
 }

@@ -26,7 +26,7 @@ export default function BlogCarouselItem({blog}: CarouselItemPropType) {
         <div
           className="mb-1 text-xs group-hover:bg-primary group-hover:text-white font-bold uppercase bg-black/50 px-2 py-1 w-fit rounded">Game
         </div>
-        <h2 className="@[200px]:text-lg @[100px]:text-xs font-bold leading-snug">
+        <h2 className="@[200px]:text-lg @[100px]:text-xs font-bold leading-snug group-hover:underline">
           {blog?.title || "VALORANT Mobile bắt đầu mở đăng ký tại Trung Quốc sau 4 năm phát triển"}
         </h2>
         <p className="mt-1 text-sm text-gray-300">

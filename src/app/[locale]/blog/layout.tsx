@@ -45,7 +45,7 @@ export default async function LocaleLayout({
                 <div className="main-container">
                     <InitGenreStore/>
                     <InitBlogStore/>
-                    <Link href="/"><Image src={"/logo.png"} alt="LOGO" width={150} height={150}/></Link>
+                    <div className="flex w-fit"><Link href="/"><Image src={"/logo.png"} alt="LOGO" width={150} height={150}/></Link></div>
                     <BlogNavMenu/>
                 </div>
             </header>

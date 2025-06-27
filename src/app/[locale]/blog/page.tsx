@@ -50,12 +50,17 @@ export default function BlogPage() {
           {latestBlogs?.length > 2 && <BlogCarouselItem blog={latestBlogs[2]}/>}
         </StatusDependentRenderer>
 
-        <div className="grid grid-cols-2 gap-2">
-          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
+
+          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<div className="grid grid-cols-2 gap-2">
+            <Skeleton/>
+            <Skeleton/>
+          </div>)}>
+          <div className="grid grid-cols-2 gap-2">
             {latestBlogs?.length > 3 && <BlogCarouselItem blog={latestBlogs[3]}/>}
             {latestBlogs?.length > 4 && <BlogCarouselItem blog={latestBlogs[4]}/>}
+          </div>
+            
           </StatusDependentRenderer>
-        </div>
       </div>
 
       <div className="flex flex-row-reverse gap-4">
