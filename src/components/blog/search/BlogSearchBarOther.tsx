@@ -99,12 +99,6 @@ export default function BlogSearchBarOther() {
     e.preventDefault();
 
     form.handleSubmit((data) => {
-      /// TODO: ASK THIS?
-      // const cleanData = Object.fromEntries(
-      //     Object.entries(data).filter(
-      //         ([, value]) => value !== "" && value !== "all"
-      //     )
-      // );
       const searchParams = new URLSearchParams();
       const cleanData = data;
       if (cleanData.search !== '') {
@@ -121,58 +115,71 @@ export default function BlogSearchBarOther() {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <Form {...form}>
-          <form
-            className="flex items-center w-full max-w-md border-b rounded-md border-border shadow-sm"
-            onSubmit={handleSubmit}>
-            <FormField
-              name="search"
-              control={form.control}
-              render={({field}) => {
-                return (
-                  <Input
-                    placeholder={t("search_hint")}
-                    className="flex-1 border-none focus-visible:ring-0 shadow-none"
-                    {...field}
-                  />
-                );
-              }}
-            />
-            <Button
-              variant="ghost"
-              className="p-2 hover:bg-accent/80  text-gray-500 cursor-pointer"
-              type="submit">
-              <Search className="w-5 h-5 "/>
-            </Button>
-          </form>
-        </Form>
+      <PopoverTrigger asChild>
+        <div className="w-lg">
+          <Form {...form}>
+            <form
+              className="flex items-center w-full border-b rounded-md border-border shadow-sm"
+              onSubmit={handleSubmit}
+            >
+              <FormField
+                name="search"
+                control={form.control}
+                render={({ field }) => {
+                  return (
+                    <Input
+                      placeholder={t("search_hint")}
+                      className="flex-1 border-none focus-visible:ring-0 shadow-none"
+                      {...field}
+                    />
+                  );
+                }}
+              />
+              <Button
+                variant="ghost"
+                className="p-2 hover:bg-accent/80  text-gray-500 cursor-pointer"
+                type="submit"
+              >
+                <Search className="w-5 h-5 " />
+              </Button>
+            </form>
+          </Form>
+        </div>
       </PopoverTrigger>
       <PopoverContent
         className="p-4 w-lg"
         onOpenAutoFocus={(e) => {
           e.preventDefault();
-        }}>
+        }}
+      >
         <StatusDependentRenderer
           status={status}
           error={error}
-          altLoading={Array.from({ length: 10 }).map((_, index) => (
-            <Skeleton key={index} className="flex flex-col gap-2 p-2 rounded-md">
+          altLoading={<div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
+            {
+                Array.from({ length: 6 }).map((_, index) => (
+            <Skeleton
+              key={index}
+              className="flex flex-col gap-2 p-2 rounded-md"
+            >
               <div className="flex gap-3">
-                <div className="w-20 h-20 bg-muted rounded" />
+                <Skeleton className="w-20 h-20 bg-muted rounded" />
                 <div className="flex-1 space-y-2">
                   <div className="h-4 bg-muted-foreground/30 rounded w-3/4" />
                   <div className="h-3 bg-muted-foreground/20 rounded w-1/2" />
                 </div>
               </div>
             </Skeleton>
-          ))}>
+          ))
+            }
+          </div>}
+        >
           <div className="grid grid-cols-2 gap-2 max-h-80 overflow-y-auto pr-1">
-            {blogs.slice(0,6).map((item) => (
+            {blogs.slice(0, 6).map((item) => (
               <div
                 key={item.id}
                 onClick={() => router.push(`/blog/${item.id}`)}
-                className="flex gap-3 p-2 rounded-md hover:bg-rose-100 transition-colors cursor-pointer"
+                className="flex gap-3 p-2 rounded-md hover:bg-primary group transition-colors cursor-pointer"
               >
                 <div className="relative w-16 h-16 rounded overflow-hidden bg-muted shrink-0">
                   <Image
@@ -183,10 +190,13 @@ export default function BlogSearchBarOther() {
                   />
                 </div>
                 <div className="flex flex-col justify-between overflow-hidden">
-          <span className="text-sm font-medium line-clamp-2 leading-snug text-rose-950 group-hover:text-rose-600">
-            {item.title}
-          </span>
-                  <span className="text-xs text-muted-foreground"> {item.publishedAt}</span>
+                  <span className="text-sm font-medium line-clamp-2 leading-snug group-hover:text-white">
+                    {item.title}
+                  </span>
+                  <span className="text-xs text-muted-foreground group-hover:text-white">
+                    {" "}
+                    {item.publishedAt}
+                  </span>
                 </div>
               </div>
             ))}
@@ -203,19 +213,20 @@ export default function BlogSearchBarOther() {
             <Link
               href="/blog/search"
               className="inline-flex items-center gap-1 text-sm font-medium text-blue-400 hover:text-blue-600 transition-colors"
-            >{t("see_more") ?? "See more"}
+            >
+              {t("see_more") ?? "See more"}
               <svg
                 className="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
-                viewBox="0 0 24 24">
+                viewBox="0 0 24 24"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </Link>
           </div>
         </StatusDependentRenderer>
-
       </PopoverContent>
     </Popover>
   );

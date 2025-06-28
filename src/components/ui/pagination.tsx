@@ -54,19 +54,21 @@ function PaginationLink({
   ...props
 }: PaginationLinkProps) {
   return (
-    <Button
-      disabled={disabled}
-      variant={isActive ? "default" : "ghost"}
-      size={size}
-      className={className}
+    <Link
+      aria-current={isActive ? "page" : undefined}
+      data-slot="pagination-link"
+      data-active={isActive}
+      {...props}
     >
-      <Link
-        aria-current={isActive ? "page" : undefined}
-        data-slot="pagination-link"
-        data-active={isActive}
-        {...props}
-      ></Link>
-    </Button>
+      <Button
+        disabled={disabled}
+        variant={isActive ? "default" : "ghost"}
+        size={size}
+        className={className}
+      >
+        {props.children}
+      </Button>
+    </Link>
   );
 }
 
@@ -153,5 +155,12 @@ function PaginationEllipsis({
 
 export {
   Pagination,
-  PaginationContent, PaginationEllipsis, PaginationEnd, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious, PaginationStart
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationEnd,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationStart,
 };

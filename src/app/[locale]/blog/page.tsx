@@ -95,9 +95,7 @@ export default function BlogPage() {
                 {
                   Array.from({length: 4}).map((_, index) =>
                     <Skeleton key={index}
-                              className={'flex items-center justify-center text-center w-full group cursor-pointer h-50'}>
-                      NOT FOUND
-                    </Skeleton>
+                              className={'flex items-center justify-center text-center w-full group cursor-pointer h-50'}/>
                   )
                 }
               </div>
