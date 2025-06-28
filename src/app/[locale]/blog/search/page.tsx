@@ -27,14 +27,16 @@ export default function BlogSearchPage() {
 
         <StatusDependentRenderer status={status} error={error}
                                  altLoading={
-                                   Array.from({length: 16}).map((_, index) => (
+                                   Array.from({length: 8}).map((_, index) => (
                                      <Skeleton key={index}>
                                        <div
-                                         className="w-full group cursor-pointer rounded-md border border-border shadow-md"></div>
+                                         className="text-center h-50  w-full group cursor-pointer rounded-md border border-border shadow-md">
+
+                                       </div>
                                      </Skeleton>
                                    ))
                                  }
-                                 altError={<SearchNotFound entityName={"blog"} className="col-span-4"/>}
+                                 altError={<SearchNotFound objectName={t("blog")} className="col-span-4"/>}
         >
           {blogs.map(b => {
             const blogGenre2s = genre2s.filter(g2 =>

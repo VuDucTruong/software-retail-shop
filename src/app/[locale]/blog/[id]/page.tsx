@@ -90,7 +90,7 @@ export default function DetailBlogPage() {
                                     <AvatarImage src={blog.author.imageUrl}/>
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
-                                <div className="text-sm font-medium">{blog.title}</div>
+                                <div className="text-sm font-medium">{blog.author.fullName}</div>
                                 <div className="text-sm text-gray-500">{blog.publishedAt}</div>
                             </div>
                         </CardHeader>
@@ -198,17 +198,17 @@ function BlogPrevAndNext({currentBlogId}: BlogPrevAndNextPropType) {
         .sort((a, b) => a.id - b.id)[0];
 
     return (
-        <div className="grid grid-cols-2 w-full place-content-between gap-10">
+        <div className="grid grid-cols-2 w-full gap-10">
             <NavPostLink
                 id={prev?.id ?? -1}
                 direction="prev"
-                title={prev?.title ?? t("no_prev")}
+                title={prev?.title ?? t('no_previous_blog')}
                 disabled={!prev}
             />
             <NavPostLink
                 id={next?.id ?? -1}
                 direction="next"
-                title={next?.title ?? t("no_next")}
+                title={next?.title ?? t('no_next_blog')}
                 disabled={!next}
             />
         </div>
@@ -221,7 +221,8 @@ function TagItem({tag, className = ""}: { tag: string; className?: string }) {
             className={cn(
                 "flex items-center justify-center px-2 py-1 border border-border bg-gray-400 text-sm font-medium hover:bg-primary cursor-pointer text-white rounded-sm",
                 className
-            )}>
+            )}
+        >
             {tag}
         </div>
     );

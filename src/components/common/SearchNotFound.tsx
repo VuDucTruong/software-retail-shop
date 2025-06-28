@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 
 type Props = {
     className?: string;
-    entityName?: string;
+    objectName: string;
 }
 
 export default function SearchNotFound(props: Props) {
@@ -13,7 +13,7 @@ export default function SearchNotFound(props: Props) {
   const t = useTranslations();
   return (
     <div className={cn("flex flex-col items-center gap-2" , className)}>
-      <h3>{t("no_matching_x", {x: t(props?.entityName ?? "products")})}</h3>
+      <h3>{t("no_matching_x", {x: props.objectName})}</h3>
       <p>{t("suggestion_for_search")}</p>
       <div className="relative w-full h-60">
         <Image

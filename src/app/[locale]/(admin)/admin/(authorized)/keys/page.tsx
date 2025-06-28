@@ -18,7 +18,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
+import {SearchWithDropDown} from "@/components/blog/search/SearchWithDropDown";
 import {StringUtils} from "@/lib/utils";
 export default function KeyManagementPage() {
   const t = useTranslations();

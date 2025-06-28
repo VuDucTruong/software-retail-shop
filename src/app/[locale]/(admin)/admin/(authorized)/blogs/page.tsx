@@ -15,10 +15,10 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import {useShallow} from "zustand/shallow";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import {GenreDomain} from "@/stores/blog/genre.store";
-import {TbChecklist} from "react-icons/tb";
-import {GrUndo} from "react-icons/gr";
-import {SearchWith2LevelsDropdown} from "@/components/ui/search/SearchWith2LevelsDropDown";
+import { GenreDomain } from "@/stores/blog/genre.store";
+import { TbChecklist } from "react-icons/tb";
+import { GrUndo } from "react-icons/gr";
+import { SearchWith2LevelsDropdown } from "@/components/blog/search/SearchWith2LevelsDropDown";
 import CommonTooltip from "@/components/common/CommonTooltip";
 
 type GenColsParams = {

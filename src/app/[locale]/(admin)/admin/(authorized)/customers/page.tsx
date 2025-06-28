@@ -21,7 +21,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import { StringUtils } from "@/lib/utils";
-import { SearchWithDropDown } from "@/components/ui/search/SearchWithDropDown";
+import { SearchWithDropDown } from "@/components/blog/search/SearchWithDropDown";
 import CommonToolTip from "@/components/common/CommonTooltip";
 
 export default function CustomerManagementPage() {

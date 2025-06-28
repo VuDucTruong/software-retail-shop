@@ -79,7 +79,7 @@ export default function SearchResultPage() {
             ))}
           </>
         ) : (
-          <SearchNotFound className="col-span-4"/>
+          <SearchNotFound className="col-span-4" objectName={t("products")}/>
         )}
       </div>
 

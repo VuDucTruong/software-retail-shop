@@ -3,7 +3,7 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import debounce from "lodash/debounce";
 import {cn} from "@/lib/utils";
-import {SearchInput} from "@/components/ui/search/SearchInput";
+import {SearchInput} from "@/components/blog/search/SearchInput";
 
 
 type SearchWithDropDownProps<> = {

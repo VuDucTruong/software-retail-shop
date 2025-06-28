@@ -16,7 +16,7 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import {CgAdd} from "react-icons/cg";
 import {useShallow} from "zustand/shallow";
-import {SearchWithDropDown} from "@/components/ui/search/SearchWithDropDown";
+import {SearchWithDropDown} from "@/components/blog/search/SearchWithDropDown";
 import CommonToolTip from "@/components/common/CommonTooltip";
 
 export default function CouponManagementPage() {
