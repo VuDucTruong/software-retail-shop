@@ -31,12 +31,9 @@
   "Password": "Password",
   "forgot_password": "Forgot password?",
   "login_with": "Or login with",
-
   "Name": "Name",
-
   "create_blog": "Create blog",
   "update_blog": "update blog",
-
   "create_account": "Create an account",
   "search_products": "Search products",
   "Filter": "Filter",
@@ -165,28 +162,22 @@
     "price_from_placeholder": "Price from",
     "price_to_placeholder": "Price to",
     "product_group_placeholder": "Enter product group name",
-
     "change_password_hint": "Must be 8 characters or longer\nShould contain at least 1 number or 1 special character\nShould not be the same as a recently used password",
     "password_hint": "Must be 8 characters or longer\nShould contain at least 1 number or 1 special character",
     "name_hint": "Must be 3 characters or longer",
     "email_hint": "Must be a valid email address",
     "fullName_hint": "Must be 6 - 40 characters long",
-
     "error_email_empty": "Email cannot be empty",
     "error_password_empty": "Password cannot be empty",
     "error_name_empty": "Username cannot be empty",
-
     "error_email_format": "Email format is incorrect",
     "error_pass_length": "Password must be at least 8 characters",
     "error_name_length": "Username must be at least 3 characters",
     "error_comment_min_length": "Comment must be at least 10 characters",
     "error_comment_max_length": "Comment must be less than 500 characters",
-
     "error_pass_not_match": "The new password and confirmation do not match",
-
     "error_pass_wrong": "Password is incorrect",
     "error_email_wrong": "Email is incorrect",
-
     "error_title_required": "Title is required.",
     "error_content_required": "Content is required.",
     "error_slug_required": "Slug is required.",
@@ -579,7 +570,6 @@
       "error": "Failed to send support ticket."
     }
   },
-
   "Order": "Order",
   "order_management": "Order Management",
   "not_published": "Not published yet",
@@ -596,5 +586,17 @@
   "delete_order_x": "Delete order #{x}",
   "delete_order_x_success": "order {x} deleted successfully",
   "delete_order_error": "order deletion failed",
-  "include_deleted_item": "Include deleted data"
+  "include_deleted_item": "Include deleted data",
+  "tips": "tips",
+  "error_create_order": "Creating the order is occurring error",
+  "error_send_mail": "Sending mail is occurring error",
+  "success_resend_mail": "Successfully added to processing queue, please wait until mail sent",
+  "latest_blogs": "Latest blogs",
+  "movie": "Movies",
+  "game": "Game",
+  "no_prev": "No previous blogs",
+  "no_next": "No next blogs",
+  "found": "Found",
+  "latest": "latest",
+  "related": "related"
 }

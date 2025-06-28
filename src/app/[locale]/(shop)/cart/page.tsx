@@ -1,22 +1,15 @@
 "use client";
 
-import { CartLocal } from "@/stores/order/cart.store";
-import { OrderCustomer } from "@/stores/order/order.store";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { GiConfirmed } from "react-icons/gi";
-import { IoCartSharp } from "react-icons/io5";
-import { MdOutlinePayments } from "react-icons/md";
+import {CartLocal} from "@/stores/order/cart.store";
+import {OrderCustomer} from "@/stores/order/order.store";
+import {useRouter} from "next/navigation";
+import {useEffect} from "react";
 
 import CartForm from "@/components/cart/CartForm";
-import { useTranslations } from "use-intl";
-import { useShallow } from "zustand/shallow";
+import {useTranslations} from "next-intl";
+import {useShallow} from "zustand/shallow";
+import {toast} from "sonner";
 
-const stepItems = [
-    { name: "Checking out", icon: IoCartSharp },
-    { name: "Payment", icon: MdOutlinePayments },
-    { name: "On Processing", icon: GiConfirmed },
-];
 
 export default function Page() {
     const t = useTranslations();
@@ -43,18 +36,6 @@ export default function Page() {
     const router = useRouter();
 
     function handleClickToPayment() {
-
-        // const request: OrderCreateRequest = {
-        //     couponCode: coupon?.code,
-        //     orderDetails: orderDetails.map(od=>({
-        //         productId: od.productId,
-        //         quantity: od.quantity
-        //     })),
-        //     requestInfo: {
-        //         "email": "21522458@gm.uit.edu.vn"
-        //     }
-        // }
-        // console.log(request);
         createOrder().then(orderId => {
             if (orderId) {
                 clearItems(true);
@@ -62,8 +43,7 @@ export default function Page() {
             }
         }).catch(e => {
             if (e instanceof Error) {
-                const err = e as Error;
-                window.alert(e.message);
+                toast.error(t("error_create_order"))
             }
         })
         /// CREATE ORDER HERE

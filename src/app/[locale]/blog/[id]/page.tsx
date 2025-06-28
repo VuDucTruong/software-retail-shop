@@ -16,6 +16,7 @@ import React, {useEffect, useMemo, useRef} from "react";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {v4} from 'uuid';
 import Image from "next/image";
+import {useTranslations} from "next-intl";
 
 export default function DetailBlogPage() {
     const params = useParams();
@@ -33,6 +34,7 @@ export default function DetailBlogPage() {
     const [proxyLoading, status, error, blog, getById] = BlogSingle.useStore(useShallow(s => [
         s.proxyLoading, s.status, s.error, s.blog, s.getById
     ]))
+    const t = useTranslations()
 
 
     const blogGenre2s = genre2s.filter(g2 => blog.genre2Ids.some(g2Id => g2Id === g2.id))
@@ -51,15 +53,16 @@ export default function DetailBlogPage() {
         <div className="flex flex-row-reverse gap-6 main-container py-10">
             <div className="w-1/4">
                 <StatusDependentRenderer status={latestBlogStatus} error={'wrong'}>
-                    <BlogGenreSection genre="Moi nhat">
+                    <BlogGenreSection genre={t("latest")}>
                         {latestBlogs.map(b => (
                             <HorizontalPostListItem
-                                id={b.id}
-                                key={b.id}
-                                title={b.title}
-                                image={b.imageUrl}
-                                date={b.publishedAt}
-                                author={b.author.fullName}
+                              id={b.id}
+                              key={b.id}
+                              title={b.title}
+                              image={b.imageUrl}
+                              date={b.publishedAt}
+                              author={b.author.fullName}
+                              categories={genre2s.filter(g2 => b.genre2Ids.some(g2Id => g2Id === g2.id))}
                             />
                         ))}
                     </BlogGenreSection>
@@ -84,7 +87,7 @@ export default function DetailBlogPage() {
                             <h1>{blog.title}</h1>
                             <div className="flex items-center gap-2">
                                 <Avatar>
-                                    <AvatarImage src={blog.author.imageUrl || "https://github.com/shadcn.png"}/>
+                                    <AvatarImage src={blog.author.imageUrl}/>
                                     <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
                                 <div className="text-sm font-medium">{blog.title}</div>
@@ -135,6 +138,7 @@ export default function DetailBlogPage() {
 function BlogRelatedByG1Ids({g1Ids}: { g1Ids: number[] }) {
     const [g1IdToBlogs, groupStatus, groupError, getBlogsPartitioned, blogGroupProxyLoading] = BlogGroups.useStore(useShallow(s =>
         [s.g1IdToBlogs, s.status, s.error, s.getBlogsPartitionByG1Id, s.proxyLoading]))
+    const t = useTranslations()
 
     const [genre1s] = GenreDomain.useStore(useShallow(s => [s.genre1s]))
     const didCall = useRef(false);
@@ -147,7 +151,7 @@ function BlogRelatedByG1Ids({g1Ids}: { g1Ids: number[] }) {
 
 
     return (
-        <BlogGenreSection genre="Lien quan">
+        <BlogGenreSection genre={t("related")}>
             <StatusDependentRenderer status={groupStatus} error={groupError} altLoading={(<Skeleton/>)}>
                 <div className="flex gap-2 items-center">
                     {Object.entries(g1IdToBlogs).flatMap(([g1Id, blogs]) => {
@@ -174,7 +178,7 @@ type BlogPrevAndNextPropType = {
 function BlogPrevAndNext({currentBlogId}: BlogPrevAndNextPropType) {
     const [g1IdToBlogs] = BlogGroups.useStore(useShallow((s) => [s.g1IdToBlogs]));
     const [genre1s] = GenreDomain.useStore(useShallow(s => [s.genre1s]))
-
+    const t = useTranslations();
 
     const flattenedBlogs = Object.entries(g1IdToBlogs)
         .flatMap(([g1Id, blogs]) =>
@@ -198,13 +202,13 @@ function BlogPrevAndNext({currentBlogId}: BlogPrevAndNextPropType) {
             <NavPostLink
                 id={prev?.id ?? -1}
                 direction="prev"
-                title={prev?.title ?? "Không có bài trước"}
+                title={prev?.title ?? t("no_prev")}
                 disabled={!prev}
             />
             <NavPostLink
                 id={next?.id ?? -1}
                 direction="next"
-                title={next?.title ?? "Không có bài sau"}
+                title={next?.title ?? t("no_next")}
                 disabled={!next}
             />
         </div>
@@ -217,8 +221,7 @@ function TagItem({tag, className = ""}: { tag: string; className?: string }) {
             className={cn(
                 "flex items-center justify-center px-2 py-1 border border-border bg-gray-400 text-sm font-medium hover:bg-primary cursor-pointer text-white rounded-sm",
                 className
-            )}
-        >
+            )}>
             {tag}
         </div>
     );

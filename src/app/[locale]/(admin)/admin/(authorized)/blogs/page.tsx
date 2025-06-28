@@ -1,28 +1,24 @@
 "use client";
 
-import { BlogDomainType } from "@/api";
+import {BlogDomainType} from "@/api";
 import BlogFilterSheet from "@/components/blog/BlogFilterSheet";
-import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
+import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
 import SortingHeader from "@/components/common/table/SortingHeader";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useActionToast } from "@/hooks/use-action-toast";
-import { BlogMany } from "@/stores/blog/blog.store";
-import {
-  ColumnDef,
-  PaginationState,
-  SortingState,
-} from "@tanstack/react-table";
-import { Eye, Trash2 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import {Button} from "@/components/ui/button";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {useActionToast} from "@/hooks/use-action-toast";
+import {BlogMany} from "@/stores/blog/blog.store";
+import {ColumnDef, PaginationState, SortingState,} from "@tanstack/react-table";
+import {Eye, Trash2} from "lucide-react";
+import {useTranslations} from "next-intl";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useShallow } from "zustand/shallow";
+import {useEffect, useState} from "react";
+import {useShallow} from "zustand/shallow";
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
-import { GenreDomain } from "@/stores/blog/genre.store";
-import { TbChecklist } from "react-icons/tb";
-import { GrUndo } from "react-icons/gr";
-import { SearchWith2LevelsDropdown } from "@/components/ui/search/SearchWith2LevelsDropDown";
+import {GenreDomain} from "@/stores/blog/genre.store";
+import {TbChecklist} from "react-icons/tb";
+import {GrUndo} from "react-icons/gr";
+import {SearchWith2LevelsDropdown} from "@/components/ui/search/SearchWith2LevelsDropDown";
 import CommonTooltip from "@/components/common/CommonTooltip";
 
 type GenColsParams = {
@@ -34,36 +30,36 @@ type GenColsParams = {
 };
 
 const genCols = ({
-  t,
-  toGenreDisplay,
-  handleDelete,
-  handleApprove,
-  handleUndoApprove,
-}: GenColsParams): ColumnDef<BlogDomainType>[] => {
+                   t,
+                   toGenreDisplay,
+                   handleDelete,
+                   handleApprove,
+                   handleUndoApprove,
+                 }: GenColsParams): ColumnDef<BlogDomainType>[] => {
   return [
     {
       accessorKey: "id",
       header: "ID",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.id;
       },
       enableHiding: false,
     },
     {
       accessorKey: "title",
-      header: ({ column }) => (
-        <SortingHeader column={column} title={t("Title")} />
+      header: ({column}) => (
+        <SortingHeader column={column} title={t("Title")}/>
       ),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return row.original.title;
       },
     },
     {
       accessorKey: "author",
-      header: ({ column }) => (
-        <SortingHeader column={column} title={t("Author")} />
+      header: ({column}) => (
+        <SortingHeader column={column} title={t("Author")}/>
       ),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return <div className="font-bold">{row.original.author.fullName}</div>;
       },
       enableHiding: false,
@@ -71,16 +67,16 @@ const genCols = ({
     {
       accessorKey: "genres",
       header: t("Genres"),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return toGenreDisplay(row.original.genre2Ids);
       },
     },
     {
       accessorKey: "publishedAt",
-      header: ({ column }) => (
-        <SortingHeader column={column} title={t("publish_date")} />
+      header: ({column}) => (
+        <SortingHeader column={column} title={t("publish_date")}/>
       ),
-      cell: ({ row }) => {
+      cell: ({row}) => {
         return (
           row.original.publishedAt ?? (
             <div className="flex flex-col items-center justify-center">
@@ -98,7 +94,7 @@ const genCols = ({
     {
       accessorKey: "actions",
       header: "",
-      cell: ({ row }) => {
+      cell: ({row}) => {
         const approvedAt = row.original.approvedAt;
         const approved =
           typeof approvedAt !== "undefined" && approvedAt !== null;
@@ -110,60 +106,64 @@ const genCols = ({
             <Link href={`/admin/blogs/${row.original.id}`}>
               <CommonTooltip content={t("view_details")}>
                 <Button variant={"outline"} size="icon" className="w-8 h-8">
-                  <Eye />
+                  <Eye/>
                 </Button>
               </CommonTooltip>
             </Link>
             {
-              <CommonConfirmDialog
-                triggerName={
-                  <CommonTooltip content="Xác nhận xuất bản">
-                    <Button
-                      size="icon"
-                      variant={"outline"}
-                      className={`w-8 h-8 ${
-                        approved
-                          ? "bg-muted text-foreground"
-                          : "text-green-600 "
-                      }`}
-                    >
-                      {approved ? (
-                        <GrUndo />
-                      ) : (
-                        <TbChecklist strokeWidth={2.5} />
-                      )}
-                    </Button>
-                  </CommonTooltip>
-                }
-                title={`Xác nhận ${approvedText} xuất bản?`}
-                description={`Bạn có chắc chắn muốn ${approvedText} xuất bản bài viết này không?`}
-                onConfirm={() => {
-                  if (approved) {
-                    handleUndoApprove(row.original.id);
-                  } else {
-                    handleApprove(row.original.id);
-                  }
-                }}
-              />
+              <CommonTooltip content="Xác nhận xuất bản">
+                <span className={'inline-block'}>
+                  <CommonConfirmDialog
+                    triggerName={
+                      <Button
+                        size="icon"
+                        variant={"outline"}
+                        className={`w-8 h-8 ${
+                          approved ? "bg-muted text-foreground" : "text-green-600 "
+                        }`}
+                      >
+                        {approved ? (
+                          <GrUndo/>
+                        ) : (
+                          <TbChecklist strokeWidth={2.5}/>
+                        )}
+                      </Button>
+                    }
+                    title={`Xác nhận ${approvedText} xuất bản?`}
+                    description={`Bạn có chắc chắn muốn ${approvedText} xuất bản bài viết này không?`}
+                    onConfirm={() => {
+                      if (approved) {
+                        handleUndoApprove(row.original.id);
+                      } else {
+                        handleApprove(row.original.id);
+                      }
+                    }}
+                  />
+                </span>
+              </CommonTooltip>
+
             }
             {
-              <CommonConfirmDialog
-                triggerName={
-                  <CommonTooltip content={t("Delete")}>
-                    <Button
-                      disabled={deleted}
-                      variant={"destructive"}
-                      size="icon"
-                      className="w-8 h-8"
-                    >
-                      <Trash2 />
-                    </Button>
-                  </CommonTooltip>
-                }
-                title={"Xóa bài viết"}
-                description={"Bạn có chắc chắn muốn xóa bài viết này không?"}
-                onConfirm={() => handleDelete(row.original.id)}
-              />
+              <CommonTooltip content={t("Delete")}>
+                <span className={'inline-block'}>
+                  <CommonConfirmDialog
+                    triggerName={
+                      <Button
+                        disabled={deleted}
+                        variant={"destructive"}
+                        size="icon"
+                        className="w-8 h-8"
+                      >
+                        <Trash2/>
+                      </Button>
+                    }
+                    title={"Xóa bài viết"}
+                    description={"Bạn có chắc chắn muốn xóa bài viết này không?"}
+                    onConfirm={() => handleDelete(row.original.id)}
+                  />
+                </span>
+              </CommonTooltip>
+
             }
           </div>
         );
@@ -283,7 +283,7 @@ export default function BlogManagementPage() {
             <Link href={`/admin/blogs/create`}>
               <Button>{t("create_blog")}</Button>
             </Link>
-            <BlogFilterSheet />
+            <BlogFilterSheet/>
           </div>
         </CardTitle>
       </CardHeader>
@@ -303,7 +303,7 @@ export default function BlogManagementPage() {
                 items: genre1s.map((g1) => ({
                   id: g1.id,
                   name: g1.name,
-                  children: g1.genre2s.map((g2) => ({ ...g2 })),
+                  children: g1.genre2s.map((g2) => ({...g2})),
                 })),
               }}
               search={{}}

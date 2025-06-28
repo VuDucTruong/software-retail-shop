@@ -11,22 +11,26 @@ import {getDateLocal} from "@/lib/date_helper";
 import {GenreDomain} from "@/stores/blog/genre.store";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {Skeleton} from "@/components/ui/skeleton";
+import {useTranslations} from "next-intl";
+import {BlogDomainType} from "@/api";
 
-const G1_GAME_Id = 1;
-const G1_COOL_Id = 2
+const G1_GAME_ID = 1;
+const G1_TIPS_ID = 2
+const G1_MOVIE_ID = 3;
 const NOW_YMD = getDateLocal();
-const HOT_G1_IDS = [G1_GAME_Id, G1_COOL_Id]
+const HOT_G1_IDS = [G1_GAME_ID, G1_TIPS_ID, G1_MOVIE_ID]
 
 export default function BlogPage() {
+  const t = useTranslations();
   const [latestBlogs, latestBlogStatus, latestBlogsError] = BlogMany.useStore(useShallow(s => [
     s.blogs, s.status, s.error,
   ]))
 
-  const [g1IdToBlogs, groupStatus, groupError, getBlogsPartitioned, blogGroupProxyLoading] = BlogGroups.useStore(useShallow(s =>
-    [s.g1IdToBlogs, s.status, s.error, s.getBlogsPartitionByG1Id, s.proxyLoading]))
-
+  const [groupStatus, groupError, getBlogsPartitioned, blogGroupProxyLoading] = BlogGroups.useStore(useShallow(s =>
+    [ s.status, s.error, s.getBlogsPartitionByG1Id, s.proxyLoading]))
   const [genre2s] = GenreDomain.useStore(useShallow(s =>
     [s.genre2s]))
+
 
   useEffect(() => {
     blogGroupProxyLoading(() => getBlogsPartitioned(HOT_G1_IDS), 'get')
@@ -36,38 +40,40 @@ export default function BlogPage() {
   return (
     <div className="main-container flex flex-col py-10">
       <div className="grid grid-cols-3 gap-2 h-[400px] w-full">
-        <div className="grid row-span-2">
-          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
+        <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={<>
+          <div key={0} className="grid row-span-2"><Skeleton/></div>
+          <div key={1} className="grid row-span-2"><Skeleton/></div>
+          <Skeleton key={2}/>
+          <div className="grid grid-cols-2 gap-2">
+            <Skeleton key={3}/>
+            <Skeleton key={4}/>
+          </div>
+        </>}>
+          <div className="grid row-span-2">
             {latestBlogs?.length > 0 && <BlogCarouselItem blog={latestBlogs[0]}/>}
-          </StatusDependentRenderer>
-        </div>
-        <div className="grid row-span-2">
-          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
+          </div>
+          <div className="grid row-span-2">
             {latestBlogs?.length > 1 && <BlogCarouselItem blog={latestBlogs[1]}/>}
-          </StatusDependentRenderer>
-        </div>
-        <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
+          </div>
           {latestBlogs?.length > 2 && <BlogCarouselItem blog={latestBlogs[2]}/>}
+          <div className="grid grid-cols-2 gap-2">
+            {latestBlogs?.length > 3 && <BlogCarouselItem maxG2Display={2} blog={latestBlogs[3]}/>}
+            {latestBlogs?.length > 4 && <BlogCarouselItem maxG2Display={2} blog={latestBlogs[4]}/>}
+          </div>
         </StatusDependentRenderer>
-
-        <div className="grid grid-cols-2 gap-2">
-          <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
-            {latestBlogs?.length > 3 && <BlogCarouselItem blog={latestBlogs[3]}/>}
-            {latestBlogs?.length > 4 && <BlogCarouselItem blog={latestBlogs[4]}/>}
-          </StatusDependentRenderer>
-        </div>
       </div>
 
       <div className="flex flex-row-reverse gap-4">
         <div className="w-1/4">
-          <BlogGenreSection genre="Moi nhat">
+          <BlogGenreSection genre={t("latest_blogs")}>
             <StatusDependentRenderer status={latestBlogStatus} error={latestBlogsError} altLoading={(<Skeleton/>)}>
               {
-                g1IdToBlogs[G1_COOL_Id]?.length &&
-                g1IdToBlogs[G1_COOL_Id].map((b) => (
+                latestBlogs?.length > 5 &&
+                latestBlogs?.slice(5, 13).map((b) => (
                   <HorizontalPostListItem
                     id={b.id}
                     key={b.id}
+                    categories={genre2s.filter(g2 => b.genre2Ids.some(g2Id => g2Id === g2.id))}
                     title={b.title}
                     image={b.imageUrl && "/empty_img.png"}
                     date={b.publishedAt && NOW_YMD}
@@ -78,64 +84,72 @@ export default function BlogPage() {
             </StatusDependentRenderer>
           </BlogGenreSection>
         </div>
-
         <div className="flex flex-col flex-1">
-          <BlogGenreSection genre="Meo hay">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-              <div className="md:col-span-1">
-                <StatusDependentRenderer status={groupStatus} error={groupError} altLoading={(<Skeleton/>)}>
-                  {
-                    (() => {
-                      const coolBlogs = g1IdToBlogs[G1_COOL_Id]
-                      if (typeof coolBlogs === 'undefined' || coolBlogs?.length === 0)
-                        return null;
-                      const b = coolBlogs[0]
-                      return <FeaturedPostCard
-                        id={b.id}
-                        title={b.title}
-                        image={b.imageUrl || "/empty_img.png"}
-                        category={genre2s.filter(g2 =>
-                          b.genre2Ids.some(bG2Id => g2.id === bG2Id))
-                          .map(g2 => g2.name).join(", ")}
-                        author={b.author?.fullName}
-                        date={b.publishedAt}
-                        description={b.subtitle}
-                      />
-                    })()
-                  }
-                </StatusDependentRenderer>
+          <StatusDependentRenderer
+            status={groupStatus} error={groupError}
+            altLoading={
+              Array.from({length: 4}).map((_, index) => <Skeleton key={index}/>)
+            }
+            altError={
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+                {
+                  Array.from({length: 4}).map((_, index) =>
+                    <Skeleton key={index}
+                              className={'flex items-center justify-center text-center w-full group cursor-pointer h-50'}>
+                      NOT FOUND
+                    </Skeleton>
+                  )
+                }
               </div>
-              <div className="flex flex-col justify-between">
-                <StatusDependentRenderer status={groupStatus} error={groupError} altLoading={
-                  Array.from({length: 2}).map((_, index) => (<Skeleton key={index}/>))
-                }>
-                  {
-                    (() => {
-                      const coolBlogs = g1IdToBlogs[G1_COOL_Id]
-                      if (typeof coolBlogs === 'undefined' || coolBlogs?.length < 2)
-                        return null;
-                      return coolBlogs.slice(1).map(b => (
-                        <FeaturedPostCard
-                          id={b.id}
-                          key={b.id}
-                          title={b.title}
-                          image={b.imageUrl || "/empty_img.png"}
-                          category={genre2s.filter(g2 =>
-                            b.genre2Ids.some(bG2Id => g2.id === bG2Id))
-                            .map(g2 => g2.name).join(", ")}
-                          author={b.author?.fullName}
-                          date={b.publishedAt}
-                          description={b.subtitle}
-                        />
-                      ))
-                    })()
-                  }
-                </StatusDependentRenderer>
+            }>
+            <BlogGenreSection genre={t("tips")}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+                <BlogGenreSectionItemsList genre1Id={G1_TIPS_ID} maxCount={4}/>
               </div>
-            </div>
-          </BlogGenreSection>
+            </BlogGenreSection>
+          </StatusDependentRenderer>
         </div>
+      </div>
+      <div className="flex flex-col flex-1">
+        <BlogGenreSection genre={t("movie")}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+            <BlogGenreSectionItemsList genre1Id={G1_MOVIE_ID} maxCount={4}/>
+          </div>
+        </BlogGenreSection>
+      </div>
+      <div className="flex flex-col flex-1">
+        <BlogGenreSection genre={t("game")}>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-4">
+            <BlogGenreSectionItemsList genre1Id={G1_GAME_ID} maxCount={4}/>
+          </div>
+        </BlogGenreSection>
       </div>
     </div>
   );
+}
+
+function BlogGenreSectionItemsList({genre1Id, maxCount}: { genre1Id: number, maxCount?: number }) {
+  const [g1IdToBlogs,] = BlogGroups.useStore(useShallow(s =>
+    [s.g1IdToBlogs]))
+  const movieBlogs = g1IdToBlogs[genre1Id];
+  if (!movieBlogs || movieBlogs.length < 1) return null;
+  return movieBlogs.slice(0, maxCount ?? 4).map(b => (
+    <BlogGenreSectionItem key={b.id} blog={b}/>
+  ));
+}
+
+function BlogGenreSectionItem({blog}: { blog: BlogDomainType }) {
+  const [genre2s] = GenreDomain.useStore(useShallow(s =>
+    [s.genre2s]))
+  const blogGenre2s = genre2s.filter(g2 => blog.genre2Ids.some(g2Id => g2Id === g2.id))
+
+  return <FeaturedPostCard
+    id={blog.id}
+    title={blog.title}
+    image={blog.imageUrl || "/empty_img.png"}
+    categories={blogGenre2s}
+    author={blog.author?.fullName}
+    date={blog.publishedAt}
+    description={blog.subtitle}
+  />
 }

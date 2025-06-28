@@ -96,21 +96,21 @@ const genCols = ({t, handleResendMail, handleDelete}: GenColsParams): ColumnDef<
                                               onSubmit={(email) => handleResendMail(row.original.id, email ?? "",)}/>
               )}
               {row.original.deletedAt ? null : (
-                <CommonConfirmDialog
-                  triggerName={
-                    <CommonToolTip content={t("Delete")}>
+                <CommonToolTip content={t("Delete")}>
+                  <CommonConfirmDialog
+                    triggerName={
                       <Button
-                      variant={"destructive"}
-                      size="icon"
-                      className="w-8 h-8">
-                      <Trash2/>
-                    </Button>
-                    </CommonToolTip>
-                  }
-                  title={`${t("Delete")} ${t("Order")}`}
-                  description={t("delete_order_warning")}
-                  onConfirm={() => handleDelete(row.original.id)}
-                />
+                        variant={"destructive"}
+                        size="icon"
+                        className="w-8 h-8">
+                        <Trash2/>
+                      </Button>
+                    }
+                    title={`${t("Delete")} ${t("Order")}`}
+                    description={t("delete_order_warning")}
+                    onConfirm={() => handleDelete(row.original.id)}
+                  />
+                </CommonToolTip>
               )}
             </div>
 
@@ -161,11 +161,11 @@ export default function TransactionMangementPage() {
 
   function handleResendMail(id: number, email: string) {
     resendMail(id, email, true).then(() => {
-      toast.success("Đã thêm vào hàng chờ xử lý, vui lòng chờ một chút để email được gửi")
+      toast.success(t("success_resend_mail"))
     }).catch(e => {
       if (e instanceof ApiError) {
         const apiError = e as ApiError;
-        toast.error("Có vấn đề khi gửi mail", {description: apiError.message})
+        toast.error(t("error_send_mail"), {description: apiError.message})
       }
     })
   }

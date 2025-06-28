@@ -21,7 +21,7 @@ export default function NavPostLink({
     const content = (
         <div
             className={clsx(
-                "group flex flex-col gap-2 w-full p-4 rounded-xl border border-rose-200 bg-rose-50/50",
+                "group flex flex-col gap-2 w-full p-4 rounded-xl border border-primary bg-primary-50/50",
                 "transition-all duration-200 shadow-sm hover:shadow-md",
                 "hover:bg-rose-300 hover:border-rose-300",
                 isPrev ? "items-start text-left" : "items-end text-right",
