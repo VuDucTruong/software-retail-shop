@@ -34,7 +34,7 @@ export default function FeaturedPostCard({
           {
             categories.map(g2 =>
               <Link key={g2.id}
-                    href={`/blog/search?${BLOG_Q_PARAMS.search}=&${BLOG_Q_PARAMS.page}=0${BLOG_Q_PARAMS.genres}=${g2.id}`}>
+                    href={`/blog/search?${BLOG_Q_PARAMS.search}=&${BLOG_Q_PARAMS.page}=0&${BLOG_Q_PARAMS.genres}=${g2.id}`}>
               <span key={g2.id} className="bg-black/50  hover:bg-primary text-white text-xs px-2 py-1 rounded font-bold uppercase ">
                   {g2.name}
                 </span>

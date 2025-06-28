@@ -603,5 +603,9 @@
   "no_next": "No next blogs",
   "found": "Found",
   "latest": "latest",
-  "related": "related"
+  "related": "related",
+  "confirm_publish": "Confirm publish",
+  "cancel_publish": "Cancel publish",
+  "publish_warn": "Are you sure to publish this blog",
+  "cancel_warn": "Are you sure to unpublish this blog"
 }

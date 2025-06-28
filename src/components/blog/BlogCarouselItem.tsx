@@ -32,7 +32,7 @@ export default function BlogCarouselItem({blog, maxG2Display = 4}: CarouselItemP
         <div className={'flex gap-x-2  flex-wrap'}>
           {genre2s.slice(0, maxG2Display).map(g2 =>
             <Link key={g2.id}
-                  href={`/blog/search?${BLOG_Q_PARAMS.search}=&${BLOG_Q_PARAMS.page}=0${BLOG_Q_PARAMS.genres}=${g2.id}`}>
+                  href={`/blog/search?${BLOG_Q_PARAMS.search}=&${BLOG_Q_PARAMS.page}=0&${BLOG_Q_PARAMS.genres}=${g2.id}`}>
               <div
                 className="text-xs hover:bg-primary group-hover:text-white font-bold uppercase bg-black/50 px-2 py-1 w-fit rounded">
                 {g2.name}

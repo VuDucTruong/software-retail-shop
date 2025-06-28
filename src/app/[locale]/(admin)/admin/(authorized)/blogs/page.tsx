@@ -98,7 +98,6 @@ const genCols = ({
         const approvedAt = row.original.approvedAt;
         const approved =
           typeof approvedAt !== "undefined" && approvedAt !== null;
-        const approvedText = approved ? "Hủy " : "";
         const deletedAt = row.original.deletedAt;
         const deleted = typeof deletedAt !== "undefined" && deletedAt !== null;
         return (
@@ -111,7 +110,7 @@ const genCols = ({
               </CommonTooltip>
             </Link>
             {
-              <CommonTooltip content="Xác nhận xuất bản">
+              <CommonTooltip content={approved? t("cancel_publish") : t("confirm_publish")}>
                 <span className={'inline-block'}>
                   <CommonConfirmDialog
                     triggerName={
@@ -129,8 +128,8 @@ const genCols = ({
                         )}
                       </Button>
                     }
-                    title={`Xác nhận ${approvedText} xuất bản?`}
-                    description={`Bạn có chắc chắn muốn ${approvedText} xuất bản bài viết này không?`}
+                    title={`${approved? t("cancel_publish") : t("confirm_publish")}?`}
+                    description={`${approved? t("cancel_warn") : t("publish_warn")}?`}
                     onConfirm={() => {
                       if (approved) {
                         handleUndoApprove(row.original.id);
