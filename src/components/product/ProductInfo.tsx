@@ -22,6 +22,7 @@ import { Button } from "../ui/button";
 
 import { CartLocal } from "@/stores/order/cart.store";
 import { useShallow } from "zustand/shallow";
+import {toast} from "sonner";
 
 
 type ProductInfoProps = {
@@ -48,6 +49,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       qty: 1
     })
     setAddedToCart(true);
+  toast.success(t('added_to_cart'), {position:'top-right'})
   }
   function removeFromCart() {
     if (!addedToCart)

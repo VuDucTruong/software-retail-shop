@@ -3,8 +3,9 @@
 import * as RadioGroup from '@radix-ui/react-radio-group'
 import Image from 'next/image'
 import clsx from 'clsx'
-import { FC } from 'react'
+import {FC} from 'react'
 import {BANK_CODES} from "@/lib/bankcodes";
+import {useTranslations} from "next-intl";
 
 type BankSelectorProps = {
   bankCodes: typeof BANK_CODES[number][]
@@ -12,19 +13,21 @@ type BankSelectorProps = {
   onChange: (bank: typeof BANK_CODES[number]) => void
 }
 
-const getBankLabel = (code: string) =>
-  code === '' ? 'Let me decide later' : code
+const getBankLabel = (code: string, altMessage: string) =>
+  code === '' ? altMessage : code
 
 const getBankImage = (code: string) => {
-  if (!code || code ==='') return '/bank-icons/question.svg'
+  if (!code || code === '') return '/bank-icons/question.svg'
   return `/bank-icons/${code}.svg` // e.g., /bank-icons/VIETCOMBANK.svg
 }
 
 export const BankSelector: FC<BankSelectorProps> = ({
-  bankCodes,
-  selected,
-  onChange,
-}) => {
+                                                      bankCodes,
+                                                      selected,
+                                                      onChange,
+                                                    }) => {
+  const t = useTranslations();
+
   return (
     <RadioGroup.Root
       className="grid grid-cols-8 gap-4"
@@ -44,12 +47,12 @@ export const BankSelector: FC<BankSelectorProps> = ({
         >
           <Image
             src={getBankImage(code)}
-            alt={getBankLabel(code)}
+            alt={getBankLabel(code, t('decide_later'))}
             width={48}
             height={48}
             className="mb-2"
           />
-          <span className="text-sm text-center">{getBankLabel(code)}</span>
+          <span className="text-sm text-center">{getBankLabel(code, t('decide_later'))}</span>
         </RadioGroup.Item>
       ))}
     </RadioGroup.Root>

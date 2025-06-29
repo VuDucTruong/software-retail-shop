@@ -11,10 +11,6 @@ import LoadingDiv from "@/components/special/LoadingDiv";
 
 export default function PaymentSection({children}: { children: ReactNode }) {
     const t = useTranslations();
-
-    /// GROSS- APPLIED - NET here
-
-
     const paymentDetails = [
         {label: "Amount", value: "xxxxx"},
         {label: "transaction_fee", value: "xxxxx"},
@@ -70,6 +66,7 @@ export default function PaymentSection({children}: { children: ReactNode }) {
 export const PaymentSuccessOutline = ({children}: { children: ReactNode | null }) => {
     const router = useRouter();
     const [countdown, setCountdown] = useState(5);
+    const t = useTranslations()
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -88,36 +85,37 @@ export const PaymentSuccessOutline = ({children}: { children: ReactNode | null }
         <>
             <CheckCircle className="text-green-500 w-16 h-16 mx-auto"/>
             <h2 className="text-xl font-bold">Payment Successful</h2>
-            <>
-                <CheckCircle className="text-green-500 w-16 h-16 mx-auto"/>
-                <h2 className="text-xl font-bold">Payment Successful</h2>
-                {children ||
-                    <>
-                        <p className="text-muted-foreground text-center">
-                            You have successfully completed your payment.
-                            <br/>
-                            Redirecting to homepage in {countdown} second{countdown !== 1 && 's'}...
-                        </p>
-                        <Button variant="outline" onClick={() => router.push('/')}>
-                            <ArrowRight className="mr-2 h-4 w-4"/> Go Home Now
-                        </Button>
-                    </>
-                }
-            </>
+            {children ||
+                <>
+                    <p className="text-muted-foreground text-center">
+                        {t("success_payment")}
+                        <br/>
+                        {t("redirecting", { count: countdown })}
+                    </p>
+                    <Button variant="outline" onClick={() => router.push('/')}>
+                        <ArrowRight className="mr-2 h-4 w-4"/> {t("go_home_now")}
+                    </Button>
+                </>
+            }
         </>
     )
 };
 
-export const PaymentPendingOutline = ({children}: { children: ReactNode | null }) => (
-    <>
-        <LoadingDiv title={"Please wait..."}
-                    content={"The system is resolving your order, please wait!"}/>
-    </>
-);
+export const PaymentPendingOutline = ({children}: { children: ReactNode | null }) => {
+    const t = useTranslations()
 
+    return (
+        <>
+            <LoadingDiv title={`${t("please_wait")}`}
+                        content={`${t("sys_resolving_order")}, ${t("please_wait")}`}/>
+        </>
+    );
+
+}
 export const PaymentFailedOutline = ({children}: { children: ReactNode | null }) => {
     const router = useRouter();
     const [countdown, setCountdown] = useState(5);
+    const t = useTranslations();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -135,19 +133,18 @@ export const PaymentFailedOutline = ({children}: { children: ReactNode | null })
     return (
         <>
             <XCircle className="text-red-500 w-16 h-16 mx-auto"/>
-            <h2 className="text-xl font-bold">Payment Failed</h2>
+            <h2 className="text-xl font-bold">{t("failed_payment")}</h2>
             <>
                 <p className="text-muted-foreground">
-                    Something went wrong. Redirecting to homepage in {countdown} second{countdown !== 1 && 's'}...
+                    ${t("something_went_wrong")}. {t("redirecting", { count: countdown })}
                 </p>
                 <Button variant="outline" onClick={() => router.push('/')}>
-                    <ArrowRight className="mr-2 h-4 w-4"/> Go Home Now
+                    <ArrowRight className="mr-2 h-4 w-4"/> {t("go_home_now")}
                 </Button>
             </>
         </>
     );
 };
-
 
 
 export function PaymentSettlePage({status, children}: {

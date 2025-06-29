@@ -113,7 +113,7 @@ export default function OrderDetailPage() {
                     </div>
                 </CardContent>
             </StatusDependentRenderer>
-            <CardFooter className="flex flex-col gap-4 max-h-[400px] overflow-y-auto">
+            <CardFooter className="flex flex-row gap-4 max-h-[400px] overflow-y-auto">
                 {order.details.map((od, index) => (
                     <OrderDetailItem orderDetail={od} key={index}/>
                 ))}

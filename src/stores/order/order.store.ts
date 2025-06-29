@@ -396,7 +396,7 @@ namespace Calculations {
 
         if (coupon.usageLimit > 0) {
             if (coupon.type === 'PERCENTAGE') {
-                return Math.min(coupon.maxAppliedAmount, gross * coupon.value);
+                return Math.min(coupon.maxAppliedAmount, gross * coupon.value/100);
             } else if (coupon.type === 'FIXED') {
                 return gross - Math.min(coupon.maxAppliedAmount, coupon.value);
             }

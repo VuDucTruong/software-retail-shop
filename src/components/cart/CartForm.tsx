@@ -69,26 +69,6 @@ export default function CartForm({onModalYes, mode}: CartFormType) {
                     );
                 })}
             </div>
-            {/* {
-                mode === 'payment' ? <PaymentSection /> : null
-            } */}
-            {
-                // (() => {
-                //     if (mode === 'payment') {
-                //         return (
-                //             <div>
-                //                 <BankSelector
-                //                     bankCodes={BANK_CODES.slice(0, 5)}
-                //                     selected={selectedBankCode ?? ''}
-                //                     onChange={setSelectedBankCode}
-                //                 />
-                //                 <MessageBox onChange={(data) => setNote(data)}/>
-                //             </div>
-                //         );
-                //     }
-                //     return null;
-                // })()
-            }
             {
                 (() => {
                     if (mode === 'settlement')

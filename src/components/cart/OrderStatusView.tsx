@@ -2,39 +2,45 @@ import React, {ReactNode} from "react";
 import {CheckCircle, Clock, XCircle, Mail} from "lucide-react";
 import {OrderStatus, PaymentStatus} from "@/api";
 import {Card} from "@/components/ui/card";
+import {useTranslations} from "next-intl";
+import Link from "next/link";
 
 
 export function OrderCompletedView({children}: { children: ReactNode | null }) {
+    const t = useTranslations();
     return (
         <>
             <CheckCircle className="text-green-500 w-16 h-16 mx-auto"/>
             <h2 className="text-xl font-bold">Payment Successful</h2>
-            <p className="text-muted-foreground">Yoru order is delivered, please check your email</p>
+            <p className="text-muted-foreground">{t("order_delivered")}</p>
             {children}
         </>
     )
 }
 
 export function OrderPaymentFailureView({children}: { children: ReactNode | null }) {
+    const t = useTranslations();
+    
     return (
         <>
             <XCircle className="text-red-500 w-16 h-16 mx-auto"/>
-            <h2 className="text-xl font-bold">Payment Failed</h2>
-            <p className="text-muted-foreground">your Payment is failed, please request a new order</p>
+            <h2 className="text-xl font-bold">{t("failed_payment")}</h2>
+            <p className="text-muted-foreground">{t("failed_payment")}, {t("please_new")}</p>
             {children}
         </>
     )
 }
 
 export function OrderEmailFailedView({children}: { children: ReactNode | null }) {
+    const t =useTranslations()
     return (
         <>
             <Mail className="text-red-500 w-16 h-16 mx-auto"/>
-            <h2 className="text-xl font-bold">Failure on sending Email</h2>
+            <h2 className="text-xl font-bold">{t("error_send_mail")}</h2>
             <p>
-                Having problems sending you email of the order.
+                {t("error_send_mail")}
                 <br/>
-                Please contact our at ..link
+                <Link href={"/feedback"}>{t("contact_us")}</Link>
             </p>
             {children}
         </>
@@ -42,25 +48,26 @@ export function OrderEmailFailedView({children}: { children: ReactNode | null })
 }
 
 export function OrderOnDeliveryView({children}: { children: ReactNode | null }) {
+    const t =useTranslations()
     return (
         <>
             <Clock className="text-yellow-500 w-16 h-16 mx-auto"/>
-            <h2 className="text-xl font-bold">Waiting for Delivery</h2>
-            <p className="text-muted-foreground">Your payment was successful.
+            <h2 className="text-xl font-bold">{t("please_wait")}</h2>
+            <p className="text-muted-foreground">{t("success_payment")}
                 <br/>
-                Hang tight, we are preparing your
-                delivery.</p>
+                {t("preparing_delivery")}</p>
             {children}
         </>
     )
 }
 
 export function OrderPaymentInSession({children}: { children: ReactNode | null }) {
+    const t =useTranslations()
     return (
         <>
             <Clock className="text-yellow-500 w-16 h-16 mx-auto"/>
-            <h2 className="text-xl font-bold">Uncompleted payment </h2>
-            <p className="text-muted-foreground">Please complete your payment...</p>
+            <h2 className="text-xl font-bold">{t("uncompleted_payment")}</h2>
+            <p className="text-muted-foreground">{t("please_complete")}...</p>
             {children}
         </>
     )

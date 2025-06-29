@@ -16,6 +16,8 @@ import {BankSelector} from "@/components/payment/BankSelector";
 import {BANK_CODES} from "@/lib/bankcodes";
 import {PaymentCommon, PaymentSingle} from "@/stores/order/payment.store";
 import parseStatus = PaymentCommon.parseStatus;
+import {convertPriceToVND} from "@/lib/currency_helper";
+import {toast} from "sonner";
 
 type CardItemsProps = {
     handleNextStep: () => void;
@@ -44,26 +46,19 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
     const [email, setEmail] = useState<string>("");
     const [couponCode, setCouponCode] = useState<string>("");
     const accordionItems = [
-        // {
-        //     title: "q_have_introduction_code",
-        //     inputPlaceholder: "introduction_code",
-        //     onApply: () => {
-        //     },
-        // },
         {
             value: couponCode,
             display: (
                 coupon && (
                     <>
+                        <TitleAndValue title={t("Code")} value={coupon.code}/>
                         <TitleAndValue title={t("available_to")} value={getDateLocal(coupon.availableTo)}/>
-                        <TitleAndValue title={"discount type"} value={coupon.type}/>
-                        <TitleAndValue title={"Code"} value={coupon.code}/>
-                        <TitleAndValue title={"Value"}
-                                       value={coupon.type === 'FIXED' ? (coupon.value + " VND") : (coupon.value + " %")}/>
-                        <TitleAndValue title={"For Order from"} value={coupon.minAmount + " VND"}/>
-                        <TitleAndValue title={"Max applied"} value={coupon.maxAppliedAmount + " VND"}/>
+                        <TitleAndValue title={t("discount_type")} value={coupon.type}/>
+                        <TitleAndValue title={t("discount_value")}
+                                       value={coupon.type === 'FIXED' ? (convertPriceToVND(coupon.value)) : (coupon.value + " %")}/>
+                        <TitleAndValue title={t("min_amount")} value={convertPriceToVND(coupon.minAmount)}/>
+                        <TitleAndValue title={t("max_applied_amount")} value={convertPriceToVND(coupon.maxAppliedAmount)}/>
                     </>
-
                 )
             ),
             onValueChange: (value: string) => {
@@ -73,19 +68,21 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
             title: "q_have_discount_code",
             inputPlaceholder: "discount_code",
             onApply: () => {
-                applyCoupon(couponCode)
+                applyCoupon(couponCode).catch(e=>{
+                    toast.error(t("API.INVALID_COUPON"),{position: "top-right"})
+                })
             },
         },
-        {
-            value: email,
-            display: null,
-            onValueChange: (value: string) => setEmail(value),
-            title: "q_give_friend",
-            inputPlaceholder: "recipient_email",
-            onApply: () => {
-                applyMail(email)
-            },
-        },
+        // {
+        //     value: email,
+        //     display: null,
+        //     onValueChange: (value: string) => setEmail(value),
+        //     title: "q_give_friend",
+        //     inputPlaceholder: "recipient_email",
+        //     onApply: () => {
+        //         applyMail(email)
+        //     },
+        // },
     ];
 
     return (
@@ -95,7 +92,7 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                     <h3>
                         {t("Cart")}{" "}
                         <span className="text-sm font-normal text-muted-foreground">
-                            ( {cartItemsCount} {t("product")} )
+                            ( {cartItemsCount} {t("Products")} )
                         </span>
                     </h3>
                 </CardTitle>
@@ -110,7 +107,7 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                                 <div className="space-y-4">
                                     <div className="space-y-1 ">
                                         <label className="block text-lg  font-medium text-muted-foreground ">
-                                            Chọn ngân hàng
+                                            {t("select_your_bank")}
                                         </label>
                                         <BankSelector
                                             bankCodes={[...BANK_CODES]}
@@ -121,7 +118,7 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
 
                                     <div className="space-y-1">
                                         <label className="block text-lg font-medium text-muted-foreground">
-                                            Ghi chú thanh toán
+                                            {t("your_message")}
                                         </label>
                                         <MessageBox onChange={(data) => setNote(data)}/>
                                     </div>
@@ -138,12 +135,12 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                             if (mode === 'payment' && orderStatus !== null && orderStatus !== undefined) {
                                 return (
                                     <><OrderStatusView orderStatus={orderStatus ?? 'PENDING'}>
-                                        <TextWithValue text={'status'} value={parseStatus(payment?.status)}/>
+                                        <TextWithValue text={t('Status')} value={parseStatus(payment?.status)}/>
                                         {payment?.detailMessage &&
-                                            <TextWithValue text={'message'} value={payment.detailMessage}/>}
+                                            <TextWithValue text={t('message')} value={payment.detailMessage}/>}
                                         {/*VNPAY*/}
                                         {payment?.paymentMethod &&
-                                            <TextWithValue text={'payment method'} value={payment.paymentMethod}/>}
+                                            <TextWithValue text={t("payment_method")} value={payment.paymentMethod}/>}
                                         {/*BANK credit card or debit or qr code*/}
                                         {payment?.cardType &&
                                             <TextWithValue text={'card type'} value={payment.cardType}/>}
@@ -159,7 +156,6 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                                 <AccordionItem value={`item-${index}`} key={index}>
                                     <AccordionTrigger className="hover:text-primary text-[16px]">
                                         {t(item.title)}
-                                        {item.value}
                                     </AccordionTrigger>
                                     <AccordionContent className="flex flex-col gap-2 py-2">
                                         <div className="flex gap-2 py-2">
@@ -183,14 +179,14 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                         {/* Preview value */}
                         <TextWithValue
                             text={t("total_product_value")}
-                            value={gross + " VND"}
+                            value={convertPriceToVND(gross)}
                         />
                         <TextWithValue
-                            text={"Discount 15%"}
-                            value={"- " + applied + "VND"}
+                            text={t("Discount")}
+                            value={"- " + convertPriceToVND(applied)}
                         />
                         <div className="w-full h-px bg-border"></div>
-                        <TextWithValue text={t("total_amount_payable")} value={net + " VND"}/>
+                        <TextWithValue text={t("total_amount_payable")} value={convertPriceToVND(net)}/>
 
                         {mode === 'preview' && (
                             <Button onClick={handleNextStep}>
@@ -238,6 +234,7 @@ function MessageBox({onChange}: { onChange(text: string): void }) {
         setText(data);
         onChange(data)
     }
+    const t = useTranslations()
 
     return (
         <div className="w-full space-y-2">
@@ -247,7 +244,7 @@ function MessageBox({onChange}: { onChange(text: string): void }) {
           rows={2}
           className=" w-full resize-none rounded-xl border border-gray-300 p-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary max-h-[8rem] overflow-auto"
           style={{lineHeight: '1.5'}}
-          placeholder="Type your message..."
+          placeholder={`${t("type_your_message")}...`}
       />
         </div>
     );
