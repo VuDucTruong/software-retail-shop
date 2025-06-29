@@ -9,7 +9,12 @@ interface ChatItemProps {
   isError?: boolean;
 }
 
-export function ChatMessage({ isBot, message, isLoading,isError }: ChatItemProps) {
+export function ChatMessage({
+  isBot,
+  message,
+  isLoading,
+  isError,
+}: ChatItemProps) {
   return (
     <div
       className={`flex gap-2 ${isBot ? "justify-start" : "justify-end"} ${
@@ -24,15 +29,15 @@ export function ChatMessage({ isBot, message, isLoading,isError }: ChatItemProps
       {isLoading ? (
         <LoadingDots />
       ) : (
-        <ReactMarkdown
+        <div
           className={cn(
             "py-1 px-2 rounded-lg max-w-2/3 text-wrap break-words prose",
             isBot ? "bg-gray-200" : "bg-primary/80 text-primary-foreground",
             isError ? "bg-red-100 text-red-800" : ""
           )}
         >
-          {message}
-        </ReactMarkdown>
+          <ReactMarkdown>{message}</ReactMarkdown>
+        </div>
       )}
     </div>
   );

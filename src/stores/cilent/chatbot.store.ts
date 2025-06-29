@@ -29,7 +29,7 @@ export const useChatbotStore = create<ChatbotStore>((set) => ({
   generateResponse: async (message) => {
     set((state => ({
       status: "loading",
-      messages: [...state.messages, message],
+      messages: [...state.messages, message, ""],
       error: null,
     })));
 
@@ -44,10 +44,15 @@ export const useChatbotStore = create<ChatbotStore>((set) => ({
       
       const respond = await extractDataFromInnerAPI(res);
 
-      set((state) => ({
-        status: "success",
-        messages: [...state.messages, JSON.parse(respond).text],
-      }));
+      set((state) => {
+        const newMessages = [...state.messages];
+        newMessages[newMessages.length - 1] = JSON.parse(respond).text; // Update the last message with the response
+        return {
+          status: "success",
+          messages: newMessages,
+          error: null,
+        };
+      });
 
       // Handle the response as needed
     } catch (error) {
