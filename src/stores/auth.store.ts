@@ -88,9 +88,14 @@ export const useAuthStore = create<AuthStore>()(
   )
 );
 
-const reloadAdminPage = () => {
+const reloadAdminPage = (user: User | null) => {
   if (window.location.pathname.includes("/admin")) {
-    window.location.reload();
+    if(user !== null && getRoleWeight(user.role) < Role.STAFF.weight) {
+      throw new ApiError(401, "User does not have permission to access admin page");
+    } else {
+      window.location.reload();
+    }
+    
   }
 };
 
@@ -106,7 +111,7 @@ const login = async (set: SetState<AuthStore>, request: LoginRequest) => {
 
     set({ user: response.user, status: "success", isAuthenticated: true });
 
-    reloadAdminPage();
+    reloadAdminPage(response.user);
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });
@@ -139,7 +144,7 @@ const logout = async (set: SetState<AuthStore>) => {
     await authClient.delete("/accounts/logout", z.any());
     set({ user: null, status: "success", isAuthenticated: false });
 
-    reloadAdminPage();
+    reloadAdminPage(null);
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });
