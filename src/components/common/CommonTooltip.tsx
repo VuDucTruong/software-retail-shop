@@ -16,7 +16,9 @@ export default function CommonToolTip(props: Props) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        {props.children}
+        <div>
+          {props.children}
+        </div>
       </TooltipTrigger>
       <TooltipContent className={props.className}>
         {props.content}

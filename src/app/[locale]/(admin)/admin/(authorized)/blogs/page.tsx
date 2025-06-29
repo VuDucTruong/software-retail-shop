@@ -111,7 +111,6 @@ const genCols = ({
             </Link>
             {
               <CommonTooltip content={approved? t("cancel_publish") : t("confirm_publish")}>
-                <span className={'inline-block'}>
                   <CommonConfirmDialog
                     triggerName={
                       <Button
@@ -138,13 +137,11 @@ const genCols = ({
                       }
                     }}
                   />
-                </span>
               </CommonTooltip>
 
             }
             {
               <CommonTooltip content={t("Delete")}>
-                <span className={'inline-block'}>
                   <CommonConfirmDialog
                     triggerName={
                       <Button
@@ -160,7 +157,6 @@ const genCols = ({
                     description={"Bạn có chắc chắn muốn xóa bài viết này không?"}
                     onConfirm={() => handleDelete(row.original.id)}
                   />
-                </span>
               </CommonTooltip>
 
             }

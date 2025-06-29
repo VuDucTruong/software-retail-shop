@@ -22,8 +22,8 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
-import {StringUtils} from "@/lib/utils";
-import {SearchWithDropDown} from "@/components/blog/search/SearchWithDropDown";
+import { StringUtils } from "@/lib/utils";
+import { SearchWithDropDown } from "@/components/blog/search/SearchWithDropDown";
 import CommonToolTip from "@/components/common/CommonTooltip";
 
 export default function StaffManagementPage() {
@@ -46,7 +46,6 @@ export default function StaffManagementPage() {
     pageIndex: queryParams?.pageRequest?.page ?? 0,
     pageSize: queryParams?.pageRequest?.size ?? 10,
   });
-
 
   useUserToast({
     status,
@@ -121,47 +120,49 @@ export default function StaffManagementPage() {
       },
     },
     {
-          accessorKey: "actions",
-          header: "",
-          cell: ({ row }) => {
-            return (
-              <div className="flex items-center gap-2">
+      accessorKey: "actions",
+      header: "",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center gap-2">
+            <CommonToolTip content={t("view_details")}>
                 <UserDetailDialog user={row.original} />
-    
-                {row.original.deletedAt ? null : (
+            </CommonToolTip>
+
+            {row.original.deletedAt ? null : (
+              <CommonToolTip content={t("ban_user")}>
                   <CommonConfirmDialog
                     triggerName={
-                      <CommonToolTip content={t("ban_user")}>
                         <Button
-                        variant={"destructive"}
-                        size="icon"
-                        className="w-8 h-8"
-                      >
-                        <UserX2 />
-                      </Button>
-                      </CommonToolTip>
+                          variant={"destructive"}
+                          size="icon"
+                          className="w-8 h-8"
+                        >
+                          <UserX2 />
+                        </Button>
                     }
                     title={t("ban_user")}
-                    description={
-                      t("ban_user_description", {
-                        user: row.original.profile.fullName,
-                      })
-                    }
+                    description={t("ban_user_description", {
+                      user: row.original.profile.fullName,
+                    })}
                     onConfirm={() => handleDelete(row.original.id)}
                   />
-                )}
-              </div>
-            );
-          },
-        },
+              </CommonToolTip>
+            )}
+          </div>
+        );
+      },
+    },
   ];
 
   const handleDelete = (id: number) => {
     deleteUsers([id]);
   };
-  function onSearchAndSearchByDebounced(searchBy: (number | string)[], search: string) {
-    if (Array.isArray(searchBy) || !StringUtils.hasLength(searchBy))
-      return
+  function onSearchAndSearchByDebounced(
+    searchBy: (number | string)[],
+    search: string
+  ) {
+    if (Array.isArray(searchBy) || !StringUtils.hasLength(searchBy)) return;
 
     getUsers({
       pageRequest: {
@@ -181,9 +182,7 @@ export default function StaffManagementPage() {
           <h2>{t("admin_management")}</h2>
           <div className="flex items-center gap-2">
             <Link href={"/admin/staffs/create"}>
-                <Button>
-                    {t('create_admin')}
-                </Button>
+              <Button>{t("create_admin")}</Button>
             </Link>
             <AdminFilterSheet />
           </div>
@@ -191,16 +190,21 @@ export default function StaffManagementPage() {
       </CardHeader>
       <CardContent>
         <CommmonDataTable
-          searchComponent={<SearchWithDropDown
-            menus={{
-              items: [{id: "email", name: "Email"}, {id: "fullName", name: t('Name')}],
-              selectedId: "email",
-              multiple: false
-            }}
-            search={{}}
-            onDebounced={onSearchAndSearchByDebounced}
-          />}
-            objectName={t("admin")}
+          searchComponent={
+            <SearchWithDropDown
+              menus={{
+                items: [
+                  { id: "email", name: "Email" },
+                  { id: "fullName", name: t("Name") },
+                ],
+                selectedId: "email",
+                multiple: false,
+              }}
+              search={{}}
+              onDebounced={onSearchAndSearchByDebounced}
+            />
+          }
+          objectName={t("admin")}
           isLoading={status === "loading" && lastAction === "getUsers"}
           columns={cols}
           data={users?.data ?? []}

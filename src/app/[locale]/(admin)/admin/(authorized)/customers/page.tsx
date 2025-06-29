@@ -123,26 +123,27 @@ export default function CustomerManagementPage() {
       cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
-            <UserDetailDialog user={row.original} />
-
+            <CommonToolTip content={t("view_details")}>
+                <UserDetailDialog user={row.original} />
+            </CommonToolTip>
 
             {row.original.deletedAt ? null : (
-                <CommonConfirmDialog
-                  triggerName={
-                    <CommonToolTip content={t("ban_user")}>
+              <CommonToolTip content={t("ban_user")}>
+                  <CommonConfirmDialog
+                    triggerName={
                       <Button
-                      variant={"destructive"}
-                      size="icon"
-                      className="w-8 h-8"
-                    >
-                      <UserX2 />
-                    </Button>
-                    </CommonToolTip>
-                  }
-                  title={t("ban_user")}
-                  description={t("ban_user_description")}
-                  onConfirm={() => handleDelete(row.original.id)}
-                />
+                        variant={"destructive"}
+                        size="icon"
+                        className="w-8 h-8"
+                      >
+                        <UserX2 />
+                      </Button>
+                    }
+                    title={t("ban_user")}
+                    description={t("ban_user_description")}
+                    onConfirm={() => handleDelete(row.original.id)}
+                  />
+              </CommonToolTip>
             )}
           </div>
         );

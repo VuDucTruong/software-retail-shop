@@ -90,14 +90,19 @@ const genCols = ({t, handleResendMail, handleDelete}: GenColsParams): ColumnDef<
         return (
           <>
             <div className="flex items-end gap-2">
-              <TransactionDetailDialog orderId={row.original.id}/>
+              <CommonToolTip content={t("view_details")}>
+                  <TransactionDetailDialog orderId={row.original.id}/>
+              </CommonToolTip>
+              
               {convertStatus(row.original.orderStatus ?? "PENDING") !== 'failed_mail' ? null : (
-                <OrderResendMailDialogContent email={row.original.sentMail}
+                <CommonToolTip content={t("resend_mail")}>
+                    <OrderResendMailDialogContent email={row.original.sentMail}
                                               onSubmit={(email) => handleResendMail(row.original.id, email ?? "",)}/>
+                </CommonToolTip>
               )}
               {row.original.deletedAt ? null : (
                 <CommonToolTip content={t("Delete")}>
-                  <CommonConfirmDialog
+                    <CommonConfirmDialog
                     triggerName={
                       <Button
                         variant={"destructive"}
