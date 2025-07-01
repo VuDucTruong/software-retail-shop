@@ -1,6 +1,6 @@
 
 import { ApiError } from "@/api/client/base_client";
-import { extractDataFromInnerAPI } from "@/lib/utils";
+import { extractDataFromInnerAPI, getOrCreateChatId } from "@/lib/utils";
 import { create } from "zustand";
 
 
@@ -27,6 +27,7 @@ const initialState: ChatbotState = {
 export const useChatbotStore = create<ChatbotStore>((set) => ({
   ...initialState,
   generateResponse: async (message) => {
+    const chatId = getOrCreateChatId();
     set((state => ({
       status: "loading",
       messages: [...state.messages, message, ""],
@@ -39,7 +40,7 @@ export const useChatbotStore = create<ChatbotStore>((set) => ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ question: message }),
+        body: JSON.stringify({ question: message, chatId: chatId}),
       });
       
       const respond = await extractDataFromInnerAPI(res);

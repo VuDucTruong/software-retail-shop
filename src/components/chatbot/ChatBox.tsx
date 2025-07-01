@@ -80,7 +80,7 @@ export default function ChatBox({ isOpen }: ChatBoxProps) {
       <div className="flex items-start gap-2 pb-2">
         <Textarea
           placeholder={t("chat_ai_placeholder")}
-          className="flex-1 max-h-20 resize-none border-black"
+          className="flex-1 !text-[16px] max-h-20 resize-none border-black"
           maxLength={300}
           ref={inputRef}
         />

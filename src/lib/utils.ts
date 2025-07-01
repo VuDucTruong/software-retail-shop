@@ -174,3 +174,14 @@ export const extractDataFromInnerAPI = async (res: Response) => {
 
   return message;
 };
+
+
+
+export function getOrCreateChatId(): string {
+  let chatId = sessionStorage.getItem("chatId");
+  if (!chatId) {
+    chatId = crypto.randomUUID(); // hoặc uuidv4() nếu bạn đã cài uuid
+    sessionStorage.setItem("chatId", chatId);
+  }
+  return chatId;
+}

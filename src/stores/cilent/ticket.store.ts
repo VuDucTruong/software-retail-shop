@@ -5,7 +5,6 @@ import { SetState } from "@/lib/set_state";
 import { z } from "zod";
 import { create } from "zustand";
 
-const ticketUrl = process.env.NEXT_PUBLIC_N8N_WEB_HOOK ?? ""
 const apiClient = ApiClient.getInstance();
 
 type TicketState = {
@@ -27,21 +26,23 @@ const initialState: TicketState = {
 };
 
 export const useTicketStore = create<TicketStore>((set) => ({
-    ...initialState,
-    createTicket: (ticket) => createTicket(ticket, set),
-  }));
-
+  ...initialState,
+  createTicket: (ticket) => createTicket(ticket, set),
+}));
 
 const createTicket = async (ticket: Ticket, set: SetState<TicketStore>) => {
   set({ status: "loading", lastAction: "createTicket", error: null });
 
   try {
-    await apiClient.post(ticketUrl , z.any() , ticket, {
-      headers: {},
-      withCredentials: false,
-    })
+    await fetch("/ticket", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ticket),
+    });
     set({ status: "success", error: null });
   } catch (error) {
-    set({error: ApiError.getMessage(error) , status: "error" });
+    set({ error: ApiError.getMessage(error), status: "error" });
   }
-}
+};
