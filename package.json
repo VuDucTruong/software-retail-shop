@@ -29,7 +29,7 @@
     "@radix-ui/react-toggle": "^1.1.2",
     "@radix-ui/react-toggle-group": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.2.7",
-    "@sentry/nextjs": "^9.27.0",
+    "@sentry/nextjs": "^9.33.0",
     "@tailwindcss/typography": "^0.5.16",
     "@tanstack/react-table": "^8.21.2",
     "@tiptap/extension-code": "^2.14.0",

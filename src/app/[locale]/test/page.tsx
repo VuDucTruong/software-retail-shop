@@ -1,3 +1,4 @@
+
 import React from 'react'
 import * as Sentry from "@sentry/nextjs";
 
@@ -5,15 +6,16 @@ export default function page() {
 
 
     const handleThrowError = () => {
-        try {
+          try {
             throw new Error("This is a test error");
-        } catch (error) {
+          } catch (error) {
             Sentry.captureException(error, {
-                extra: {
-                    info: "This is a test error for Sentry",
-                },
-            });
-        }
+                  tags: {
+                    type: "global-error",
+                  },
+                });
+            console.error("Error captured by Sentry:", error);
+          }
     }
 
   return (

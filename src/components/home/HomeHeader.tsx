@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   languages
 } from "@/lib/constants";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FaEye, FaFireAlt } from "react-icons/fa";
@@ -30,7 +30,7 @@ import SearchBar from "./SearchBar";
 
 export default function HomeHeader() {
   const t = useTranslations();
-
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -61,7 +61,7 @@ export default function HomeHeader() {
           <div className="flex flex-row">
             <CommonSelect
               data={languages}
-              defaultValue={languages[0]}
+              defaultValue={locale}
               onChange={(value) => {
                 switchLanguage(value);
               }}
