@@ -631,5 +631,8 @@
   "sys_resolving_order": "The system is resolving your order",
   "something_went_wrong": "Something went wrong",
   "order_delivered": "Your order is delivered, please check your email",
-  "preparing_delivery": "Hang tight, we are preparing your delivery."
+  "preparing_delivery": "Hang tight, we are preparing your delivery.",
+  "no_account_question": "Don't have an account?",
+  "select_payment_method": "Select payment method",
+  "payment": "Payment"
 }

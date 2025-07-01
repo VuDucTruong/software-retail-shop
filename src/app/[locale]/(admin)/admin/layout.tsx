@@ -15,7 +15,11 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "Admin Dashboard",
   description: "Trang quản lý của hệ thống bán lẻ phần mềm Phoenix",
-  
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  }
 };
 
 export default async function LocaleLayout({

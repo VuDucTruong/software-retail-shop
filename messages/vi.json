@@ -630,5 +630,8 @@
   "please_wait": "Vui lòng đợi",
   "sys_resolving_order": "Hệ thống đang xử lý đơn hàng của bạn",
   "order_delivered": "Đơn hàng của bạn đã được giao, vui lòng kiểm tra email của bạn",
-  "preparing_delivery": "Hãy kiên nhẫn, chúng tôi đang chuẩn bị giao hàng của bạn."
+  "preparing_delivery": "Hãy kiên nhẫn, chúng tôi đang chuẩn bị giao hàng của bạn.",
+  "no_account_question": "Bạn chưa có tài khoản?",
+  "select_payment_method": "Chọn phương thức thanh toán",
+  "payment": "Thanh toán"
 }

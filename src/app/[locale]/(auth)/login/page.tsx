@@ -40,13 +40,15 @@ export default function LoginPage() {
     <div className="flex flex-row gap-16 min-h-screen justify-center  p-8">
       <div className="flex flex-col justify-center gap-2">
         <div className="flex items-center">
-          <Image
+          <Link href={"/"}>
+            <Image
             alt="Logo"
             src="/logo.png"
             width={100}
             height={100}
             className="rounded-full mr-2"
           />
+          </Link>
 
           <h1 className="text-3xl font-bold ml-2">{t("Login")}</h1>
         </div>
@@ -57,23 +59,10 @@ export default function LoginPage() {
 
         <LoginForm onSubmit={login} />
 
-        <div className="flex items-center gap-1 my-2">
-          <div className="w-full h-px bg-slate-400 rounded-full"></div>
-          <div className="whitespace-nowrap text-muted-foreground font-medium">
-            {t("login_with")}
-          </div>
-          <div className="w-full h-px bg-slate-400 rounded-full"></div>
-        </div>
-        <Image
-          className="cursor-pointer self-center"
-          alt="Google"
-          src="/google.png"
-          width={50}
-          height={50}
-        />
+    
 
-        <div className="flex items-end justify-center mt-4 text-muted-foreground gap-1">
-          Chưa có tài khoản?
+        <div className="flex items-center justify-center mt-4 text-muted-foreground gap-1">
+          <p>{t("no_account_question")}</p>          
           <Link href="/register" className="text-primary hover:underline">
             {t("Register")}
           </Link>

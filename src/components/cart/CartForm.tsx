@@ -7,6 +7,7 @@ import {IconType} from "react-icons/lib";
 import {PaymentCallback} from "@/stores/order/payment.store";
 import {useShallow} from "zustand/shallow";
 import {PaymentSettlePage} from "@/components/cart/PaymentSection";
+import { useTranslations } from 'next-intl';
 
 type StepKeyType = "preview" | "payment" | "settlement"
 
@@ -19,17 +20,17 @@ type StepsType = Record<StepKeyType, {
 const steps: StepsType = {
     "preview": {
         stepIndex: 0,
-        title: "Checking out",
+        title: "Cart",
         icon: IoCartSharp,
     },
     "payment": {
         stepIndex: 1,
-        title: "Select your payment",
+        title: "select_payment_method",
         icon: GiConfirmed,
     },
     "settlement": {
         stepIndex: 2,
-        title: "settlement",
+        title: "payment",
         icon: MdOutlinePayments,
     }
 }
@@ -39,7 +40,7 @@ export type CartFormType = {
 }
 
 export default function CartForm({onModalYes, mode}: CartFormType) {
-
+    const t = useTranslations();
     const currentStep = steps[mode];
     const [status] = PaymentCallback.useStore(useShallow(s => [
         s.status,
@@ -61,7 +62,7 @@ export default function CartForm({onModalYes, mode}: CartFormType) {
                                     <Icon className={`size-5  text-white`}/>
                                 </div>
                                 <div
-                                    className={`${currentIndex == stepIndex ? "font-semibold" : "text-muted-foreground"}`}>{title}
+                                    className={`${currentIndex == stepIndex ? "font-semibold" : "text-muted-foreground"}`}>{t(title)}
                                 </div>
                             </div>
                             <div className="flex-1 bg-slate-500 h-px"></div>
