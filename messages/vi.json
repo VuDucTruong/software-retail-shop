@@ -633,5 +633,8 @@
   "preparing_delivery": "Hãy kiên nhẫn, chúng tôi đang chuẩn bị giao hàng của bạn.",
   "no_account_question": "Bạn chưa có tài khoản?",
   "select_payment_method": "Chọn phương thức thanh toán",
-  "payment": "Thanh toán"
+  "payment": "Thanh toán",
+  "you_need_to_login": "Bạn cần đăng nhập để thực hiện hành động này",
+  "you_need_to_login_description": "Tính năng này yêu cầu bạn phải đăng nhập. Vui lòng đăng nhập để tiếp tục.",
+  "login_now": "Đăng nhập ngay"
 }

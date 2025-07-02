@@ -1,13 +1,8 @@
-"use client";
-import LoadingPage from "@/components/special/LoadingPage";
+import { redirect } from "next/navigation";
+
 
 
 
 export default function AdminPage() {
-
-  return (
-    <main className="min-h-screen flex items-center justify-center">
-      <LoadingPage />
-    </main>
-  );
+  redirect("/admin/dashboard");
 }

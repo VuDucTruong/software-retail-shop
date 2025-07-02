@@ -8,10 +8,10 @@ import {
   UserProfileUpdate,
   UserSchema,
 } from "@/api";
+import { ApiError } from "@/api/client/base_client";
 import { Role } from "@/lib/constants";
 import { SetState } from "@/lib/set_state";
 import { getRoleWeight } from "@/lib/utils";
-import { ApiError } from "next/dist/server/api-utils";
 import { z } from "zod";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -88,12 +88,10 @@ export const useAuthStore = create<AuthStore>()(
   )
 );
 
-const reloadAdminPage = (user: User | null) => {
+const checkAdminRole = (user: User) => {
   if (window.location.pathname.includes("/admin")) {
-    if(user !== null && getRoleWeight(user.role) < Role.STAFF.weight) {
-      throw new ApiError(401, "User does not have permission to access admin page");
-    } else {
-      window.location.reload();
+    if(getRoleWeight(user.role) < Role.STAFF.weight) {
+      throw new ApiError("User does not have permission to access admin page",401);
     }
     
   }
@@ -109,9 +107,11 @@ const login = async (set: SetState<AuthStore>, request: LoginRequest) => {
       request
     );
 
+    checkAdminRole(response.user);
+
     set({ user: response.user, status: "success", isAuthenticated: true });
 
-    reloadAdminPage(response.user);
+    
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });
@@ -144,7 +144,6 @@ const logout = async (set: SetState<AuthStore>) => {
     await authClient.delete("/accounts/logout", z.any());
     set({ user: null, status: "success", isAuthenticated: false });
 
-    reloadAdminPage(null);
   } catch (error) {
     const appError = error as ApiError;
     set({ error: appError.message, status: "error" });
@@ -173,11 +172,7 @@ const getMe = async (set: SetState<AuthStore>, isAdmin?: boolean) => {
   try {
     const response = await authClient.get("/users", UserSchema);
 
-    if (isAdmin) {
-      if (getRoleWeight(response.role) < Role.STAFF.weight) {
-        throw new ApiError(401, "Unauthorized");
-      }
-    }
+    checkAdminRole(response);
 
     if (useAuthStore.getState().isAuthenticated === false) {
       set({ user: response, status: "success", isAuthenticated: true });
@@ -185,7 +180,7 @@ const getMe = async (set: SetState<AuthStore>, isAdmin?: boolean) => {
       set({ user: response, status: "success" });
     }
   } catch (error) {
-    set({ user: null, status: "error", error: (error as ApiError).message });
+    set({ user: null, status: "error", error: (error as ApiError).message,isAuthenticated: false });
   }
 };
 

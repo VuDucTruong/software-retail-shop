@@ -634,5 +634,8 @@
   "preparing_delivery": "Hang tight, we are preparing your delivery.",
   "no_account_question": "Don't have an account?",
   "select_payment_method": "Select payment method",
-  "payment": "Payment"
+  "payment": "Payment",
+  "you_need_to_login": "You need to login to continue",
+  "you_need_to_login_description": "This feature requires you to be logged in. Please login to continue.",
+  "login_now": "Login now"
 }

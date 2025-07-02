@@ -16,14 +16,14 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "www.pokemon.com",
-      },
-      {
-        protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "vdt64.duckdns.org" ,
+      }
     ],
   },
   productionBrowserSourceMaps: true,

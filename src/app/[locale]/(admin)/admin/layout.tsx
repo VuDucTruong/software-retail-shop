@@ -6,6 +6,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Locale, routing } from "@/i18n/routing";
 import { Toaster } from "sonner";
+import PermissionVerification from "@/components/auth/PermissionVerification";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -43,6 +44,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${roboto.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
+          <PermissionVerification />
           <Toaster
             richColors
           />

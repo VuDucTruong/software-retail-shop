@@ -107,7 +107,7 @@ export function FilterForm() {
       }
     });
 
-    router.push(`/search?${searchParams.toString()}`);
+    router.push(`/search?${urlParams.toString()}`);
 
   }
   const onClearFilter = () => {

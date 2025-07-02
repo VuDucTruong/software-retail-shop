@@ -11,8 +11,10 @@ import {
 import { useAuthDialogStore } from "@/stores/auth.dialog.store";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { useTranslations } from "next-intl";
 
 export default function CheckAuthDialog() {
+  const t = useTranslations();
   const onOpenChange = useAuthDialogStore((state) => state.onOpenChange);
   const open = useAuthDialogStore((state) => state.open);
 
@@ -27,13 +29,13 @@ export default function CheckAuthDialog() {
     >
       <DialogContent className="max-w-1/3">
         <DialogHeader>
-          <DialogTitle>Bạn cần đăng nhập để tiếp tục</DialogTitle>
+          <DialogTitle>{t('you_need_to_login')}</DialogTitle>
           <DialogDescription>
-            Tính năng này chỉ dành cho người dùng đã đăng nhập. Vui lòng đăng nhập để tiếp tục thao tác của bạn.
+            {t('you_need_to_login_description')}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Link className="w-full" href={"/login"}><Button className="w-full h-10" >Đăng nhập ngay</Button></Link>
+          <Link className="w-full" href={"/login"}><Button className="w-full h-10" >{t('login_now')}</Button></Link>
         </DialogFooter>
       </DialogContent>
     </Dialog>
