@@ -43,14 +43,9 @@ export namespace PaymentSingle {
             try {
                 setLoadAndDo(set, run, lastAction)
             } catch (e: unknown) {
-
+                void e
             }
         },
-        /**
-         *
-         * @param request a thing that has payment => ...
-         * @returns either url or exception
-         */
         async getPaymentUrl(): Promise<string> {
             const domainCreate = get()
             if (domainCreate.orderId <= 0)
@@ -66,8 +61,7 @@ export namespace PaymentSingle {
 
 
             const payUrl = await PaymentApis.getPaymentUrl(request);
-            const parsedUrl = Schema.Url.parse(payUrl);
-            return parsedUrl;
+            return Schema.Url.parse(payUrl);
         },
         setOrderId(orderId: number) {
             set(s => ({
@@ -105,7 +99,7 @@ export namespace PaymentCallback {
     }
     type Store = State & Action;
 
-    export const useStore = create<Store>((set, get) => ({
+    export const useStore = create<Store>((set) => ({
         ...initialState,
         async callbackPayment(request: Record<string, string>): Promise<void> {
             console.log('request is', request)
@@ -125,6 +119,7 @@ export namespace PaymentCallback {
                 }
                 set({payment: domain, status: status})
             } catch (e) {
+                void e
                 set({status: 'FAILED'})
             }
 

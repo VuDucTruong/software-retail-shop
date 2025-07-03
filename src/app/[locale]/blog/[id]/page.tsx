@@ -155,7 +155,7 @@ function BlogRelatedByG1Ids({g1Ids}: { g1Ids: number[] }) {
             <StatusDependentRenderer status={groupStatus} error={groupError} altLoading={(<Skeleton/>)}>
                 <div className="flex gap-2 items-center">
                     {Object.entries(g1IdToBlogs).flatMap(([g1Id, blogs]) => {
-                        return blogs.map((blog, i) => (
+                        return blogs.map((blog) => (
                             <VerticalPostListItem
                                 key={v4()}
                                 title={blog.title}

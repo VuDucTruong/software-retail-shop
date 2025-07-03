@@ -1,8 +1,12 @@
-import { redirect } from "next/navigation";
+import LoadingPage from "@/components/special/LoadingPage";
 
 
 
 
 export default function AdminPage() {
-  redirect("/admin/dashboard");
+  
+  return <main className="flex flex-col items-center justify-center min-h-screen">
+    <LoadingPage />
+  </main>
+
 }

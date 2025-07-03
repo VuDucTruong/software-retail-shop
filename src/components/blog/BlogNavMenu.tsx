@@ -170,7 +170,6 @@ export default function BlogNavMenu() {
 
 function ListItem({
   title,
-  children,
   href,
   ...props
 }: React.ComponentPropsWithoutRef<"li"> & { href: string }) {

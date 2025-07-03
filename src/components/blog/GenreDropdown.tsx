@@ -3,20 +3,18 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuPortal,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { GenreDomain } from "@/stores/blog/genre.store";
-import { useTranslations } from "next-intl";
-import { useEffect } from "react";
-import { ControllerRenderProps, FieldPath } from "react-hook-form";
-import { z } from "zod";
-import { useShallow } from "zustand/shallow";
-import { Button } from "../ui/button";
+import {GenreDomain} from "@/stores/blog/genre.store";
+import {useTranslations} from "next-intl";
+import {useEffect} from "react";
+import {ControllerRenderProps, FieldPath} from "react-hook-form";
+import {z} from "zod";
+import {useShallow} from "zustand/shallow";
+import {Button} from "../ui/button";
 
 type Props<T extends { selectedGenre2Ids: Set<number> }> = {
   field?: ControllerRenderProps<T, FieldPath<T> & "selectedGenre2Ids">;

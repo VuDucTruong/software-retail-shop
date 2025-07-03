@@ -12,7 +12,6 @@ import {
     BlogUpdateRequest,
     defaultAsyncState,
     DisposeAction,
-    LastActions,
     Pageable,
     QueryParams,
     setLoadAndDo
@@ -226,13 +225,13 @@ export namespace BlogMany {
                 })
             },
             async deleteBlogs(ids: number[]): Promise<void> {
-
+                void ids;
             },
             async deleteById(id: number): Promise<void> {
-
+                void id;
             },
             async approveBlog(id: number, action: boolean): Promise<void> {
-
+                void id; void action;
             },
             clean() {
                 set({...initialState})
@@ -259,7 +258,7 @@ export namespace BlogGroups {
     }
     type Store = State & Action
 
-    export const useStore = create<Store>((set, get) => ({
+    export const useStore = create<Store>((set) => ({
         ...initialState,
         proxyLoading(run, lastAction = null) {
             setLoadAndDo(set, run, lastAction)

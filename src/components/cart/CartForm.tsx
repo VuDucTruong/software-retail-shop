@@ -7,7 +7,7 @@ import {IconType} from "react-icons/lib";
 import {PaymentCallback} from "@/stores/order/payment.store";
 import {useShallow} from "zustand/shallow";
 import {PaymentSettlePage} from "@/components/cart/PaymentSection";
-import { useTranslations } from 'next-intl';
+import {useTranslations} from 'next-intl';
 
 type StepKeyType = "preview" | "payment" | "settlement"
 
@@ -49,7 +49,7 @@ export default function CartForm({onModalYes, mode}: CartFormType) {
     return (
         <div className="flex flex-col gap-4 main-container">
             <div className="flex gap-2 px-12">
-                {Object.entries(steps).map(([key, {stepIndex, title, icon}], i) => {
+                {Object.entries(steps).map(([, {stepIndex, title, icon}], ) => {
                     const Icon = icon;
                     const currentIndex = currentStep.stepIndex;
                     return (

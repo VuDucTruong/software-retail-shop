@@ -16,8 +16,8 @@ export default function BlogSearchPage() {
   const t = useTranslations();
   const search = useSearchParams().get('search') ?? '';
 
-  const [blogs, status, error, currentPage, totalPages, totalInstances] = BlogMany.useStoreLight(useShallow(s =>
-    [s.blogs, s.status, s.error, s.currentPage, s.totalPages, s.totalInstances]))
+  const [blogs, status, error, currentPage, totalPages] = BlogMany.useStoreLight(useShallow(s =>
+    [s.blogs, s.status, s.error, s.currentPage, s.totalPages]))
 
   const [genre2s] = GenreDomain.useStore(useShallow(s =>
     [s.genre2s]))

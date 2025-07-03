@@ -1,4 +1,4 @@
-import {undefined, z} from "zod";
+import {z} from "zod";
 import {UserProfileSchema, zEnumDefault, zNumDefault, zStrDefault} from "@/api";
 import {BANK_CODES} from "@/lib/bankcodes";
 

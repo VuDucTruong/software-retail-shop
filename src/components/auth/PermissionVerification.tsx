@@ -24,7 +24,7 @@ export default function PermissionVerification() {
       if (pathName !== "/admin/login") {
         router.push("/admin/login");
       }
-    } else if (pathName === "/admin/login") {
+    } else if (pathName === "/admin/login" || pathName === "/admin") {
       router.push("/admin/dashboard");
     }
   }, [isAuthenticated, pathName, router,status]);

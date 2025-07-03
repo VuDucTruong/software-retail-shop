@@ -54,7 +54,7 @@ function Page() {
                 router.push("/cart")
             }
         }
-    }, [getById, rawOrderId, router, setOrderId])
+    }, [getById, rawOrderId, router, setOrderId,t])
 
 
     return (

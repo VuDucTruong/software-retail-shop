@@ -26,5 +26,5 @@ export function InitBlogStore() {
     }, []);
 
     return null;
-};
+}
 

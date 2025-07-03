@@ -1,6 +1,6 @@
 import React, {ReactNode} from "react";
-import {CheckCircle, Clock, XCircle, Mail} from "lucide-react";
-import {OrderStatus, PaymentStatus} from "@/api";
+import {CheckCircle, Clock, Mail, XCircle} from "lucide-react";
+import {OrderStatus} from "@/api";
 import {Card} from "@/components/ui/card";
 import {useTranslations} from "next-intl";
 import Link from "next/link";
