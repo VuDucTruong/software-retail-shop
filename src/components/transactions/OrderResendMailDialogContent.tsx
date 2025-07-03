@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {z} from 'zod';
 import {Mail} from 'lucide-react';
 import {cn} from '@/lib/utils';

@@ -35,9 +35,8 @@ export default function CartItem({ data, index, onQtyChange, onDelete }: {
     onQtyChange(index: number, qty: number): void,
     onDelete(index: number): void,
 }) {
-    const { id, product, quantity } = data;
+    const {product, quantity } = data;
 
-    const quantityRef = React.useRef(quantity);
     const t = useTranslations();
     const isAvailable = product.quantity > 0;
 

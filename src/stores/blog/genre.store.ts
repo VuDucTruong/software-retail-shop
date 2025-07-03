@@ -28,6 +28,7 @@ export namespace GenreDomain {
     export const Genre2Schema = GenreBaseSchema.extend({
         genre1: GenreBaseSchema
     })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const Genre1Schema = GenreBaseSchema.extend({
         genre2s: z.array(GenreBaseSchema),
     })

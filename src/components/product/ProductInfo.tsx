@@ -1,27 +1,23 @@
-
-import { Product } from "@/api";
+import {Product} from "@/api";
 import CommonSwapIcon from "@/components/common/CommonSwapIcon";
 import DiscountItem from "@/components/common/DiscountItem";
-import { useRouter } from "@/i18n/navigation";
+import {useRouter} from "@/i18n/navigation";
 
-import { useTranslations } from "next-intl";
+import {useTranslations} from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
-import { BsBoxSeam } from "react-icons/bs";
-import { CiShoppingTag } from "react-icons/ci";
-import { FaBarcode, FaBell } from "react-icons/fa";
+import {useState} from "react";
+import {BsBoxSeam} from "react-icons/bs";
+import {CiShoppingTag} from "react-icons/ci";
+import {FaBarcode, FaBell} from "react-icons/fa";
 
-import {
-  calcDiscountPercentage,
-  convertPriceToVND,
-} from "@/lib/currency_helper";
-import { cn } from "@/lib/utils";
-import { useClientFavouriteStore } from "@/stores/cilent/client.favourite.store";
-import { FaCartPlus, FaHeart, FaRegCreditCard } from "react-icons/fa6";
-import { Button } from "../ui/button";
+import {calcDiscountPercentage, convertPriceToVND,} from "@/lib/currency_helper";
+import {cn} from "@/lib/utils";
+import {useClientFavouriteStore} from "@/stores/cilent/client.favourite.store";
+import {FaCartPlus, FaHeart, FaRegCreditCard} from "react-icons/fa6";
+import {Button} from "../ui/button";
 
-import { CartLocal } from "@/stores/order/cart.store";
-import { useShallow } from "zustand/shallow";
+import {CartLocal} from "@/stores/order/cart.store";
+import {useShallow} from "zustand/shallow";
 import {toast} from "sonner";
 
 
@@ -37,8 +33,8 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     product.originalPrice
   );
   const [addedToCart, setAddedToCart] = useState<boolean>(false)
-  const [setItem, removeItem] = CartLocal.useStore(useShallow(s => [
-    s.setItem, s.removeItem
+  const [setItem, ] = CartLocal.useStore(useShallow(s => [
+    s.setItem,
   ]))
 
   function addToCart() {
@@ -51,12 +47,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     setAddedToCart(true);
   toast.success(t('added_to_cart'), {position:'top-right'})
   }
-  function removeFromCart() {
-    if (!addedToCart)
-      return;
-    removeItem(`${product.id}`);
-    setAddedToCart(false);
-  }
+
 
   const updateProductFavourite = useClientFavouriteStore(
     (state) => state.updateProductFavourite);

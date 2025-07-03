@@ -7,7 +7,7 @@ import {useTranslations} from "next-intl";
 import {useParams} from "next/navigation";
 import {FaCartPlus} from "react-icons/fa";
 import {format} from "date-fns";
-import {StatusBadge} from "@/components/common/StatusBadge";
+import {convertPaymentStatus, convertStatus, StatusBadge} from "@/components/common/StatusBadge";
 import {OrderSingle} from "@/stores/order/order.store";
 import {useShallow} from "zustand/shallow";
 import {useEffect} from "react";
@@ -59,7 +59,7 @@ export default function OrderDetailPage() {
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">{t("status")}</span>
-                                <StatusBadge status={"pending"}/>
+                                <StatusBadge status={convertStatus(order.orderStatus ?? 'PENDING')}/>
                             </div>
                         </div>
 
@@ -80,7 +80,7 @@ export default function OrderDetailPage() {
                         <div className="border rounded-xl p-4 flex flex-col gap-2 bg-muted/30">
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">{t("payment_status")}</span>
-                                <StatusBadge status={"pending"}/>
+                                <StatusBadge status={convertPaymentStatus(order?.payment?.status)}/>
                             </div>
                             {order.payment?.paymentMethod && (
                                 <div className="flex justify-between text-sm">
@@ -99,7 +99,7 @@ export default function OrderDetailPage() {
                         {/* Coupon Info */}
                         <div className="border rounded-xl p-4 flex flex-col gap-2 bg-muted/30">
                             <div className="flex justify-between">
-                                <span className="text-muted-foreground">{t("coupon_applied")}</span>
+                                <span className="text-muted-foreground">{t("coupon_code")}</span>
                                 <span className="font-medium">{order.coupon?.code || t("none")}</span>
                             </div>
                             {order.coupon?.value ? (

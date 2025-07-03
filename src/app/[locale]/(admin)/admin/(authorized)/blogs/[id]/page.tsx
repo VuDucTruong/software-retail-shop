@@ -14,14 +14,14 @@ export default function DetailBlogPage() {
     const pathname = usePathname();
     const id = pathname.split("/").at(-1);
 
-    const idnum = Number(id);
+    const idNum = Number(id);
     const [proxyLoading, lastAction, status, error, blog, getById, updateBlog, approveBlog] = BlogSingle.useStore(useShallow(s => [
         s.proxyLoading, s.lastAction, s.status, s.error, s.blog, s.getById, s.updateBlog, s.approveBlog
     ]))
 
     useEffect(() => {
         proxyLoading(async () => {
-            await getById(idnum);
+            await getById(idNum);
         })
     }, [])
 
@@ -43,7 +43,7 @@ export default function DetailBlogPage() {
 
     const onSubmitUpdate = (f: BlogFormType): void => {
         const requestUpdate: BlogUpdateRequest = {
-            id: idnum,
+            id: idNum,
             title: f.title,
             content: f.content,
             subtitle: f.subtitle,
@@ -56,7 +56,7 @@ export default function DetailBlogPage() {
 
     function onApprove() {
         const approved = typeof blog?.approvedAt !== 'undefined' && blog?.approvedAt !== null
-        approveBlog(idnum, !approved)
+        approveBlog(idNum, !approved)
     }
 
     useActionToast({

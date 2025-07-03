@@ -2,7 +2,7 @@ import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
 import debounce from "lodash/debounce";
-import {PackageSearch, Search} from "lucide-react";
+import {Search} from "lucide-react";
 import {useTranslations} from "next-intl";
 import {useRouter, useSearchParams} from "next/navigation";
 import React, {useEffect} from "react";

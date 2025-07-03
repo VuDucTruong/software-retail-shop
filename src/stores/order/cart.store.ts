@@ -1,6 +1,5 @@
 import {create} from "zustand";
 import {CartMetaData} from '@/api/types/order_group/cartMetaData'
-import {z} from "zod";
 import {debounce} from "lodash";
 
 export namespace CartLocal {
@@ -28,7 +27,6 @@ export namespace CartLocal {
     type Store = State & Action;
 
     export const useStore = create<Store>((set, get): Store => {
-        let lastPersisted: string | null = null;
         const debouncedPersist = debounce(() => get()._persist(), 800);
 
         function persist(force: boolean | undefined) {
@@ -36,7 +34,7 @@ export namespace CartLocal {
             return debouncedPersist();
         }
 
-        const x: Store = {
+        return {
             ...initialState,
 
             addItem(id, qty, force = false) {
@@ -72,24 +70,24 @@ export namespace CartLocal {
                 persist(force);
             },
 
-            removeItem(id, force = false) {
+            removeItem: function (id, force = false) {
                 set((state) => {
-                    const { [id]: _, ...rest } = state.orderDetailsMeta;
-                    return { orderDetailsMeta: rest };
+                    const rest = {...state.orderDetailsMeta};
+                    delete rest[id];
+                    return {orderDetailsMeta: rest};
                 });
                 persist(force);
             },
 
-            clearItems(force = false) {
+            clearItems() {
                 set({orderDetailsMeta: {}});
-                get()._persist();
+                void get()._persist();
             },
 
             async _persist() {
                 const odm = get().orderDetailsMeta;
                 const current = JSON.stringify(odm);
                 localStorage.setItem("cart", current);
-                lastPersisted = current;
             },
             async load() {
                 const metaString = localStorage.getItem("cart") ?? "{}";
@@ -97,8 +95,6 @@ export namespace CartLocal {
                 set({orderDetailsMeta: parsed.success ? parsed.data : {}});
             },
         };
-
-        return x;
     });
 }
 

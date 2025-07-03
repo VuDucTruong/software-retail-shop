@@ -25,7 +25,7 @@ import {
     USER_PROFILE_DETAILED_FALL_BACK
 } from "@/api";
 import {create} from "zustand/index";
-import {undefined, z} from "zod";
+import {z} from "zod";
 import {ApiError} from "@/api/client/base_client";
 
 
@@ -261,7 +261,7 @@ export namespace OrderSingle {
     }
     type Store = State & Action;
 
-    export const useStore = create<Store>((set, get) => ({
+    export const useStore = create<Store>((set, ) => ({
         ...initialValue,
         proxyLoading(run, lastAction = null) {
             setLoadAndDo(set, run, lastAction);

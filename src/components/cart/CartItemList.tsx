@@ -1,4 +1,3 @@
-import {useTranslations} from 'next-intl'
 import React from 'react'
 import CartItem, {CartItemDataType} from './CartItem';
 import {OrderCustomer} from "@/stores/order/order.store";
@@ -7,12 +6,11 @@ import {CartLocal} from "@/stores/order/cart.store";
 
 
 export default function CartItemList() {
-    const t = useTranslations();
 
     const [orderItems, removeOrderItem, setOrderItemQty] = OrderCustomer.useStore(useShallow(s => [
         s.cartItems, s.removeCartItem, s.setQty
     ]))
-    const [subtractLocalQty, removeLocalItem, setLocalItem] = CartLocal.useStore(useShallow(s => [s.subtractItem, s.removeItem, s.setItem]))
+    const [removeLocalItem, setLocalItem] = CartLocal.useStore(useShallow(s => [s.removeItem, s.setItem]))
 
     const data: CartItemDataType[] = orderItems.map(od => ({
         ...od,

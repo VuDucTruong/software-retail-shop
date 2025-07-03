@@ -1,9 +1,9 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
-import { FaShoppingCart } from "react-icons/fa";
-import { Button } from "../ui/button";
-import { CartLocal } from "@/stores/order/cart.store";
-import { useShallow } from "zustand/shallow";
+import React, {useEffect} from "react";
+import {FaShoppingCart} from "react-icons/fa";
+import {Button} from "../ui/button";
+import {CartLocal} from "@/stores/order/cart.store";
+import {useShallow} from "zustand/shallow";
 
 export default function CartButton() {
   const [cartItems, loadCarts] = CartLocal.useStore(useShallow(s=>[

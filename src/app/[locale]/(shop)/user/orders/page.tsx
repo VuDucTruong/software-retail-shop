@@ -17,6 +17,7 @@ import {getDateTimeLocal} from "@/lib/date_helper";
 import {OrderMany} from "@/stores/order/order.store";
 import {useShallow} from "zustand/shallow";
 import Link from "next/link";
+import {useActionToast} from "@/hooks/use-action-toast";
 
 
 const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: number) => void): ColumnDef<Order>[] => {
@@ -99,7 +100,7 @@ const genCols = (t: ReturnType<typeof useTranslations>, handleDelete: (id: numbe
 export default function OrderPage() {
     const t = useTranslations();
 
-    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrders, deleteOrderById] =
+    const [status, lastAction, error, orders, queryParams, totalInstances, totalPages, getOrders, deleteOrderById, proxyLoading] =
         OrderMany.useStore(
             useShallow((state) => [
                 state.status,
@@ -110,8 +111,8 @@ export default function OrderPage() {
                 state.totalInstances,
                 state.totalPages,
                 state.getOrders,
-                state.deleteOrders,
                 state.deleteById,
+                state.proxyLoading
             ])
         );
     const [pagination, setPagination] = useState<PaginationState>({
@@ -124,19 +125,24 @@ export default function OrderPage() {
     },
     ]);
     useEffect(() => {
-        getOrders({
-            pageRequest: {
-                page: pagination.pageIndex,
-                size: pagination.pageSize,
-                sortBy: sorting[0]?.id,
-                sortDirection: sorting[0]?.desc ? "desc" : "asc",
-            },
-        });
+        proxyLoading(() => {
+            getOrders({
+                pageRequest: {
+                    page: pagination.pageIndex,
+                    size: pagination.pageSize,
+                    sortBy: sorting[0]?.id,
+                    sortDirection: sorting[0]?.desc ? "desc" : "asc",
+                },
+            })
+        }, 'get')
+
     }, []);
 
     function handleDelete(id: number) {
-
+        deleteOrderById(id);
     }
+
+    useActionToast({lastAction, status, errorMessage: error || undefined})
 
     const cols = genCols(t, handleDelete)
 
@@ -154,9 +160,9 @@ export default function OrderPage() {
             <CardContent>
                 <div className="flex flex-col ">
                     <div className="divider"></div>
-
-
                     <CommmonDataTable
+                        totalCount={totalInstances}
+                        isLoading={status === 'loading' && orders.length <= 0}
                         columns={cols}
                         data={orders}
                         pageCount={totalPages}

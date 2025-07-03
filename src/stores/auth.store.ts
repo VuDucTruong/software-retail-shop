@@ -8,13 +8,13 @@ import {
   UserProfileUpdate,
   UserSchema,
 } from "@/api";
-import { ApiError } from "@/api/client/base_client";
-import { Role } from "@/lib/constants";
-import { SetState } from "@/lib/set_state";
-import { getRoleWeight } from "@/lib/utils";
-import { z } from "zod";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {ApiError} from "@/api/client/base_client";
+import {Role} from "@/lib/constants";
+import {SetState} from "@/lib/set_state";
+import {getRoleWeight} from "@/lib/utils";
+import {z} from "zod";
+import {create} from "zustand";
+import {persist} from "zustand/middleware";
 
 const authClient = ApiClient.getInstance();
 
@@ -70,7 +70,7 @@ export const useAuthStore = create<AuthStore>()(
       register: (request) => register(set, request),
       logout: () => logout(set),
       resetStatus: () => set({ status: "idle", lastAction: null, error: null }),
-      getMe: (isAdmin) => getMe(set, isAdmin),
+      getMe: () => getMe(set),
       setUser: (user) => set({ user }),
       changePassword: (request) => changePassword(set, request),
       sendOTP: (email) => sendOTP(set, email),
@@ -166,7 +166,7 @@ const changePassword = async (
   }
 };
 
-const getMe = async (set: SetState<AuthStore>, isAdmin?: boolean) => {
+const getMe = async (set: SetState<AuthStore>) => {
   set({ lastAction: "getMe", status: "loading", error: null });
 
   try {
@@ -174,7 +174,7 @@ const getMe = async (set: SetState<AuthStore>, isAdmin?: boolean) => {
 
     checkAdminRole(response);
 
-    if (useAuthStore.getState().isAuthenticated === false) {
+    if (!useAuthStore.getState().isAuthenticated) {
       set({ user: response, status: "success", isAuthenticated: true });
     } else {
       set({ user: response, status: "success" });

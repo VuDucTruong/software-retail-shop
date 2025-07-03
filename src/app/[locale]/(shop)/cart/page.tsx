@@ -38,7 +38,7 @@ export default function Page() {
     function handleClickToPayment() {
         createOrder().then(orderId => {
             if (orderId) {
-                clearItems(true);
+                clearItems();
                 router.push(`/cart/${orderId}`)
             }
         }).catch(e => {

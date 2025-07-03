@@ -2,7 +2,7 @@ import {Badge} from "@/components/ui/badge"
 import {cn} from "@/lib/utils"
 import {Ban, CheckCircle2, Clock, Loader2, PackageCheck, PackageX, Rss, XCircle} from "lucide-react"
 import {useTranslations} from "next-intl"
-import {OrderStatus} from "@/api";
+import {OrderStatus, PaymentStatus} from "@/api";
 import {LuMailWarning} from "react-icons/lu";
 
 export function convertStatus(os: OrderStatus) {
@@ -19,6 +19,20 @@ export function convertStatus(os: OrderStatus) {
       return 'canceled'
     case 'PROCESSING':
       return 'processing';
+  }
+}
+export function convertPaymentStatus(ps?:PaymentStatus | null): Status{
+  switch (ps){
+    case 'PENDING':
+    case null:
+    case undefined:
+      return 'pending'
+    case 'FAILED':
+      return 'canceled'
+    case 'SUCCESS':
+      return 'completed';
+    default:
+      return 'pending'
   }
 }
 

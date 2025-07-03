@@ -15,9 +15,9 @@ import {OrderStatusView} from "@/components/cart/OrderStatusView";
 import {BankSelector} from "@/components/payment/BankSelector";
 import {BANK_CODES} from "@/lib/bankcodes";
 import {PaymentCommon, PaymentSingle} from "@/stores/order/payment.store";
-import parseStatus = PaymentCommon.parseStatus;
 import {convertPriceToVND} from "@/lib/currency_helper";
 import {toast} from "sonner";
+import parseStatus = PaymentCommon.parseStatus;
 
 type CardItemsProps = {
     handleNextStep: () => void;
@@ -36,14 +36,13 @@ function TitleAndValue({title, value}: { title: string, value: string }) {
 
 export default function CartItemsSection({handleNextStep, handlePrevStep, mode}: CardItemsProps) {
     const t = useTranslations();
-    const [coupon, cartItemsCount, orderStatus, gross, applied, net, applyCoupon, applyMail, payment] = OrderCustomer.useStore(useShallow(s => [
-        s.coupon, s.cartItems.length, s.orderStatus, s.gross, s.applied, s.net, s.applyCoupon, s.applyMail, s.payment
+    const [coupon, cartItemsCount, orderStatus, gross, applied, net, applyCoupon,  payment] = OrderCustomer.useStore(useShallow(s => [
+        s.coupon, s.cartItems.length, s.orderStatus, s.gross, s.applied, s.net, s.applyCoupon,  s.payment
     ]));
-    const [selectedBankCode, setSelectedBankCode, note, setNote] = PaymentSingle.useStore(useShallow(s => [
-        s.bankCode, s.setBankCode, s.note, s.setNote
+    const [selectedBankCode, setSelectedBankCode, setNote] = PaymentSingle.useStore(useShallow(s => [
+        s.bankCode, s.setBankCode,  s.setNote
     ]))
 
-    const [email, setEmail] = useState<string>("");
     const [couponCode, setCouponCode] = useState<string>("");
     const accordionItems = [
         {
@@ -63,12 +62,12 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
             ),
             onValueChange: (value: string) => {
                 // console.log(value)
-                setCouponCode(c => value)
+                setCouponCode(() => value)
             },
             title: "q_have_discount_code",
             inputPlaceholder: "discount_code",
             onApply: () => {
-                applyCoupon(couponCode).catch(e=>{
+                applyCoupon(couponCode).catch(()=>{
                     toast.error(t("API.INVALID_COUPON"),{position: "top-right"})
                 })
             },

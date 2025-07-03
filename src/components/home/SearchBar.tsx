@@ -1,28 +1,17 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useClientCategoryState } from "@/stores/cilent/client.category.store";
-import { useClientProductStore } from "@/stores/cilent/client.product.store";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import {useClientCategoryState} from "@/stores/cilent/client.category.store";
+import {useClientProductStore} from "@/stores/cilent/client.product.store";
 import debounce from "lodash/debounce";
-import { PackageSearch, Search } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { Form, FormField } from "../ui/form";
-import { Skeleton } from "../ui/skeleton";
-import LoadingPage from "../special/LoadingPage";
+import {PackageSearch, Search} from "lucide-react";
+import {useTranslations} from "next-intl";
+import {useRouter} from "next/navigation";
+import React, {useEffect} from "react";
+import {useForm} from "react-hook-form";
+import {Form, FormField} from "../ui/form";
+import {Skeleton} from "../ui/skeleton";
 
 type SearchForm = {
   categoryId?: string;

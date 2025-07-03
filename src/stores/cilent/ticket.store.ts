@@ -1,11 +1,9 @@
-import { ApiClient, Ticket } from "@/api";
-import { ApiError } from "@/api/client/base_client";
-import { SetState } from "@/lib/set_state";
+import {Ticket} from "@/api";
+import {ApiError} from "@/api/client/base_client";
+import {SetState} from "@/lib/set_state";
+import {create} from "zustand";
 
-import { z } from "zod";
-import { create } from "zustand";
-
-const apiClient = ApiClient.getInstance();
+// const apiClient = ApiClient.getInstance();
 
 type TicketState = {
   lastAction: "createTicket" | null;
