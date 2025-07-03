@@ -620,13 +620,13 @@
   "error_process_order": "Unable to process payment for order, please try creating a new one",
   "loading_payment_url": "Loading payment url",
   "error_payment_url": "Error when creating payment url",
-  "success_payment": "Payment created successfully",
-  "failed_payment": "Payment failed",
+  "success_payment": "You have successfully paid for your order",
+  "failed_payment": "Payment failed, please try again",
   "uncompleted_payment": "Uncompleted payment",
   "please_new": "Please creating a new order",
   "please_complete": "Please complete your payment",
   "go_home_now": "Go to home page now",
-  "redirecting": "Redirecting to homepage in {{count}} second{{plural}}...",
+  "redirecting": "Redirecting to homepage in {count}s",
   "please_wait": "Please wait",
   "sys_resolving_order": "The system is resolving your order",
   "something_went_wrong": "Something went wrong",
@@ -643,5 +643,6 @@
   "total_paid": "Total paid",
   "card_type": "Card type",
   "Copied": "Copied",
-  "failed_to_copy": "Failed to copy, please try again"
+  "failed_to_copy": "Failed to copy, please try again",
+  "success_payment_description": "Thank you for your purchase!. We have sent you an email with the details of your order soon."
 }
