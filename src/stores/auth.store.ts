@@ -174,10 +174,10 @@ const getMe = async (set: SetState<AuthStore>) => {
 
     checkAdminRole(response);
 
-    if (!useAuthStore.getState().isAuthenticated) {
-      set({ user: response, status: "success", isAuthenticated: true });
-    } else {
+    if (useAuthStore.getState().isAuthenticated) {
       set({ user: response, status: "success" });
+    } else {
+      set({ user: response, status: "success", isAuthenticated: true });
     }
   } catch (error) {
     set({ user: null, status: "error", error: (error as ApiError).message,isAuthenticated: false });

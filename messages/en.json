@@ -641,5 +641,7 @@
   "coupon_applied": "Coupon applied",
   "original_total": "Original total amount",
   "total_paid": "Total paid",
-  "card_type": "Card type"
+  "card_type": "Card type",
+  "Copied": "Copied",
+  "failed_to_copy": "Failed to copy, please try again"
 }

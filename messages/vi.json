@@ -636,5 +636,11 @@
   "payment": "Thanh toán",
   "you_need_to_login": "Bạn cần đăng nhập để thực hiện hành động này",
   "you_need_to_login_description": "Tính năng này yêu cầu bạn phải đăng nhập. Vui lòng đăng nhập để tiếp tục.",
-  "login_now": "Đăng nhập ngay"
+  "login_now": "Đăng nhập ngay",
+  "coupon_applied": "Mã phiếu giảm giá đã được áp dụng",
+  "original_total": "Tổng gốc",
+  "total_paid": "Tổng số tiền đã thanh toán",
+  "card_type": "Loại thẻ",
+  "Copied": "Đã sao chép",
+  "failed_to_copy": "Không thể sao chép, vui lòng thử lại"
 }
