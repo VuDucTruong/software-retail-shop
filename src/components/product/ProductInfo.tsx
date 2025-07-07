@@ -45,7 +45,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       qty: 1
     })
     setAddedToCart(true);
-  toast.success(t('added_to_cart'), {position:'top-right'})
+  toast.success(t('added_to_cart'))
   }
 
 

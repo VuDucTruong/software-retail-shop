@@ -6,7 +6,8 @@ import {Mail} from 'lucide-react';
 import {cn} from '@/lib/utils';
 import CommonConfirmDialog from "@/components/common/CommonConfirmDialog";
 import {Button} from "@/components/ui/button";
-import {TbMailUp} from "react-icons/tb"; // optional if you use clsx/tailwind merge
+import {TbMailUp} from "react-icons/tb";
+import {useTranslations} from "next-intl"; // optional if you use clsx/tailwind merge
 
 const emailSchema = z.string().email({message: 'Invalid email address'});
 
@@ -24,6 +25,7 @@ function OrderResendMailDialogContent({
     const [value, setValue] = useState<string>(email ?? "")
     const [error, setError] = useState<string | null>(null);
 
+    const t =useTranslations();
 
     const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>)=>{
         try {
@@ -54,10 +56,10 @@ function OrderResendMailDialogContent({
                     <TbMailUp/>
                 </Button>
             }
-            title={"Bạn có muốn gửi lại email thông báo không?"}
+            title={t("email_resend_warn")}
             description={<div className={cn('space-y-3', className)}>
                 <p className="text-sm text-muted-foreground">
-                    Do you want to resend the product keys to this email?
+                    {t('email_resend_warn_prodKey')}
                 </p>
 
                 <div className="relative">

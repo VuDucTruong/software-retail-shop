@@ -1,18 +1,12 @@
 import React from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { convertPriceToVND } from "@/lib/currency_helper";
-import { FaRegCopy } from "react-icons/fa6";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "../ui/accordion";
-import { Input } from "../ui/input";
-import { OrderDetail } from "@/api";
-import { Button } from "../ui/button";
-import { toast } from "sonner";
+import {useTranslations} from "next-intl";
+import {convertPriceToVND} from "@/lib/currency_helper";
+import {FaRegCopy} from "react-icons/fa6";
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from "../ui/accordion";
+import {OrderDetail} from "@/api";
+import {Button} from "../ui/button";
+import {toast} from "sonner";
 
 type OrderDetailType = {
   orderDetail: OrderDetail;

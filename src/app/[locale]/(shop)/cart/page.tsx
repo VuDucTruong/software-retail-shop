@@ -14,24 +14,31 @@ import {toast} from "sonner";
 export default function Page() {
     const t = useTranslations();
 
-    const [initialize, createOrder,] = OrderCustomer.useStore(useShallow(s => [
-        s.initialize, s.createOrder,
+    const [domains, initialize, createOrder,] = OrderCustomer.useStore(useShallow(s => [
+        s.cartItems, s.initialize, s.createOrder,
     ]))
-    const [orderDetailsMeta, loadMeta, clearItems] = CartLocal.useStore(useShallow(c => [
-        c.orderDetailsMeta, c.load, c.clearItems
+    const [orderDetailsMeta, loadMeta, clearItems, removeItem] = CartLocal.useStore(useShallow(c => [
+        c.orderDetailsMeta, c.load, c.clearItems, c.removeItem
     ]));
 
 
     useEffect(() => {
-        if (orderDetailsMeta) {
-            initialize(orderDetailsMeta)
-        }
+        if (loadMeta)
+            loadMeta().then(()=>{
+                if (orderDetailsMeta) {
+                    initialize(orderDetailsMeta).then(()=>{
+                        Object.entries(orderDetailsMeta).forEach(([key,])=>{
+                            const productIdExist = domains.some(domain=>`${domain.product.id}`===key)
+                            if(!productIdExist){
+                                removeItem(key)
+                            }
+                        })
+                    })
+                }
+            })
+
     }, [])
 
-    useEffect(() => {
-        if (loadMeta)
-            loadMeta()
-    }, [loadMeta])
 
     const router = useRouter();
 

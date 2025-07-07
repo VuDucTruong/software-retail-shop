@@ -4,6 +4,13 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   reactStrictMode: false,
+  // webpack(config, { isServer }) {
+  //   if (!isServer) {
+  //     config.externals = config.externals || [];
+  //     config.externals.push('zod');
+  //   }
+  //   return config;
+  // },
   images: {
     remotePatterns: [
       {

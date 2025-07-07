@@ -613,6 +613,7 @@
   "cancel_warn": "Are you sure to unpublish this blog",
   "decide_later": "Let me decide later",
   "added_to_cart": "Added to cart",
+  "added_x_to_cart": "Added {x} products to cart",
   "Discount": "Discount",
   "type_your_message": "Type your message",
   "message": "message",
@@ -644,5 +645,7 @@
   "card_type": "Card type",
   "Copied": "Copied",
   "failed_to_copy": "Failed to copy, please try again",
-  "success_payment_description": "Thank you for your purchase!. We have sent you an email with the details of your order soon."
+  "success_payment_description": "Thank you for your purchase!. We have sent you an email with the details of your order soon.",
+  "email_resend_warn": "Do you want to resend this email?",
+  "email_resend_warn_prodKey": "Do you want to resend the product keys to this email?"
 }

@@ -613,6 +613,7 @@
   "cancel_warn": "Bạn có chắc chắn muốn bỏ xuất bản bài viết này không",
   "decide_later": "Để tôi quyết định sau",
   "added_to_cart": "Đã thêm vào giỏ hàng",
+  "added_x_to_cart": "Đã thêm  {x} sản phẩm vào giỏ hàng",
   "Discount": "Giảm giá",
   "type_your_message": "Nhập tin nhắn của bạn",
   "message": "tin nhắn",
@@ -643,5 +644,7 @@
   "card_type": "Loại thẻ",
   "Copied": "Đã sao chép",
   "failed_to_copy": "Không thể sao chép, vui lòng thử lại",
-   "success_payment_description": "Cảm ơn bạn đã thanh toán thành công. Đơn hàng của bạn sẽ được xử lý ngay trong thời gian sớm."
+  "success_payment_description": "Cảm ơn bạn đã thanh toán thành công. Đơn hàng của bạn sẽ được xử lý ngay trong thời gian sớm.",
+  "email_resend_warn": "Bạn có muốn gửi lại email này không?",
+  "email_resend_warn_prodKey": "Bạn có muốn gửi lại mã code sản phẩm cho email này không?"
 }

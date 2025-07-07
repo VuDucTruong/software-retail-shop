@@ -68,7 +68,7 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
             inputPlaceholder: "discount_code",
             onApply: () => {
                 applyCoupon(couponCode).catch(()=>{
-                    toast.error(t("API.INVALID_COUPON"),{position: "top-right"})
+                    toast.error(t("API.INVALID_COUPON"))
                 })
             },
         },
