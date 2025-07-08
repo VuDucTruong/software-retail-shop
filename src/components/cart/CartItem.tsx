@@ -35,6 +35,7 @@ export default function CartItem({ data, index, onQtyChange, onDelete }: {
     onQtyChange(index: number, qty: number): void,
     onDelete(index: number): void,
 }) {
+    // console.log("cartItem, data;:", data)
     const {product, quantity } = data;
 
     const t = useTranslations();
@@ -76,7 +77,7 @@ export default function CartItem({ data, index, onQtyChange, onDelete }: {
                         </div>
                         {
                             !viewOnly && (
-                                <QuantityCounter onQtyChange={(qty) => {
+                                <QuantityCounter index={index} onQtyChange={(qty) => {
                                     onQtyChange(index, qty);
                                 }} quantity={quantity} />
                             )

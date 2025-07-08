@@ -623,6 +623,7 @@
   "error_payment_url": "Error when creating payment url",
   "success_payment": "You have successfully paid for your order",
   "failed_payment": "Payment failed, please try again",
+  "reason_fail_payment": "customer transaction is unsuccessful",
   "uncompleted_payment": "Uncompleted payment",
   "please_new": "Please creating a new order",
   "please_complete": "Please complete your payment",

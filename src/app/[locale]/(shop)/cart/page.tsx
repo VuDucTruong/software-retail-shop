@@ -24,20 +24,13 @@ export default function Page() {
 
     useEffect(() => {
         if (loadMeta)
-            loadMeta().then(()=>{
-                if (orderDetailsMeta) {
-                    initialize(orderDetailsMeta).then(()=>{
-                        Object.entries(orderDetailsMeta).forEach(([key,])=>{
-                            const productIdExist = domains.some(domain=>`${domain.product.id}`===key)
-                            if(!productIdExist){
-                                removeItem(key)
-                            }
-                        })
-                    })
-                }
-            })
-
+            loadMeta()
     }, [])
+    useEffect(() => {
+        if (orderDetailsMeta) {
+            initialize(orderDetailsMeta)
+        }
+    }, [orderDetailsMeta]);
 
 
     const router = useRouter();
@@ -59,6 +52,6 @@ export default function Page() {
 
     return (
         <CartForm onModalYes={handleClickToPayment}
-            mode='preview' />
+                  mode='preview'/>
     );
 }

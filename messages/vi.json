@@ -623,6 +623,7 @@
   "error_payment_url": "Lỗi khi tạo url thanh toán",
   "success_payment": "Thanh toán thành công",
   "failed_payment": "Thanh toán thất bại",
+  "reason_fail_payment": "khách hàng thanh toán không thành công",
   "uncompleted_payment": "Thanh toán chưa hoàn tất",
   "please_new": "Vui lòng tạo đơn hàng mới",
   "please_complete": "Vui lòng hoàn tất thanh toán của bạn",

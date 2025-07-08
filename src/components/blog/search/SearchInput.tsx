@@ -51,5 +51,3 @@ export const SearchInput = ({onSearchChange,  className}: Props) => {
         </div>
     );
 };
-
-

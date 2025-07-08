@@ -51,7 +51,9 @@ export namespace CartLocal {
 
             setItem(id, value, force = false) {
                 const odm = {...get().orderDetailsMeta};
+                // console.log("value",{id, value})
                 odm[id] = value;
+                // console.log("odm", odm)
                 set({orderDetailsMeta: odm});
                 persist(force);
             },
@@ -91,7 +93,9 @@ export namespace CartLocal {
             },
             async load() {
                 const metaString = localStorage.getItem("cart") ?? "{}";
+                // console.log("raw: ", metaString)
                 const parsed = CartMetaData.LocalMetaSchema.safeParse(JSON.parse(metaString));
+                // console.log("parsed: ", parsed)
                 set({orderDetailsMeta: parsed.success ? parsed.data : {}});
             },
         };

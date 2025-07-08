@@ -20,7 +20,8 @@ import { OrderSingle } from "@/stores/order/order.store";
 import { toast } from "sonner";
 import { StatusDependentRenderer } from "@/components/special/LoadingPage";
 import { getDateTimeLocal } from "@/lib/date_helper";
-import { convertStatus, StatusBadge } from "@/components/common/StatusBadge";
+import {convertPaymentStatus, convertStatus, StatusBadge} from "@/components/common/StatusBadge";
+import {StringUtils} from "@/lib/utils";
 
 type TransactionDetailDialogProps = { orderId: number };
 
@@ -45,6 +46,15 @@ export default function TransactionDetailDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+function getLastSegment(input: string | null): string | null {
+  if (input === null) return null;
+  if (input.includes(',')) {
+    const parts = input.split(',');
+    return parts[parts.length - 1].trim(); // optional trim
+  }
+  return input;
 }
 
 function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
@@ -86,20 +96,20 @@ function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
       {/* Summary */}
       <div className="grid grid-cols-2 gap-4 text-sm border-b pb-4 mb-4">
         <div>
-          <p className="font-medium">{t("order_id")}:</p>
-          <p>{order.id}</p>
+          <p className="font-medium inline">{t("order_id")}:</p>
+          <p className="inline"> {order.id}</p>
         </div>
         <div>
-          <p className="font-medium">{t("created_at")}:</p>
-          <p>{order.createdAt}</p>
+          <p className="font-medium inline">{t("created_at")}:</p>
+          <p className="inline"> {order.createdAt}</p>
         </div>
         <div>
-          <p className="font-medium">{t("Amount")}:</p>
-          <p>{order.originalAmount}</p>
+          <p className="font-medium inline">{t("Amount")}:</p>
+          <p className="inline"> {order.originalAmount}</p>
         </div>
         <div>
-          <p className="font-medium">{t("total_amount")}:</p>
-          <p>{order.amount}</p>
+          <p className="font-medium inline">{t("total_amount")}:</p>
+          <p className="inline"> {order.amount}</p>
         </div>
         {order.orderStatus && (
           <>
@@ -112,10 +122,9 @@ function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
               if (order.orderStatus === "FAILED")
                 return (
                   <div className="col-span-2">
-                    <p className="font-medium">{t("failure_reason")}:</p>
-                    <p>
-                      {order?.payment?.detailMessage ||
-                        "Khách hàng thực hiên thanh toán không thành công"}
+                    <p className="font-medium inline">{t("failure_reason")}:</p>
+                    <p className="inline">
+                      {order?.payment?.detailMessage || t("reason_fail_payment")}
                     </p>
                   </div>
                 );
@@ -123,7 +132,7 @@ function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
                 return (
                   <div className="col-span-2">
                     <p className="font-medium">{t("failure_reason")}:</p>
-                    <p>{order.reason || "-"}</p>
+                    <p className="inline">{getLastSegment(order.reason) || "-"}</p>
                   </div>
                 );
             })()}
@@ -137,16 +146,16 @@ function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
           <h3 className="font-semibold text-lg mb-2">{t("payment_info")}</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="font-medium">{t("payment_method")}:</p>
-              <p>{order.payment.paymentMethod || "-"}</p>
+              <p className="font-medium inline">{t("payment_method")}:</p>
+              <p className="inline">{order.payment.paymentMethod || "-"}</p>
             </div>
             <div>
-              <p className="font-medium">{t("order_status")}:</p>
-              <p>{order.payment.status || "-"}</p>
+              <p className="font-medium inline">{t("order_status")}: </p>
+              <StatusBadge className={"ml-1"}  status={convertPaymentStatus(order.payment.status)}/>
             </div>
             <div className="col-span-2">
-              <p className="font-medium">{t("Note")}:</p>
-              <p>{order.payment.note || "-"}</p>
+              <p className="font-medium inline">{t("Note")}:</p>
+              {(StringUtils.hasLength(order.payment.note) || order.payment.note === 'No Message') && <p > {order.payment.note}</p>}
             </div>
           </div>
         </div>
