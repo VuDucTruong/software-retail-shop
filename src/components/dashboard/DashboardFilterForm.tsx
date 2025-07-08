@@ -1,14 +1,13 @@
 import React from "react";
 import { Button } from "../ui/button";
-import { useLocale, useTranslations } from "next-intl";
+import {useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import {  StatisticQuerySchema } from "@/api";
 import { Form, FormControl, FormField } from "../ui/form";
-import { getDateLocal, getDatePickerLocale, getDateTimeLocal } from "@/lib/date_helper";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
-import { Calendar } from "../ui/calendar";
+import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { useDashboardStore } from "@/stores/dashboard.store";
@@ -20,14 +19,12 @@ type FormValues = {
 
 export default function DashboardFilterForm() {
   const t = useTranslations();
-  const locale = useLocale();
-  const datePickerLocale = getDatePickerLocale(locale);
   const [queryParams, setQueryParams] = useDashboardStore(useShallow(state => [state.queryParams,state.setQueryParams]));
   const form = useForm<FormValues>({
     defaultValues: {
       dateRange: {
-        from: new Date(queryParams.from ?? getDateLocal()),
-        to: new Date(queryParams.to ?? getDateTimeLocal()),
+        from: new Date(queryParams.from ?? ""),
+        to: new Date(queryParams.to ?? ""),
       },
     },
     mode: "onSubmit",
@@ -69,12 +66,8 @@ export default function DashboardFilterForm() {
                     >
                       {field.value ? (
                         <span>
-                          {format(field.value.from ?? new Date(), "PP", {
-                            locale: datePickerLocale,
-                          })} -{" "}
-                          {format(field.value.to ?? new Date(), "PP" , {
-                            locale: datePickerLocale,
-                          })}
+                          {format(field.value.from ?? new Date(), "PP")} -{" "}
+                          {format(field.value.to ?? new Date(), "PP")}
                         </span>
                       ) : (
                         <span>{t('pick_date_range')}</span>

@@ -140,7 +140,7 @@ export default function OrderDetailPage() {
             </div>
 
             {/* Coupon Info */}
-            {order.coupon.code !== "UNKNOWN" && (
+            {order.coupon.code !== "" && (
               <div className="border rounded-xl p-4 flex flex-col gap-2 bg-muted/30">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">

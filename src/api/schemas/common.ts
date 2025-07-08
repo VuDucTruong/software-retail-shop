@@ -1,3 +1,4 @@
+import { useLocale } from "next-intl";
 import {z, ZodEnum, ZodTypeAny} from "zod";
 
 const passwordRegex = /^[a-zA-Z0-9]+$/; // At least 6 characters, at least one letter and one number

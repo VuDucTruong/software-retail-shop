@@ -18,6 +18,8 @@ import {PaymentCommon, PaymentSingle} from "@/stores/order/payment.store";
 import {convertPriceToVND} from "@/lib/currency_helper";
 import {toast} from "sonner";
 import parseStatus = PaymentCommon.parseStatus;
+import { useAuthDialogStore } from "@/stores/auth.dialog.store";
+import { useAuthStore } from "@/stores/auth.store";
 
 type CardItemsProps = {
     handleNextStep: () => void;
@@ -42,6 +44,9 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
     const [selectedBankCode, setSelectedBankCode, setNote] = PaymentSingle.useStore(useShallow(s => [
         s.bankCode, s.setBankCode,  s.setNote
     ]))
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const onOpenChange = useAuthDialogStore((state) => state.onOpenChange);
+    
 
     const [couponCode, setCouponCode] = useState<string>("");
     const accordionItems = [
@@ -188,7 +193,13 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
                         <TextWithValue text={t("total_amount_payable")} value={convertPriceToVND(net)}/>
 
                         {mode === 'preview' && (
-                            <Button onClick={handleNextStep}>
+                            <Button onClick={()=>{
+                                if (!isAuthenticated) {
+                                    onOpenChange(true);
+                                    return;
+                                }
+                                handleNextStep();
+                            }}>
                                 <MdQrCodeScanner/>
                                 {t("purchase_mobile_banking")}
                             </Button>
@@ -196,7 +207,13 @@ export default function CartItemsSection({handleNextStep, handlePrevStep, mode}:
 
                         {mode === 'payment' && (
                             <>
-                                <Button onClick={handleNextStep}>
+                                <Button onClick={() => {
+                                    if (!isAuthenticated) {
+                                        onOpenChange(true);
+                                        return;
+                                    }
+                                    handleNextStep();
+                                    }}>
                                     <MdPayment/> {t("Confirm")}{" "}
                                 </Button>
 

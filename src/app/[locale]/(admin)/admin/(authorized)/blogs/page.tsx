@@ -27,6 +27,7 @@ type GenColsParams = {
   handleDelete: (id: number) => void;
   handleApprove: (id: number) => void;
   handleUndoApprove: (id: number) => void;
+  isAdmin?: boolean;
 };
 
 const genCols = ({
