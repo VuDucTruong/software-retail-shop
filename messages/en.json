@@ -648,5 +648,10 @@
   "failed_to_copy": "Failed to copy, please try again",
   "success_payment_description": "Thank you for your purchase!. We have sent you an email with the details of your order soon.",
   "email_resend_warn": "Do you want to resend this email?",
-  "email_resend_warn_prodKey": "Do you want to resend the product keys to this email?"
+  "email_resend_warn_prodKey": "Do you want to resend the product keys to this email?",
+  "pending": "pending",
+  "processing": "processing",
+  "retry_1": "retry",
+  "completed": "completed",
+  "failed": "failed"
 }

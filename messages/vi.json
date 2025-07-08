@@ -647,5 +647,10 @@
   "failed_to_copy": "Không thể sao chép, vui lòng thử lại",
   "success_payment_description": "Cảm ơn bạn đã thanh toán thành công. Đơn hàng của bạn sẽ được xử lý ngay trong thời gian sớm.",
   "email_resend_warn": "Bạn có muốn gửi lại email này không?",
-  "email_resend_warn_prodKey": "Bạn có muốn gửi lại mã code sản phẩm cho email này không?"
+  "email_resend_warn_prodKey": "Bạn có muốn gửi lại mã code sản phẩm cho email này không?",
+  "pending": "Đang chờ xử lý",
+  "processing": "Đang xử lý",
+  "retry_1": "Đang thử lại",
+  "completed": "Đã hoàn thành",
+  "failed": "Thất bại"
 }

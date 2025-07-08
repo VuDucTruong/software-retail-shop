@@ -91,6 +91,7 @@ export default function BlogForm({initialValues, onApprove, mode, onFormSubmit, 
 }) {
 
     const t = useTranslations();
+    console.log("ui titles", uiTitles)
     const fileRef = useRef<HTMLInputElement>(null);
 
     const form = useForm<BlogFormType>({
@@ -269,9 +270,8 @@ export default function BlogForm({initialValues, onApprove, mode, onFormSubmit, 
 
                         <Button
                             className="col-start-3 bg-green-400 hover:bg-green-500"
-                            type="submit"
-                        >
-                            {t(uiTitles.buttonTitle)}
+                            type="submit">
+                            {uiTitles.buttonTitle}
                         </Button>
                     </form>
                 </Form>
