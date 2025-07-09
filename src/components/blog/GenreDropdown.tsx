@@ -76,7 +76,7 @@ export default function GenreDropdown<T extends Internal.RegisteredType>({
   const selectedGenres = new Set<number>(field?.value ?? []);
 
   const isChecked = (coming: Internal.Genre2Child[]) => {
-    return coming.every((c) => selectedGenres.has(c.id));
+    return coming.some((c) => selectedGenres.has(c.id));
   };
 
   const handleCheckboxChange = (

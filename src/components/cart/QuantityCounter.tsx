@@ -2,8 +2,7 @@ import React from "react";
 import {Button} from "../ui/button";
 
 
-export default function QuantityCounter({index, quantity, onQtyChange}: {
-    index?: number,
+export default function QuantityCounter({quantity, onQtyChange}: {
     quantity: number,
     onQtyChange(quantity: number): void
 }) {
@@ -18,7 +17,6 @@ export default function QuantityCounter({index, quantity, onQtyChange}: {
 
         }
     }
-    // console.log("qtys:",{index,qty, quantity})
 
     const handleIncrease = () => {
         setQty(prev => {

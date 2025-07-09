@@ -14,11 +14,11 @@ import {toast} from "sonner";
 export default function Page() {
     const t = useTranslations();
 
-    const [domains, initialize, createOrder,] = OrderCustomer.useStore(useShallow(s => [
-        s.cartItems, s.initialize, s.createOrder,
+    const [initialize, createOrder,] = OrderCustomer.useStore(useShallow(s => [
+         s.initialize, s.createOrder,
     ]))
-    const [orderDetailsMeta, loadMeta, clearItems, removeItem] = CartLocal.useStore(useShallow(c => [
-        c.orderDetailsMeta, c.load, c.clearItems, c.removeItem
+    const [orderDetailsMeta, loadMeta, clearItems] = CartLocal.useStore(useShallow(c => [
+        c.orderDetailsMeta, c.load, c.clearItems
     ]));
 
 

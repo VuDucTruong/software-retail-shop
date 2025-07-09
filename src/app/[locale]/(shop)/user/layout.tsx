@@ -26,7 +26,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             )}
             onClick={() => router.push(option.href)}
           >
-            <option.icon className="size-5" /> {t(option.title)}
+            <option.icon className="size-5" /> <span className="max-w-[150px]">{t(option.title)}</span>
           </div>
         ))}
       </div>

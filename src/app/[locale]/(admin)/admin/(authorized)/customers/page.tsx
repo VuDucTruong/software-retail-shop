@@ -65,13 +65,16 @@ export default function CustomerManagementPage() {
         sortBy: sorting[0]?.id,
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
+      deleted: false,
     });
   }, [sorting, pagination, getUsers]);
 
   const cols: ColumnDef<User>[] = [
     {
       accessorKey: "id",
-      header: "ID",
+      header: ({ column }) => (
+        <SortingHeader column={column} title={"ID"} />
+      ),
       cell: ({ row }) => {
         return row.original.id;
       },
@@ -88,7 +91,9 @@ export default function CustomerManagementPage() {
     },
     {
       accessorKey: "email",
-      header: "Email",
+      header: ({ column }) => (
+              <SortingHeader column={column} title="Email" />
+            ),
       cell: ({ row }) => {
         return row.original.email;
       },
@@ -112,7 +117,9 @@ export default function CustomerManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: t("created_at"),
+      header: ({ column }) => (
+              <SortingHeader column={column} title={t("created_at")} />
+            ),
       cell: ({ row }) => {
         return row.original.createdAt;
       },

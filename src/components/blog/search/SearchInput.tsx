@@ -4,6 +4,7 @@ import {Input} from "@/components/ui/input";
 import {Search, X} from "lucide-react";
 import {useState} from "react";
 import {cn} from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type Props = {
     onSearchChange?: (value: string) => void;
@@ -13,7 +14,7 @@ type Props = {
 
 export const SearchInput = ({onSearchChange,  className}: Props) => {
     const [value, setValue] = useState("");
-
+    const t = useTranslations();
     const onValueChange = (current: string) => {
         setValue(current)
         if (onSearchChange)
@@ -41,7 +42,7 @@ export const SearchInput = ({onSearchChange,  className}: Props) => {
                 type="text"
                 value={value}
                 onChange={(e) => onValueChange(e.target.value)}
-                placeholder="Search..."
+                placeholder={t('Search') + "..."}
                 className={cn(
                     "pl-10 pr-8 h-11 rounded-xl",
                     "transition-all duration-300",

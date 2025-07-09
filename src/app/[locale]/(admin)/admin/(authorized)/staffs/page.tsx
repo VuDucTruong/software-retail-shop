@@ -73,7 +73,7 @@ export default function StaffManagementPage() {
   const cols: ColumnDef<User>[] = [
     {
       accessorKey: "id",
-      header: "ID",
+      header: ({ column }) => <SortingHeader column={column} title={"ID"} />,
       cell: ({ row }) => {
         return row.original.id;
       },
@@ -114,7 +114,9 @@ export default function StaffManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: t("created_at"),
+      header: ({ column }) => (
+        <SortingHeader column={column} title={t("created_at")} />
+      ),
       cell: ({ row }) => {
         return row.original.createdAt;
       },
@@ -126,27 +128,27 @@ export default function StaffManagementPage() {
         return (
           <div className="flex items-center gap-2">
             <CommonToolTip content={t("view_details")}>
-                <UserDetailDialog user={row.original} />
+              <UserDetailDialog user={row.original} />
             </CommonToolTip>
 
             {row.original.deletedAt ? null : (
               <CommonToolTip content={t("ban_user")}>
-                  <CommonConfirmDialog
-                    triggerName={
-                        <Button
-                          variant={"destructive"}
-                          size="icon"
-                          className="w-8 h-8"
-                        >
-                          <UserX2 />
-                        </Button>
-                    }
-                    title={t("ban_user")}
-                    description={t("ban_user_description", {
-                      user: row.original.profile.fullName,
-                    })}
-                    onConfirm={() => handleDelete(row.original.id)}
-                  />
+                <CommonConfirmDialog
+                  triggerName={
+                    <Button
+                      variant={"destructive"}
+                      size="icon"
+                      className="w-8 h-8"
+                    >
+                      <UserX2 />
+                    </Button>
+                  }
+                  title={t("ban_user")}
+                  description={t("ban_user_description", {
+                    user: row.original.profile.fullName,
+                  })}
+                  onConfirm={() => handleDelete(row.original.id)}
+                />
               </CommonToolTip>
             )}
           </div>

@@ -210,6 +210,7 @@
     "error_product_key_required": "Mã sản phẩm là bắt buộc.",
     "error_region_required": "Vùng là bắt buộc.",
     "error_group_id_required": "Nhóm sản phẩm là bắt buộc.",
+
     "error_title_40": "Tiêu đề không được vượt quá 40 ký tự",
     "error_subtitle_required": "Phụ đề không được để trống",
     "error_subtitle_50": "Phụ đề không được vượt quá 50 ký tự",

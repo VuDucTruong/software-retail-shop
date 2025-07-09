@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 import {SearchWithDropDown} from "@/components/blog/search/SearchWithDropDown";
 import {StringUtils} from "@/lib/utils";
+import SortingHeader from "@/components/common/table/SortingHeader";
 export default function KeyManagementPage() {
   const t = useTranslations();
 
@@ -67,8 +68,8 @@ export default function KeyManagementPage() {
 
   const cols: ColumnDef<ProductItemDetail>[] = [
     {
-      accessorKey: "ID",
-      header: "ID",
+      accessorKey: "id",
+      header: ({ column }) => <SortingHeader column={column} title={"ID"} />,
       cell: ({ row }) => {
         return row.original.id;
       },
@@ -94,8 +95,8 @@ export default function KeyManagementPage() {
       },
     },
     {
-      accessorKey: "productName",
-      header: t('Product_name'),
+      accessorKey: "name",
+      header: ({ column }) => <SortingHeader column={column} title={t("Product_name")} />,
       cell: ({ row }) => {
         return row.original.name;
       },
@@ -119,7 +120,7 @@ export default function KeyManagementPage() {
     },
     {
       accessorKey: "createdAt",
-      header: t('created_at'),
+      header: ({ column }) => <SortingHeader column={column} title={t("created_at")} />,
       cell: ({ row }) => {
         const date = new Date(row.original.createdAt);
         return date.toLocaleDateString();
@@ -165,7 +166,7 @@ export default function KeyManagementPage() {
           <CommmonDataTable
             searchComponent={<SearchWithDropDown
               menus={{
-                items: [{id: "productName", name: "Product name"}, {id: "productKey", name: "product Key"}],
+                items: [{id: "productName", name: t('Product_name')}, {id: "productKey", name: t('Product_key')}],
                 selectedId: "productName",
                 multiple: false
               }}

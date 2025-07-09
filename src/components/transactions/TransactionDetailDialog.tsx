@@ -22,6 +22,7 @@ import { StatusDependentRenderer } from "@/components/special/LoadingPage";
 import { getDateTimeLocal } from "@/lib/date_helper";
 import {convertPaymentStatus, convertStatus, StatusBadge} from "@/components/common/StatusBadge";
 import {StringUtils} from "@/lib/utils";
+import { convertPriceToVND } from "@/lib/currency_helper";
 
 type TransactionDetailDialogProps = { orderId: number };
 
@@ -105,11 +106,11 @@ function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
         </div>
         <div>
           <p className="font-medium inline">{t("Amount")}:</p>
-          <p className="inline"> {order.originalAmount}</p>
+          <p className="inline"> {convertPriceToVND(order.originalAmount)}</p>
         </div>
         <div>
           <p className="font-medium inline">{t("total_amount")}:</p>
-          <p className="inline"> {order.amount}</p>
+          <p className="inline"> {convertPriceToVND(order.amount)}</p>
         </div>
         {order.orderStatus && (
           <>
@@ -146,7 +147,7 @@ function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
           <h3 className="font-semibold text-lg mb-2">{t("payment_info")}</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="font-medium inline">{t("payment_method")}:</p>
+              <p className="font-medium inline">{t("payment_method")}: </p>
               <p className="inline">{order.payment.paymentMethod || "-"}</p>
             </div>
             <div>
@@ -185,7 +186,7 @@ function DialogLazyContent({ orderId }: TransactionDetailDialogProps) {
                   </div>
 
                   <div className="text-right">
-                    <p className="font-medium">{detail.price} VND</p>
+                    <p className="font-medium">{convertPriceToVND(detail.price)}</p>
                     {hasKeys && (
                       <Button
                         variant="ghost"
