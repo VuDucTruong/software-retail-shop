@@ -183,6 +183,7 @@
     "error_slug_required": "Slug là bắt buộc.",
     "error_tags_required": "Ít nhất một thẻ là bắt buộc.",
     "error_categories_required": "Ít nhất một danh mục là bắt buộc.",
+    "error_genres_required": "Ít nhất một thể loại là bắt buộc.",
     "error_image_required": "Hình ảnh là bắt buộc.",
     "error_name_required_min_3": "Tên là bắt buộc và phải có ít nhất 3 ký tự.",
     "error_price_required_gt0": "Giá là bắt buộc và phải lớn hơn 0.",
@@ -208,7 +209,12 @@
     "error_otp_empty": "OTP phải chứa 6 chữ số.",
     "error_product_key_required": "Mã sản phẩm là bắt buộc.",
     "error_region_required": "Vùng là bắt buộc.",
-    "error_group_id_required": "Nhóm sản phẩm là bắt buộc."
+    "error_group_id_required": "Nhóm sản phẩm là bắt buộc.",
+    "error_title_40": "Tiêu đề không được vượt quá 40 ký tự",
+    "error_subtitle_required": "Phụ đề không được để trống",
+    "error_subtitle_50": "Phụ đề không được vượt quá 50 ký tự",
+    "error_content_1000": "Nội dung không được vượt quá 1000 ký tự",
+    "error_image_file_only": "Chỉ được phép lựa chọn file ảnh"
   },
   "ORDER_STATUS": {
     "Pending": "Đang chờ xử lý",

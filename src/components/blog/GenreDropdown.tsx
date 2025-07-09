@@ -40,7 +40,7 @@ export namespace Internal {
   export type Genre2Child = z.infer<typeof Genre.SchemaChild>;
 }
 export const RequiredSchema = z.object({
-  selectedGenre2Ids: z.set(z.number()),
+  selectedGenre2Ids: z.set(z.number()).min(1, {message: "Input.error_genres_required"}),
 });
 
 export default function GenreDropdown<T extends Internal.RegisteredType>({
@@ -156,7 +156,7 @@ export default function GenreDropdown<T extends Internal.RegisteredType>({
 
       <div className="text-sm text-muted-foreground">
         {t("Selected")}:{" "}
-        <span className="font-medium">{[...selectedGenres].join(", ")}</span>
+        <span className="font-medium">{[...selectedGenres].length}</span>
       </div>
     </div>
   );

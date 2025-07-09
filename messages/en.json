@@ -183,6 +183,7 @@
     "error_slug_required": "Slug is required.",
     "error_tags_required": "At least one tag is required.",
     "error_categories_required": "At least one category is required.",
+    "error_genres_required": "At least one genre is required",
     "error_image_required": "Image is required.",
     "error_name_required_min_3": "Name is required and must be at least 3 characters.",
     "error_price_required_gt0": "Price is required and must be greater than 0.",
@@ -208,7 +209,12 @@
     "error_otp_empty": "OTP must contain 6 digits.",
     "error_product_key_required": "Product key is required.",
     "error_region_required": "Region is required.",
-    "error_group_id_required": "Product group is required."
+    "error_group_id_required": "Product group is required.",
+    "error_title_40": "Title must not exceed 40 characters",
+    "error_subtitle_required": "Subtitle is required",
+    "error_subtitle_50": "Subtitle must have at least 50 characters",
+    "error_content_1000": "Content must not exceed 1000 characters",
+    "error_image_file_only": "Selected file must be a valid image file"
   },
   "ORDER_STATUS": {
     "Pending": "Pending",
