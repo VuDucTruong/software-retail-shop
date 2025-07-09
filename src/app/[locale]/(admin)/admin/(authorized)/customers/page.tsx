@@ -103,7 +103,7 @@ export default function CustomerManagementPage() {
       accessorKey: "role",
       header: t("Role"),
       cell: ({ row }) => {
-        return row.original.role;
+        return t(row.original.role);
       },
     },
     {

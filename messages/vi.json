@@ -659,5 +659,8 @@
   "processing": "Đang xử lý",
   "retry_1": "Đang thử lại",
   "completed": "Đã hoàn thành",
-  "failed": "Thất bại"
+  "failed": "Thất bại",
+  "CUSTOMER": "Khách hàng",
+  "STAFF": "Nhân viên",
+  "ADMIN": "Quản lý"
 }

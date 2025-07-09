@@ -77,7 +77,7 @@ export default function CartItem({ data, index, onQtyChange, onDelete }: {
                         </div>
                         {
                             !viewOnly && (
-                                <QuantityCounter index={index} onQtyChange={(qty) => {
+                                <QuantityCounter onQtyChange={(qty) => {
                                     onQtyChange(index, qty);
                                 }} quantity={quantity} />
                             )

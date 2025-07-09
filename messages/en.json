@@ -660,5 +660,8 @@
   "processing": "processing",
   "retry_1": "retry",
   "completed": "completed",
-  "failed": "failed"
+  "failed": "failed",
+  "CUSTOMER": "Customer",
+  "STAFF": "Staff",
+  "ADMIN": "Mananger"
 }
