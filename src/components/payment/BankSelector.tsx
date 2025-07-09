@@ -17,7 +17,7 @@ const getBankLabel = (code: string, altMessage: string) =>
   code === '' ? altMessage : code
 
 const getBankImage = (code: string) => {
-  if (!code || code === '') return '/bank-icons/question.svg'
+  if (!code || code === '') return '/bank-icons/question.png'
   return `/bank-icons/${code}.svg` // e.g., /bank-icons/VIETCOMBANK.svg
 }
 

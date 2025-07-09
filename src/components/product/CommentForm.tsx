@@ -47,11 +47,10 @@ export function CommentForm({ onSubmit }: CommentFormProps) {
     },
   })
 
-    const isAuthenticated = useAuthStore(
-      (state) => state.isAuthenticated
-    );
+
     const onOpenChange = useAuthDialogStore
       ((state) => state.onOpenChange);
+      const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
 
   function handleSubmit(data: z.infer<typeof FormSchema>) {

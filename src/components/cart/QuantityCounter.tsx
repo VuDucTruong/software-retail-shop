@@ -6,7 +6,6 @@ export default function QuantityCounter({quantity, onQtyChange}: {
     quantity: number,
     onQtyChange(quantity: number): void
 }) {
-
     const [qty, setQty] = React.useState(quantity);
     const handleDecrease = () => {
         if (qty > 1) {
@@ -18,6 +17,7 @@ export default function QuantityCounter({quantity, onQtyChange}: {
 
         }
     }
+
     const handleIncrease = () => {
         setQty(prev => {
             const current = prev + 1;

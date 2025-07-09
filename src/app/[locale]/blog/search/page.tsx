@@ -8,7 +8,7 @@ import {GenreDomain} from "@/stores/blog/genre.store";
 import {StatusDependentRenderer} from "@/components/special/LoadingPage";
 import {useTranslations} from "next-intl";
 import {Skeleton} from "@/components/ui/skeleton";
-import { useSearchParams } from "next/navigation";
+import {useSearchParams} from "next/navigation";
 import SearchPagination from "@/components/search/SearchPagination";
 
 
@@ -23,8 +23,8 @@ export default function BlogSearchPage() {
     [s.genre2s]))
 
 
-      const searchTitle =
-    search.length > 0 ? t('search_results_for_x' , {x: search}) : t('search_results');
+  const searchTitle =
+    search.length > 0 ? t('search_results_for_x', {x: search}) : t('search_results');
 
 
   return (
@@ -35,7 +35,8 @@ export default function BlogSearchPage() {
         <StatusDependentRenderer status={status} error={error}
                                  altLoading={
                                    Array.from({length: 8}).map((_, index) => (
-                                     <Skeleton key={index} className="text-center h-50  w-full group rounded-md border border-border shadow-md" />
+                                     <Skeleton key={index}
+                                               className="text-center h-50  w-full group rounded-md border border-border shadow-md"/>
                                    ))
                                  }
                                  altError={<SearchNotFound objectName={t("blog")} className="col-span-4"/>}

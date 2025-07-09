@@ -45,7 +45,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       qty: 1
     })
     setAddedToCart(true);
-  toast.success(t('added_to_cart'), {position:'top-right'})
+  toast.success(t('added_to_cart'))
+  }
+  function buyNow(){
+    addToCart();
+    router.push("/cart")
   }
 
 
@@ -156,7 +160,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           {/* Buy */}
 
           <div className="flex gap-4">
-            <Button className="w-1/2" disabled={product.quantity <= 0}>
+            <Button onClick={buyNow} className="w-1/2" disabled={product.quantity <= 0}>
               <FaRegCreditCard />
               {t("buy_now")}
             </Button>

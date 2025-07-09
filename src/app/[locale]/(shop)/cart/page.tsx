@@ -15,7 +15,7 @@ export default function Page() {
     const t = useTranslations();
 
     const [initialize, createOrder,] = OrderCustomer.useStore(useShallow(s => [
-        s.initialize, s.createOrder,
+         s.initialize, s.createOrder,
     ]))
     const [orderDetailsMeta, loadMeta, clearItems] = CartLocal.useStore(useShallow(c => [
         c.orderDetailsMeta, c.load, c.clearItems
@@ -23,15 +23,15 @@ export default function Page() {
 
 
     useEffect(() => {
+        if (loadMeta)
+            loadMeta()
+    }, [])
+    useEffect(() => {
         if (orderDetailsMeta) {
             initialize(orderDetailsMeta)
         }
-    }, [])
+    }, [orderDetailsMeta]);
 
-    useEffect(() => {
-        if (loadMeta)
-            loadMeta()
-    }, [loadMeta])
 
     const router = useRouter();
 
@@ -52,6 +52,6 @@ export default function Page() {
 
     return (
         <CartForm onModalYes={handleClickToPayment}
-            mode='preview' />
+                  mode='preview'/>
     );
 }

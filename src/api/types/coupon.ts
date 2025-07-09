@@ -8,7 +8,7 @@ export type CouponList = z.infer<typeof CouponListSchema>;
 
 export const COUPON_FALL_BACK: Coupon = {
     id: 0,
-    code: "UNKNOWN",
+    code: "",
     minAmount: 0,
     maxAppliedAmount: 0,
     description: "",

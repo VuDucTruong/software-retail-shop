@@ -149,7 +149,7 @@
     "instruction_title": "Follow these steps to complete the payment",
     "instruction_1": "Open your bank's Mobile Banking app (See the list of supported banks)",
     "instruction_2": "Select \"Payment\" and scan the QR code in this guide",
-    "instruction_3": "Complete the payment process as instructed and wait a moment for Divine Shop to process your order"
+    "instruction_3": "Complete the payment process as instructed and wait a moment for Phoenix Shop to process your order"
   },
   "Input": {
     "email_placeholder": "Enter your email",
@@ -183,6 +183,7 @@
     "error_slug_required": "Slug is required.",
     "error_tags_required": "At least one tag is required.",
     "error_categories_required": "At least one category is required.",
+    "error_genres_required": "At least one genre is required",
     "error_image_required": "Image is required.",
     "error_name_required_min_3": "Name is required and must be at least 3 characters.",
     "error_price_required_gt0": "Price is required and must be greater than 0.",
@@ -208,7 +209,13 @@
     "error_otp_empty": "OTP must contain 6 digits.",
     "error_product_key_required": "Product key is required.",
     "error_region_required": "Region is required.",
-    "error_group_id_required": "Product group is required."
+    "error_group_id_required": "Product group is required.",
+
+    "error_title_40": "Title must not exceed 40 characters",
+    "error_subtitle_required": "Subtitle is required",
+    "error_subtitle_50": "Subtitle must have at least 50 characters",
+    "error_content_1000": "Content must not exceed 1000 characters",
+    "error_image_file_only": "Selected file must be a valid image file"
   },
   "ORDER_STATUS": {
     "Pending": "Pending",
@@ -613,6 +620,7 @@
   "cancel_warn": "Are you sure to unpublish this blog",
   "decide_later": "Let me decide later",
   "added_to_cart": "Added to cart",
+  "added_x_to_cart": "Added {x} products to cart",
   "Discount": "Discount",
   "type_your_message": "Type your message",
   "message": "message",
@@ -622,6 +630,7 @@
   "error_payment_url": "Error when creating payment url",
   "success_payment": "You have successfully paid for your order",
   "failed_payment": "Payment failed, please try again",
+  "reason_fail_payment": "customer transaction is unsuccessful",
   "uncompleted_payment": "Uncompleted payment",
   "please_new": "Please creating a new order",
   "please_complete": "Please complete your payment",
@@ -644,5 +653,15 @@
   "card_type": "Card type",
   "Copied": "Copied",
   "failed_to_copy": "Failed to copy, please try again",
-  "success_payment_description": "Thank you for your purchase!. We have sent you an email with the details of your order soon."
+  "success_payment_description": "Thank you for your purchase!. We have sent you an email with the details of your order soon.",
+  "email_resend_warn": "Do you want to resend this email?",
+  "email_resend_warn_prodKey": "Do you want to resend the product keys to this email?",
+  "pending": "pending",
+  "processing": "processing",
+  "retry_1": "retry",
+  "completed": "completed",
+  "failed": "failed",
+  "CUSTOMER": "Customer",
+  "STAFF": "Staff",
+  "ADMIN": "Mananger"
 }

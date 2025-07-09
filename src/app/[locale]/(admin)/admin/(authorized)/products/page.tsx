@@ -21,7 +21,7 @@ import {CgAdd} from "react-icons/cg";
 import {useShallow} from "zustand/shallow";
 import {useCategoryStore} from "@/stores/category.store";
 import {SearchWithDropDown} from "@/components/blog/search/SearchWithDropDown";
-import {CollectionUtils, StringUtils} from "@/lib/utils";
+import {CollectionUtils} from "@/lib/utils";
 import CommonToolTip from "@/components/common/CommonTooltip";
 
 const CATEGORY_NONE_ID = -1000
@@ -140,14 +140,18 @@ export default function ProductManagementPage() {
     },
     {
       accessorKey: "price",
-      header: t("Price"),
+      header: ({column}) => (
+        <SortingHeader column={column} title={t("Price")}/>
+      ),
       cell: ({row}) => {
         return convertPriceToVND(row.original.price);
       },
     },
     {
-      accessorKey: "stock",
-      header: t("Stock"),
+      accessorKey: "quantity",
+      header: ({column}) => (
+        <SortingHeader column={column} title={t("Stock")}/>
+      ),
       cell: ({row}) => {
         return row.original.quantity;
       },
@@ -191,8 +195,6 @@ export default function ProductManagementPage() {
 
     const firstCleaned = selectedCategoryIds.filter(s => s !== CATEGORY_NONE_ID)
 
-    if (!StringUtils.hasLength(search) && CollectionUtils.isEmpty(firstCleaned))
-      return;
     const finalCleaned = firstCleaned.length === categories?.data.length ? [] : firstCleaned
     getProducts({
       pageRequest: {

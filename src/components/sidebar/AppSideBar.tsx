@@ -17,10 +17,15 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import CommonNav from "./CommonNav";
 import { NavUser } from "./NavUser";
+import { useAuthStore } from "@/stores/auth.store";
+import { getRoleWeight } from "@/lib/utils";
 
 export default function AppSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+
+  const user = useAuthStore((state) => state.user);
+
   return (
     <Sidebar collapsible="offcanvas" {...props} className="w-64">
       {/* Logo place */}
@@ -49,7 +54,11 @@ export default function AppSidebar({
         <CommonNav data={adminMenu.navProduct} />
         <CommonNav data={adminMenu.navCustomer} />
         <CommonNav data={adminMenu.navStaff} />
-        <CommonNav data={adminMenu.navAdmin} />
+        {
+          getRoleWeight(user?.role ?? "CUSTOMER") >= getRoleWeight("ADMIN") && (
+            <CommonNav data={adminMenu.navAdmin} />
+          )
+        }
       </SidebarContent>
 
       {/* User settings */}

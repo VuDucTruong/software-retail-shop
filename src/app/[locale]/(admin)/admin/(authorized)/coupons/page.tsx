@@ -1,29 +1,42 @@
 "use client";
 
-import {Coupon} from "@/api";
-import {CommmonDataTable} from "@/components/common/table/CommonDataTable";
+import { Coupon } from "@/api";
+import { CommmonDataTable } from "@/components/common/table/CommonDataTable";
 import CouponFilterSheet from "@/components/coupon/CouponFilterSheet";
-import {Button} from "@/components/ui/button";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {useActionToast} from "@/hooks/use-action-toast";
-import {useRouter} from "@/i18n/navigation";
-import {convertPriceToVND} from "@/lib/currency_helper";
-import {useCouponStore} from "@/stores/coupon.store";
-import {ColumnDef, PaginationState, SortingState} from "@tanstack/react-table";
-import {Eye} from "lucide-react";
-import {useTranslations} from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useActionToast } from "@/hooks/use-action-toast";
+import { useRouter } from "@/i18n/navigation";
+import { convertPriceToVND } from "@/lib/currency_helper";
+import { useCouponStore } from "@/stores/coupon.store";
+import {
+  ColumnDef,
+  PaginationState,
+  SortingState,
+} from "@tanstack/react-table";
+import { Eye } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
-import {useEffect, useState} from "react";
-import {CgAdd} from "react-icons/cg";
-import {useShallow} from "zustand/shallow";
-import {SearchWithDropDown} from "@/components/blog/search/SearchWithDropDown";
+import { useEffect, useState } from "react";
+import { CgAdd } from "react-icons/cg";
+import { useShallow } from "zustand/shallow";
+import { SearchWithDropDown } from "@/components/blog/search/SearchWithDropDown";
 import CommonToolTip from "@/components/common/CommonTooltip";
+import SortingHeader from "@/components/common/table/SortingHeader";
 
 export default function CouponManagementPage() {
   const t = useTranslations();
   const router = useRouter();
 
-  const [queryParams, getCoupons, status, lastAction, error, coupons, deleteCouponns] = useCouponStore(
+  const [
+    queryParams,
+    getCoupons,
+    status,
+    lastAction,
+    error,
+    coupons,
+    deleteCouponns,
+  ] = useCouponStore(
     useShallow((state) => [
       state.queryParams,
       state.getCoupons,
@@ -33,7 +46,7 @@ export default function CouponManagementPage() {
       state.coupons,
       state.deleteCoupons,
     ])
-  )
+  );
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: queryParams?.pageRequest?.page ?? 0,
@@ -68,83 +81,104 @@ export default function CouponManagementPage() {
     {
       accessorKey: "code",
       header: t("Code"),
-      cell: ({row}) => {
+      cell: ({ row }) => {
         return <div className="font-bold">{row.original.code}</div>;
       },
       enableHiding: false,
     },
     {
       accessorKey: "availableFrom",
-      header: t("available_from"),
-      cell: ({row}) => {
+      header: ({ column }) => (
+        <SortingHeader column={column} title={t("available_from")} />
+      ),
+      cell: ({ row }) => {
         return new Date(row.original.availableFrom!).toLocaleDateString();
       },
     },
     {
       accessorKey: "availableTo",
-      header: t("available_to"),
-      cell: ({row}) => {
+      header: ({ column }) => (
+        <SortingHeader column={column} title={t("available_to")} />
+      ),
+      cell: ({ row }) => {
         return new Date(row.original.availableTo!).toLocaleDateString();
       },
     },
     {
       accessorKey: "value",
-      header: t("Value"),
-      cell: ({row}) => {
-        return <div className="flex flex-col gap-1">
-          {
-            row.original.type === "PERCENTAGE" ?
-              <div>{row.original.value} %</div> :
+      header: ({ column }) => (
+        <SortingHeader column={column} title={t("Value")} />
+      ),
+      cell: ({ row }) => {
+        return (
+          <div className="flex flex-col gap-1">
+            {row.original.type === "PERCENTAGE" ? (
+              <div>{row.original.value} %</div>
+            ) : (
               <div>{convertPriceToVND(row.original.value)}</div>
-          }
-          <div
-            className="text-muted-foreground">{t("for_min_order_value_x", {x: convertPriceToVND(row.original.minAmount ?? 0)})}</div>
-          <div
-            className="text-muted-foreground">{t("max_reduction_x", {x: convertPriceToVND(row.original.maxAppliedAmount ?? 0)})}</div>
-        </div>;
+            )}
+            <div className="text-muted-foreground">
+              {t("for_min_order_value_x", {
+                x: convertPriceToVND(row.original.minAmount ?? 0),
+              })}
+            </div>
+            <div className="text-muted-foreground">
+              {t("max_reduction_x", {
+                x: convertPriceToVND(row.original.maxAppliedAmount ?? 0),
+              })}
+            </div>
+          </div>
+        );
       },
     },
     {
       accessorKey: "usageLimit",
-      header: t("usage_limit"),
-      cell: ({row}) => {
+      header: ({ column }) => (
+        <SortingHeader column={column} title={t("usage_limit")} />
+      ),
+      cell: ({ row }) => {
         return row.original.usageLimit;
       },
     },
     {
       accessorKey: "description",
       header: t("Description"),
-      cell: ({row}) => {
+      cell: ({ row }) => {
         return row.original.description;
       },
     },
     {
       accessorKey: "actions",
       header: "",
-      cell: ({row}) => {
+      cell: ({ row }) => {
         return (
           <div className="flex items-center gap-2">
             <CommonToolTip content={t("view_details")}>
               <Button
-              variant="outline"
-              onClick={() => handleViewDetails(row.original.id)}
-            >
-              <Eye/>
-            </Button>
+                variant="outline"
+                onClick={() => handleViewDetails(row.original.id)}
+              >
+                <Eye />
+              </Button>
             </CommonToolTip>
           </div>
         );
       },
-    }
+    },
   ];
 
   const handleViewDetails = (id: number) => {
     router.push(`coupons/${id}`);
   };
 
-  function onSearchAndTypeDebounced(couponType: (number | string)[], search: string) {
-
-    const cleanedCouponType = (!Array.isArray(couponType) && couponType === 'all') ? undefined : couponType
+  function onSearchAndTypeDebounced(
+    couponType: (number | string)[],
+    search: string
+  ) {
+    const cleanedCouponType =
+      !Array.isArray(couponType) && couponType === "all"
+        ? undefined
+        : couponType;
     getCoupons({
       pageRequest: {
         page: pagination.pageIndex,
@@ -153,10 +187,9 @@ export default function CouponManagementPage() {
         sortDirection: sorting[0]?.desc ? "desc" : "asc",
       },
       search: search,
-      type: cleanedCouponType
+      type: cleanedCouponType,
     });
   }
-
 
   return (
     <Card>
@@ -166,24 +199,29 @@ export default function CouponManagementPage() {
           <div className="flex items-center gap-2">
             <Link href={"coupons/create"}>
               <Button variant="outline" className="bg-primary text-white">
-                <CgAdd/> {t("create_coupon")}
+                <CgAdd /> {t("create_coupon")}
               </Button>
             </Link>
-            <CouponFilterSheet/>
+            <CouponFilterSheet />
           </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <CommmonDataTable
-          searchComponent={<SearchWithDropDown
-            menus={{
-              items: [{id: "all", name: t('All'),}, {id: "FIXED", name: t('Fixed'),}, {id: "PERCENTAGE", name: t('Percentage'),}],
-              multiple: false
-            }}
-            search={{}}
-            onDebounced={onSearchAndTypeDebounced}
-          />}
-
+          searchComponent={
+            <SearchWithDropDown
+              menus={{
+                items: [
+                  { id: "all", name: t("All") },
+                  { id: "FIXED", name: t("Fixed") },
+                  { id: "PERCENTAGE", name: t("Percentage") },
+                ],
+                multiple: false,
+              }}
+              search={{}}
+              onDebounced={onSearchAndTypeDebounced}
+            />
+          }
           objectName={t("coupon")}
           isLoading={coupons === null}
           columns={cols}

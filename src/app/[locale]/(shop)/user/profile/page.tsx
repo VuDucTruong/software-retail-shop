@@ -71,7 +71,7 @@ export default function UserProfilePage() {
     },
     {
       title: t("Role"),
-      value: user?.role,
+      value: t(user?.role ?? ""),
     },
     {
       title: t("participate_date"),

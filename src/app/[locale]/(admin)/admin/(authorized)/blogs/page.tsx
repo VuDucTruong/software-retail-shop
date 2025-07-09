@@ -27,6 +27,7 @@ type GenColsParams = {
   handleDelete: (id: number) => void;
   handleApprove: (id: number) => void;
   handleUndoApprove: (id: number) => void;
+  isAdmin?: boolean;
 };
 
 const genCols = ({
@@ -39,7 +40,9 @@ const genCols = ({
   return [
     {
       accessorKey: "id",
-      header: "ID",
+      header: ({ column }) => (
+              <SortingHeader column={column} title={"ID"} />
+            ),
       cell: ({row}) => {
         return row.original.id;
       },

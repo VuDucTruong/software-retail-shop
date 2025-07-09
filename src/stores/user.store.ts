@@ -69,13 +69,11 @@ const getUsers = async (set: SetState<UserStore>, query: QueryParams) => {
     query = {
       roles: [Role.ADMIN.value, Role.STAFF.value],
       ...useUserStore.getState().queryParams,
-      deleted: true,
     };
   } else {
     query = {
       ...useUserStore.getState().queryParams,
       roles: [Role.CUSTOMER.value],
-      deleted: true,
     };
   }
 

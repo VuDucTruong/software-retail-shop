@@ -51,12 +51,12 @@ export const BlogsGenre1Responses = zArrayDefault(z.object({
 }), [])
 
 export const BlogCreateSchema = z.object({
-    title: z.string().min(2, "Title must be at least 2 characters long").max(20, "Title must be at most 100 characters long"),
-    subtitle: z.string().min(2, "Subtitle must be at least 2 characters long").max(30, "Subtitle must be at most 30 characters long"),
-    genreIds: z.array(z.number()).min(1, "At least one genre is required"),
+    title: z.string().min(2, "Input.error_title_min").max(20, "Input.error_title_max"),
+    subtitle: z.string().min(2, "Input.error_subtitle_min").max(30, "Input.error_subtitle_max"),
+    genreIds: z.array(z.number()).min(1, "Input.error_genre_required"),
     publishedAt: z.string(),
     image: hasWindow ? z.instanceof(File).nullable() : z.any(),
-    content: z.string().min(2, "Content must be at least 2 characters long").max(5000, "Content must be at most 5000 characters long"),
+    content: z.string().min(2, "Input.error_content_min").max(5000, "Input.error_content_max"),
 })
 
 export const BlogUpdateSchema = BlogCreateSchema.extend({

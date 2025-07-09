@@ -43,9 +43,9 @@ export default function ProductItem(props: ProductItemProps) {
         <figure className="relative aspect-video">
           <Image
             className={
-              imageUrl === "/empty_img.png"
+              cn(imageUrl === "/empty_img.png"
                 ? "object-contain"
-                : "object-conver"
+                : "object-conver", "rounded-md")
             }
             fill
             sizes="100%"
