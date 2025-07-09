@@ -50,9 +50,8 @@ export class ApiClient {
       },
       (error) => {
         const appError = this.handleAxiosError(error);
-
         if ((appError.status ?? 0) >= 500) {
-          this.reportToSentry(error);
+          this.reportToSentry(appError);
         }
 
         return Promise.reject(appError);
@@ -124,25 +123,15 @@ export class ApiClient {
 
       return parsed.data;
     } catch (error) {
+
       if (error instanceof ValidationError) {
         throw error;
       }
 
-      Sentry.captureException(error , {
-        extra: {
-          url: config.url,
-          method: config.method,
-          params: config.params,
-          data: config.data,
-        },
-        tags: {
-          requestError: "true",
-        },
-      });
-
       if (error instanceof ApiError) {
         throw error;
       }
+      
 
       throw new ApiError("An unexpected error occurred" , 500);
     }
